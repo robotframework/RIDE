@@ -14,7 +14,7 @@
 #  limitations under the License.
 import builtins
 import os
-import string
+import re
 from io import StringIO, BytesIO
 from time import time
 
@@ -40,7 +40,7 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-from robotide.lib.compat.parsing.language import Language
+from robotide.lib.compat.parsing.language import Language, get_headers_for, get_settings_for, get_language_name, get_english_label
 robotframeworklexer = None
 if Language:
     try:  # import our modified version
@@ -112,17 +112,235 @@ def get_rf_lang_code(lang: (str, list)) -> str:
         clean_lang = lang
     else:
         clean_lang = lang.split(' ')  # The cases we have two words
-    lc = len(clean_lang)
-    if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
-        return lang
+    # lc = len(clean_lang)
+    # if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
+    #     return lang
     clean_lang = clean_lang[0].replace('-', '_').split('_')  # The cases we have variant code
     lc = len(clean_lang)
     if lc == 1:
         return clean_lang[0].title()
-    with_variant_code = f"{clean_lang[0].title()}{clean_lang[1].title()}"
+    with_variant_code = f"{clean_lang[0].lower().title()}{clean_lang[1].lower().title()}"
     if with_variant_code in ("PtBr", "ZhCn", "ZhTw"):
         return with_variant_code
     return clean_lang[0].title()
+
+
+def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
+    # print(f"DEBUG: texteditor.py transform_doc_language ENTER old_lang={old_lang} new_lang={new_lang}"
+    #       f"\n T old_lang={type(old_lang)} T new_lang={type(new_lang)}, node_info={node_info}")
+    if isinstance(old_lang, list):
+        old_lang = old_lang[0]
+    if isinstance(new_lang, list):
+        new_lang = new_lang[0]
+    old_lang = old_lang.title()
+    new_lang = new_lang.title()
+    if old_lang == new_lang:
+        return m_text
+    try:
+        old_lang_class = Language.from_name(old_lang)
+    except ValueError as ex:
+        print(ex)
+        # return m_text  # DEBUG:
+        old_lang_class = Language.from_name('English')
+    try:
+        new_lang_class = Language.from_name(new_lang)
+    except ValueError as ex:
+        print(ex)
+        # return m_text  # DEBUG:
+        new_lang_class = Language.from_name('English')
+    old_lang_name = old_lang_class.name
+    new_lang_name = new_lang_class.name
+    if old_lang_name == new_lang_name:
+        return m_text
+    old_lang_headers = old_lang_class.headers
+    old_lang_bdd_prefixes = old_lang_class.bdd_prefixes
+    new_lang_headers = new_lang_class.headers
+    new_lang_bdd_prefixes = new_lang_class.bdd_prefixes
+    """
+    old_lang_settings = old_lang_class.settings
+    new_lang_settings = new_lang_class.settings
+    """
+    old_library_setting = old_lang_class.library_setting
+    old_resource_setting = old_lang_class.resource_setting
+    old_variables_setting = old_lang_class.variables_setting
+    old_name_setting = old_lang_class.name_setting
+    old_documentation_setting = old_lang_class.documentation_setting
+    old_metadata_setting = old_lang_class.metadata_setting
+    old_suite_setup_setting = old_lang_class.suite_setup_setting
+    old_suite_teardown_setting = old_lang_class.suite_teardown_setting
+    old_test_setup_setting = old_lang_class.test_setup_setting
+    old_task_setup_setting = old_lang_class.task_setup_setting
+    old_test_teardown_setting = old_lang_class.test_teardown_setting
+    old_task_teardown_setting = old_lang_class.task_teardown_setting
+    old_test_template_setting = old_lang_class.test_template_setting
+    old_task_template_setting = old_lang_class.task_template_setting
+    old_test_timeout_setting = old_lang_class.test_timeout_setting
+    old_task_timeout_setting = old_lang_class.task_timeout_setting
+    old_test_tags_setting = old_lang_class.test_tags_setting
+    old_task_tags_setting = old_lang_class.task_tags_setting
+    old_keyword_tags_setting = old_lang_class.keyword_tags_setting
+    old_tags_setting = old_lang_class.tags_setting
+    old_setup_setting = old_lang_class.setup_setting
+    old_teardown_setting = old_lang_class.teardown_setting
+    old_template_setting = old_lang_class.template_setting
+    old_timeout_setting = old_lang_class.timeout_setting
+    old_arguments_setting = old_lang_class.arguments_setting
+    new_library_setting = new_lang_class.library_setting
+    new_resource_setting = new_lang_class.resource_setting
+    new_variables_setting = new_lang_class.variables_setting
+    new_name_setting = new_lang_class.name_setting
+    new_documentation_setting = new_lang_class.documentation_setting
+    new_metadata_setting = new_lang_class.metadata_setting
+    new_suite_setup_setting = new_lang_class.suite_setup_setting
+    new_suite_teardown_setting = new_lang_class.suite_teardown_setting
+    new_test_setup_setting = new_lang_class.test_setup_setting
+    new_task_setup_setting = new_lang_class.task_setup_setting
+    new_test_teardown_setting = new_lang_class.test_teardown_setting
+    new_task_teardown_setting = new_lang_class.task_teardown_setting
+    new_test_template_setting = new_lang_class.test_template_setting
+    new_task_template_setting = new_lang_class.task_template_setting
+    new_test_timeout_setting = new_lang_class.test_timeout_setting
+    new_task_timeout_setting = new_lang_class.task_timeout_setting
+    new_test_tags_setting = new_lang_class.test_tags_setting
+    new_task_tags_setting = new_lang_class.task_tags_setting
+    new_keyword_tags_setting = new_lang_class.keyword_tags_setting
+    new_tags_setting = new_lang_class.tags_setting
+    new_setup_setting = new_lang_class.setup_setting
+    new_teardown_setting = new_lang_class.teardown_setting
+    new_template_setting = new_lang_class.template_setting
+    new_timeout_setting = new_lang_class.timeout_setting
+    new_arguments_setting = new_lang_class.arguments_setting
+    old_lang_given_prefixes = old_lang_class.given_prefixes
+    old_lang_when_prefixes = old_lang_class.when_prefixes
+    old_lang_then_prefixes = old_lang_class.then_prefixes
+    old_lang_and_prefixes = old_lang_class.and_prefixes
+    old_lang_but_prefixes = old_lang_class.but_prefixes
+    new_lang_given_prefixes = new_lang_class.given_prefixes
+    new_lang_when_prefixes = new_lang_class.when_prefixes
+    new_lang_then_prefixes = new_lang_class.then_prefixes
+    new_lang_and_prefixes = new_lang_class.and_prefixes
+    new_lang_but_prefixes = new_lang_class.but_prefixes
+    old_true_strings = old_lang_class.true_strings
+    old_false_strings = old_lang_class.false_strings
+    new_true_strings = new_lang_class.true_strings
+    new_false_strings = new_lang_class.false_strings
+    en_lang_class = Language.from_name('English')
+    en_lang_given_prefixes = en_lang_class.given_prefixes
+    en_lang_when_prefixes = en_lang_class.when_prefixes
+    en_lang_then_prefixes = en_lang_class.then_prefixes
+    en_lang_and_prefixes = en_lang_class.and_prefixes
+    en_lang_but_prefixes = en_lang_class.but_prefixes
+
+    sinal_correct_language = False  # If error in Language, do final replacement
+
+    # print(f"DEBUG: texteditor.py transform_doc_language\n  old_lang_name={old_lang_name} old_lang={old_lang} "
+    #       f"new_lang={new_lang}\n"
+    #       f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
+    #       f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}\n")
+    # print(f"DEBUG: texteditor.py transform_doc_language\n{old_true_strings=} {old_false_strings=}\n"
+    #       f"{new_true_strings=} {new_false_strings=}")
+    if node_info != ('', ):
+        if node_info[0] == 'ERROR':
+            c_msg = node_info[1].replace('Token(', '').replace(')', '').split(',')
+            line = c_msg[1].replace('\'', '').strip()
+            # print(f"DEBUG: textedit.py transform_doc_language ERROR:{line}")
+            if line.startswith('Language: '):
+                tail = line.replace('Language: ', '')
+                # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
+                m_text = m_text.replace('Language: ' + tail, 'Language: English' + '  # ' + tail)
+                sinal_correct_language = True
+        """        
+        if node_info[0] == 'INVALID_HEADER':
+            # print(f"DEBUG: textedit.py transform_doc_language INVALID_HEADER: {node_info[1]}")
+            old_header = node_info[1].split(',')[1]
+            old_header = old_header.replace('* ', '').replace(' *', '').replace('*', '').strip('\' ')
+            headers = list(old_lang_headers.keys())
+            try:
+                idx = headers.index(old_header)
+            except ValueError:
+                # print(f"DEBUG: language.py get_english_label Exception at getting index {old_lang} returning= m_text")
+                return m_text
+            en_label = list(old_lang_headers.values())[idx]
+            new_header = list(new_lang_headers.keys())[idx]
+            print(f"DEBUG: textedit.py transform_doc_language OLD_HEADER: {old_header} en_label={en_label} {new_header=}")
+            m_text = m_text.replace(old_header, new_header)
+        """
+
+    for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
+        m_text = re.sub(r"[*]+\s"+fr"{old}"+r"\s[*]+", fr"*** {new} ***", m_text)
+    """
+    for old, new in zip(old_lang_settings.keys(), new_lang_settings.keys()):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    """
+    # Settings must be replaced individually
+    # Order of replacements seems to be important
+    m_text = re.sub(fr'\b{old_documentation_setting}\b', fr'{new_documentation_setting}', m_text)
+    m_text = re.sub(fr'[[]{old_arguments_setting}]', fr'[{new_arguments_setting}]', m_text)
+    m_text = re.sub(fr'{old_suite_setup_setting}\s{2}', fr'{new_suite_setup_setting}  ', m_text)
+    m_text = re.sub(fr'{old_suite_teardown_setting}\s{2}', fr'{new_suite_teardown_setting}  ', m_text)
+    m_text = re.sub(fr'{old_test_setup_setting}\s{2}', fr'{new_test_setup_setting}  ', m_text)
+    m_text = re.sub(fr'{old_task_setup_setting}\s{2}', fr'{new_task_setup_setting}  ', m_text)
+    m_text = re.sub(fr'{old_template_setting}\s{2}', fr'{new_template_setting}  ', m_text)
+    m_text = re.sub(fr'{old_test_teardown_setting}\s{2}', fr'{new_test_teardown_setting}  ', m_text)
+    m_text = re.sub(fr'{old_task_teardown_setting}\s{2}', fr'{new_task_teardown_setting}  ', m_text)
+    m_text = re.sub(fr'{old_library_setting}\s{2}', fr'{new_library_setting}  ', m_text)
+    m_text = re.sub(fr'{old_resource_setting}\s{2}', fr'{new_resource_setting}  ', m_text)
+    m_text = re.sub(fr'{old_variables_setting}\s{2}', fr'{new_variables_setting}  ', m_text)
+    m_text = re.sub(fr'{old_tags_setting}\s{2}', fr'{new_tags_setting}  ', m_text)
+    m_text = re.sub(fr'[[]{old_setup_setting}]', fr'[{new_setup_setting}]', m_text)
+    m_text = re.sub(fr'[[]{old_teardown_setting}]', fr'[{new_teardown_setting}]', m_text)
+    m_text = re.sub(fr'\b{old_name_setting}\b', fr'{new_name_setting}', m_text)
+    m_text = re.sub(fr'\b{old_metadata_setting}\b', fr'{new_metadata_setting}', m_text)
+    m_text = re.sub(fr'\b{old_test_template_setting}\b', fr'{new_test_template_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_template_setting}\b', fr'{new_task_template_setting}', m_text)
+    m_text = re.sub(fr'[[]{old_test_tags_setting}]', fr'[{new_test_tags_setting}]', m_text)
+    m_text = re.sub(fr'[[]{old_task_tags_setting}]', fr'[{new_task_tags_setting}]', m_text)
+    m_text = re.sub(fr'[[]{old_keyword_tags_setting}]', fr'[{new_keyword_tags_setting}]', m_text)
+    m_text = re.sub(fr'\b{old_test_timeout_setting}\b', fr'{new_test_timeout_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_timeout_setting}\b', fr'{new_task_timeout_setting}', m_text)
+    m_text = re.sub(fr'\b{old_timeout_setting}\b', fr'{new_timeout_setting}', m_text)
+
+    for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    for old, new in zip(old_lang_when_prefixes, new_lang_when_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    for old, new in zip(old_lang_then_prefixes, new_lang_then_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    for old, new in zip(old_lang_and_prefixes, new_lang_and_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    for old, new in zip(old_true_strings, new_true_strings):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    for old, new in zip(old_false_strings, new_false_strings):
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+    # Final translation from English
+    for en, new in zip(en_lang_given_prefixes, new_lang_given_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+    for en, new in zip(en_lang_when_prefixes, new_lang_when_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+    for en, new in zip(en_lang_then_prefixes, new_lang_then_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+    for en, new in zip(en_lang_and_prefixes, new_lang_and_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+    for en, new in zip(en_lang_but_prefixes, new_lang_but_prefixes):
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+
+    if sinal_correct_language:
+        m_text = m_text.replace('Language: English', fr'Language: {new_lang_name}')
+    else:
+        m_text = m_text.replace(fr'Language: {old_lang_name}', fr'Language: {new_lang_name}')
+
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    try:
+        mlang = Language.from_name(new_lang_name.replace('_', '-'))
+        set_lang[0] = get_rf_lang_code(mlang.code)
+    except ValueError:
+        set_lang[0] = 'en'
+    return m_text
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -204,6 +422,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if hasattr(datafile_controller, 'language'):
                 if datafile_controller.language is not None:
                     self._doc_language = self._editor.language = datafile_controller.language
+                    # print(f"DEBUG: texteditor _open  SET FROM CONTROLLER language={self._doc_language}")
                 else:
                     self._doc_language = self._editor.language = ['en']
             # print(f"DEBUG: texteditor _open language={self._doc_language}")
@@ -328,7 +547,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _apply_txt_changes_to_model(self):
         self._editor.is_saving = False
-        if not self._editor.content_save():
+        # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}")
+        if not self._editor.content_save(lang=self._doc_language):
             return False
         self._editor.reset()
         self._editor.set_editor_caret_position()
@@ -382,8 +602,9 @@ class DataValidationHandler(object):
         self._editor = editor
 
     def validate_and_update(self, data, text, lang='en'):
+        from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
-        initial_lang = self._doc_language or lang
+        initial_lang = lang if lang is not None else self._doc_language  # self._doc_language or
         if "Language: " in m_text:
             try:
                 self._doc_language = obtain_language(lang, text)
@@ -397,7 +618,18 @@ class DataValidationHandler(object):
             #       f"set to={self._doc_language}")
         self._editor.language = self._doc_language
 
-        result = self._sanity_check(data, m_text)
+        try:
+            result = self._sanity_check(data, m_text)  # First check
+            # print(f"DEBUG: textedit.py validate_and_update Language after sanity_check result={result}")
+        except DataError as err:
+            result = (err.message, err.details)
+
+        if isinstance(result, tuple):
+            m_text = transform_doc_language(initial_lang, self._doc_language, m_text, node_info=result)
+        try:
+            result = self._sanity_check(data, m_text)  # Check if language changed and is valid content
+        except DataError as err:
+            result = (err.message, err.details)
         if isinstance(result, tuple):
             handled = self._handle_sanity_check_failure(result)
             if not handled:
@@ -424,17 +656,29 @@ class DataValidationHandler(object):
         from robotide.lib.compat.parsing import ErrorReporter
         from robot.parsing.parser.parser import get_model
         from robotide.lib.robot.errors import DataError
-
+        result = None
         rf_lang = get_rf_lang_code(self._doc_language)
         # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
         #       f" transformed lang={rf_lang}")
+        from robot.api.parsing import get_tokens
+        for token in get_tokens(text):
+            # print(repr(token))
+            if token.type == token.ERROR:
+                # print("DEBUG: textedit.py _sanity_check TOKEN in ERROR")
+                result = 'ERROR', repr(token)
+                return result
+                # raise DataError('ERROR', repr(token))
+            if token.type == token.INVALID_HEADER:
+                # print("DEBUG: textedit.py _sanity_check TOKEN in INVALID_HEADER")
+                result = 'INVALID_HEADER', repr(token)
+                return result
+                # raise DataError('INVALID_HEADER', repr(token))
+
         try:
             model = get_model(text, lang=rf_lang)
         except AttributeError:
             return "Failed validation by Robot Framework", "Please, check if Language setting is valid!"
-        # print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
-        result = None
         try:
             validator.visit(model)
         except DataError as err:
@@ -462,6 +706,10 @@ class DataValidationHandler(object):
     """
 
     def _handle_sanity_check_failure(self, message):
+        if isinstance(message[1], str) and message[1].startswith('Token('):
+            c_msg = message[1].replace('Token(', '').replace(')', '').split(',')
+            message = [" ".join(c_msg[4:]), c_msg[2].strip()]
+
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self.source_editor._mark_file_dirty(True)
             return False
@@ -1062,15 +1310,15 @@ class SourceEditor(wx.Panel):
         if self._data and not self._data.wrapper_data.is_dirty:
             self.mark_file_dirty(False)
 
-    def content_save(self, *args):
-        _ = args
+    def content_save(self, **args):
+        # _ = args
         self.store_position()
         if self.dirty and not self.is_saving:
             self.is_saving = True
             # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
             #       f"self.language={self.language} data={self._data}")
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
-                                                            lang=self.language):
+                                                            lang=args['lang']):  #self.language)
                 self.is_saving = False
                 return False
         return True
@@ -1234,7 +1482,8 @@ class SourceEditor(wx.Panel):
 
     def revert(self):
         self.reset()
-        self.source_editor.set_text(self._data.content)
+        self.source_editor.Undo()
+        # self.source_editor.set_text(self._data.content)
 
     def on_editor_key(self, event):
         if not self.is_focused():

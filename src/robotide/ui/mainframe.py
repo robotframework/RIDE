@@ -497,7 +497,12 @@ class RideFrame(wx.Frame):
         self._application.workspace_path = path
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
-        set_lang = shared_memory.ShareableList(name="language")
+        set_lang = []
+        set_lang.append('en')
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except FileNotFoundError:
+            set_lang[0] = 'en'
         if self.controller.file_language:
             set_lang[0] = self.controller.file_language[0]
             # print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}\n"

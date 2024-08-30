@@ -398,7 +398,7 @@ class ResourceFile(_TestData):
             LOGGER.warn("Imported resource file '%s' is empty." % self.source)
 
     def _table_is_allowed(self, table):
-        if table is self.testcase_table:
+        if table is self.testcase_table and self.source.endswith('resource'):  # Let's allow .robot files to have tests
             raise DataError("Resource file '%s' cannot contain tests or "
                             "tasks." % self.source)
         return True
@@ -536,8 +536,10 @@ class _WithSettings(object):
     current_setter = None
 
     def get_setter(self, name):
+        # print(f"DEBUG: model.py _WithSettings get_setter ENTER name={name} current_setter={self.current_setter}")
         if name.startswith('#') or name.startswith('...'):
             if self.current_setter is not None:
+                # print(f"DEBUG: model.py _WithSettings get_setter name={name} RETURNING on # or ... current_setter={self.current_setter}")
                 return self.current_setter
         elif name.endswith(':'):
             name = name[:-1]
@@ -697,6 +699,7 @@ class TestCaseFileSettingTable(_SettingTable):
                                                    'Task Timeout' if self.tasks else 'Test Timeout',  'Library',
         """
         _SettingTable.__init__(self, parent, tasks)
+        # print(f"DEBUG: model.py TestCaseFileSettings INIT ENTER language={language} aliases={self._aliases}")
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
@@ -988,7 +991,7 @@ class TestCase(_WithSteps, _WithSettings):
     def __init__(self, parent, name, language=None):
         self.parent = parent
         self.name = name
-        self.language = language
+        self.language = language or self.parent.language
         # print(f"DEBUG: model.py TestCase INIT language={self.language}")
         if self.language:
             self._aliases = lang.get_settings_for(language, ['Arguments', 'Documentation', 'Template',

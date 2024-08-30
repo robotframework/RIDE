@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 import os
+import re
+
 import pytest
 import unittest
 import wx
@@ -44,6 +46,23 @@ app = wx.App()
 nb_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | aui.AUI_NB_TAB_EXTERNAL_MOVE \
            | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
 MYTESTOVERRIDE = 'My Overriding Test Teardown'
+
+LANGUAGES = [('Bulgarian', 'bg'), ('Bosnian', 'bs'),
+             ('Czech', 'cs'), ('German', 'de'),
+             ('English', 'en'), ('Spanish', 'es'),
+             ('Finnish', 'fi'), ('French', 'fr'),
+             ('Hindi', 'hi'), ('Italian', 'it'),
+             ('Japanese', 'ja'), # Since RF 7.0.1
+             # Not available yet: ('Korean', 'ko'),  # Future RF after 7.0.1
+             ('Dutch', 'nl'), ('Polish', 'pl'),
+             ('Portuguese', 'pt'),
+             ('Brazilian Portuguese', 'pt-BR'),
+             ('Romanian', 'ro'), ('Russian', 'ru'),
+             ('Swedish', 'sv'), ('Thai', 'th'),
+             ('Turkish', 'tr'), ('Ukrainian', 'uk'),
+             ('Vietnamese', 'vi'),
+             ('Chinese Simplified', 'zh-CN'),
+             ('Chinese Traditional', 'zh-TW')]
 
 
 class MainFrame(wx.Frame):
@@ -574,6 +593,242 @@ class TestEditorCommands(unittest.TestCase):
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
         self.app.MainLoop()
+
+
+class TestLanguageFunctions(unittest.TestCase):
+
+    def setUp(self):
+        self.app = MyApp()
+        settings = self.app.settings
+        try:
+            self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.shared_mem = shared_memory.ShareableList(name="language")
+        self.frame = self.app.frame
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
+        self.app.project = Project(self.app.namespace, self.app.settings)
+        self.plugin = texteditor.TextEditorPlugin(self.app)
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
+                                                                texteditor.DataValidationHandler(self.plugin, lang='en'))
+        self.plugin.enable()
+        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.notebook = self.app.book
+        self.app.tree.set_editor(self.plugin._editor_component)
+        self.app.tree.populate(self.app.project)
+        self.source = self.app.tree.controller
+        self.plugin._open_tree_selection_in_editor()
+        self.app.frame.SetStatusText("File:" + self.app.project.data.source)
+        # Uncomment next line (and MainLoop in tests) if you want to see the app
+        self.frame.Show()
+
+    def tearDown(self):
+        self.plugin.unsubscribe_all()
+        PUBLISHER.unsubscribe_all()
+        self.app.project.close()
+        wx.CallAfter(self.app.ExitMainLoop)
+        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # wx.CallAfter(wx.Exit)
+        self.shared_mem.shm.close()
+        self.shared_mem.shm.unlink()
+        self.app.Destroy()
+        self.app = None
+
+    def set_language(self, lang: str):
+        assert lang is not None
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        if "Language:" in fulltext:
+            new_text = re.sub(r"Language: .*", f"Language: {lang}", fulltext)
+        else:
+            new_text = f"Language: {lang}\n\n{fulltext}"
+        self.plugin._editor_component.source_editor.set_text(new_text)
+
+    def test_read_language(self):
+        self.plugin._open()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        language = texteditor.read_language(content.encode())
+        assert language is None
+
+        self.set_language('Klingon')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        language = texteditor.read_language(fulltext.encode())
+        assert language == "Klingon"
+
+        self.set_language('Chinese Simplified')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        language = texteditor.read_language(fulltext.encode())
+        assert language == "Chinese Simplified"
+
+        self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        language = texteditor.read_language(fulltext.encode())
+        assert language == "English"
+
+        # print(f"DEBUG: FINAL fulltext:\n{fulltext}\n"
+        #       f"Language is: {language}")
+        self.plugin._editor_component.source_editor.set_text(fulltext)
+        self.plugin._editor_component.source_editor.Refresh()
+        # print(f"DEBUG: fulltext:\n{fulltext}")
+        # assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + spaces + 'last text\n'
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+    def test_get_rf_lang_code(self):
+        lang = ['en']
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'En'
+
+        lang = 'pt'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'Pt'
+
+        lang = 'pt-BR'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'PtBr'
+
+        lang = ['Zh-cn']
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'ZhCn'
+
+        lang = 'zh-tw'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'ZhTw'
+
+    def test_obtain_language(self):
+        self.plugin._open()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        for lang in LANGUAGES:
+            self.set_language(lang[0])
+            fulltext = self.plugin._editor_component.source_editor.GetText()
+            result = texteditor.obtain_language('', fulltext.encode())
+            code = texteditor.get_rf_lang_code(lang[1])
+            assert result == [code]
+
+        with pytest.raises(ValueError, match="No language with name 'Klingon' found."):
+            self.set_language('Klingon')
+            fulltext = self.plugin._editor_component.source_editor.GetText()
+            result = texteditor.obtain_language('', fulltext.encode())
+            print(f"This {result=} is not reached.")
+
+    def test_transform_doc_language_no_transform(self):
+        self.plugin._open()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['klingon'], ['klingon'], fulltext.encode())
+        # print(f"DEBUG: {result=} == {fulltext=}.")
+        assert result == fulltext.encode()
+
+        # self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['klingon'], ['english'], fulltext.encode())
+        assert result == fulltext.encode()
+
+        # self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['english'], ['klingon'], fulltext.encode())
+        assert result == fulltext.encode()
+
+    def test_transform_doc_language_in_error(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_IT, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        self.set_language('Klingon')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language('Klingon', 'Italian', fulltext,
+                                                   ("ERROR",
+                                                    "Token(ERROR, 'Language: Klingon', 1, 0, "
+                                                    "\"Invalid language configuration: Language 'Klingon' not found"
+                                                    " nor importable as a language module.\")"))
+        finaltext = re.sub('Language: .*', fr'Language: Italian  # Klingon', fulltext, count=1)
+
+        # print(f"DEBUG: {result=} \n {finaltext=}.")
+        assert result == finaltext
+
+    def test_transform_doc_language_spanish(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        # We try Spanish, because No Operation remains unchanged ;)
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Spanish'], fulltext)
+
+        # DEBUG: Write to file
+        with open(datafilereader.VALID_LANG_ES + ".temporary", "w") as fp:
+            fp.writelines(result)
+
+        with open(datafilereader.VALID_LANG_ES, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        print(f"DEBUG: They should be equal:\n"
+              f" {result=}\n"
+              f"{content=}")
+        assert result == content
+
+    def test_transform_doc_language_portuguese(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Portuguese'], fulltext)
+
+        # DEBUG: Write to file
+        with open(datafilereader.VALID_LANG_PT + ".temporary", "w") as fp:
+            fp.writelines(result)
+
+        with open(datafilereader.VALID_LANG_PT, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        print(f"DEBUG: They should be equal:\n"
+              f" {result=}\n"
+              f"{content=}")
+        assert result == content
+
+    """
+    def test_transform_doc_language_generate(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        # self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Japanese'], fulltext)
+        print(f"DEBUG: This should be Japanese:\n"
+              f"{result=}")
+        with open(datafilereader.VALID_LANG_JA, "w") as fp:
+            fp.writelines(result)
+    """
 
 
 if __name__ == '__main__':

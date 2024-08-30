@@ -15,6 +15,8 @@
 
 import re
 
+from multiprocessing import shared_memory
+from robotide.lib.compat.parsing.language import get_headers_for
 from .aligners import FirstColumnAligner, ColumnAligner, NullAligner
 from .dataextractor import DataExtractor
 from .rowsplitter import RowSplitter
@@ -26,9 +28,17 @@ class _DataFileFormatter(object):
     language = None
 
     def __init__(self, column_count, split_multiline_doc=True, language=None):
-        if language:
-            self.language = language
+        try:
+            if not language:
+                set_lang = shared_memory.ShareableList(name="language")
+                self.language = [set_lang[0]]
+            else:
+                self.language = language
+        except AttributeError:
+            self.language = ['en']
         self._split_multiline_doc = split_multiline_doc
+        # print(f"DEBUG: formatters.py _DataFileFormatter INIT call _splitter  {self._split_multiline_doc=}"
+        #       f" {self.language=}")
         self._splitter = RowSplitter(column_count, self._split_multiline_doc, self.language)
         self._column_count = column_count
         self._extractor = DataExtractor(self._want_names_on_first_content_row)
@@ -110,9 +120,6 @@ class TsvFormatter(_DataFileFormatter):
     def _pad(self, row):
         row = [cell.replace('\n', ' ') for cell in row]
         return row + [''] * (self._column_count - len(row))
-
-
-from robotide.lib.compat.parsing.language import get_headers_for
 
 
 def translate_header(header: str, language=None) -> str:
