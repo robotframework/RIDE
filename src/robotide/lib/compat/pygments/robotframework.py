@@ -101,9 +101,9 @@ class RobotFrameworkLexer(Lexer):
         set_lang = shared_memory.ShareableList(name="language")
         if not self.language:
             # DEBUG self.new_lang = Language.from_name('en')
-            self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+            self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
         else:
-            self.new_lang = Language.from_name(self.language[0].replace('_','-'))  # DEBUG: We consider a single language
+            self.new_lang = Language.from_name(self.language[0].replace('_', '-'))  # DEBUG: We consider a single language
         # print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
         #      f"options['doc language']={options['doc language']}\n"
         #      f"self.new_lang={self.new_lang.code.replace('-','_')}")
@@ -113,8 +113,8 @@ class RobotFrameworkLexer(Lexer):
         var_tokenizer = VariableTokenizer()
         index = 0
         for row in text.splitlines():
-            for value, token in row_tokenizer.tokenize(row):
-                for value, token in var_tokenizer.tokenize(value, token):
+            for val, tokn in row_tokenizer.tokenize(row):
+                for value, token in var_tokenizer.tokenize(val, tokn):
                     if value:
                         yield index, token, str(value)
                         index += len(value)
@@ -148,10 +148,10 @@ class RowTokenizer:
     new_lang = None
 
     def __init__(self, new_lang):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
         self._table = UnknownTable()
@@ -233,8 +233,8 @@ class Tokenizer:
     new_lang = None
 
     def __init__(self, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
                 self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
@@ -282,12 +282,14 @@ class Setting(Tokenizer):
 
     def __init__(self, template_setter=None, new_lang=None):
         self._template_setter = template_setter
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
                 self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         # print(f"DEBUG: robotframework.py Setting self.new_lang={self.new_lang}\n")
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings,'suitesetup'),
@@ -350,12 +352,14 @@ class ImportSetting(Tokenizer):
     new_lang = None
 
     def __init__(self, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._import_settings = (get_key_by_value(self.normalized_settings, 'library'),
                                  get_key_by_value(self.normalized_settings, 'resource'),
@@ -372,12 +376,14 @@ class TestCaseSetting(Setting):
     """
 
     def __init__(self, template_setter=None, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings, 'setup'),
                                   get_key_by_value(self.normalized_settings, 'precondition'),  # obsolete
@@ -417,12 +423,14 @@ class KeywordSetting(TestCaseSetting):
     """
 
     def __init__(self, template_setter=None, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings, 'setup'),
                                   get_key_by_value(self.normalized_settings, 'precondition'),  # obsolete
@@ -453,12 +461,14 @@ class KeywordCall(Tokenizer):
     new_lang = None
 
     def __init__(self, support_assign=True, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         # print(f"DEBUG: robotframework.py KeywordCall __init__ lang={self.new_lang}")
         Tokenizer.__init__(self, new_lang=self.new_lang)
         self._keyword_found = not support_assign
@@ -482,28 +492,31 @@ class GherkinTokenizer(object):
     new_lang = None
 
     def __init__(self, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
-        self.normalized_bdd_prefixes = normalize_pipe_list(list(self.new_lang.bdd_prefixes))
-        # print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
-        #       f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
-        #       f"PATTERN='^({self.normalized_bdd_prefixes}) '"
-        #       f"new_lang={self.new_lang}")
-        self._gherkin_prefix = re.compile(f'^({self.normalized_bdd_prefixes}) ', re.IGNORECASE)
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
+        self.normalized_bdd_prefixes = normalize_pipe_list(list(self.new_lang.bdd_prefixes), spaces=False)
+        print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
+              f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
+              f"PATTERN='^({self.normalized_bdd_prefixes}) '"
+              f"new_lang={self.new_lang}")
+        self._gherkin_prefix = re.compile(fr'^({self.normalized_bdd_prefixes}) ', re.IGNORECASE)
 
     def tokenize(self, value, token):
-        # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize ENTER self._gherkin_prefix={self._gherkin_prefix}:"
-        #       f"\nvalue={value} token={token}")
+        print(f"DEBUG: robotframework.py GherkinTokenizer tokenize ENTER self._gherkin_prefix={self._gherkin_prefix}:"
+              f"\nvalue={value} token={token}")
         match = self._gherkin_prefix.match(value)
         if not match:
             # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize NO MATCH value={value} token={token}")
             return [(value, token)]
         end = match.end()
-        # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize RETURN MATCH GHERKIN value={value[:end]} rest={value[end:]}")
+        # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize RETURN MATCH GHERKIN value={value[:end]}
+        # rest={value[end:]}")
         return [(value[:end], GHERKIN), (value[end:], token)]
 
 
@@ -516,11 +529,14 @@ class ForLoop(Tokenizer):
     new_lang = None
 
     def __init__(self, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
-                self.new_lang = Language.from_name('en')
+        if self.new_lang is None:
+            if new_lang is None:
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         Tokenizer.__init__(self, new_lang=self.new_lang)
         self._in_arguments = False
 
@@ -536,12 +552,14 @@ class _Table:
     new_lang = None
 
     def __init__(self, prev_tokenizer=None, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         self._tokenizer = self._tokenizer_class()
         self._prev_tokenizer = prev_tokenizer
         self._prev_values_on_row = []
@@ -558,7 +576,8 @@ class _Table:
         _ = index
         return value == '...' and all(self._is_empty(t) for t in self._prev_values_on_row)
 
-    def _is_empty(self, value):
+    @staticmethod
+    def _is_empty(value):
         return value in ('', '\\')
 
     def _tokenize(self, value, index):
@@ -593,12 +612,14 @@ class SettingTable(_Table):
 
     def __init__(self, template_setter, prev_tokenizer=None, new_lang=None):
         self._template_setter = template_setter
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         _Table.__init__(self, prev_tokenizer, new_lang=self.new_lang)
         # print(f"DEBUG: robotframework.py SettingTable self.normalized_settings={self.normalized_settings}")
@@ -636,12 +657,14 @@ class TestCaseTable(_Table):
     new_lang = None
 
     def __init__(self, prev_tokenizer=None, new_lang=None):
-        if not self.new_lang:
-            if not new_lang:
+        if self.new_lang is None:
+            if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang
+        if self.new_lang is None:
+            self.new_lang = Language.from_name('En')
         # print(f"DEBUG: robotframework.py TestCaseTable __init__ self.new_lang={self.new_lang}")
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         _Table.__init__(self, prev_tokenizer)
@@ -685,14 +708,14 @@ class TestCaseTable(_Table):
 
     def _is_template(self, value):
         return normalize_lc(value) in (f"[{get_key_by_value(self.normalized_settings, 'template')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'testsetup')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'tasksetup')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'testteardown')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'taskteardown')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'testtemplate')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'tasktemplate')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'setup')}]",
-                                    f"[{get_key_by_value(self.normalized_settings, 'teardown')}]")
+                                       f"[{get_key_by_value(self.normalized_settings, 'testsetup')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'tasksetup')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'testteardown')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'taskteardown')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'testtemplate')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'tasktemplate')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'setup')}]",
+                                       f"[{get_key_by_value(self.normalized_settings, 'teardown')}]")
 
     @staticmethod
     def _is_for_loop(value):
@@ -750,8 +773,7 @@ class VariableSplitter:
             self.end += len(self._list_and_dict_variable_index_chars)
 
     def _has_list_or_dict_variable_index(self):
-        return self._list_and_dict_variable_index_chars\
-        and self._list_and_dict_variable_index_chars[-1] == ']'
+        return self._list_and_dict_variable_index_chars and self._list_and_dict_variable_index_chars[-1] == ']'
 
     def _split(self, string):
         start_index, max_index = self._find_variable(string)
@@ -768,7 +790,7 @@ class VariableSplitter:
                 self._state(char, index)
             except StopIteration:
                 return
-            if index  == max_index and not self._scanning_list_variable_index():
+            if index == max_index and not self._scanning_list_variable_index():
                 return
 
     def _scanning_list_variable_index(self):
@@ -795,10 +817,10 @@ class VariableSplitter:
         return self._find_start_index(string, index+2, end)
 
     def _start_index_is_ok(self, string, index):
-        return string[index] in self._identifiers\
-        and not self._is_escaped(string, index)
+        return string[index] in self._identifiers and not self._is_escaped(string, index)
 
-    def _is_escaped(self, string, index):
+    @staticmethod
+    def _is_escaped(string, index):
         escaped = False
         while index > 0 and string[index-1] == '\\':
             index -= 1
@@ -817,7 +839,7 @@ class VariableSplitter:
             self._state = self._internal_variable_start_state
 
     def _is_list_or_dict_variable(self):
-        return self._variable_chars[0] in ('@','&')
+        return self._variable_chars[0] in ('@', '&')
 
     def _internal_variable_start_state(self, char, index):
         self._state = self._variable_state

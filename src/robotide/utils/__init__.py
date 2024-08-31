@@ -165,9 +165,11 @@ def _replacer(char, match):
     return match.group()
 
 
-def normalize_lc(string, remove=''):
+def normalize_lc(string, remove='', spaces=True):
     string = string.lower()
-    for char in remove + ' ':
+    if spaces:
+        remove = remove + ' '
+    for char in remove:
         if char in string:
             string = string.replace(char, '')
     return string
@@ -183,6 +185,7 @@ def normalize_dict(table: dict) -> dict:
     return ndict
 
 
-def normalize_pipe_list(data: list) -> str:
+def normalize_pipe_list(data: list, spaces: bool = True) -> str:
     pipe_list = "|".join(data)
-    return normalize_lc(pipe_list)
+    return normalize_lc(pipe_list, spaces=spaces)
+
