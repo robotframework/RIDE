@@ -226,12 +226,14 @@ class Namespace(object):
         from ..controller.cellinfo import UPPERCASE_KWS
         casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in UPPERCASE_KWS)
         kwds = self._retriever.get_keywords_cached(datafile, self._context_factory, caseless=not casesensitive)
+        # print(f"DEBUG: namespace.py Namespace find_keyword will GET kw_name=={kw_name} casesensitive={casesensitive}")
         return kwds.get(kw_name)
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
+        # print(f"DEBUG: namespace.py Namespace  keyword_details ENTER will look for name=={name}")
         kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
 
@@ -539,6 +541,7 @@ class DatafileRetriever(object):
             words.extend(self.default_kws)
             values = _Keywords(words, caseless=caseless)
             self.keyword_cache.put(datafile.source, values)
+        # print(f"DEBUG: namespace.py DatafileRetrieve get_keywords_cached returning cached keywords values=={values}")
         return values
 
     def _get_user_keywords_from(self, datafile):
@@ -600,8 +603,8 @@ class _Keywords(object):
                 self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
-        self.normalized_bdd_prefixes = utils.normalize_pipe_list(list(self.new_lang.bdd_prefixes))
-        self.gherkin_prefix = re.compile(f'^\\s*({self.normalized_bdd_prefixes})\\s*(.*)', re.IGNORECASE)
+        self.normalized_bdd_prefixes = utils.normalize_pipe_list(list(self.new_lang.bdd_prefixes), spaces=False)
+        self.gherkin_prefix = re.compile(fr'^({self.normalized_bdd_prefixes}) (.*)', re.IGNORECASE)
         self.keywords = robotapi.NormalizedDict(ignore=['_'], caseless=caseless)
         self.embedded_keywords = {}
         self._add_keywords(keywords)

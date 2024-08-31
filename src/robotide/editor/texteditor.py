@@ -1527,6 +1527,9 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             self.mark_file_dirty(self.source_editor.GetModify())
+            # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}"
+            #       f"\n KEY=DELETE DIRTY:{self.dirty}")
+            event.Skip()
             return
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
@@ -2334,10 +2337,12 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
 
     def show_kw_doc(self, coords=None):
+        # print(f"DEBUG: TextEditor RobotDataEditor show_kw_doc ENTER self.AutoCompActive()=={self.AutoCompActive()}")
         if self.AutoCompActive():
             selected = [self.AutoCompGetCurrentText()]
         else:
             selected = self.get_selected_or_near_text(keep_cursor_pos=True)
+        # print(f"DEBUG: TextEditor RobotDataEditor show_kw_doc selected=={selected}")
         if selected:
             for kw in selected:
                 self._show_keyword_details(kw, coords)
