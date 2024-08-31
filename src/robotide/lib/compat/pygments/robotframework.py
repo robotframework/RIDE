@@ -501,15 +501,15 @@ class GherkinTokenizer(object):
         if self.new_lang is None:
             self.new_lang = Language.from_name('En')
         self.normalized_bdd_prefixes = normalize_pipe_list(list(self.new_lang.bdd_prefixes), spaces=False)
-        print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
-              f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
-              f"PATTERN='^({self.normalized_bdd_prefixes}) '"
-              f"new_lang={self.new_lang}")
+        # print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
+        #       f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
+        #       f"PATTERN='^({self.normalized_bdd_prefixes}) '"
+        #       f"new_lang={self.new_lang}")
         self._gherkin_prefix = re.compile(fr'^({self.normalized_bdd_prefixes}) ', re.IGNORECASE)
 
     def tokenize(self, value, token):
-        print(f"DEBUG: robotframework.py GherkinTokenizer tokenize ENTER self._gherkin_prefix={self._gherkin_prefix}:"
-              f"\nvalue={value} token={token}")
+        # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize ENTER self._gherkin_prefix={self._gherkin_prefix}:"
+        #       f"\nvalue={value} token={token}")
         match = self._gherkin_prefix.match(value)
         if not match:
             # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize NO MATCH value={value} token={token}")

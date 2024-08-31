@@ -4,7 +4,7 @@ Language: Portuguese
 # A blank line
 
 *** Definições ***
-Documentação     This test data file is used in *RobotIDE* _integration_ tests.
+Documentação      This test data file is used in *RobotIDE* _integration_ tests.
 ...               1-This is another line of the documentation
 ...               2-A continued line of documentation
 Inicialização de Suíte    Run Keywords    Log To Console    Suite Setup
@@ -15,7 +15,7 @@ Finalização de Suíte    My Suite Teardown    ${scalar}    @{LIST}
 Inicialização de Teste    My Test Setup
 Finalização de Teste    My Overriding Test Teardown
 Etiquetas de Testes    new_tag    ride    regeression    # Comment on Tags
-Metadados          My Meta    data
+Metadados         My Meta    data
 Biblioteca        seleniumlibrary    # Purposefully wrong case | |
 Biblioteca        Process    # This is a comment
 Recurso           en/full_en.resource
