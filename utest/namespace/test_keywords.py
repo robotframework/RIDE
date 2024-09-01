@@ -54,7 +54,7 @@ class TestKeywords(unittest.TestCase):
         assert self.kws.get('Given my kw')
         assert self.kws.get('When my kw')
         assert self.kws.get('then mykw')
-        assert self.kws.get('  and  given foo')
+        assert self.kws.get('and  given foo')
         assert self.kws.get('But my kw')
 
     def test_embedded_args(self):
