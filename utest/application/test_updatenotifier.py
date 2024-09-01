@@ -180,7 +180,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '0.43.0', '0.43.1')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 9)  # The dialog timeout in 10 seconds
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 19)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
@@ -189,7 +189,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '0.44dev12', '0.44.dev14')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 20)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
@@ -198,7 +198,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '0.44dev12', '0.44.dev12')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 20)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 

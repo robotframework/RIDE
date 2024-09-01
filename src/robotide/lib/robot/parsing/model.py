@@ -991,7 +991,7 @@ class TestCase(_WithSteps, _WithSettings):
     def __init__(self, parent, name, language=None):
         self.parent = parent
         self.name = name
-        self.language = language or self.parent.language
+        self.language = language  # or self.parent.language
         # print(f"DEBUG: model.py TestCase INIT language={self.language}")
         if self.language:
             self._aliases = lang.get_settings_for(language, ['Arguments', 'Documentation', 'Template',
