@@ -14,22 +14,18 @@ Biblioteca    Process
 Recurso       full_pt.resource
 Variável      full_pt.yaml
 Variável      full_pt.json
-Variável      full_pt.py
-# Comment inside settings block, next is empty line followed by documention
+Variável      full_pt.py    # Comment inside settings block, next is empty line followed by documention
 
 Documentação    This is the documentation
 ...    A continued line of documentation
 
-Metadados    Nome    Value
-# Comment inside settings block after metadata, next is empty line followed by suite setup
+Metadados    Nome    Value    # Comment inside settings block after metadata, next is empty line followed by suite setup
 
 Inicialização de Suíte      No Operation
-Finalização de Suíte        No Operation
-# Comment inside settings block after suite teardown, next is empty line followed by variables section
+Finalização de Suíte        No Operation    # Comment inside settings block after suite teardown, next is empty line followed by variables section
 
 *** Variáveis ***
-${myvar}    123
-# Comment inside variables, next is empty line followed by a comments section
+${myvar}    123    # Comment inside variables, next is empty line followed by a comments section
 
 *** Comentários ***
 This is a comments block

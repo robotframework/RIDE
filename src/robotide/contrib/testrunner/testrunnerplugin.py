@@ -116,6 +116,7 @@ STYLE_STDERR = 2
 STYLE_PASS = 1
 STYLE_SKIP = 3
 STYLE_FAIL = 4
+STYLE_LINK = 5
 FILE_MANAGER = 'file manager'
 
 ATEXIT_LOCK = threading.RLock()
@@ -634,6 +635,8 @@ class TestRunnerPlugin(Plugin):
                     style = STYLE_PASS
                 elif item[1] == 'YELLOW':
                     style = STYLE_SKIP
+                elif item[1] == 'BLUE':
+                    style = STYLE_LINK
                 elif item[1] is None:
                     style = STYLE_DEFAULT
                 if style:
@@ -660,7 +663,9 @@ class TestRunnerPlugin(Plugin):
             # print(f"{str(txt[idx])}")
             if txt[idx] == 27:  # .startswith('\033[32m'):
                 color = False
-                # print(f"DEBUG: parse_colors got ESC, {txt[idx+1:idx+5]}")
+                if txt[idx + 1:idx+5] == b']8;;' and txt[idx+6] != 27:  # New file:// URI in RF 7.1, Start
+                    color = True
+                    self.store_color(idx, 'BLUE')
                 if txt[idx + 1:idx+5] == b'[34m':
                     color = True
                     self.store_color(idx, 'BLUE')
@@ -681,6 +686,12 @@ class TestRunnerPlugin(Plugin):
                     # print(f"DEBUG: parse_colors reset to NORMAL")
                     self.store_color(idx, None)
                     txt = txt[:idx] + txt[idx+4:]
+                elif txt[idx + 1] == 92:
+                    self.store_color(idx, None)
+                    txt = txt[:idx] + txt[idx+2:]
+                elif txt[idx + 1:idx + 7] == b']8;;\x1b\\':  # New file:// URI in RF 7.1, End
+                    self.store_color(idx, None)
+                    txt = txt[:idx] + txt[idx + 7:]
                 elif color:
                     txt = txt[:idx] + txt[idx+5:]
                 if idx >= len(txt):
@@ -1127,7 +1138,7 @@ class ProgressBar(wx.Panel):
         self._gauge = wx.Gauge(self, size=(100, 15), style=wx.GA_HORIZONTAL)
         self._label = Label(self)
         self._sizer.Add(self._label, 1, wx.EXPAND | wx.LEFT, 10)
-        self._sizer.Add(self._gauge, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 15)
+        self._sizer.Add(self._gauge, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 20)
         self._sizer.Layout()
         self.SetSizer(self._sizer)
         self._gauge.Hide()
@@ -1305,6 +1316,7 @@ class OutputStylizer(object):
         self.fail_color = self.settings.get('fail color', '#FF8E8E')
         self.pass_color = self.settings.get('pass color', '#9FCC9F')
         self.skip_color = self.settings.get('skip color', 'yellow')
+        self.link_color = self.settings.get('link color', '#1E1EFF')
 
         default_style = self._get_style_string(
             fore=self.settings.get('foreground', 'black'), back=background,
@@ -1315,20 +1327,27 @@ class OutputStylizer(object):
         fail_style = self._get_style_string(fore=self.fail_color, back=background, size=font_size, face=font_face)
         pass_style = self._get_style_string(fore=self.pass_color, back=background, size=font_size, face=font_face)
         skip_style = self._get_style_string(fore=self.skip_color, back=background, size=font_size, face=font_face)
+        link_style = self._get_style_string(fore=self.link_color, back=background, size=font_size, face=font_face,
+                                            bold='bold')
 
         self.editor.StyleSetSpec(STYLE_DEFAULT, default_style)
         self.editor.StyleSetSpec(STYLE_STDERR, error_style)
         self.editor.StyleSetSpec(STYLE_FAIL, fail_style)
         self.editor.StyleSetSpec(STYLE_PASS, pass_style)
         self.editor.StyleSetSpec(STYLE_SKIP, skip_style)
+        self.editor.StyleSetSpec(STYLE_LINK, link_style)
         self.editor.StyleSetSpec(7, error_style)
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
     @staticmethod
-    def _get_style_string(back, fore, size, face):
-        return ','.join('%s:%s' % (name, value)
-                        for name, value in locals().items() if value)
+    def _get_style_string(back, fore, size, face, bold=None):
+        # print(f"DEBUG: testrunnerplugin.py get_style_string locals={locals().items()}")
+        style = ','.join('%s:%s' % (name, value)
+                        for name, value in locals().items() if value and name!='bold')
+        if bold is not None:
+            style += ',bold'
+        return style
 
     def _ensure_default_font_is_valid(self):
         """Checks if default font is installed"""

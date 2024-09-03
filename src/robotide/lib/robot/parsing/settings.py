@@ -477,5 +477,5 @@ class ImportList(_DataList):
 
 class MetadataList(_DataList):
 
-    def populate(self, name, value, comment):
+    def populate(self, name, value, comment=''):
         self._add(Metadata(self._parent, name, value, comment, joined=True))
