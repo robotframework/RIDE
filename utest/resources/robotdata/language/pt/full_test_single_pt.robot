@@ -14,26 +14,24 @@ Biblioteca    Process    # Isto é um comentário
 Variável      full_pt.yaml    # Isto é um comentário
 Variável      full_pt.json    # Isto é um comentário
 Variável      full_pt.py    # Isto é um comentário
+Recurso       full_pt.resource
 # Comment inside settings block, next is empty line followed by documentation
 
 Documentação    This is the documentation
 ...    A continued line of documentation    # Isto é um comentário
 
-Metadados    Nome    Valor    # Isto é um comentário
-# Comment inside settings block after metadata, next is empty line followed by suite setup
+Metadados    Nome    Valor    # Isto é um comentário # Comment inside settings block after metadata, next is empty line followed by suite setup
 
 Inicialização de Suíte      No Operation    # Isto é um comentário
-Finalização de Suíte        No Operation    # Isto é um comentário
-# Comment inside settings block after suite teardown, next is empty line followed by variables section
+Finalização de Suíte        No Operation    # Isto é um comentário # Comment inside settings block after suite teardown, next is empty line followed by variables section
 
 *** Comentários ***
 This is the second comments block after settings
-Second line of comments    # Isto é um comentário
+Second line of comments    # Isto é um comentário 
 # Comment inside second comments block
 
 *** Variáveis ***
-${myvar}    123    # Isto é um comentário
-# Comment inside variables, next is empty line followed by a comments section
+${myvar}    123    # Isto é um comentário # Comment inside variables, next is empty line followed by a comments section
 
 *** Comentários ***
 This is the third comments block after variables
