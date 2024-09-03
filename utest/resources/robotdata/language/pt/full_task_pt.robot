@@ -12,7 +12,7 @@ Documentação      This is the documentation
 ...               A continued line of documentation
 Inicialização de Suíte    No Operation
 Finalização de Suíte    No Operation
-Metadados         Nome    Value
+Metadados         Nome    Value    # A comment
 Biblioteca        Process
 Recurso           full_pt.resource
 Variável          full_pt.yaml

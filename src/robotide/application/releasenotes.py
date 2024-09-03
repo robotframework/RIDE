@@ -197,6 +197,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added color to Test Runner Console Log final output, report and log since RF v7.1rc1.</li>
 <li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
 <li>Added Korean language support for UI, experimental.</li>
 <li>Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.</li>
@@ -326,7 +327,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 31/August/2024.</p>
+<p>RIDE {VERSION} was released on 03/September/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

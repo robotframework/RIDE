@@ -24,6 +24,7 @@ ${myvar}    123    # This is a comment
 *** Comments ***
 This is a comments block
 Second line of comments
+# Comment inside second comments block
 
 *** Test Cases ***
 first test
