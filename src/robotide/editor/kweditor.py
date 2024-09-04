@@ -861,7 +861,6 @@ class KeywordEditor(GridEditor, Plugin):
             skip = self._call_alt_function(event, keycode)
         else:
             skip = self._call_direct_function(event, keycode)
-        self.SetFocus()
         if skip:
             event.Skip()
 
@@ -941,6 +940,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.on_move_rows_up()
         else:
             self.on_move_rows_down()
+        self.SetFocus()
 
     def _move_grid_cursor(self, event, keycode):
         self.DisableCellEditControl()

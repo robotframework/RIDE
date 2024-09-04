@@ -1106,7 +1106,7 @@ class SourceEditor(wx.Panel):
         :param event: Not used
         :return:
         """
-        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+        if not (self.is_focused() and self.plugin.is_focused()):  # DEBUG was typing text when at Grid Editor
             return
         __ = event
         if self._showing_list:

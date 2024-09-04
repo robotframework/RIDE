@@ -36,7 +36,7 @@ class RowSplitter(object):
                 self._language = [set_lang[0]]
             else:
                 self._language = language
-        except AttributeError:
+        except (AttributeError, FileNotFoundError):
             self._language = ['en']
         self._table_type = None
 
