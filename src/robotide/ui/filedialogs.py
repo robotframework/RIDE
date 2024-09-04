@@ -24,6 +24,7 @@ from multiprocessing import shared_memory
 from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
                                        CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
                                        SetFileFormatRecuresively)
+from ..robotapi import ROBOT_VERSION
 from ..preferences.general import read_languages, set_colors
 from .preferences_dialogs import boolean_editor, StringChoiceEditor
 from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
@@ -129,9 +130,13 @@ class _CreationDialog(RIDEDialog):
         languages = read_languages()
         if languages[0] != '':
             languages.insert(0, '')
-        # Remove non-existing language, Korean
+        # Remove non-existing languages
         for value in languages:
-            if value == 'Korean':
+            if ROBOT_VERSION < (6, 1, 0) and value == 'Vietnamese':
+                languages.remove(value)
+            if ROBOT_VERSION < (7, 0, 1) and value == 'Japanese':
+                languages.remove(value)
+            if ROBOT_VERSION < (7, 1, ) and value == 'Korean':
                 languages.remove(value)
         if isinstance(lang, list) and len(lang) > 0:
             _settings[DOC_LANGUAGE] = lang[0]
@@ -253,7 +258,7 @@ class _CreationDialog(RIDEDialog):
                 set_lang[0] = 'en'
                 return ['en']
         else:
-            return [set_lang[0]]
+            return ['en']  # [set_lang[0]]
         return [mlang.name]
 
     def _get_extension(self):
