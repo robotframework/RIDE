@@ -197,6 +197,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed validation of multiple arguments with default values in Grid Editor.</li>
 <li>Added color to Test Runner Console Log final output, report and log since RF v7.1rc1.</li>
 <li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
 <li>Added Korean language support for UI, experimental.</li>

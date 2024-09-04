@@ -29,6 +29,7 @@ class Test(unittest.TestCase):
             "${arg}|${arg2}",
             "${arg}=",
             "${arg}=def val",
+            "${job_id}=val | ${json}=${EMPTY}",
             "${a} | ${b}=d | ${c}=\\| | ${d}=",
             "@{list}",
             "${a} | ${b} | @{f}",

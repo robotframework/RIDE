@@ -22,6 +22,7 @@ The color of the caret is the same as `setting` and will be adjusted for better 
 
 === Fixed
 
+- Fixed validation of multiple arguments with default values in Grid Editor.
 - Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.
 - Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.
 - Fixed delete variable from Test Suite settings remaining in Project Explorer.

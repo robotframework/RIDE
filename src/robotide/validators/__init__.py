@@ -96,10 +96,14 @@ class ArgumentsValidator(_AbstractValidator):
 
     @staticmethod
     def _get_type(arg):
-        if robotapi.is_scalar_var(arg):
-            return ArgumentTypes.SCALAR
-        elif robotapi.is_scalar_var(arg.split("=")[0]):
+        if '=' in arg and len(arg.split("=")) > 1:
+            default_arg = arg.split("=")[0]
+        else:
+            default_arg = False
+        if robotapi.is_scalar_var(default_arg):
             return ArgumentTypes.DEFAULT
+        elif robotapi.is_scalar_var(arg):
+            return ArgumentTypes.SCALAR
         elif arg == '@{}':
             return ArgumentTypes.NAMED
         elif robotapi.is_list_var(arg):
