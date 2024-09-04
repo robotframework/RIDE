@@ -1,4 +1,4 @@
-setuptools >= 70.0.0
+setuptools>=70.0.0
 mockito
 invoke
 requests>=2.32.2 # not directly required, pinned by Snyk to avoid a vulnerability
