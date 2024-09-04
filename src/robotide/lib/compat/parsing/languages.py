@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import inspect
+import re
 from itertools import chain
 from pathlib import Path
 from typing import cast, Iterable, Iterator, Union
@@ -52,11 +53,19 @@ class Languages:
         self.languages: 'list[Language]' = []
         self.headers: 'dict[str, str]' = {}
         self.settings: 'dict[str, str]' = {}
-        self.bdd_prefixes:  'set[str]' = set()
+        self.bdd_prefixes: 'set[str]' = set()
         self.true_strings: 'set[str]' = {'True', '1'}
         self.false_strings: 'set[str]' = {'False', '0', 'None', ''}
         for lang in self._get_languages(languages, add_english):
             self._add_language(lang)
+        self._bdd_prefix_regexp = None
+
+    @property
+    def bdd_prefix_regexp(self):
+        if not self._bdd_prefix_regexp:
+            prefixes = '|'.join(self.bdd_prefixes).replace(' ', r'\s').lower()
+            self._bdd_prefix_regexp = re.compile(rf'({prefixes})\s', re.IGNORECASE)
+        return self._bdd_prefix_regexp
 
     def reset(self, languages: Iterable[LanguageLike] = (), add_english: bool = True):
         """Resets the instance to the given languages."""
@@ -87,6 +96,7 @@ class Languages:
                     raise DataError(f'{err1} {err2}') from None
         for lang in languages:
             self._add_language(lang)
+        self._bdd_prefix_regexp = None
 
     def _exists(self, path: Path):
         try:
@@ -395,7 +405,7 @@ class Nl(Language):
     variables_header = 'Variabelen'
     test_cases_header = 'Testgevallen'
     tasks_header = 'Taken'
-    keywords_header = 'Sleutelwoorden'
+    keywords_header = 'Actiewoorden'
     comments_header = 'Opmerkingen'
     library_setting = 'Bibliotheek'
     resource_setting = 'Resource'
@@ -403,24 +413,24 @@ class Nl(Language):
     name_setting = 'Naam'
     documentation_setting = 'Documentatie'
     metadata_setting = 'Metadata'
-    suite_setup_setting = 'Suite Preconditie'
-    suite_teardown_setting = 'Suite Postconditie'
-    test_setup_setting = 'Test Preconditie'
-    test_teardown_setting = 'Test Postconditie'
-    test_template_setting = 'Test Sjabloon'
-    test_timeout_setting = 'Test Time-out'
-    test_tags_setting = 'Test Labels'
-    task_setup_setting = 'Taak Preconditie'
-    task_teardown_setting = 'Taak Postconditie'
-    task_template_setting = 'Taak Sjabloon'
-    task_timeout_setting = 'Taak Time-out'
-    task_tags_setting = 'Taak Labels'
-    keyword_tags_setting = 'Sleutelwoord Labels'
+    suite_setup_setting = 'Suitevoorbereiding'
+    suite_teardown_setting = 'Suite-afronding'
+    test_setup_setting = 'Testvoorbereiding'
+    test_teardown_setting = 'Testafronding'
+    test_template_setting = 'Testsjabloon'
+    test_timeout_setting = 'Testtijdslimiet'
+    test_tags_setting = 'Testlabels'
+    task_setup_setting = 'Taakvoorbereiding'
+    task_teardown_setting = 'Taakafronding'
+    task_template_setting = 'Taaksjabloon'
+    task_timeout_setting = 'Taaktijdslimiet'
+    task_tags_setting = 'Taaklabels'
+    keyword_tags_setting = 'Actiewoordlabels'
     tags_setting = 'Labels'
-    setup_setting = 'Preconditie'
-    teardown_setting = 'Postconditie'
+    setup_setting = 'Voorbereiding'
+    teardown_setting = 'Afronding'
     template_setting = 'Sjabloon'
-    timeout_setting = 'Time-out'
+    timeout_setting = 'Tijdslimiet'
     arguments_setting = 'Parameters'
     given_prefixes = ['Stel', 'Gegeven']
     when_prefixes = ['Als']
@@ -1305,7 +1315,7 @@ class Ja(Language):
 class Ko(Language):
     """Korean
 
-    New in NEXT Robot Framework after 7.0.1.
+    New in Robot Framework 7.1.
     """
     settings_header = '설정'
     variables_header = '변수'

@@ -34,7 +34,7 @@ class _DataFileFormatter(object):
                 self.language = [set_lang[0]]
             else:
                 self.language = language
-        except AttributeError:
+        except (AttributeError, FileNotFoundError):
             self.language = ['en']
         self._split_multiline_doc = split_multiline_doc
         # print(f"DEBUG: formatters.py _DataFileFormatter INIT call _splitter  {self._split_multiline_doc=}"
