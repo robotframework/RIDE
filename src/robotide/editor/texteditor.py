@@ -19,7 +19,7 @@ from io import StringIO, BytesIO
 from time import time
 
 import wx
-from wx import stc, Colour, MenuEvent
+from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
@@ -40,7 +40,7 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-from robotide.lib.compat.parsing.language import Language, get_headers_for, get_settings_for, get_language_name, get_english_label
+from robotide.lib.compat.parsing.language import Language
 robotframeworklexer = None
 if Language:
     try:  # import our modified version
@@ -58,7 +58,9 @@ _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 AUTO_SUGGESTIONS = 'enable auto suggestions'
+LANG_SETTING = 'Language: '
 PLUGIN_NAME = 'Text Edit'
+TOKEN_TXT = 'Token('
 TXT_NUM_SPACES = 'txt number of spaces'
 ZOOM_FACTOR = 'zoom factor'
 
@@ -112,9 +114,6 @@ def get_rf_lang_code(lang: (str, list)) -> str:
         clean_lang = lang
     else:
         clean_lang = lang.split(' ')  # The cases we have two words
-    # lc = len(clean_lang)
-    # if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
-    #     return lang
     clean_lang = clean_lang[0].replace('-', '_').split('_')  # The cases we have variant code
     lc = len(clean_lang)
     if lc == 1:
@@ -126,8 +125,6 @@ def get_rf_lang_code(lang: (str, list)) -> str:
 
 
 def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
-    # print(f"DEBUG: texteditor.py transform_doc_language ENTER old_lang={old_lang} new_lang={new_lang}"
-    #       f"\n T old_lang={type(old_lang)} T new_lang={type(new_lang)}, node_info={node_info}")
     if isinstance(old_lang, list):
         old_lang = old_lang[0]
     if isinstance(new_lang, list):
@@ -140,26 +137,18 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
         old_lang_class = Language.from_name(old_lang)
     except ValueError as ex:
         print(ex)
-        # return m_text  # DEBUG:
         old_lang_class = Language.from_name('English')
     try:
         new_lang_class = Language.from_name(new_lang)
     except ValueError as ex:
         print(ex)
-        # return m_text  # DEBUG:
         new_lang_class = Language.from_name('English')
     old_lang_name = old_lang_class.name
     new_lang_name = new_lang_class.name
     if old_lang_name == new_lang_name:
         return m_text
     old_lang_headers = old_lang_class.headers
-    old_lang_bdd_prefixes = old_lang_class.bdd_prefixes
     new_lang_headers = new_lang_class.headers
-    new_lang_bdd_prefixes = new_lang_class.bdd_prefixes
-    """
-    old_lang_settings = old_lang_class.settings
-    new_lang_settings = new_lang_class.settings
-    """
     old_library_setting = old_lang_class.library_setting
     old_resource_setting = old_lang_class.resource_setting
     old_variables_setting = old_lang_class.variables_setting
@@ -230,24 +219,16 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     en_lang_then_prefixes = en_lang_class.then_prefixes
     en_lang_and_prefixes = en_lang_class.and_prefixes
     en_lang_but_prefixes = en_lang_class.but_prefixes
-
     sinal_correct_language = False  # If error in Language, do final replacement
-
-    # print(f"DEBUG: texteditor.py transform_doc_language\n  old_lang_name={old_lang_name} old_lang={old_lang} "
-    #       f"new_lang={new_lang}\n"
-    #       f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
-    #       f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}\n")
-    # print(f"DEBUG: texteditor.py transform_doc_language\n{old_true_strings=} {old_false_strings=}\n"
-    #       f"{new_true_strings=} {new_false_strings=}")
     if node_info != ('', ):
         if node_info[0] == 'ERROR':
-            c_msg = node_info[1].replace('Token(', '').replace(')', '').split(',')
+            c_msg = node_info[1].replace(TOKEN_TXT, '').replace(')', '').split(',')
             line = c_msg[1].replace('\'', '').strip()
             # print(f"DEBUG: textedit.py transform_doc_language ERROR:{line}")
-            if line.startswith('Language: '):
-                tail = line.replace('Language: ', '')
+            if line.startswith(LANG_SETTING):
+                tail = line.replace(LANG_SETTING, '')
                 # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
-                m_text = m_text.replace('Language: ' + tail, 'Language: English' + '  # ' + tail)
+                m_text = m_text.replace(LANG_SETTING + tail, LANG_SETTING + 'English' + '  # ' + tail)
                 sinal_correct_language = True
         """        
         if node_info[0] == 'INVALID_HEADER':
@@ -262,16 +243,13 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
                 return m_text
             en_label = list(old_lang_headers.values())[idx]
             new_header = list(new_lang_headers.keys())[idx]
-            print(f"DEBUG: textedit.py transform_doc_language OLD_HEADER: {old_header} en_label={en_label} {new_header=}")
+            print(f"DEBUG: textedit.py transform_doc_language OLD_HEADER: {old_header} en_label={en_label} "
+                  f"{new_header=}")
             m_text = m_text.replace(old_header, new_header)
         """
 
     for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
         m_text = re.sub(r"[*]+\s"+fr"{old}"+r"\s[*]+", fr"*** {new} ***", m_text)
-    """
-    for old, new in zip(old_lang_settings.keys(), new_lang_settings.keys()):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
-    """
     # Settings must be replaced individually
     # Order of replacements seems to be important
     m_text = re.sub(fr'\b{old_documentation_setting}\b', fr'{new_documentation_setting}', m_text)
@@ -327,9 +305,9 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
         m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
 
     if sinal_correct_language:
-        m_text = m_text.replace('Language: English', fr'Language: {new_lang_name}')
+        m_text = m_text.replace(fr'{LANG_SETTING}English', fr'{LANG_SETTING}{new_lang_name}')
     else:
-        m_text = m_text.replace(fr'Language: {old_lang_name}', fr'Language: {new_lang_name}')
+        m_text = m_text.replace(fr'{LANG_SETTING}{old_lang_name}', fr'{LANG_SETTING}{new_lang_name}')
 
     try:
         set_lang = shared_memory.ShareableList(name="language")
@@ -415,10 +393,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._save_flag = 0
-            """ DEBUG: To be used in Localization
-            """
-            # if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
-            #     print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             if hasattr(datafile_controller, 'language'):
                 if datafile_controller.language is not None:
                     self._doc_language = self._editor.language = datafile_controller.language
@@ -532,12 +506,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
                 print(e)
-            wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Sometimes when we enter Text Edit, styles are not applied
+            wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Text Edit, styles were not applied
             self._editor.Refresh()
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            # self._editor_component.is_saving = False
-            # self._editor_component.content_save()
             self._apply_txt_changes_to_model()
 
     def on_tab_changed(self, event):
@@ -605,7 +577,7 @@ class DataValidationHandler(object):
         from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
         initial_lang = lang if lang is not None else self._doc_language  # self._doc_language or
-        if "Language: " in m_text:
+        if LANG_SETTING in m_text:
             try:
                 self._doc_language = obtain_language(lang, text)
             except ValueError:
@@ -634,10 +606,6 @@ class DataValidationHandler(object):
             handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
-        # DEBUG: self._editor.reset()
-        # Language.name() # here get content in En to transform in Lang
-        # print(f"DEBUG: texteditor.py validate_and_update {initial_lang=} parameter lang={lang}"
-        #       f" doc_language={self._doc_language} reformat_flag={self._editor.reformat}")
         if self._editor.reformat:
             data.update_from(data.format_text(m_text))
         else:
@@ -667,12 +635,10 @@ class DataValidationHandler(object):
                 # print("DEBUG: textedit.py _sanity_check TOKEN in ERROR")
                 result = 'ERROR', repr(token)
                 return result
-                # raise DataError('ERROR', repr(token))
             if token.type == token.INVALID_HEADER:
                 # print("DEBUG: textedit.py _sanity_check TOKEN in INVALID_HEADER")
                 result = 'INVALID_HEADER', repr(token)
                 return result
-                # raise DataError('INVALID_HEADER', repr(token))
 
         try:
             model = get_model(text, lang=rf_lang)
@@ -706,8 +672,8 @@ class DataValidationHandler(object):
     """
 
     def _handle_sanity_check_failure(self, message):
-        if isinstance(message[1], str) and message[1].startswith('Token('):
-            c_msg = message[1].replace('Token(', '').replace(')', '').split(',')
+        if isinstance(message[1], str) and message[1].startswith(TOKEN_TXT):
+            c_msg = message[1].replace(TOKEN_TXT, '').replace(')', '').split(',')
             message = [" ".join(c_msg[4:]), c_msg[2].strip()]
 
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
@@ -793,9 +759,11 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         data.save(output=output, fformat='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4),
                   language=self._doc_language)
         text = output.getvalue()
-        # if self._reformat:  # DEBUG: This is a good place to call Tidy
+        """ DEBUG: This is a good place to call Tidy
+        # if self._reformat:  
         #   text = self.collapse_blanks(text)  # This breaks formatting in Templated tests
         #   print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
+        """
         return text
 
     """ DEBUG: This is no longer used
@@ -1311,7 +1279,6 @@ class SourceEditor(wx.Panel):
             self.mark_file_dirty(False)
 
     def content_save(self, **args):
-        # _ = args
         self.store_position()
         if self.dirty and not self.is_saving:
             self.is_saving = True
@@ -2395,7 +2362,6 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.Update()
 
     def set_language(self, dlanguage):
-        # self.language = dlanguage
         content = self.GetTextRaw()
         # print(f"DEBUG: set_language content={content}\nset_language={dlanguage}")
         if content and b"Language: " in content:  # We need to recheck the language setting
@@ -2505,7 +2471,6 @@ class RobotDataEditor(stc.StyledTextCtrl):
         elif end_chr is not None:
             value = text[pos_in_line:end_chr]
         if value:
-            # self.SetInsertionPoint(self.GetSelectionStart())
             # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, get text on the left {value=} ")
             if start_chr:
                 start_pos = min_pos + start_chr

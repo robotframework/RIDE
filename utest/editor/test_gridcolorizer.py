@@ -16,12 +16,45 @@
 import unittest
 import random
 
+from robotide.editor.gridbase import GridEditor
+
+# wx needs to imported last so that robotide can select correct wx version.
+import os
 import pytest
 
 from robotide.lib.robot.libraries.String import String
 
 from robotide.controller.cellinfo import CellInfo, ContentType, CellType, CellContent, CellPosition
 from robotide.editor.gridcolorizer import Colorizer
+
+
+DISPLAY = os.getenv('DISPLAY')
+if not DISPLAY:
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)  # Avoid failing unit tests in system without X11
+import wx
+
+DATA = [['kw1', '', ''],
+        ['kw2', 'arg1', ''],
+        ['kw3', 'arg1', 'arg2']]
+
+myapp = wx.App(None)
+
+
+class _FakeMainFrame(wx.Frame):
+    myapp = wx.App(None)
+
+    def __init__(self):
+        wx.Frame.__init__(self, None)
+        self.plugin = None
+
+
+def EditorWithData():
+    myapp = wx.App(None)
+    grid = GridEditor(_FakeMainFrame(), 5, 5)
+    for ridx, rdata in enumerate(DATA):
+        for cidx, cdata in enumerate(rdata):
+            grid.write_cell(ridx, cidx, cdata, update_history=False)
+    return grid
 
 
 class MockGrid(object):
@@ -83,15 +116,21 @@ class ControllerWithCellInfo(object):
         return self._string.generate_random_string(50)
 
 
-@pytest.mark.skip('It is getting unexpected data')
+# @pytest.mark.skip('It is getting unexpected data')
 class TestPerformance(unittest.TestCase):
     _data = ['Keyword', 'Some longer data in cell', '${variable}',
              '#asdjaskdkjasdkjaskdjkasjd', 'asdasd,asdasd,as asd jasdj asjd asjdj asd']
 
+    def setUp(self):
+        self._editor = EditorWithData()
+
     def test_colorizing_performance(self):
         colorizer = Colorizer(MockGrid(), ControllerWithCellInfo())
         for _ in range(0, 500):
-            colorizer._colorize_cell(1,1, self._data[random.randint(0, 4)])
+            rdata = self._data[random.randint(0, 4)]
+            self._editor.SetCellValue(1, 1, rdata)
+            cdata = self._editor.GetCellValue(1, 1)
+            colorizer._colorize_cell(1,1, cdata)
 
 
 class TestColorIdentification(unittest.TestCase):
