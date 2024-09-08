@@ -1,0 +1,10 @@
+{
+"fix_list":[
+["No Operation", "नहीं Operation"],
+["Run Keyword And Continue On Failure", "Run Keyword And Continue हां Failure"],
+["Run Keyword And Warn On Failure", "Run Keyword And Warn हां Failure"],
+["Should Be True", "Should Be यथार्थ"],
+["Should Not Be True", "Should Not Be यथार्थ"]
+]
+}
+

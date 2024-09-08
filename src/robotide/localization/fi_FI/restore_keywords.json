@@ -1,0 +1,10 @@
+{
+"fix_list":[
+["No Operation", "Ei Operation"],
+["Run Keyword And Continue On Failure", "Run Keyword And Continue Päällä Failure"],
+["Run Keyword And Warn On Failure", "Run Keyword And Warn Päällä Failure"],
+["Should Be True", "Should Be Tosi"],
+["Should Not Be True", "Should Not Be Tosi"]
+]
+}
+

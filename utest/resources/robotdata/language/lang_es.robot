@@ -7,20 +7,21 @@ Language: Spanish
 Documentación     This test data file is used in *RobotIDE* _integration_ tests.
 ...               1-This is another line of the documentation
 ...               2-A continued line of documentation
-Configuración de la Suite    Run Keywords    Log To Console    Suite Setup
+Configuración de la Suite       Run Keywords    Log To Console    Suite Setup
 ...               AND    Log    Test
 ...               AND    Log to Console    Test
 ...               AND    My Suite Setup
 Desmontaje de la Suite    My Suite Teardown    ${scalar}    @{LIST}
-Configuración de prueba    My Test Setup
-Etiquetas de la prueba    new_tag    ride    regeression    # Comment on Tags
-Metadatos         My Meta    data
-Biblioteca        seleniumlibrary    # Purposefully wrong case | |
-Biblioteca        Process    # This is a comment
+Configuración de prueba        My Test Setup
+Desmontaje de la prueba     My Overriding Test Teardown
+Etiquetas de la prueba         new_tag    ride    regeression    # Comment on Tags
+Metadatos          My Meta    data
+Biblioteca           seleniumlibrary    # Purposefully wrong case | |
+Biblioteca           Process    # This is a comment
 Recursos          en/full_en.resource
-Biblioteca        LibSpecLibrary
-Biblioteca        ${LIB NAME}
-Biblioteca        ArgLib    ${ARG}
+Biblioteca           LibSpecLibrary
+Biblioteca           ${LIB NAME}
+Biblioteca           ArgLib    ${ARG}
 Recursos          ../resources/resource.resource
 Recursos          ../resources/resource2.robot
 Recursos          PathResource.robot
@@ -28,14 +29,14 @@ Recursos          ../resources/resource.robot
 Recursos          ${RES_PATH}/another_resource.robot
 Recursos          ${RES_PATH}/more_resources/${RES NAME}
 Recursos          ${RES_PATH}/more_resources${/}${EMPTY}even_more_resources.robot
-Variable          ../resources/varz.py
-Variable          ../resources/dynamic_varz.py    ${ARG}
-Variable          en/full_en.yaml    # This is a comment
-Variable          en/full_en.json    # This is a comment
-Variable          en/full_en.py    # This is a comment
-Variable          ${RES_PATH}/more_varz.py
-Biblioteca        ${technology lib}    # defined in varz.py | |
-Biblioteca        ${operating system}    # defined in another_resource.robot | |
+Variable         ../resources/varz.py
+Variable         ../resources/dynamic_varz.py    ${ARG}
+Variable         en/full_en.yaml    # This is a comment
+Variable         en/full_en.json    # This is a comment
+Variable         en/full_en.py    # This is a comment
+Variable         ${RES_PATH}/more_varz.py
+Biblioteca           ${technology lib}    # defined in varz.py | |
+Biblioteca           ${operating system}    # defined in another_resource.robot | |
 
 *** Variables ***
 ${SCALAR}         value

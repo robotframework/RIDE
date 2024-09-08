@@ -4,7 +4,7 @@ Language: English
 # A blank line
 
 *** Settings ***
-Documentation     This test data file is used in *RobotIDE* _integration_ test.
+Documentation     This test data file is used in *RobotIDE* _integration_ tests.
 ...               1-This is another line of the documentation
 ...               2-A continued line of documentation
 Suite Setup       Run Keywords    Log To Console    Suite Setup
@@ -13,6 +13,7 @@ Suite Setup       Run Keywords    Log To Console    Suite Setup
 ...               AND    My Suite Setup
 Suite Teardown    My Suite Teardown    ${scalar}    @{LIST}
 Test Setup        My Test Setup
+Test Teardown     My Overriding Test Teardown
 Test Tags         new_tag    ride    regeression    # Comment on Tags
 Metadata          My Meta    data
 Library           seleniumlibrary    # Purposefully wrong case | |

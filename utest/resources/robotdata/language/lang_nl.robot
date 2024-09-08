@@ -4,7 +4,7 @@ Language: Dutch
 # A blank line
 
 *** Instellingen ***
-Documentatie      This test data file is used in *RobotIDE* _integration_ test.
+Documentatie      This test data file is used in *RobotIDE* _integration_ tests.
 ...               1-This is another line of the documentation
 ...               2-A continued line of documentation
 Suitevoorbereiding    Run Keywords    Log To Console    Suite Setup

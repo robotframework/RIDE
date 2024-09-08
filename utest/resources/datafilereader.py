@@ -69,6 +69,7 @@ IMPORTS = _makepath('imports')
 
 PREAMBLE_NO_LANG = _makepath('language', 'preamble_no_lang.robot')
 PREAMBLE_UNKNOWN_LANG = _makepath('language', 'preamble_unknown_lang.robot')
+DUMMY_LANG = _makepath('language', 'dummy')
 VALID_LANG_BG = _makepath('language', 'lang_bg.robot')
 VALID_LANG_BS = _makepath('language', 'lang_bs.robot')
 VALID_LANG_CS = _makepath('language', 'lang_cs.robot')

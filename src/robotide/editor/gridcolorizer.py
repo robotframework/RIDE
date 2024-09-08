@@ -13,7 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import wx
-from wx import Colour
 
 from ..controller.cellinfo import CellType
 
@@ -83,7 +82,8 @@ class Colorizer(object):
         font.SetWeight(self._get_weight(cell_info))
         return font
 
-    def _get_weight(self, cell_info):
+    @staticmethod
+    def _get_weight(cell_info):
         if cell_info.cell_type == CellType.KEYWORD:
             return wx.FONTWEIGHT_BOLD
         return wx.FONTWEIGHT_NORMAL
@@ -100,12 +100,12 @@ class ColorizationSettings(object):
     def get_background_color(self, elem_type):
         if not self._settings:
             return self.DEFAULT_BACKGROUND
-        return self._get('background %s' % elem_type)
+        return self._get(f'background {elem_type}')
 
     def get_text_color(self, elem_type):
         if not self._settings:
             return self.DEFAULT_TEXT
-        return self._get('text %s' % elem_type)
+        return self._get(f'text {elem_type}')
 
     def get_highlight_color(self):
         return self.get_background_color('highlight')
@@ -114,4 +114,8 @@ class ColorizationSettings(object):
         return self.get_background_color('error')
 
     def _get(self, name):
-        return self._settings[name.lower().replace('_', ' ')]
+        color_setting = name.lower().replace('_', ' ')
+        if color_setting in self._settings:
+            return self._settings[color_setting]
+        else:
+            return CellType.UNKNOWN
