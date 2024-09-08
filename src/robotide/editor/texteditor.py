@@ -88,13 +88,17 @@ def obtain_language(existing, content):
     except AttributeError:  # Unittests fails here
         set_lang = []
     doc_lang = read_language(content)
-    # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
+    # print(f"DEBUG: textedit.py validate_and_update EMTER obtain_language={doc_lang}")
+    adoc_lang = []
     if doc_lang is not None:
-        try:
-            mlang = Language.from_name(doc_lang.replace('_', '-'))
-        except ValueError as e:
-            raise e
-        set_lang[0] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
+        if isinstance(doc_lang, str):
+            adoc_lang.append(doc_lang)
+        for idx, lang in enumerate(adoc_lang):
+            try:
+                mlang = Language.from_name(lang.replace('_', '-').strip())
+            except ValueError as e:
+                raise e
+            set_lang[idx] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
     elif len(set_lang) > 0:
         if existing is not None:
             if isinstance(existing, list):
@@ -108,6 +112,7 @@ def obtain_language(existing, content):
                 set_lang[0] = 'en'
     else:
         set_lang[0] = 'en'
+    # print(f"DEBUG: textedit.py validate_and_update obtain_language RETURN ={[set_lang[0]]}")
     return [set_lang[0]]
 
 
@@ -229,12 +234,6 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     old_false_strings = old_lang_class.false_strings
     new_true_strings = new_lang_class.true_strings
     new_false_strings = new_lang_class.false_strings
-    en_lang_class = Language.from_name('English')
-    en_lang_given_prefixes = en_lang_class.given_prefixes
-    en_lang_when_prefixes = en_lang_class.when_prefixes
-    en_lang_then_prefixes = en_lang_class.then_prefixes
-    en_lang_and_prefixes = en_lang_class.and_prefixes
-    en_lang_but_prefixes = en_lang_class.but_prefixes
     sinal_correct_language = False  # If error in Language, do final replacement
     if node_info != ('', ):
         if node_info[0] == 'ERROR':
@@ -313,20 +312,6 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
         m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
         m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
-
-    """
-    # Final translation from English
-    for en, new in zip(en_lang_given_prefixes, new_lang_given_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
-    for en, new in zip(en_lang_when_prefixes, new_lang_when_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
-    for en, new in zip(en_lang_then_prefixes, new_lang_then_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
-    for en, new in zip(en_lang_and_prefixes, new_lang_and_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
-    for en, new in zip(en_lang_but_prefixes, new_lang_but_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
-    """
 
     # Before ending, we replace broken keywords from excluded known bad tanslations
     m_text = transform_standard_keywords(new_lang_name, m_text)
@@ -458,13 +443,39 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._save_flag = 0
             if hasattr(datafile_controller, 'language'):
                 if datafile_controller.language is not None:
-                    self._doc_language = self._editor.language = datafile_controller.language
+                    self._set_shared_doc_lang(datafile_controller.language)
                     # print(f"DEBUG: texteditor _open  SET FROM CONTROLLER language={self._doc_language}")
                 else:
-                    self._doc_language = self._editor.language = ['en']
+                    self._set_shared_doc_lang('en')
+                self._editor.language = self._doc_language
             # print(f"DEBUG: texteditor _open language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
+
+    def _get_shared_doc_lang(self):
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        if set_lang is not None:
+            self._doc_language = set_lang[0]
+        else:
+            self._doc_language = 'en'
+        return self._doc_language
+
+    def _set_shared_doc_lang(self, lang='en'):
+        # print(f"DEBUG: textedit.py TextEditorPlugin _set_shared_doc_lang ENTER"
+        #       f" params: {lang=}")
+        if isinstance(lang, list):
+            lang = lang[0]
+        # Shared memory to store language definition
+        try:
+            set_lang = shared_memory.ShareableList([lang], name="language")
+        except FileExistsError:  # Other instance created file
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        self._doc_language = set_lang[0] = lang
 
     def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """
@@ -622,16 +633,35 @@ class DataValidationHandler(object):
         self._last_answer = None
         self._last_answer_time = 0
         self._editor = None
+        if lang is not None:
+            self._doc_language = lang
+        else:
+            self._get_shared_doc_lang()
+
+    def _get_shared_doc_lang(self):
         try:
             set_lang = shared_memory.ShareableList(name="language")
         except AttributeError:  # Unittests fails here
             set_lang = []
         if set_lang is not None:
             self._doc_language = set_lang[0]
-        elif lang is not None:
-            self._doc_language = lang
         else:
             self._doc_language = 'en'
+        return self._doc_language
+
+    def _set_shared_doc_lang(self, lang='en'):
+        # print(f"DEBUG: textedit.py _set_shared_doc_lang ENTER"
+        #       f" params: {lang=}")
+        if isinstance(lang, list):
+            lang = lang[0]
+        # Shared memory to store language definition
+        try:
+            set_lang = shared_memory.ShareableList([lang], name="language")
+        except FileExistsError:  # Other instance created file
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        self._doc_language = set_lang[0] = lang
 
     def set_editor(self, editor):
         self._editor = editor
@@ -639,7 +669,9 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text, lang='en'):
         from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
-        initial_lang = lang if lang is not None else self._doc_language  # self._doc_language or
+        # print(f"DEBUG: textedit.py validate_and_update ENTER"
+        #       f" params: {lang=} doc_language={self._doc_language}")
+        initial_lang = lang  # if lang is not None else self._doc_language self._doc_language or
         if LANG_SETTING in m_text:
             try:
                 self._doc_language = obtain_language(lang, text)
@@ -659,8 +691,11 @@ class DataValidationHandler(object):
         except DataError as err:
             result = (err.message, err.details)
 
+        # print(f"DEBUG: textedit.py validate_and_update Language after sanity_check result={result}\n"
+        #       f" lang params: {initial_lang=}, {self._doc_language=}")
         if isinstance(result, tuple):
             m_text = transform_doc_language(initial_lang, self._doc_language, m_text, node_info=result)
+        __ = self._get_shared_doc_lang()
         try:
             result = self._sanity_check(data, m_text)  # Check if language changed and is valid content
         except DataError as err:
@@ -669,6 +704,8 @@ class DataValidationHandler(object):
             handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
+        # Save language
+        self._set_shared_doc_lang(self._doc_language)
         if self._editor.reformat:
             data.update_from(data.format_text(m_text))
         else:
@@ -1346,9 +1383,10 @@ class SourceEditor(wx.Panel):
         if self.dirty and not self.is_saving:
             self.is_saving = True
             # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
-            #       f"self.language={self.language} data={self._data}")
+            #       f"self.language={self.language} data={self._data}"
+            #       f" calling validate_and_update with lang={args['lang']}")
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
-                                                            lang=args['lang']):  #self.language)
+                                                            lang=self.language):  # args['lang']
                 self.is_saving = False
                 return False
         return True
