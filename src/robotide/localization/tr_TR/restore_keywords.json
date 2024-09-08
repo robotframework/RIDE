@@ -1,0 +1,10 @@
+{
+"fix_list":[
+["No Operation", "Hayir Operation"],
+["Run Keyword And Continue On Failure", "Run Keyword And Continue Açik Failure"],
+["Run Keyword And Warn On Failure", "Run Keyword And Warn Açik Failure"],
+["Should Be True", "Should Be Doğru"],
+["Should Not Be True", "Should Not Be Doğru"]
+]
+}
+

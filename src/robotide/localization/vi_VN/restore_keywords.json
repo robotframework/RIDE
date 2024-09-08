@@ -1,0 +1,10 @@
+{
+"fix_list":[
+["No Operation", "Không Operation"],
+["Run Keyword And Continue On Failure", "Run Keyword And Continue Mở Failure"],
+["Run Keyword And Warn On Failure", "Run Keyword And Warn Mở Failure"],
+["Should Be True", "Should Be Đúng"],
+["Should Not Be True", "Should Not Be Đúng"]
+]
+}
+

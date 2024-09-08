@@ -1,0 +1,10 @@
+{
+"fix_list":[
+["No Operation", "아니오 Operation"],
+["Run Keyword And Continue On Failure", "Run Keyword And Continue 켜기 Failure"],
+["Run Keyword And Warn On Failure", "Run Keyword And Warn 켜기 Failure"],
+["Should Be True", "Should Be 참"],
+["Should Not Be True", "Should Not Be 참"]
+]
+}
+

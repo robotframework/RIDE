@@ -1,0 +1,10 @@
+{
+"fix_list":[
+["No Operation", "Nee Operation"],
+["Run Keyword And Continue On Failure", "Run Keyword And Continue Aan Failure"],
+["Run Keyword And Warn On Failure", "Run Keyword And Warn Aan Failure"],
+["Should Be True", "Should Be Waar"],
+["Should Not Be True", "Should Not Be Waar"]
+]
+}
+

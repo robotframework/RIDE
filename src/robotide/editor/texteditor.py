@@ -16,6 +16,7 @@ import builtins
 import os
 import re
 from io import StringIO, BytesIO
+from os.path import dirname
 from time import time
 
 import wx
@@ -59,6 +60,7 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 AUTO_SUGGESTIONS = 'enable auto suggestions'
 LANG_SETTING = 'Language: '
+PATH_EXCLUSIONS = dirname(__file__)
 PLUGIN_NAME = 'Text Edit'
 TOKEN_TXT = 'Token('
 TXT_NUM_SPACES = 'txt number of spaces'
@@ -109,19 +111,33 @@ def obtain_language(existing, content):
     return [set_lang[0]]
 
 
-def get_rf_lang_code(lang: (str, list)) -> str:
+def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
     if isinstance(lang, list):
         clean_lang = lang
     else:
         clean_lang = lang.split(' ')  # The cases we have two words
     clean_lang = clean_lang[0].replace('-', '_').split('_')  # The cases we have variant code
     lc = len(clean_lang)
-    if lc == 1:
-        return clean_lang[0].title()
-    with_variant_code = f"{clean_lang[0].lower().title()}{clean_lang[1].lower().title()}"
-    if with_variant_code in ("PtBr", "ZhCn", "ZhTw"):
-        return with_variant_code
-    return clean_lang[0].title()
+    code = clean_lang[0].lower()
+    if not iso:
+        if lc == 1:
+            return code.title()
+        elif lc == 2:
+            with_variant_code = f"{code.title()}{clean_lang[1].lower().title()}"
+            if with_variant_code in ("PtBr", "ZhCn", "ZhTw") and not iso:
+                return with_variant_code
+    if iso:
+        variant = {"bs":"BA", "cs":"CZ", "da":"DK", "en":"US", "hi":"IN", "ja":"JP",
+                   "ko":"KR", "sv":"SE", "uk":"UA", "vi":"VN"}
+        code = clean_lang[0].lower()
+        if lc == 1:
+            if code in variant.keys():
+                return f"{code}_{variant[code].upper()}"
+            else:
+                return f"{code}_{code.upper()}"
+        else:
+            return f"{code}_{clean_lang[1].upper()}"
+    return code.title()
 
 
 def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
@@ -252,31 +268,40 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
         m_text = re.sub(r"[*]+\s"+fr"{old}"+r"\s[*]+", fr"*** {new} ***", m_text)
     # Settings must be replaced individually
     # Order of replacements seems to be important
-    m_text = re.sub(fr'\b{old_documentation_setting}\b', fr'{new_documentation_setting}', m_text)
-    m_text = re.sub(fr'[[]{old_arguments_setting}]', fr'[{new_arguments_setting}]', m_text)
-    m_text = re.sub(fr'{old_suite_setup_setting}\s{2}', fr'{new_suite_setup_setting}  ', m_text)
-    m_text = re.sub(fr'{old_suite_teardown_setting}\s{2}', fr'{new_suite_teardown_setting}  ', m_text)
-    m_text = re.sub(fr'{old_test_setup_setting}\s{2}', fr'{new_test_setup_setting}  ', m_text)
-    m_text = re.sub(fr'{old_task_setup_setting}\s{2}', fr'{new_task_setup_setting}  ', m_text)
-    m_text = re.sub(fr'{old_template_setting}\s{2}', fr'{new_template_setting}  ', m_text)
-    m_text = re.sub(fr'{old_test_teardown_setting}\s{2}', fr'{new_test_teardown_setting}  ', m_text)
-    m_text = re.sub(fr'{old_task_teardown_setting}\s{2}', fr'{new_task_teardown_setting}  ', m_text)
-    m_text = re.sub(fr'{old_library_setting}\s{2}', fr'{new_library_setting}  ', m_text)
-    m_text = re.sub(fr'{old_resource_setting}\s{2}', fr'{new_resource_setting}  ', m_text)
-    m_text = re.sub(fr'{old_variables_setting}\s{2}', fr'{new_variables_setting}  ', m_text)
-    m_text = re.sub(fr'{old_tags_setting}\s{2}', fr'{new_tags_setting}  ', m_text)
-    m_text = re.sub(fr'[[]{old_setup_setting}]', fr'[{new_setup_setting}]', m_text)
-    m_text = re.sub(fr'[[]{old_teardown_setting}]', fr'[{new_teardown_setting}]', m_text)
-    m_text = re.sub(fr'\b{old_name_setting}\b', fr'{new_name_setting}', m_text)
-    m_text = re.sub(fr'\b{old_metadata_setting}\b', fr'{new_metadata_setting}', m_text)
-    m_text = re.sub(fr'\b{old_test_template_setting}\b', fr'{new_test_template_setting}', m_text)
-    m_text = re.sub(fr'\b{old_task_template_setting}\b', fr'{new_task_template_setting}', m_text)
-    m_text = re.sub(fr'[[]{old_test_tags_setting}]', fr'[{new_test_tags_setting}]', m_text)
-    m_text = re.sub(fr'[[]{old_task_tags_setting}]', fr'[{new_task_tags_setting}]', m_text)
-    m_text = re.sub(fr'[[]{old_keyword_tags_setting}]', fr'[{new_keyword_tags_setting}]', m_text)
-    m_text = re.sub(fr'\b{old_test_timeout_setting}\b', fr'{new_test_timeout_setting}', m_text)
-    m_text = re.sub(fr'\b{old_task_timeout_setting}\b', fr'{new_task_timeout_setting}', m_text)
-    m_text = re.sub(fr'\b{old_timeout_setting}\b', fr'{new_timeout_setting}', m_text)
+    m_text = re.sub(fr'^{old_library_setting}\b', fr'{new_library_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_resource_setting}\b', fr'{new_resource_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_variables_setting}\b', fr'{new_variables_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_documentation_setting}\b', fr'{new_documentation_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'\[{old_documentation_setting}]', fr'[{new_documentation_setting}]', m_text)
+    m_text = re.sub(fr'\[{old_arguments_setting}]', fr'[{new_arguments_setting}]', m_text)
+    m_text = re.sub(fr'^{old_test_timeout_setting}\b', fr'{new_test_timeout_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_task_timeout_setting}\b', fr'{new_task_timeout_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_suite_setup_setting}\b', fr'{new_suite_setup_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_suite_teardown_setting}\b', fr'{new_suite_teardown_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_test_setup_setting}\b', fr'{new_test_setup_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_task_setup_setting}\b', fr'{new_task_setup_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'\[{old_template_setting}]', fr'[{new_template_setting}]', m_text)
+    m_text = re.sub(fr'^{old_test_teardown_setting}\b', fr'{new_test_teardown_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_task_teardown_setting}\b', fr'{new_task_teardown_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'\[{old_tags_setting}]', fr'[{new_tags_setting}]', m_text)
+    m_text = re.sub(fr'\[{old_setup_setting}]', fr'[{new_setup_setting}]', m_text)
+    m_text = re.sub(fr'\[{old_teardown_setting}]', fr'[{new_teardown_setting}]', m_text)
+    m_text = re.sub(fr'^{old_metadata_setting}\b', fr'{new_metadata_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_test_template_setting}\b', fr'{new_test_template_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_task_template_setting}\b', fr'{new_task_template_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'\[{old_keyword_tags_setting}]', fr'[{new_keyword_tags_setting}]', m_text)
+    m_text = re.sub(fr'\[{old_timeout_setting}]', fr'[{new_timeout_setting}]', m_text)
+    m_text = re.sub(fr'^{old_test_tags_setting}\b', fr'{new_test_tags_setting}', m_text, flags=re.M)
+    m_text = re.sub(fr'^{old_task_tags_setting}\b', fr'{new_task_tags_setting}', m_text, flags=re.M)
+
+    # Only the False/True words will be replaced not positionally or bound by []
+    for old, new in zip(old_true_strings, new_true_strings):
+        m_text = re.sub(fr"\b{old}\b", fr"{new}", m_text)
+    for old, new in zip(old_false_strings, new_false_strings):
+        m_text = re.sub(fr"\b{old}\b", fr"{new}", m_text)
+    # At least in Portuguese No Operation would change to Não Operation,
+    # But Name would change to Nãome when should be Nome, so we do after false strings
+    m_text = re.sub(fr'^{old_name_setting}\b', fr'{new_name_setting}', m_text, flags=re.M)
 
     for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
         m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
@@ -288,21 +313,24 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
         m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
         m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
-    for old, new in zip(old_true_strings, new_true_strings):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
-    for old, new in zip(old_false_strings, new_false_strings):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+
+    """
     # Final translation from English
     for en, new in zip(en_lang_given_prefixes, new_lang_given_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
     for en, new in zip(en_lang_when_prefixes, new_lang_when_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
     for en, new in zip(en_lang_then_prefixes, new_lang_then_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
     for en, new in zip(en_lang_and_prefixes, new_lang_and_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
     for en, new in zip(en_lang_but_prefixes, new_lang_but_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text, flags=re.I)
+    """
+
+    # Before ending, we replace broken keywords from excluded known bad tanslations
+    m_text = transform_standard_keywords(new_lang_name, m_text)
+    # print(f"DEBUG: texteditor.py transform_doc_language {m_text=}")
 
     if sinal_correct_language:
         m_text = m_text.replace(fr'{LANG_SETTING}English', fr'{LANG_SETTING}{new_lang_name}')
@@ -319,6 +347,41 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     except ValueError:
         set_lang[0] = 'en'
     return m_text
+
+def transform_standard_keywords(new_lang: str, content: str) -> str:
+    """
+    This function must be called after proper setting of parameters old_lang, new_lang. From transform_doc_language.
+    It reads the corresponding new_lang exclusion file and does the replacing.
+    :param new_lang: Name of the language to correct
+    :param content: Content to apply recovery of keywords
+    :return: Corrected test suite content with English keywords from Standard libraries
+    """
+    try:
+        mlang = Language.from_name(new_lang.replace('_', '-'))
+        lang_code = get_rf_lang_code(mlang.code, iso=True)
+    except ValueError:
+        return content
+
+    path_to_exclusion = f"{PATH_EXCLUSIONS}/../localization/{lang_code}/restore_keywords.json"
+    # print(f"DEBUG: texteditor.py transform_standard_keywords path={path_to_exclusion}\n"
+    #       f"{lang_code=}\n"
+    #       f"{mlang.code=}")
+    import json
+
+    try:
+        with open(path_to_exclusion) as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        return content
+
+    fix_list = data['fix_list']
+    if len(fix_list) == 0:
+        return content
+    # print(f"DEBUG: texteditor.py transform_standard_keywords my_variable={fix_list}")
+    for kw in fix_list:
+        # print(f"DEBUG: texteditor.py transform_standard_keywords kws BAD={kw[1]} GOOD={kw[0]}")
+        content = re.sub(fr'\b{kw[1]}\b', fr'{kw[0]}', content)
+    return content
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):

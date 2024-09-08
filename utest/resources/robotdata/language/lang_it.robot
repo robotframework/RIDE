@@ -7,40 +7,41 @@ Language: Italian
 Documentazione     This test data file is used in *RobotIDE* _integration_ tests.
 ...               1-This is another line of the documentation
 ...               2-A continued line of documentation
-Suite Setup       Run Keywords    Log To Console    Suite Setup
+Configurazione Suite       Run Keywords    Log To Console    Suite Setup
 ...               AND    Log    Test
 ...               AND    Log to Console    Test
 ...               AND    My Suite Setup
-Suite Teardown    My Suite Teardown    ${scalar}    @{LIST}
-Test Setup        My Test Setup
-Test Teardown     My Overriding Test Teardown
+Distruzione Suite    My Suite Teardown    ${scalar}    @{LIST}
+Configurazione Test        My Test Setup
+Distruzione Test     My Overriding Test Teardown
 Tag Del Test         new_tag    ride    regeression    # Comment on Tags
 Metadati          My Meta    data
-Library           seleniumlibrary    # Purposefully wrong case | |
-Library           Process    # This is a comment
-Resource          en/full_en.resource
-Library           LibSpecLibrary
-Library           ${LIB NAME}
-Library           ArgLib    ${ARG}
-Resource          ../resources/resource.resource
-Resource          ../resources/resource2.robot
-Resource          PathResource.robot
-Resource          ../resources/resource.robot
-Resource          ${RES_PATH}/another_resource.robot
-Resource          ${RES_PATH}/more_resources/${RES NAME}
-Resource          ${RES_PATH}/more_resources${/}${EMPTY}even_more_resources.robot
-Variables         ../resources/varz.py
-Variables         ../resources/dynamic_varz.py    ${ARG}
-Variables         en/full_en.yaml    # This is a comment
-Variables         en/full_en.json    # This is a comment
-Variables         en/full_en.py    # This is a comment
-Variables         ${RES_PATH}/more_varz.py
-Library           ${technology lib}    # defined in varz.py | |
-Library           ${operating system}    # defined in another_resource.robot | |
+Libreria           seleniumlibrary    # Purposefully wrong case | |
+Libreria           Process    # This is a comment
+Risorsa          en/full_en.resource
+Libreria           LibSpecLibrary
+Libreria           ${LIB NAME}
+Libreria           ArgLib    ${ARG}
+Risorsa          ../resources/resource.resource
+Risorsa          ../resources/resource2.robot
+Risorsa          PathResource.robot
+Risorsa          ../resources/resource.robot
+Risorsa          ${RES_PATH}/another_resource.robot
+Risorsa          ${RES_PATH}/more_resources/${RES NAME}
+Risorsa          ${RES_PATH}/more_resources${/}${EMPTY}even_more_resources.robot
+Variabile         ../resources/varz.py
+Variabile         ../resources/dynamic_varz.py    ${ARG}
+Variabile         en/full_en.yaml    # This is a comment
+Variabile         en/full_en.json    # This is a comment
+Variabile         en/full_en.py    # This is a comment
+Variabile         ${RES_PATH}/more_varz.py
+Libreria           ${technology lib}    # defined in varz.py | |
+Libreria           ${operating system}    # defined in another_resource.robot | |
 
 *** Variabili ***
 ${SCALAR}         value
-@{LIST}           1    2    3    4    a    b    c    d
+@{LIST}           1    2    3    4    a    b    c
+...               d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value
@@ -52,7 +53,7 @@ Second line of comments
 *** Casi Di Test ***
 My Test
     [Documentazione]    This is _test_ *case* documentation
-    [Tags]    test 1
+    [Tag]    test 1
     [Configurazione]    My Overriding Test Setup
     Log    Nothing to see
     [Distruzione]    My Overriding Test Teardown
@@ -60,7 +61,7 @@ My Test
 first test
     [Documentazione]    3-This is the documentation
     ...    4-A continued line of documentation
-    [Tags]    first    second
+    [Tag]    first    second
     [Configurazione]    Log To Console    Test Setup
     [Timeout]    60
     First Keyword    nonsense
@@ -71,7 +72,7 @@ first test
     [Distruzione]    Log To Console    Test Teardown
 
 second test
-    [Tags]    first    second    # This is a comment
+    [Tag]    first    second    # This is a comment
     [Configurazione]    Log To Console    Test Setup    # This is a comment
     [Template]    First Keyword    # This is a comment
     [Timeout]    60    # This is a comment
@@ -107,7 +108,7 @@ First Keyword
     [Documentazione]    5-This is the documentation
     ...
     ...    7-A continued line of documentation
-    [Tags]    first    second    # This is a comment
+    [Tag]    first    second    # This is a comment
     Log To Console    This is the first keyword
 
 ${user} is registered

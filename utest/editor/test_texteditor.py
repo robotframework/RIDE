@@ -53,7 +53,7 @@ LANGUAGES = [('Bulgarian', 'bg'), ('Bosnian', 'bs'),
              ('Finnish', 'fi'), ('French', 'fr'),
              ('Hindi', 'hi'), ('Italian', 'it'),
              ('Japanese', 'ja'), # Since RF 7.0.1
-             # Not available yet: ('Korean', 'ko'),  # Future RF after 7.0.1
+             ('Korean', 'ko'),  # Since RF 7.1
              ('Dutch', 'nl'), ('Polish', 'pl'),
              ('Portuguese', 'pt'),
              ('Brazilian Portuguese', 'pt-BR'),
@@ -765,12 +765,55 @@ class TestLanguageFunctions(unittest.TestCase):
                                                     " nor importable as a language module.\")"))
         finaltext = re.sub('Language: .*', fr'Language: Italian  # Klingon', fulltext, count=1)
 
+        # DEBUG: Write to file
+        with open(datafilereader.VALID_LANG_IT + ".temporary", "w") as fp:
+            fp.writelines(finaltext)
+
         # print(f"DEBUG: {result=} \n {finaltext=}.")
         assert result == finaltext
 
-    def test_transform_doc_language_spanish(self):
+
+    def test_transform_doc_list_of_standard_kws(self):
+
+        # Obtain list of keyword names
+        from subprocess import run
+        # We will only consider the ones with differences, below is the complete set
+        # libraries = "BuiltIn Collections DateTime Dialogs OperatingSystem Process Screenshot String Telnet XML"
+        libraries = "BuiltIn"
+        for lib in libraries.split():
+            output = run(['libdoc', lib, 'list'], capture_output=True)
+            with open(f"/tmp/{lib}.list", "w") as fp:
+               fp.write(f"{output.stdout.decode('utf-8')}")
+
         self.plugin._open()
-        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+        for lib in libraries.split():
+            with open(f"/tmp/{lib}.list", "r") as fp:
+                file_content = fp.read()
+            self.plugin._editor_component.source_editor.set_text(file_content)
+            # print(f"DEBUG: content:\n{content}")
+            self.set_language('English')
+            fulltext = self.plugin._editor_component.source_editor.GetText()
+            for lang in LANGUAGES:
+                result = texteditor.transform_doc_language(['English'], [lang[0]], fulltext)
+                with open(f"/tmp/{lib}_{lang[0]}.list", "w") as fp:
+                    fp.writelines(result)
+
+        # Analysis of results
+        from difflib import unified_diff
+        for lib in libraries.split():
+            with open(f"/tmp/{lib}.list", "r") as f:
+                expected_lines = f.readlines()
+            for lang in LANGUAGES:
+                with open(f"/tmp/{lib}_{lang[0]}.list", "r") as f:
+                    actual_lines = f.readlines()
+                diff = list(unified_diff(expected_lines, actual_lines[2:]))  # Removed the Language setting
+                # print(f"TestLanguageFunctions: Standard Keywords {lib} lang={lang[0]} Diff:\n"
+                #       f"{''.join(diff)}")
+                assert diff == [], "Unexpected file contents:\n" + "".join(diff)
+
+    def test_transform_dummy_doc_language_spanish(self):
+        self.plugin._open()
+        with open(datafilereader.DUMMY_LANG + ".robot", "r") as fp:
             content = fp.readlines()
         content = "".join(content)
         self.plugin._editor_component.source_editor.set_text(content)
@@ -781,15 +824,62 @@ class TestLanguageFunctions(unittest.TestCase):
         result = texteditor.transform_doc_language(['English'], ['Spanish'], fulltext)
 
         # DEBUG: Write to file
+        with open(datafilereader.DUMMY_LANG + "_es.robot" + ".temporary", "w") as fp:
+            fp.writelines(result)
+
+        from difflib import unified_diff
+        with open(datafilereader.DUMMY_LANG + "_es.robot", "r") as f:
+            expected_lines = f.readlines()
+        with open(datafilereader.DUMMY_LANG + "_es.robot" + ".temporary", "r") as f:
+            actual_lines = f.readlines()
+
+        diff = list(unified_diff(expected_lines, actual_lines))
+        assert diff == [], "Unexpected file contents:\n" + "".join(diff)
+
+    def test_transform_dummy_doc_language_portuguese(self):
+        self.plugin._open()
+        with open(datafilereader.DUMMY_LANG + ".robot", "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Portuguese'], fulltext)
+
+        # DEBUG: Write to file
+        with open(datafilereader.DUMMY_LANG + "_pt.robot" + ".temporary", "w") as fp:
+            fp.writelines(result)
+
+        from difflib import unified_diff
+        with open(datafilereader.DUMMY_LANG + "_pt.robot", "r") as f:
+            expected_lines = f.readlines()
+        with open(datafilereader.DUMMY_LANG + "_pt.robot" + ".temporary", "r") as f:
+            actual_lines = f.readlines()
+
+        diff = list(unified_diff(expected_lines, actual_lines))
+        assert diff == [], "Unexpected file contents:\n" + "".join(diff)
+
+    def test_transform_doc_language_spanish(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Spanish'], fulltext)
+
+        # DEBUG: Write to file
         with open(datafilereader.VALID_LANG_ES + ".temporary", "w") as fp:
             fp.writelines(result)
 
         with open(datafilereader.VALID_LANG_ES, "r") as fp:
             content = fp.readlines()
         content = "".join(content)
-        print(f"DEBUG: They should be equal:\n"
-              f" {result=}\n"
-              f"{content=}")
+        # print(f"DEBUG: They should be equal:\n"
+        #       f" {result=}\n"
+        #       f"{content=}")
         assert result == content
 
     def test_transform_doc_language_portuguese(self):
@@ -809,9 +899,9 @@ class TestLanguageFunctions(unittest.TestCase):
         with open(datafilereader.VALID_LANG_PT, "r") as fp:
             content = fp.readlines()
         content = "".join(content)
-        print(f"DEBUG: They should be equal:\n"
-              f" {result=}\n"
-              f"{content=}")
+        # print(f"DEBUG: They should be equal:\n"
+        #       f" {result=}\n"
+        #       f"{content=}")
         assert result == content
 
     """
@@ -825,13 +915,12 @@ class TestLanguageFunctions(unittest.TestCase):
 
         # self.set_language('English')
         fulltext = self.plugin._editor_component.source_editor.GetText()
-        result = texteditor.transform_doc_language(['English'], ['Japanese'], fulltext)
-        print(f"DEBUG: This should be Japanese:\n"
+        result = texteditor.transform_doc_language(['English'], ['Italian'], fulltext)
+        print(f"DEBUG: This should be Italian:\n"
               f"{result=}")
-        with open(datafilereader.VALID_LANG_JA, "w") as fp:
+        with open(datafilereader.VALID_LANG_IT, "w") as fp:
             fp.writelines(result)
     """
-
 
 if __name__ == '__main__':
     unittest.main()
