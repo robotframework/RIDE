@@ -600,6 +600,7 @@ class _SettingTable(_Table, _WithSettings):
         _Table.__init__(self, parent)
         self.tasks = tasks
         self.doc = Documentation(self.get_localized_setting_name('Documentation'), self)
+        self.suite_name = Documentation(self.get_localized_setting_name('Name'), self)
         self.suite_setup = Fixture(self.get_localized_setting_name('Suite Setup'), self)
         self.suite_teardown = Fixture(self.get_localized_setting_name('Suite Teardown'), self)
         self.test_setup = Fixture(self.get_localized_setting_name('Task Setup'
@@ -670,7 +671,8 @@ class TestCaseFileSettingTable(_SettingTable):
                 'Library': lambda s: s.imports.populate_library,
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
-                'Metadata': lambda s: s.metadata.populate}
+                'Metadata': lambda s: s.metadata.populate,
+                'Name': lambda s: s.suite_name.populate}
     _aliases = {'Task Setup': 'Test Setup',
                 'Task Teardown': 'Test Teardown',
                 'Task Template': 'Test Template',
@@ -689,7 +691,7 @@ class TestCaseFileSettingTable(_SettingTable):
                                                    'Task Tags', 'Test Tags',
                                                    'Task Template', 'Test Template',
                                                    'Task Timeout', 'Test Timeout',  'Library',
-                                                   'Resource', 'Variables', 'Metadata'])
+                                                   'Resource', 'Variables', 'Metadata', 'Name'])
         """
         'Task Setup' if self.tasks else 'Test Setup',
                                                    'Task Teardown' if self.tasks else 'Test Teardown',
@@ -702,7 +704,7 @@ class TestCaseFileSettingTable(_SettingTable):
         # print(f"DEBUG: model.py TestCaseFileSettings INIT ENTER language={language} aliases={self._aliases}")
 
     def __iter__(self):
-        for setting in [self.doc, self.suite_setup, self.suite_teardown,
+        for setting in [self.doc, self.suite_name, self.suite_setup, self.suite_teardown,
                         self.test_setup, self.test_teardown, self.force_tags,
                         self.default_tags, self.test_tags, self.test_template, self.test_timeout] \
                         + self.metadata.data + self.imports.data:
@@ -743,7 +745,8 @@ class InitFileSettingTable(_SettingTable):
                 'Library': lambda s: s.imports.populate_library,
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
-                'Metadata': lambda s: s.metadata.populate}
+                'Metadata': lambda s: s.metadata.populate,
+                'Name': lambda s: s.suite_name.populate}
 
     def __init__(self, parent, tasks=False, language=None):
         self.tasks = tasks
@@ -756,7 +759,7 @@ class InitFileSettingTable(_SettingTable):
                                                              'Task Timeout', 'Test Timeout',
                                                              'Force Tags',
                                                              'Task Tags', 'Test Tags', 'Library',
-                                                             'Resource', 'Variables', 'Metadata'])
+                                                             'Resource', 'Variables', 'Metadata', 'Name'])
         """
                                                                      'Task Setup' if self.tasks else 'Test Setup',
                                                              'Task Teardown' if self.tasks else 'Test Teardown',
@@ -767,7 +770,7 @@ class InitFileSettingTable(_SettingTable):
         _SettingTable.__init__(self, parent, tasks)
 
     def __iter__(self):
-        for setting in [self.doc, self.suite_setup, self.suite_teardown,
+        for setting in [self.doc, self.suite_name, self.suite_setup, self.suite_teardown,
                         self.test_setup, self.test_teardown, self.force_tags, self.test_tags,
                         self.test_timeout] + self.metadata.data + self.imports.data:
             yield setting

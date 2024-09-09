@@ -108,6 +108,9 @@ def read(path):
                 else:
                     content = row
                 lang = content[len('Language:'):].strip()
+                mlang = lang.split(',')
+                if len(mlang) > 1:
+                    lang = mlang[:]
     return lang
 
 
