@@ -93,7 +93,9 @@ class RobotReader(object):
                 no_spc = 0
         spc_row = []
         for r in row:
-            spc_row.extend(r.split(max(2, self._spaces) * ' '))
+            # spc_row.extend(r.split(max(2, self._spaces) * ' '))
+            cells = r.split('  ')  # Use two spaces, because some settings could be lost
+            spc_row.extend(cells)
             # spc_row.extend(self._space_splitter.split(r))
         # Remove empty cells after first identation or content
         content = False
