@@ -104,6 +104,8 @@ class _RobotTableEditor(EditorPanel):
         self._editors = []
         self._last_shown_tooltip = None
         self._reset_last_show_tooltip()
+        if context.IS_LINUX:
+            self.SetupScrolling()  # Only Linux users will need to use the workaround to restore Grid scroll bars
         self._populate()
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
 
@@ -314,7 +316,6 @@ class _FileEditor(_RobotTableEditor):
         _RobotTableEditor.__init__(self, *args)
         self.plugin.subscribe(
             self._update_source_and_name, RideFileNameChanged)
-        self.SetupScrolling()
 
     def _update_source(self, message=None):
         _ = message
