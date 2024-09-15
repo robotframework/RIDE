@@ -30,7 +30,7 @@ from wx import Colour
 from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
-from ..postinstall.__main__ import MessageDialog
+from ..postinstall import MessageDialog
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
