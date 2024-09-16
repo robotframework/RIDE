@@ -2470,9 +2470,9 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 self.language = obtain_language(dlanguage, content)
             except ValueError:
                 # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
-                self.language = 'En'
+                self.language = 'English'
         else:
-            self.language = 'En'
+            self.language = 'English'
         self.stylizer = RobotStylizer(self, self._settings, self.readonly, self.language)
 
     @property
