@@ -66,14 +66,15 @@ class RobotReader(object):
             row = self._space_splitter.split(line)
             row = self.aggregate_empty_cells(row)
             # print(f"DEBUG: RFLib RobotReader sharp_strip after cells split spaces={self._spaces} row={row[:]}")
-            return [c.strip() for c in row]
+            # return [c.strip() for c in row]
+            return row
         row = []
-        start = end = no_spc = spc = 0
+        start = no_spc = spc = 0
         for idx in range(len(line)):
             if line[idx] != ' ':
                 no_spc += 1
                 end = idx
-                if spc > max(2, self._spaces - 1) or idx == len(line) - 1:
+                if spc > max(1, self._spaces - 1) or idx == len(line) - 1:
                     if idx == len(line) - 1:
                         end = None
                     segmt = line[start:end].strip()   # Spaces cell
@@ -108,12 +109,15 @@ class RobotReader(object):
         # Remove empty cells after first indentation or content
         content = previous_empty = False
         for idx, r in enumerate(row):
-            if r != '':
+            cell = r.strip()
+            if cell != '':
                 content = True
-                previous_empty = False
-            elif r == '':
-                if content or previous_empty:
+                # previous_empty = False
+                row[idx] = cell
+            elif cell == '':
+                if content and previous_empty:  # Keep indentation
                     row.pop(idx)
+                    # content = False
                 previous_empty = True
         return row
 
@@ -158,23 +162,28 @@ class RobotReader(object):
                 # print(f"DEBUG: robotreader.check_separator detection of cell section row={row}")
                 self._cell_section = True
                 self._separator_check = False
-        if not line.startswith('*') and not line.startswith('#'):
+            return
+        if not line.startswith('#'):
             if not self._separator_check and line[:2] in self._pipe_starts:
                 self._separator_check = True
                 # print(f"DEBUG: RFLib RobotReader check_separator PIPE separator")
                 return
             if not self._cell_section:
                 return
-            spc = nospc = 0
+            spc = idx = nospc = 0
             for idx in range(0, len(line)):
-                if idx > 1 and line[idx] != ' ':
+                if line[idx] != ' ':
                     nospc += 1
-                    if spc <= 2:
-                        spc = -1
-                    else:
+                    # if spc <= 2:
+                    #     spc = -1
+                    #
+                    if spc >= 2:
                         break
-                else:
+                    spc = 0
+                elif line[idx] == ' ':  # and nospc > 0:
                     spc += 1
+            if nospc > 0 and spc < 2:  # We need a step, not test case or kw name (nospc == 0 and spc <= 2 or )
+                return
             spc = max(2, spc)
             if 2 <= spc <= 10:  # This max limit is reasonable
                 self._spaces = spc
