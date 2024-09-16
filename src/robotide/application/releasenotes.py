@@ -152,7 +152,7 @@ RELEASE_NOTES = f"""
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
-  moment 7.0.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
+  moment 7.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.12.</li>
@@ -188,7 +188,7 @@ documentation, at Mouse Pointer position.</li>
 suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
 <li>✔ - Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
-version 4.2.1, which we now <em>recommend</em>.</li>
+version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors.</li>
