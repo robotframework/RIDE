@@ -62,6 +62,7 @@ class GridEditor(grid.Grid):
         self.GetGridRowLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
         self.GetGridRowLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
+        parent.SetupScrolling()
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.on_select_cell)

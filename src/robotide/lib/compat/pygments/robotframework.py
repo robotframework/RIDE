@@ -101,7 +101,8 @@ class RobotFrameworkLexer(Lexer):
         set_lang = shared_memory.ShareableList(name="language")
         if not self.language:
             # DEBUG self.new_lang = Language.from_name('en')
-            self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+            shared_lang = set_lang[0].replace('_', '-') or 'en'
+            self.new_lang = Language.from_name(shared_lang)
         else:
             self.new_lang = Language.from_name(self.language[0].replace('_', '-'))  # DEBUG: We consider a single language
         # print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
