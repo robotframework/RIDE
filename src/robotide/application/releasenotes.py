@@ -163,7 +163,6 @@ RELEASE_NOTES = f"""
 <li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
  background.</li>
-<li>🐞 - When starting RIDE from <b>ride</b> script or executable, when closing RIDE restarts before definite close.</li>
 <li>✔ - Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
 this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
 <li>✔ - Added support for Setup in keywords, since Robot Framework version 7.0.</li>
@@ -328,7 +327,11 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 20/September/2024.</p>
+<p>or</p>
+<pre class="literal-block">
+ride_postinstall.py -install
+</pre>
+<p>RIDE {VERSION} was released on 21/September/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

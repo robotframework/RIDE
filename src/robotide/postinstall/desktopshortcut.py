@@ -20,7 +20,6 @@ import wx
 
 from ..pluginapi import Plugin
 from ..action import ActionInfo
-from ..postinstall import __main__ as postinstall
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -63,4 +62,5 @@ class ShortcutPlugin(Plugin):
 
     @staticmethod
     def call_creator(notebook):
-        return postinstall.caller(notebook.GetParent(), sys.platform.lower())
+        from . import caller
+        return caller(notebook.GetParent(), sys.platform.lower())

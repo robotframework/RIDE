@@ -142,7 +142,6 @@ class RIDE(wx.App):
         self.frame.Show()    # ###### DEBUG DANGER ZONE
         self.SetTopWindow(self.frame)
         self.frame.aui_mgr.Update()
-        wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         if self._updatecheck:
             wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.on_app_activate)
@@ -151,6 +150,13 @@ class RIDE(wx.App):
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
         RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
+        wx.CallLater(600, ReleaseNotes(self).bring_to_front)
+        return True
+
+    def OnExit(self):
+        PUBLISHER.unsubscribe_all()
+        self.Destroy()
+        wx.Exit()
         return True
 
     @staticmethod
