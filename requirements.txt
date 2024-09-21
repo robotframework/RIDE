@@ -5,3 +5,4 @@ Pygments # This enables syntax highlighted in Text Editor
 robotframework
 Pypubsub
 psutil
+packaging
