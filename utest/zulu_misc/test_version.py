@@ -28,6 +28,7 @@ regex = re.compile(
     r'(?P<minor>0|[1-9]\d*)'
     r'(?:\.'
     r'(?P<patch>0|[1-9]\d*))?'
+    r'(?P<alphabeta>[a|b][1-9])?'
     r'(?:\.'
     r'(?P<fix>0|[1-9]\d*))?'
     r'(?:-'

@@ -62,7 +62,12 @@ class GridEditor(grid.Grid):
         self.GetGridRowLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
         self.GetGridRowLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
-        parent.SetupScrolling()
+        if hasattr(parent, 'SetupScrolling'):
+            parent.SetupScrolling()
+        elif hasattr(self, 'SetupScrolling'):
+            self.SetupScrolling()
+        else:
+            print("DEBUG: GridBase init NO SetupScrolling\n")
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.on_select_cell)
@@ -115,9 +120,10 @@ class GridEditor(grid.Grid):
         self.MakeCellVisible(row, column)
 
     def copy(self):
-        # print("DEBUG: GridBase copy() called\n")
+        print("DEBUG: GridBase copy() called\n")
         self._clipboard_handler.clear()
-        self._clipboard_handler.clipboard_content()
+        data = self._clipboard_handler.clipboard_content()
+        print(f"DEBUG: GridBase copy() clipboard_content =={data}\n")
         self._clipboard_handler.copy()
 
     def cut(self):
