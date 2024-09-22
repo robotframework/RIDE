@@ -16,12 +16,13 @@
 
 
 import sys
-from robotide.postinstall import __main__ as postinstall
+from robotide.postinstall import main
 
 # Must be protected against reimporting
 # As multiprocessing has an odd requirement
 # and we use multiprocessing
 # http://docs.python.org/library/multiprocessing.html#windows
 if __name__ == '__main__':
-    postinstall.caller(None, sys.platform.lower())
+    main(*sys.argv[1:])
+    # caller(None, sys.platform.lower())
 

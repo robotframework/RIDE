@@ -353,7 +353,9 @@ class RideFrame(wx.Frame):
             except RuntimeError:
                 pass
             try:
+                PUBLISHER.unsubscribe_all()
                 self.Destroy()
+                wx.Exit()
             except RuntimeError:
                 pass
             app = wx.GetApp()

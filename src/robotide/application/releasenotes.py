@@ -151,7 +151,8 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at
+  this
   moment 7.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
@@ -159,18 +160,18 @@ RELEASE_NOTES = f"""
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
 <li>✔ - Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
-<li>✔ - Added Korean language support for UI, experimental.</li>
+<li>✔ - Added Korean language support for UI.</li>
 <li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
  background.</li>
-<li>🐞 - When starting RIDE from <b>ride</b> script or executable, when closing RIDE restarts before definite close.</li>
 <li>✔ - Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
 this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
 <li>✔ - Added support for Setup in keywords, since Robot Framework version 7.0.</li>
 <li>✔ - Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>✔ - Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>✔ - Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
-<li>✔ - Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data 
+<li>✔ - Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for
+ Data 
 Driven or Templated; Left Mouse Click, selects the column cells.</li>
 <li>✔ - Added command line option, <b>--settingspath</b>, to select a different configuration.</li>
 <li>✔ - Added different settings file, according the actual Python executable, if not the original installed.</li>
@@ -178,9 +179,11 @@ Driven or Templated; Left Mouse Click, selects the column cells.</li>
 <li>✔ - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
 higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Still missing translation 
 of some elements.</li> 
-<li>✔ - Added support for language configured test suites, with languages from installed Robot Framework version 6.1, or 
+<li>✔ - Added support for language configured test suites, with languages from installed Robot Framework version 6.1,
+ or 
 higher.</li> 
-<li>✔ - On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the 
+<li>✔ - On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with
+ the 
 documentation, at Mouse Pointer position.</li> 
 <li>✔ - RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
 <li>✔ - Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
@@ -215,7 +218,8 @@ In Grid Editor use | (pipe) to separate lines.</li>
 <li>Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter <b>notebook theme</b> 
  takes values from 0 to 5. See wxPython, demo for agw.aui for details.</li>
-<li>Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or higher.</li>
+<li>Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or
+ higher.</li>
 <li>Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.</li>
 <li>Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.</li>
 <li>Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.</li>
@@ -227,9 +231,11 @@ Driven or Templated; Left Mouse Click, selects the column cells.</li>
 <li>Added different settings file, according the actual Python executable, if not the original installed.</li>
 <li>Fixed headers and blank spacing in Templated tests.</li>
 <li>Added context option <b>Open Containing Folder</b> to test suites directories in Project Explorer.</li>
-<li>Added a setting for a specific file manager by editing the settings.cfg file. Add the string parameter <b>file manager</b>
+<li>Added a setting for a specific file manager by editing the settings.cfg file. Add the string parameter 
+<b>file manager</b>
 in the section <b>[General]</b></li>
-<li>Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, and new lines are added at Text Editor.</li>
+<li>Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, 
+and new lines are added at Text Editor.</li>
 <li>Fixed removal of continuation marker in steps</li>
 <li>Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation.</li>
 <li>Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
@@ -279,8 +285,9 @@ all caps in Grid Editor</li>
 ARROW_RIGHT</li>
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
-<p>We hope to implement or complete features and make fixes on next major version 2.1 (in end of Summer of 2024).</p>
-<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.1.</strong></p>
+<p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
+<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.2, which we recommend.
+</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
   manager.</p>
@@ -325,10 +332,10 @@ pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 python -m robotide.__init__
 </pre>
 <p>You can then go to <cite>Tools&gt;Create RIDE Desktop Shortcut</cite>, or run the shortcut creation script with:</p>
-<pre class="literal-block">
-python -m robotide.postinstall -install
-</pre>
-<p>RIDE {VERSION} was released on 20/September/2024.</p>
+<pre class="literal-block">python -m robotide.postinstall -install</pre>
+<p>or</p>
+<pre class="literal-block">ride_postinstall.py -install</pre>
+<p>RIDE {VERSION} was released on 22/September/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

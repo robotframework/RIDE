@@ -19,6 +19,7 @@ import sys
 from os.path import abspath, join, dirname
 from setuptools import setup, find_packages
 from setuptools.command.install import install
+from typing import Mapping
 
 ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
@@ -26,7 +27,8 @@ REQUIREMENTS = ['PyPubSub',
                 'Pygments',
                 'psutil',
                 'Pywin32; sys_platform=="win32"',
-                'wxPython']
+                'wxPython',
+                'packaging']
 
 PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],
@@ -73,7 +75,8 @@ class CustomInstallCommand(install):
     def run(self):
         install.run(self)
         sys.stdout.write("Creating Desktop Shortcut to RIDE...\n")
-        post_installer_file = join(ROOT_DIR, SOURCE_DIR, 'robotide', 'postinstall', '__main__.py')
+        # post_installer_file = join(ROOT_DIR, SOURCE_DIR, 'robotide', 'postinstall', '__main__.py')
+        post_installer_file = join(ROOT_DIR, SOURCE_DIR, 'bin', 'ride_postinstall.py')
         command = sys.executable + " " + post_installer_file + " -install"
         os.system(command)
 
@@ -106,5 +109,5 @@ setup(
     # Always install everything, since we may be switching between versions
     options={'install': {'force': True}},
     scripts=['src/bin/ride.py', 'src/bin/ride_postinstall.py'],
-    cmdclass={'install': CustomInstallCommand},
+    cmdclass={'install':CustomInstallCommand},
 )
