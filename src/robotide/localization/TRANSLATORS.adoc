@@ -1,7 +1,8 @@
 = Translators
 ifdef::env-github[:outfilesuffix: .adoc]
 
-- https://github.com/HelioGuilherme66[Hélio Guilherme]: Portuguese, Brazilian Portuguese
 - https://github.com/JFoederer[J. Foederer]: Dutch
+- Minerva Järvensivu: Finnish
+- https://github.com/HelioGuilherme66[Hélio Guilherme]: Portuguese, Brazilian Portuguese
 - Hyeonho Kang: Korean
 - Unknown: Pirates
