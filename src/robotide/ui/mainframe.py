@@ -613,7 +613,7 @@ class RideFrame(wx.Frame):
     def on_check_for_upgrade(self, event):
         __ = event
         from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
-        wx.CallAfter(UpdateNotifierController(self.general_settings).notify_update_if_needed,
+        wx.CallAfter(UpdateNotifierController(self.general_settings, self.notebook).notify_update_if_needed,
                      UpdateDialog, ignore_check_condition=True, show_no_update=True)
 
     @staticmethod

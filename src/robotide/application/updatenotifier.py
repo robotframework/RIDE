@@ -22,6 +22,7 @@ import sys
 import time
 import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
+from dataclasses import dataclass
 
 import psutil
 import wx
@@ -45,8 +46,9 @@ class UpdateNotifierController(object):
     VERSION = version.VERSION
     SECONDS_IN_WEEK = 60*60*24*7
 
-    def __init__(self, settings):
+    def __init__(self, settings, notebook):
         self._settings = settings
+        self._notebook = notebook
 
     def notify_update_if_needed(self, update_notification_callback, ignore_check_condition=False, show_no_update=False):
         if ignore_check_condition:
@@ -55,9 +57,10 @@ class UpdateNotifierController(object):
             checking_version = self._should_check()
             dev_version = parse_version(self.VERSION).is_devrelease
         if checking_version and self._is_new_version_available():
-            update_notification_callback(self._newest_version, self._download_url, self._settings)
+            update_notification_callback(self._newest_version, self._download_url, self._settings, self._notebook)
         if checking_version and dev_version:
-            upgrade_from_dev_dialog(version_installed=self.VERSION, show_no_update=show_no_update)
+            upgrade_from_dev_dialog(version_installed=self.VERSION, notebook=self._notebook,
+                                    show_no_update=show_no_update)
 
     def _should_check(self):
         if self._settings.get(_CHECK_FOR_UPDATES_SETTING, None) is None:
@@ -98,7 +101,7 @@ class UpdateNotifierController(object):
         return xml
 
 
-def upgrade_from_dev_dialog(version_installed, show_no_update=False):
+def upgrade_from_dev_dialog(version_installed, notebook, show_no_update=False):
     dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
                                   'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
     matches = re.findall(r"VERSION\s*=\s*'([\w.]*)'", dev_version)
@@ -114,7 +117,7 @@ def upgrade_from_dev_dialog(version_installed, show_no_update=False):
                                         f"{SPC}\n", wx.GetActiveWindow(),  no_default=True):
             return False
         else:
-            do_upgrade(command)
+            do_upgrade(command, notebook)
             return True
     else:
         if show_no_update:
@@ -147,9 +150,29 @@ def _add_content_to_clipboard(content):
     wx.TheClipboard.Close()
 
 
-def do_upgrade(command):
+@dataclass
+class Command:
+    def __init__(self, name, command, documentation):
+        self.name = name
+        self.command = command
+        self.documentation = documentation
+
+
+def do_upgrade(command, notebook):
     _add_content_to_clipboard(command)
-    # print("DEBUG: Here will be the installation step.")
+    # print("DEBUG: Here will be the installation step.") # DEBUG 'pip list'
+    from ..run import ui
+    config = Command('Upgrade RIDE', command, 'Uses pip to upgrade RIDE.')
+    result = ui.Runner(config, notebook).run()
+
+    # result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{result}){SPC}",
+    #           wx.GetActiveWindow())
+
+    print(f"DEBUG: do_upgrade result={result}")
+    result = 0
+    time.sleep(10)
+    # wx.Exit()
+    """
     my_pid = psutil.Process()
     my_pip = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     result = None
@@ -165,16 +188,8 @@ def do_upgrade(command):
         result = my_pip.returncode
         if result == 0:
             break
-        """ DEBUG: need to get outs line by line
-        except subprocess.SubprocessError:
-            my_pip.kill()
-            outs, errs = my_pip.communicate()
-            result = False
-            # DEBUG: Add output to a notebook tab
-            print(f"{outs}\n")
-            print(f"{errs}\n")
-        """
         time.sleep(1)
+    """
     if result != 0:
         _askyesno(_("Failed to Upgrade"), f"{SPC}{_('An error occurred when installing new version')}",
                   wx.GetActiveWindow())
@@ -185,8 +200,13 @@ def do_upgrade(command):
     """ Not working well:
     wx.CallLater(10000, psutil.Process.kill, my_pid.pid)
     """
-    _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}",
-              wx.GetActiveWindow())
+    result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{result}){SPC}",
+                       wx.GetActiveWindow())
+    if result:
+        time.sleep(10)
+        wx.App.Get().OnExit()
+    # _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}",
+    #           wx.GetActiveWindow())
 
 
 class LocalHtmlWindow(HtmlWindow):
@@ -201,8 +221,9 @@ class LocalHtmlWindow(HtmlWindow):
 
 class UpdateDialog(RIDEDialog):
 
-    def __init__(self, uversion, url, settings, modal=True):
+    def __init__(self, uversion, url, settings, notebook, modal=True):
         self._settings = settings
+        self._notebook = notebook
         self._command = sys.executable + f" -m pip install -U robotframework-ride=={uversion}"
         _add_content_to_clipboard(self._command)
         RIDEDialog.__init__(self, title=_("Update available"), size=(600, 400),
@@ -262,4 +283,4 @@ class UpdateDialog(RIDEDialog):
     def on_upgrade_now(self, event):
         __ = event
         _add_content_to_clipboard(self._command)
-        do_upgrade(self._command)
+        do_upgrade(self._command, self._notebook)

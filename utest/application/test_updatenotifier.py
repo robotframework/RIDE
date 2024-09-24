@@ -205,8 +205,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
     def test_normal_update_dialog(self):
         """ This is not actually doing a test """
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl=UpdateDialog('1.0.0', 'http://localhost', settings, False)
+        ctrl=UpdateDialog('1.0.0', 'http://localhost', settings, notebook,False)
         wx.CallLater(3000, ctrl.EndModal,wx.CANCEL)
         ctrl.ShowModal()
         ctrl.Destroy()

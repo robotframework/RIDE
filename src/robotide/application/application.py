@@ -143,7 +143,8 @@ class RIDE(wx.App):
         self.SetTopWindow(self.frame)
         self.frame.aui_mgr.Update()
         if self._updatecheck:
-            wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
+            wx.CallAfter(UpdateNotifierController(self.settings, self.frame.notebook).notify_update_if_needed,
+                         UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.on_app_activate)
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
