@@ -32,8 +32,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self._callback_called = False
         self._version = None
         self._url = None
+        self._notebook = None
 
-    def _callback(self, version, url, settings):
+    def _callback(self, version, url, settings, notebook):
+        self._notebook = notebook
         self.assertFalse(self._callback_called)
         self._callback_called = True
         self.assertNotEqual(None, version)
@@ -43,8 +45,8 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertEqual(dict, type(settings))
 
     @staticmethod
-    def _update_notifier_controller(settings, current, new, url='some url'):
-        ctrl = UpdateNotifierController(settings)
+    def _update_notifier_controller(settings, notebook, current, new, url='some url'):
+        ctrl = UpdateNotifierController(settings, notebook)
         ctrl.VERSION = current
         ctrl._get_newest_version = lambda: new
         ctrl._get_download_url = lambda v: url if v == new else None
@@ -57,8 +59,11 @@ class UpdateNotifierTestCase(unittest.TestCase):
                 LASTUPDATECHECK: last_update_check}
 
     def test_normal_update(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0', '1', 'http://xyz.abc.efg.di')
+        ctrl = self._update_notifier_controller(settings, notebook, '0', '1', 'http://xyz.abc.efg.di')
         ctrl.notify_update_if_needed(self._callback)
         self.assertEqual('1', self._version)
         self.assertEqual('http://xyz.abc.efg.di', self._url)
@@ -67,8 +72,11 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
 
     def test_update_when_trunk_version(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '2.0', '2.0.1')
+        ctrl = self._update_notifier_controller(settings, notebook, '2.0', '2.0.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(self._callback_called)
         self.assertEqual('2.0.1', self._version)
@@ -76,56 +84,75 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
 
     def test_last_update_done_less_than_a_week_ago(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         original_time = time.time() - 60 * 60 * 24 * 3
         settings = self.internal_settings(last_update_check=original_time)
-        ctrl = UpdateNotifierController(settings)
+        ctrl = UpdateNotifierController(settings, notebook)
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertEqual(original_time, settings[LASTUPDATECHECK])
         self.assertFalse(self._callback_called)
 
     def test_check_for_updates_is_false(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings(check_for_updates=False)
         original_time = settings[LASTUPDATECHECK]
-        ctrl = UpdateNotifierController(settings)
+        ctrl = UpdateNotifierController(settings, notebook)
         ctrl.notify_update_if_needed(self._callback)
         self.assertFalse(settings[CHECKFORUPDATES])
         self.assertEqual(original_time, settings[LASTUPDATECHECK])
         self.assertFalse(self._callback_called)
 
     def test_no_update_found(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.55', '0.55')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.55', '0.55')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_no_update_found_dev(self):
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.56', '0.56')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.56', '0.56')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False, show_no_update=False)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_no_update_found_dev_notify(self):
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.55', '0.55')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.55', '0.55')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True, show_no_update=True)
         self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_checks_for_updates(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings(check_for_updates=None, last_update_check=None)
-        ctrl = self._update_notifier_controller(settings, '1.0.2', '1.0.2')
+        ctrl = self._update_notifier_controller(settings, notebook,'1.0.2', '1.0.2')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_finds_an_update(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings(check_for_updates=None, last_update_check=None)
-        ctrl = self._update_notifier_controller(settings, '1.2', '2.0')
+        ctrl = self._update_notifier_controller(settings, notebook, '1.2', '2.0')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
@@ -133,8 +160,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_checking_timeouts(self):
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = UpdateNotifierController(settings)
+        ctrl = UpdateNotifierController(settings, notebook)
 
         def throw_timeout_error():
             raise urllib.error.URLError('timeout')
@@ -145,8 +174,11 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_download_url_checking_timeouts(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = UpdateNotifierController(settings)
+        ctrl = UpdateNotifierController(settings, notebook)
         ctrl.VERSION = '0'
         ctrl._get_newest_version = lambda: '1'
 
@@ -160,16 +192,22 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_server_returns_no_versions(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '1.2.2', None)
+        ctrl = self._update_notifier_controller(settings, notebook, '1.2.2', None)
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
     def test_server_returns_older_version(self):
+        app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.44', '0.43.1')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.44', '0.43.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
@@ -177,8 +215,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_forced_check_released(self):
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.43.0', '0.43.1')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.43.0', '0.43.1')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 19)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
@@ -186,8 +226,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_forced_check_development(self):
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.44dev12', '0.44.dev14')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.44dev12', '0.44.dev14')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 20)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
@@ -195,8 +237,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_forced_check_development_ok(self):
         app = wx.App()
+        frame = wx.Frame()
+        notebook = wx.Notebook(frame)
         settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, '0.44dev12', '0.44.dev12')
+        ctrl = self._update_notifier_controller(settings, notebook, '0.44dev12', '0.44.dev12')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 20)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
