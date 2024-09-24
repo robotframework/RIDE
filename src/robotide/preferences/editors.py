@@ -57,9 +57,9 @@ def read_fonts(fixed=False):
 
 def set_colors(element, bk_color, fg_color):
     element.SetBackgroundColour(bk_color)
-    element.SetOwnBackgroundColour(bk_color)
+    # element.SetOwnBackgroundColour(bk_color)
     element.SetForegroundColour(fg_color)
-    element.SetOwnForegroundColour(fg_color)
+    # element.SetOwnForegroundColour(fg_color)
 
 
 class EditorPreferences(PreferencesPanel):
@@ -95,6 +95,8 @@ class EditorPreferences(PreferencesPanel):
         raise NotImplementedError('Implement me')
 
     def on_reset(self, event):
+        if not self.name:
+            self.name = "Grid"
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
@@ -107,7 +109,7 @@ class EditorPreferences(PreferencesPanel):
         for line in settings[start_index:]:
             if line.startswith('['):
                 break
-            if not line:
+            if not line or line.startswith(';') or line.startswith('#'):
                 continue
             key, value = [s.strip().strip('\'') for s in line.split("=")]
             defaults[key] = value
@@ -125,28 +127,36 @@ class EditorPreferences(PreferencesPanel):
         l_size = f.label(self)
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_size, background_color, foreground_color)
+        """
         sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
                 self._settings, 'zoom factor', _('Zoom Factor'), (-10, 20))
             l_zoom = z.label(self)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_zoom, background_color, foreground_color)
+            """
             sizer.AddMany([l_zoom, z.chooser(self)])
         if FIXED_FONT in self._settings:
             l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_ff, background_color, foreground_color)
+            """
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
             l_font = s.label(self)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_font, background_color, foreground_color)
+            """
             sizer.AddMany([l_font, s.chooser(self)])
         return sizer
 
@@ -196,8 +206,10 @@ class TextEditorPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(label, background_color, foreground_color)
+            """
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
@@ -220,6 +232,8 @@ class TextEditorPreferences(EditorPreferences):
             picker.SetColour(self._settings[picker.key])
 
     def on_reset(self, event):
+        if not self.name:
+            self.name = "Text Edit"
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
@@ -231,8 +245,10 @@ class TextEditorPreferences(EditorPreferences):
         foreground_color = Colour("black")
         l_auto_suggest, editor = boolean_editor(self, settings, 'enable auto suggestions',
                                                 _('Enable auto suggestions'))
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_auto_suggest, background_color, foreground_color)
+        """
         sizer.AddMany([l_auto_suggest, editor])
         return sizer
 
@@ -254,27 +270,37 @@ class GridEditorPreferences(EditorPreferences):
         l_col_size = self._label_for(_('Default column size'))
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_col_size, background_color, foreground_color)
+        """
         sizer.Add(l_col_size)
         sizer.Add(self._number_editor(settings, 'col size'))
         l_auto_size, editor = boolean_editor(self, settings, 'auto size cols', _('Auto size columns'))
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_auto_size, background_color, foreground_color)
+        """
         sizer.AddMany([l_auto_size, editor])
         l_max_size = self._label_for(_('Max column size\n(applies when auto size is on)'))
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_max_size, background_color, foreground_color)
+        """
         sizer.Add(l_max_size)
         sizer.Add(self._number_editor(settings, 'max col size'))
         l_word_wrap, editor = boolean_editor(self, settings, 'word wrap', _('Word wrap and auto size rows'))
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_word_wrap, background_color, foreground_color)
+        """
         sizer.AddMany([l_word_wrap, editor])
         l_auto_suggest, editor = boolean_editor(self, settings, 'enable auto suggestions',
                                                 _('Enable auto suggestions'))
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_auto_suggest, background_color, foreground_color)
+        """
         sizer.AddMany([l_auto_suggest, editor])
         return sizer
 
@@ -319,10 +345,12 @@ class GridEditorPreferences(EditorPreferences):
             ('text empty', _('Empty Foreground')),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 background_color = Colour(LIGHT_GRAY)
                 foreground_color = Colour("black")
                 set_colors(lbl, background_color, foreground_color)
+            """
             btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
@@ -347,8 +375,10 @@ class GridEditorPreferences(EditorPreferences):
                 ('background highlight', _('Highlight Background'))
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(lbl, background_color, foreground_color)
+            """
             btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
@@ -395,11 +425,13 @@ class TestRunnerPreferences(EditorPreferences):
                                               f"{_('Shows console colors set by')} {add_colors} ")
         l_confirm, editor = boolean_editor(self, settings, 'confirm run',
                                            _('Asks for confirmation to run all tests if none selected '))
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             background_color = Colour(LIGHT_GRAY)
             foreground_color = Colour("black")
             set_colors(l_confirm, background_color, foreground_color)
             set_colors(l_usecolor, background_color, foreground_color)
+            """
         sizer.AddMany([l_usecolor, usecolor])
         sizer.AddMany([l_confirm, editor])
         return sizer
@@ -422,8 +454,10 @@ class TestRunnerPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(label, background_color, foreground_color)
+            """
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
@@ -446,6 +480,8 @@ class TestRunnerPreferences(EditorPreferences):
             picker.SetColour(self._settings[picker.key])
 
     def on_reset(self, event):
+        if not self.name:
+            self.name = "Test Runner"
         defaults = self._read_defaults(plugin=True)
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])

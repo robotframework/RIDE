@@ -175,9 +175,9 @@ class RIDE(wx.App):
             aui_default_tool_bar_art = AuiDefaultToolBarArt()
             aui_default_tool_bar_art.SetDefaultColours(wx.GREEN)
             widget.SetBackgroundColour(background)
-            widget.SetOwnBackgroundColour(background)
+            # widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
-            widget.SetOwnForegroundColour(foreground)
+            # widget.SetOwnForegroundColour(foreground)
             """
             widget.SetBackgroundColour(Colour(200, 222, 40))
             widget.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -189,13 +189,13 @@ class RIDE(wx.App):
             if not isinstance(widget, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
                 widget.SetForegroundColour(foreground)
                 widget.SetBackgroundColour(background)
-                widget.SetOwnBackgroundColour(background)
-                widget.SetOwnForegroundColour(foreground)
+                # widget.SetOwnBackgroundColour(background)
+                # widget.SetOwnForegroundColour(foreground)
             else:
                 widget.SetForegroundColour(secondary_foreground)
                 widget.SetBackgroundColour(secondary_background)
-                widget.SetOwnBackgroundColour(secondary_background)
-                widget.SetOwnForegroundColour(secondary_foreground)
+                # widget.SetOwnBackgroundColour(secondary_background)
+                # widget.SetOwnForegroundColour(secondary_foreground)
         elif isinstance(widget, (wx.TextCtrl, TabFrame, AuiTabCtrl)):
             widget.SetForegroundColour(foreground_text)  # or fore_color
             widget.SetBackgroundColour(background_help)  # or back_color
@@ -208,9 +208,9 @@ class RIDE(wx.App):
             # print(f"DEBUG: Application ApplyTheme wx.MenuItem {type(widget)}")
         else:
             widget.SetBackgroundColour(background)
-            widget.SetOwnBackgroundColour(background)
+            # widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
-            widget.SetOwnForegroundColour(foreground)
+            # widget.SetOwnForegroundColour(foreground)
 
     def _WalkWidgets(self, widget, indent=0, indent_level=4, theme=None):
         # print(' ' * indent + widget.__class__.__name__)

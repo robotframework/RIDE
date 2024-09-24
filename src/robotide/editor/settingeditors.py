@@ -57,9 +57,9 @@ class SettingEditor(wx.Panel):
         self.font_face = self.general_settings.get('font face', '')
         self.font_size = self.general_settings.get('font size', 11)
         self.SetBackgroundColour(Colour(self.color_background))
-        self.SetOwnBackgroundColour(Colour(self.color_background))
+        # self.SetOwnBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
-        self.SetOwnForegroundColour(Colour(self.color_foreground))
+        # self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
         try:
             set_lang = shared_memory.ShareableList(name="language")
@@ -577,9 +577,9 @@ class ImportSettingListEditor(_AbstractListEditor):
             self._language = ['en']
         _AbstractListEditor.__init__(self, parent, tree, controller)
         self.SetBackgroundColour(Colour(self.color_background))
-        self.SetOwnBackgroundColour(Colour(self.color_background))
+        # self.SetOwnBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
-        self.SetOwnForegroundColour(Colour(self.color_foreground))
+        # self.SetOwnForegroundColour(Colour(self.color_foreground))
 
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)

@@ -66,9 +66,9 @@ def read_languages():
 
 def set_colors(element, bk_color, fg_color):
     element.SetBackgroundColour(bk_color)
-    element.SetOwnBackgroundColour(bk_color)
+    # element.SetOwnBackgroundColour(bk_color)
     element.SetForegroundColour(fg_color)
-    element.SetOwnForegroundColour(fg_color)
+    # element.SetOwnForegroundColour(fg_color)
 
 
 class GeneralPreferences(PreferencesPanel):
@@ -96,10 +96,12 @@ class GeneralPreferences(PreferencesPanel):
                                               label=_("Apply to Project and File Explorer panels"))
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             background_color = Colour(LIGHT_GRAY)
             foreground_color = Colour("black")
             set_colors(self.cb_apply_to_panels, background_color, foreground_color)
+        """
         # set_colors(ui_language, Colour(self.color_background), Colour(self.color_foreground))
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
@@ -152,7 +154,7 @@ class GeneralPreferences(PreferencesPanel):
         for line in settings[start_index:]:
             if line.startswith('['):
                 break
-            if not line:
+            if not line or line.startswith(';') or line.startswith('#'):
                 continue
             key, value = [s.strip().strip('\'') for s in line.split("=")]
             # print(f"DEBUG: Preferences General default value type {type(value)} {value}")
@@ -174,8 +176,9 @@ class GeneralPreferences(PreferencesPanel):
         for line in settings[start_index:]:
             if line.startswith('['):
                 break
-            if not line:
+            if not line or line.startswith(';') or line.startswith('#'):
                 continue
+            # print(f"DEBUG: Preferences General RESET default line {line} \nLine Split: {line.split("=")}")
             key, value = [s.strip().strip('\'') for s in line.split("=")]
             # print(f"DEBUG: Preferences General default value type {type(value)} {value}")
             if len(value) > 0 and value[0] == '(' and value[-1] == ')':
@@ -196,28 +199,36 @@ class GeneralPreferences(PreferencesPanel):
         l_size = f.label(self)
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
+        """ DEBUG cancel Windows colors exception
         if IS_WINDOWS:
             set_colors(l_size, background_color, foreground_color)
+        """
         sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
                 self._settings, 'zoom factor', _('Zoom Factor'), (-10, 20))
             l_zoom = z.label(self)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_zoom, background_color, foreground_color)
+            """
             sizer.AddMany([l_zoom, z.chooser(self)])
         if FIXED_FONT in self._settings:
             l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_ff, background_color, foreground_color)
+            """
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
             l_font = s.label(self)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_font, background_color, foreground_color)
+            """
             sizer.AddMany([l_font, s.chooser(self)])
         sizer.Layout()
         return sizer
@@ -229,8 +240,10 @@ class GeneralPreferences(PreferencesPanel):
         if 'ui language' in self._settings:
             ll = StringChoiceEditor(self._settings, 'ui language', _('Language'), read_languages())
             l_lang = ll.label(self)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(l_lang, background_color, foreground_color)
+            """
             sizer.AddMany([l_lang, ll.chooser(self)])
         sizer.Layout()
         return sizer
@@ -267,8 +280,10 @@ class DefaultPreferences(GeneralPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
+            """ DEBUG cancel Windows colors exception
             if IS_WINDOWS:
                 set_colors(label, background_color, foreground_color)
+            """
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)

@@ -64,9 +64,9 @@ class PreferenceEditor(wx.Dialog):
         self.font.SetPointSize(self._general_settings[FONT_SIZE])
         self.SetFont(self.font)
         self.SetBackgroundColour(Colour(self._general_settings['background']))
-        self.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
+        # self.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
         self.SetForegroundColour(Colour(self._general_settings['foreground']))
-        self.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
+        # self.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
         self._closing = False
 
         panels = preferences.preference_panels
