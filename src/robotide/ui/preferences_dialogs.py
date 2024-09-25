@@ -35,6 +35,8 @@ class PreferencesPanel(wx.Panel):
         # self.location = (_("Preferences"),)
         # self.title = _("Preferences")
         wx.Panel.__init__(self, parent, *args, **kwargs)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -49,6 +51,9 @@ class PreferencesPanel(wx.Panel):
         """Creates a simple horizontal separator with title"""
         container = wx.Panel(parent, wx.ID_ANY)
         label = wx.StaticText(container, wx.ID_ANY, label=title)
+
+        label.SetOwnBackgroundColour(Colour(200, 222, 40))
+        label.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         label.SetBackgroundColour(Colour(200, 222, 40))
         label.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -56,6 +61,8 @@ class PreferencesPanel(wx.Panel):
         label.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         sep = wx.StaticLine(container, wx.ID_ANY)
+        sep.SetOwnBackgroundColour(Colour(200, 222, 40))
+        sep.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         sep.SetBackgroundColour(Colour(200, 222, 40))
         sep.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -79,6 +86,8 @@ class PreferencesComboBox(wx.ComboBox):
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
                                                   size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -128,6 +137,8 @@ class PreferencesSpinControl(wx.SpinCtrl):
             size=self._get_size(choices[-1]))
         self.SetRange(*choices)
         self.SetValue(self._get_value())
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -166,6 +177,8 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         # print(f"DEBUG: Preferences ColourPicker value type {type(settings[key])}")
         value = Colour(settings[key])
         super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
