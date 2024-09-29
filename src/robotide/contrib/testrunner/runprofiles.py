@@ -427,9 +427,12 @@ class PybotProfile(BaseProfile):
                               self.on_collapsible_pane_changed,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
+        pane.SetThemeEnabled(False)
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
         label = Label(pane, label=_("Output directory: "))
+        label.SetBackgroundColour(self._mysettings.color_background)
+        label.SetForegroundColour(self._mysettings.color_foreground)
         self._output_directory_text_ctrl = \
             self._create_text_ctrl(pane, self.output_directory,
                                    "removed due unicode_error (delete this)",
@@ -499,6 +502,7 @@ class PybotProfile(BaseProfile):
                               self.on_collapsible_pane_changed,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
+        pane.SetThemeEnabled(False)
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
         self._args_text_ctrl = \
@@ -567,6 +571,7 @@ class PybotProfile(BaseProfile):
                               self.on_collapsible_pane_changed,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
+        pane.SetThemeEnabled(False)
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
         include_cb = self._create_checkbox(pane, self.apply_include_tags,
@@ -620,20 +625,22 @@ class PybotProfile(BaseProfile):
         _ = evt
         self.set_setting("exclude_tags", self._exclude_tags_text_ctrl.GetValue())
 
-    @staticmethod
-    def _create_checkbox(parent, value, title, handler):
+    def _create_checkbox(self, parent, value, title, handler):
         checkbox = wx.CheckBox(parent, wx.ID_ANY, title)
         checkbox.SetValue(value)
+        checkbox.SetBackgroundColour(self._mysettings.color_background)
+        checkbox.SetForegroundColour(self._mysettings.color_foreground)
         parent.Bind(wx.EVT_CHECKBOX, handler, checkbox)
         return checkbox
 
-    @staticmethod
-    def _create_text_ctrl(parent, value, value_for_error,
+    def _create_text_ctrl(self, parent, value, value_for_error,
                           text_change_handler, enable=True):
         try:
             text_ctrl = wx.TextCtrl(parent, wx.ID_ANY, value=value)
         except UnicodeError:
             text_ctrl = wx.TextCtrl(parent, wx.ID_ANY, value=value_for_error)
+        text_ctrl.SetBackgroundColour(self._mysettings.color_background)
+        text_ctrl.SetForegroundColour(self._mysettings.color_foreground)
         text_ctrl.Bind(wx.EVT_TEXT, text_change_handler)
         text_ctrl.Enable(enable)
         return text_ctrl
