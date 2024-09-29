@@ -40,6 +40,8 @@ class PreferencesPanel(wx.Panel):
         self.settings = self._gsettings['General']
         self.background_color = self.settings['background']
         self.foreground_color = self.settings['foreground']
+        self.secondary_background_color = self.settings['secondary background']
+        self.secondary_foreground_color = self.settings['secondary foreground']
         self.SetBackgroundColour(self.background_color)
         self.SetForegroundColour(self.foreground_color)
 
@@ -53,8 +55,8 @@ class PreferencesPanel(wx.Panel):
         label.SetBackgroundColour(self.background_color)
         label.SetForegroundColour(self.foreground_color)
         sep = wx.StaticLine(container, wx.ID_ANY)
-        label.SetBackgroundColour(self.background_color)
-        label.SetForegroundColour(self.foreground_color)
+        sep.SetBackgroundColour(self.secondary_background_color)
+        sep.SetForegroundColour(self.secondary_foreground_color)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(label, 0, wx.EXPAND|wx.TOP, 8)
         sizer.Add(sep, 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 2)
