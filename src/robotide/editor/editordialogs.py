@@ -91,9 +91,9 @@ class _Dialog(RIDEDialog):
         for item in self.GetChildren():
             if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
                 item.SetBackgroundColour(Colour(self.color_secondary_background))
-                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                # item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
                 item.SetForegroundColour(Colour(self.color_secondary_foreground))
-                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+                # item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         self._sizer.Fit(self)
 

@@ -71,9 +71,9 @@ class ValueEditor(wx.Panel):
     def _get_text_ctrl(self):
         editor = wx.TextCtrl(self, size=(600, -1))
         editor.SetBackgroundColour(Colour(self.color_secondary_background))
-        editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        # editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         editor.SetForegroundColour(Colour(self.color_secondary_foreground))
-        editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        # editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         return editor
 
     def set_validator(self, validator):
@@ -199,9 +199,9 @@ class ListValueEditor(ValueEditor):
         tool_tip.GetWindow().SetForegroundColour(Colour(self.color_foreground_text))
         # DEBUG attributes = self.GetClassDefaultAttributes()
         combo.SetBackgroundColour(Colour(self.color_secondary_background))
-        combo.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        # combo.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         combo.SetForegroundColour(Colour(self.color_secondary_foreground))
-        combo.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        # combo.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self.Bind(wx.EVT_COMBOBOX, self.on_columns, source=combo)
         sizer.Add(combo)
         # DEBUG children = self.GetChildren()

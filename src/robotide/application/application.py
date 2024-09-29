@@ -143,13 +143,14 @@ class RIDE(wx.App):
         self.SetTopWindow(self.frame)
         self.frame.aui_mgr.Update()
         if self._updatecheck:
-            wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
+            wx.CallAfter(UpdateNotifierController(self.settings, self.frame.notebook).notify_update_if_needed,
+                         UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.on_app_activate)
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
-        RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
+        RideSettingsChanged(keys=('General', 'ui language'), old=None, new=None).publish()
         wx.CallLater(600, ReleaseNotes(self).bring_to_front)
         return True
 
@@ -174,9 +175,9 @@ class RIDE(wx.App):
             aui_default_tool_bar_art = AuiDefaultToolBarArt()
             aui_default_tool_bar_art.SetDefaultColours(wx.GREEN)
             widget.SetBackgroundColour(background)
-            widget.SetOwnBackgroundColour(background)
+            # widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
-            widget.SetOwnForegroundColour(foreground)
+            # widget.SetOwnForegroundColour(foreground)
             """
             widget.SetBackgroundColour(Colour(200, 222, 40))
             widget.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -188,13 +189,13 @@ class RIDE(wx.App):
             if not isinstance(widget, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
                 widget.SetForegroundColour(foreground)
                 widget.SetBackgroundColour(background)
-                widget.SetOwnBackgroundColour(background)
-                widget.SetOwnForegroundColour(foreground)
+                # widget.SetOwnBackgroundColour(background)
+                # widget.SetOwnForegroundColour(foreground)
             else:
                 widget.SetForegroundColour(secondary_foreground)
                 widget.SetBackgroundColour(secondary_background)
-                widget.SetOwnBackgroundColour(secondary_background)
-                widget.SetOwnForegroundColour(secondary_foreground)
+                # widget.SetOwnBackgroundColour(secondary_background)
+                # widget.SetOwnForegroundColour(secondary_foreground)
         elif isinstance(widget, (wx.TextCtrl, TabFrame, AuiTabCtrl)):
             widget.SetForegroundColour(foreground_text)  # or fore_color
             widget.SetBackgroundColour(background_help)  # or back_color
@@ -207,9 +208,9 @@ class RIDE(wx.App):
             # print(f"DEBUG: Application ApplyTheme wx.MenuItem {type(widget)}")
         else:
             widget.SetBackgroundColour(background)
-            widget.SetOwnBackgroundColour(background)
+            # widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
-            widget.SetOwnForegroundColour(foreground)
+            # widget.SetOwnForegroundColour(foreground)
 
     def _WalkWidgets(self, widget, indent=0, indent_level=4, theme=None):
         # print(' ' * indent + widget.__class__.__name__)
@@ -333,8 +334,8 @@ class RIDE(wx.App):
             from multiprocessing import shared_memory
             from .restartutil import restart_dialog
             new_locale = self._locale.GetName()
+            # print(f"DEBUG: application.py RIDE change_locale from {initial_locale} to {new_locale}")
             if initial_locale != new_locale:
-                # print(f"DEBUG: application.py RIDE change_locale CHANGED from {initial_locale} to {new_locale}")
                 if restart_dialog():  # DEBUG: See the in implementation why we don't restart
                     # print("DEBUG: application.py RIDE change_locale Restart accepted.")
                     # Shared memory to store language definition

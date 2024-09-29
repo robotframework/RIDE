@@ -360,9 +360,9 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
         super().__init__(suggestion_source, parent=parent,
                          size=size, style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(Colour(self.color_background_help))
-        self.SetOwnBackgroundColour(Colour(self.color_background_help))
+        # self.SetOwnBackgroundColour(Colour(self.color_background_help))
         self.SetForegroundColour(Colour(self.color_foreground_text))
-        self.SetOwnForegroundColour(Colour(self.color_foreground_text))
+        # self.SetOwnForegroundColour(Colour(self.color_foreground_text))
 
 
 class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
@@ -373,9 +373,9 @@ class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
                          style=wx.WANTS_CHARS | wx.BORDER_NONE | wx.WS_EX_TRANSIENT | wx.TE_PROCESS_ENTER |
                          wx.TE_NOHIDESEL)
         self.SetBackgroundColour(Colour(self.color_background_help))
-        self.SetOwnBackgroundColour(Colour(self.color_background_help))
+        # self.SetOwnBackgroundColour(Colour(self.color_background_help))
         self.SetForegroundColour(Colour(self.color_foreground_text))
-        self.SetOwnForegroundColour(Colour(self.color_foreground_text))
+        # self.SetOwnForegroundColour(Colour(self.color_foreground_text))
 
 
 class ContentAssistFileButton(FileBrowseButton):
@@ -389,9 +389,9 @@ class ContentAssistFileButton(FileBrowseButton):
         self._browsed = False
 
         self.SetBackgroundColour(Colour(context.POPUP_BACKGROUND))
-        self.SetOwnBackgroundColour(Colour(context.POPUP_BACKGROUND))
+        # self.SetOwnBackgroundColour(Colour(context.POPUP_BACKGROUND))
         self.SetForegroundColour(Colour(context.POPUP_FOREGROUND))
-        self.SetOwnForegroundColour(Colour(context.POPUP_FOREGROUND))
+        # self.SetOwnForegroundColour(Colour(context.POPUP_FOREGROUND))
 
     def Bind(self, *args):
         self.textControl.Bind(*args)

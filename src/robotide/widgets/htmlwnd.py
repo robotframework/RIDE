@@ -34,8 +34,8 @@ class HtmlWindow(html.HtmlWindow):
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        # self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        # self.SetOwnForegroundColour(Colour(7, 0, 70))
         if text:
             self.set_content(text)
         self.SetHTMLBackgroundColour(Colour(general_settings[BACKGROUND_HELP]))

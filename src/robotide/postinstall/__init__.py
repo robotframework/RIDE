@@ -128,9 +128,9 @@ class MessageDialog(RIDEDialog):
         for item in self.GetChildren():
             if isinstance(item, (wx.Button, wx.BitmapButton)):
                 item.SetBackgroundColour(Colour(self.color_secondary_background))
-                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                # item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
                 item.SetForegroundColour(Colour(self.color_secondary_foreground))
-                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+                # item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
 

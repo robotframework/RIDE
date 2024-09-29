@@ -195,9 +195,9 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.color_foreground = color_foreground
         self.color_background = color_background
         self.SetBackgroundColour(Colour(color_background))
-        self.SetOwnBackgroundColour(Colour(color_background))
+        # self.SetOwnBackgroundColour(Colour(color_background))
         self.SetForegroundColour(Colour(color_foreground))
-        self.SetOwnForegroundColour(Colour(color_foreground))
+        # self.SetOwnForegroundColour(Colour(color_foreground))
         # self.EnableAlternateRowColours(True)
         self._parent = parent
         self._doc_language = None

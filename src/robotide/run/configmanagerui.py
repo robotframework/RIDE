@@ -46,9 +46,9 @@ class ConfigManagerDialog(RIDEDialog):
         # set Left to Right direction (while we don't have localization)
 
         self.SetBackgroundColour(Colour(self.color_background))
-        self.SetOwnBackgroundColour(Colour(self.color_background))
+        # self.SetOwnBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
-        self.SetOwnForegroundColour(Colour(self.color_foreground))
+        # self.SetOwnForegroundColour(Colour(self.color_foreground))
 
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.plugin = plugin
@@ -86,9 +86,9 @@ class ConfigManagerDialog(RIDEDialog):
         for item in self.GetChildren():
             if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
                 item.SetBackgroundColour(Colour(self.color_secondary_background))
-                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                # item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
                 item.SetForegroundColour(Colour(self.color_secondary_foreground))
-                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+                # item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def get_data(self):
