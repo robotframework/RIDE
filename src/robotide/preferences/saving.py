@@ -16,9 +16,8 @@
 import builtins
 import wx
 
-from ..context import IS_WINDOWS
+from .settings import RideSettings
 from ..ui.preferences_dialogs import PreferencesPanel, IntegerChoiceEditor, StringChoiceEditor, boolean_editor
-from wx import Colour
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -34,29 +33,27 @@ class SavingPreferences(PreferencesPanel):
         super(SavingPreferences, self).__init__(name_tr=_('Saving'), *args, **kwargs)
         self._settings = settings
         self.SetSizer(wx.FlexGridSizer(cols=2))
-        self.background_color = Colour("light gray")
-        self.foreground_color = Colour("black")
+        self._gsettings = RideSettings()
+        self.csettings = self._gsettings['General']
+        self.background_color = self.csettings['background']
+        self.foreground_color = self.csettings['foreground']
         for editor in self._create_editors(settings):
             self._add_editor(editor)
         label, selector = boolean_editor(self, settings, 'tasks', _("Is Task?"),
                                          _("Default for Tasks or Tests sections."))
         l_reformat, editor = boolean_editor(self, settings, 'reformat', _('Reformat?'),
                                             _('Should it recalculate identation on Save?'))
-        if IS_WINDOWS:
-            label.SetForegroundColour(self.foreground_color)
-            label.SetBackgroundColour(self.background_color)
-            # label.SetOwnBackgroundColour(self.background_color)
-            # label.SetOwnForegroundColour(self.foreground_color)
-            l_reformat.SetForegroundColour(self.foreground_color)
-            l_reformat.SetBackgroundColour(self.background_color)
-            # l_reformat.SetOwnBackgroundColour(self.background_color)
-            # l_reformat.SetOwnForegroundColour(self.foreground_color)
+        label.SetForegroundColour(self.foreground_color)
+        label.SetBackgroundColour(self.background_color)
+        l_reformat.SetForegroundColour(self.foreground_color)
+        l_reformat.SetBackgroundColour(self.background_color)
         self.Sizer.AddMany([label, selector])
         self.Sizer.AddMany([l_reformat, editor])
         self.Sizer.Layout()
         self.Update()
 
-    def _create_editors(self, settings):
+    @staticmethod
+    def _create_editors(settings):
         return [
             StringChoiceEditor(settings, 'default file format', _('Default file format:'),
                                ('txt', 'tsv', 'html', 'robot', 'resource')
@@ -76,10 +73,7 @@ class SavingPreferences(PreferencesPanel):
 
     def _add_editor(self, editor):
         l_editor = editor.label(self)
-        if IS_WINDOWS:
-            l_editor.SetForegroundColour(self.foreground_color)
-            l_editor.SetBackgroundColour(self.background_color)
-            # l_editor.SetOwnBackgroundColour(self.background_color)
-            # l_editor.SetOwnForegroundColour(self.foreground_color)
+        l_editor.SetForegroundColour(self.foreground_color)
+        l_editor.SetBackgroundColour(self.background_color)
         self.Sizer.AddMany([l_editor, (editor.chooser(self),)])
         self.Sizer.AddMany([(editor.help(self), 0, wx.BOTTOM, 10), wx.Window(self)])

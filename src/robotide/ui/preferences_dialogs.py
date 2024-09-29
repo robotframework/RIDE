@@ -36,19 +36,12 @@ class PreferencesPanel(wx.Panel):
         # self.location = (_("Preferences"),)
         # self.title = _("Preferences")
         wx.Panel.__init__(self, parent, *args, **kwargs)
-
         self._gsettings = RideSettings()
         self.settings = self._gsettings['General']
-        background_color = self.settings['background']
-        foreground_color = self.settings['foreground']
-        self.SetBackgroundColour(background_color)
-        self.SetForegroundColour(foreground_color)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.background_color = self.settings['background']
+        self.foreground_color = self.settings['foreground']
+        self.SetBackgroundColour(self.background_color)
+        self.SetForegroundColour(self.foreground_color)
 
     def GetTitle(self):
         return getattr(self, "title", self.location[-1])
@@ -57,33 +50,11 @@ class PreferencesPanel(wx.Panel):
         """Creates a simple horizontal separator with title"""
         container = wx.Panel(parent, wx.ID_ANY)
         label = wx.StaticText(container, wx.ID_ANY, label=title)
-
-        background_color = self.settings['background']
-        foreground_color = self.settings['foreground']
-        label.SetBackgroundColour(background_color)
-        label.SetForegroundColour(foreground_color)
-
-        """
-        label.SetOwnBackgroundColour(Colour(200, 222, 40))
-        label.SetOwnForegroundColour(Colour(7, 0, 70))
-        
-        label.SetBackgroundColour(Colour(200, 222, 40))
-        label.SetOwnBackgroundColour(Colour(200, 222, 40))
-        label.SetForegroundColour(Colour(7, 0, 70))
-        label.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        label.SetBackgroundColour(self.background_color)
+        label.SetForegroundColour(self.foreground_color)
         sep = wx.StaticLine(container, wx.ID_ANY)
-        label.SetBackgroundColour(background_color)
-        label.SetForegroundColour(foreground_color)
-
-        """
-        sep.SetOwnBackgroundColour(Colour(200, 222, 40))
-        sep.SetOwnForegroundColour(Colour(7, 0, 70))
-        sep.SetBackgroundColour(Colour(200, 222, 40))
-        sep.SetOwnBackgroundColour(Colour(200, 222, 40))
-        sep.SetForegroundColour(Colour(7, 0, 70))
-        sep.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        label.SetBackgroundColour(self.background_color)
+        label.SetForegroundColour(self.foreground_color)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(label, 0, wx.EXPAND|wx.TOP, 8)
         sizer.Add(sep, 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 2)
@@ -102,21 +73,11 @@ class PreferencesComboBox(wx.ComboBox):
                                                   size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
         self._gsettings = RideSettings()
-        self.settings = self._gsettings['General']
-        background_color = self.settings['background']
-        foreground_color = self.settings['foreground']
+        self.gsettings = self._gsettings['General']
+        background_color = self.gsettings['secondary background']
+        foreground_color = self.gsettings['secondary foreground']
         self.SetBackgroundColour(background_color)
         self.SetForegroundColour(foreground_color)
-
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-       
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         self.Bind(wx.EVT_COMBOBOX, self.on_select)
 
     def _get_value(self):
@@ -165,19 +126,8 @@ class PreferencesSpinControl(wx.SpinCtrl):
         foreground_color = self.psettings['foreground']
         self.SetBackgroundColour(background_color)
         self.SetForegroundColour(foreground_color)
-
         self.SetRange(*choices)
         self.SetValue(self._get_value())
-
-        """
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         self.Bind(wx.EVT_SPINCTRL, self.on_change)
         self.Bind(wx.EVT_TEXT, self.on_change)
 
@@ -216,15 +166,6 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         foreground_color = self.psettings['foreground']
         self.SetBackgroundColour(background_color)
         self.SetForegroundColour(foreground_color)
-        """
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.on_pick_color)
 
     def on_pick_color(self, event):
@@ -251,22 +192,20 @@ class _ChoiceEditor(object):
         self._help = help
         self._gsettings = RideSettings()
         self.csettings = self._gsettings['General']
+        self.background_color = self.csettings['background']
+        self.foreground_color = self.csettings['foreground']
 
     def chooser(self, parent):
         element = self._editor_class(parent, wx.NewId(), self._settings,
                                      key=self._setting_name, choices=self._choices)
-        background_color = self.csettings['background']
-        foreground_color = self.csettings['foreground']
-        element.SetBackgroundColour(background_color)
-        element.SetForegroundColour(foreground_color)
+        element.SetBackgroundColour(self.background_color)
+        element.SetForegroundColour(self.foreground_color)
         return element
 
     def label(self, parent):
         llabel = wx.StaticText(parent, wx.NewId(), self._label)
-        background_color = self.csettings['background']
-        foreground_color = self.csettings['foreground']
-        llabel.SetBackgroundColour(background_color)
-        llabel.SetForegroundColour(foreground_color)
+        llabel.SetBackgroundColour(self.background_color)
+        llabel.SetForegroundColour(self.foreground_color)
         return llabel
 
     def help(self, parent):
@@ -320,12 +259,6 @@ def comma_separated_value_editor(parent, settings, name, label, thelp=''):
     foreground_color = esettings['foreground']
     editor.SetBackgroundColour(background_color)
     editor.SetForegroundColour(foreground_color)
-    """
-    editor.SetBackgroundColour(Colour(200, 222, 40))
-    editor.SetOwnBackgroundColour(Colour(200, 222, 40))
-    editor.SetForegroundColour(Colour(7, 0, 70))
-    editor.SetOwnForegroundColour(Colour(7, 0, 70))
-    """
     editor.SetToolTip(thelp)
 
     def set_value(evt):
@@ -335,8 +268,8 @@ def comma_separated_value_editor(parent, settings, name, label, thelp=''):
         evt.Skip()
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value(evt))
     elabel = Label(parent, label=label)
-    background_color = esettings['background']
-    foreground_color = esettings['foreground']
+    # background_color = esettings['background']
+    # foreground_color = esettings['foreground']
     elabel.SetBackgroundColour(background_color)
     elabel.SetForegroundColour(foreground_color)
     return elabel, editor

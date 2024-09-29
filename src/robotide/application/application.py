@@ -150,7 +150,7 @@ class RIDE(wx.App):
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
-        RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
+        RideSettingsChanged(keys=('General', 'ui language'), old=None, new=None).publish()
         wx.CallLater(600, ReleaseNotes(self).bring_to_front)
         return True
 
@@ -334,8 +334,8 @@ class RIDE(wx.App):
             from multiprocessing import shared_memory
             from .restartutil import restart_dialog
             new_locale = self._locale.GetName()
+            # print(f"DEBUG: application.py RIDE change_locale from {initial_locale} to {new_locale}")
             if initial_locale != new_locale:
-                # print(f"DEBUG: application.py RIDE change_locale CHANGED from {initial_locale} to {new_locale}")
                 if restart_dialog():  # DEBUG: See the in implementation why we don't restart
                     # print("DEBUG: application.py RIDE change_locale Restart accepted.")
                     # Shared memory to store language definition

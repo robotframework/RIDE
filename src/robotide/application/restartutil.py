@@ -32,7 +32,7 @@ def restart_dialog():
             f"{SPC}{_('Language change will only be correct after re-opening RIDE.')}"
             f"{SPC}\n{SPC}{_('Do you want to CLOSE RIDE now?')}\n{SPC}"
             # f"{_('After restarting RIDE you will see another dialog informing to close this RIDE instance.')}"
-            f"{SPC}\n", wx.GetActiveWindow(), no_default=True):
+            f"{SPC}\n", wx.GetTopLevelWindows()[0], no_default=True):
         return False
     else:
         # do_restart()

@@ -20,8 +20,6 @@ import wx
 from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerChoiceEditor, SpinChoiceEditor,
                                       StringChoiceEditor, PreferencesColorPicker)
 from .managesettingsdialog import SaveLoadSettings
-from wx import Colour
-from ..context import IS_WINDOWS
 try:
     from robot.conf import languages
 except ImportError:
@@ -79,7 +77,10 @@ class GeneralPreferences(PreferencesPanel):
         self._color_pickers = []
         self.name = 'General'
         self._apply_to_panels = self._settings.get('apply to panels', False)
-
+        self.background_color = self.settings['background']
+        self.foreground_color = self.settings['foreground']
+        self.sbackground_color = self.settings['secondary background']
+        self.sforeground_color = self.settings['secondary foreground']
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
         # don't have the time to do that right now, so this will have
@@ -96,12 +97,9 @@ class GeneralPreferences(PreferencesPanel):
                                               label=_("Apply to Project and File Explorer panels"))
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
-        """ DEBUG cancel Windows colors exception
-        if IS_WINDOWS:
-            background_color = Colour(LIGHT_GRAY)
-            foreground_color = Colour("black")
-            set_colors(self.cb_apply_to_panels, background_color, foreground_color)
-        """
+        set_colors(self.cb_apply_to_panels, self.background_color, self.foreground_color)
+        set_colors(reset, self.sbackground_color, self.sforeground_color)
+        set_colors(saveloadsettings, self.sbackground_color, self.sforeground_color)
         # set_colors(ui_language, Colour(self.color_background), Colour(self.color_foreground))
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
@@ -197,53 +195,34 @@ class GeneralPreferences(PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
-        background_color = Colour(LIGHT_GRAY)
-        foreground_color = Colour("black")
-        """ DEBUG cancel Windows colors exception
-        if IS_WINDOWS:
-            set_colors(l_size, background_color, foreground_color)
-        """
+        set_colors(l_size, self.background_color, self.foreground_color)
         sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
                 self._settings, 'zoom factor', _('Zoom Factor'), (-10, 20))
             l_zoom = z.label(self)
-            """ DEBUG cancel Windows colors exception
-            if IS_WINDOWS:
-                set_colors(l_zoom, background_color, foreground_color)
-            """
+            set_colors(l_zoom, self.background_color, self.foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if FIXED_FONT in self._settings:
             l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
-            """ DEBUG cancel Windows colors exception
-            if IS_WINDOWS:
-                set_colors(l_ff, background_color, foreground_color)
-            """
+            set_colors(l_ff, self.background_color, self.foreground_color)
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
             l_font = s.label(self)
-            """ DEBUG cancel Windows colors exception
-            if IS_WINDOWS:
-                set_colors(l_font, background_color, foreground_color)
-            """
+            set_colors(l_font, self.background_color, self.foreground_color)
             sizer.AddMany([l_font, s.chooser(self)])
         sizer.Layout()
         return sizer
 
     def _select_ui_language(self):
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
-        background_color = Colour(LIGHT_GRAY)
-        foreground_color = Colour("black")
         if 'ui language' in self._settings:
             ll = StringChoiceEditor(self._settings, 'ui language', _('Language'), read_languages())
             l_lang = ll.label(self)
-            """ DEBUG cancel Windows colors exception
-            if IS_WINDOWS:
-                set_colors(l_lang, background_color, foreground_color)
-            """
+            set_colors(l_lang, self.background_color, self.foreground_color)
             sizer.AddMany([l_lang, ll.chooser(self)])
         sizer.Layout()
         return sizer
@@ -273,17 +252,12 @@ class DefaultPreferences(GeneralPreferences):
             ('foreground text', _('Text Foreground')),
             ('background help', _('Help Background'))
         )
-        background_color = Colour(LIGHT_GRAY)
-        foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            """ DEBUG cancel Windows colors exception
-            if IS_WINDOWS:
-                set_colors(label, background_color, foreground_color)
-            """
+            set_colors(label, self.background_color, self.foreground_color)
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
