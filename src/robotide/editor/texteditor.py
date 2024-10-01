@@ -2443,7 +2443,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self.key_trigger = 0
         else:
             if self.autocomplete and not event.ControlDown():
-                if key > 32 and self.key_trigger > -1:
+                if 32 < key < 256 and self.key_trigger > -1:
                     if self.key_trigger < 2:
                         self.key_trigger += 1
                     else:
