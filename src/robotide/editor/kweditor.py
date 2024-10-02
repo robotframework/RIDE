@@ -350,25 +350,25 @@ class KeywordEditor(GridEditor, Plugin):
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
         popupitems = [
+                    _('Insert Rows\tCtrl-I'),
+                    _('Delete Rows\tCtrl-D'),
                     _('Comment Rows\tCtrl-3'),
                     _('Uncomment Rows\tCtrl-4'),
                     _('Move Rows Up\tAlt-Up'),
                     _('Move Rows Down\tAlt-Down'),
                     _('Swap Row Up\tCtrl-T'),
-                    _('Insert Rows\tCtrl-I'),
-                    _('Delete Rows\tCtrl-D'),
                     '---',
                     _('Comment Cells\tCtrl-Shift-3'),
                     _('Uncomment Cells\tCtrl-Shift-4'),
                     ]
         popupitems_nt = [
+                    'Insert Rows\tCtrl-I',
+                    'Delete Rows\tCtrl-D',
                     'Comment Rows\tCtrl-3',
                     'Uncomment Rows\tCtrl-4',
                     'Move Rows Up\tAlt-Up',
                     'Move Rows Down\tAlt-Down',
                     'Swap Row Up\tCtrl-T',
-                    'Insert Rows\tCtrl-I',
-                    'Delete Rows\tCtrl-D',
                     '---',
                     'Comment Cells\tCtrl-Shift-3',
                     'Uncomment Cells\tCtrl-Shift-4',
