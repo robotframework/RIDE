@@ -159,7 +159,9 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
-<li>✔ - Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
+<li>✔ - Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
+<b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
+<li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
 <li>✔ - Added Korean language support for UI.</li>
 <li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
@@ -200,6 +202,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
+<b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
 <li>Changed the order of insert and delete rows in Grid Editor rows context menu.</li>
 <li>Fixed validation of multiple arguments with default values in Grid Editor.</li>
 <li>Added color to Test Runner Console Log final output, report and log since RF v7.1rc1.</li>
@@ -336,7 +340,7 @@ python -m robotide.__init__
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 02/October/2024.</p>
+<p>RIDE {VERSION} was released on 04/October/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

@@ -9,6 +9,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Added
+
+- Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter
+``browser`` in the section ``[Plugins][[Test Runner]]``.
+
 === Changed
 
 - Changed the order of insert and delete rows in Grid Editor rows context menu.
