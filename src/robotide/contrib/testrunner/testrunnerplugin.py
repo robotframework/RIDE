@@ -499,14 +499,28 @@ class TestRunnerPlugin(Plugin):
         """Called when the user clicks on the "Report" button"""
         __ = event
         if self._report_file:
-            wx.LaunchDefaultBrowser(
-                "file:%s" % os.path.abspath(self._report_file))
+            # wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._report_file))
+            url = f"file:{os.path.abspath(self._report_file)}"
+            self.open_browser(url)
 
     def on_show_log(self, event):
         """Called when the user clicks on the "Log" button"""
         __ = event
         if self._log_file:
-            wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
+            # wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
+            url = f"file:{os.path.abspath(self._log_file)}"
+            self.open_browser(url)
+
+    def open_browser(self, url):
+        # Determine custom browser definition
+        try:
+            browser = self.global_settings['Plugins']['Test Runner']['browser']
+        except KeyError:
+            browser = None
+        if browser:
+            subprocess.Popen([browser, url])
+        else:
+            wx.LaunchDefaultBrowser(url)
 
     def on_process_ended(self, event):
         __ = event
