@@ -24,7 +24,7 @@ import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
 from dataclasses import dataclass
 
-import psutil
+import requests
 import wx
 from wx import Colour
 
@@ -72,8 +72,9 @@ class UpdateNotifierController(object):
     def _is_new_version_available(self):
         self._settings[_LAST_UPDATE_CHECK_SETTING] = time.time()
         try:
+            self._get_rf_pypi_data()
             self._newest_version = self._get_newest_version()
-            self._download_url = self._get_download_url(self._newest_version)
+            self._download_url = self._get_download_url()
         except Exception as e:
             print(e)
             # There are many possible errors:
@@ -85,20 +86,17 @@ class UpdateNotifierController(object):
         return cmp_versions(self.VERSION, self._newest_version) == -1
 
     def _get_newest_version(self):
-        return self._get_response(('robotframework-ride',), 'package_releases')[0]
+        return self.pyver
 
-    def _get_download_url(self, dversion):
-        from time import sleep
-        sleep(1)  # To avoid HTTPTooManyRequests
-        return self._get_response(('robotframework-ride', dversion), 'release_data')['download_url']
+    def _get_download_url(self):
+        return self.pyurl
 
-    @staticmethod
-    def _get_response(params, method):
-        xmlparm = xmlrpclib.dumps(params, method)
-        req = urllib2.Request('https://pypi.python.org/pypi', xmlparm.encode('utf-8'), {'Content-Type': 'text/xml'})
-        data = urllib2.urlopen(req, timeout=1).read()
-        xml = xmlrpclib.loads(data)[0][0]
-        return xml
+    def _get_rf_pypi_data(self):
+        resp = requests.get("https://pypi.org/simple/robotframework-ride/",
+                            headers={"Accept": "application/vnd.pypi.simple.v1+json"})
+        pydata = resp.json()
+        self.pyver = pydata['versions'][-1]
+        self.pyurl = pydata['files'][-1]['url']
 
 
 def upgrade_from_dev_dialog(version_installed, notebook, show_no_update=False):
@@ -151,7 +149,7 @@ def _add_content_to_clipboard(content):
 
 
 @dataclass
-class Command:
+class RunnerCommand:
     def __init__(self, name, command, documentation):
         self.name = name
         self.command = command
@@ -162,12 +160,8 @@ def do_upgrade(command, notebook):
     _add_content_to_clipboard(command)
     # print("DEBUG: Here will be the installation step.") # DEBUG 'pip list'
     from ..run import ui
-    config = Command('Upgrade RIDE', command, 'Uses pip to upgrade RIDE.')
+    config = RunnerCommand('Upgrade RIDE', command, 'Uses pip to upgrade RIDE.')
     result = ui.Runner(config, notebook).run()
-
-    # result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{result}){SPC}",
-    #           wx.GetActiveWindow())
-
     print(f"DEBUG: do_upgrade result={result}")
     result = 0
     time.sleep(10)
