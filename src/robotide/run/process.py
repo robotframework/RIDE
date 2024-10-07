@@ -17,6 +17,7 @@ import os
 import subprocess
 import tempfile
 import time
+from ..publish import RideRunnerStarted, RideRunnerStopped
 
 
 class Process(object):
@@ -29,6 +30,11 @@ class Process(object):
         self._out_path = None
         self._out_fd = None
         self._fuse = False
+        self._pid =None
+
+    @property
+    def pid(self):
+        return self._pid
 
     @staticmethod
     def _parse_command(command):
@@ -44,6 +50,8 @@ class Process(object):
             return
         try:
             self._process = subprocess.Popen(self._command, stdout=self._out_fd, stderr=subprocess.STDOUT)
+            self._pid = self._process.pid
+            RideRunnerStarted(process=self._pid).publish()
         except OSError as err:
             self._error = str(err)
 
@@ -53,6 +61,7 @@ class Process(object):
     def stop(self):
         self._process.kill()
         self._close_outputs()
+        RideRunnerStopped(process=self._pid).publish()
 
     def wait(self):
         if self._process is not None:

@@ -472,5 +472,14 @@ class RideTreeAwarePluginAdded(RideMessage):
     data = ['plugin']
 
 
+class RideRunnerStarted(RideMessage):
+    """ Sent when a process is started at Runner/RunAnything """
+    data = ['process']
+
+class RideRunnerStopped(RideMessage):
+    """ Sent when a process is stopped at Runner/RunAnything """
+    data = ['process']
+
+
 __all__ = [name for name, cls in globals().items()
            if inspect.isclass(cls) and issubclass(cls, RideMessage)]
