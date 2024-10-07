@@ -21,9 +21,9 @@ import sys
 
 import time
 import urllib.request as urllib2
-import xmlrpc.client as xmlrpclib
 from dataclasses import dataclass
 
+import psutil
 import requests
 import wx
 from wx import Colour
@@ -32,6 +32,7 @@ from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
 from ..postinstall import MessageDialog
+from ..publish import PUBLISHER, RideRunnerStarted, RideRunnerStopped
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -161,46 +162,26 @@ def do_upgrade(command, notebook):
     # print("DEBUG: Here will be the installation step.") # DEBUG 'pip list'
     from ..run import ui
     config = RunnerCommand('Upgrade RIDE', command, 'Uses pip to upgrade RIDE.')
+    PUBLISHER.subscribe(start_upgraded, RideRunnerStopped)
     result = ui.Runner(config, notebook).run()
-    print(f"DEBUG: do_upgrade result={result}")
-    result = 0
+    # result = 0
     time.sleep(10)
-    # wx.Exit()
-    """
-    my_pid = psutil.Process()
-    my_pip = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result = None
-    count = 0
-    while not result and count < 60:
-        count += 1
-        outs, errs = my_pip.communicate()
-        # DEBUG: Add output to a notebook tab
-        print(f"{outs}\n")
-        if errs:
-            print(f"\nERRORS: {errs}\n")
-            errs = None
-        result = my_pip.returncode
-        if result == 0:
-            break
-        time.sleep(1)
-    """
-    if result != 0:
+    if result == -1:
         _askyesno(_("Failed to Upgrade"), f"{SPC}{_('An error occurred when installing new version')}",
                   wx.GetActiveWindow())
         return False
+
+
+def start_upgraded(message):
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
     wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
-    # Wait 10 seconds before trying to kill this process
-    """ Not working well:
-    wx.CallLater(10000, psutil.Process.kill, my_pid.pid)
-    """
-    result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{result}){SPC}",
+    pid = psutil.Process.pid
+    result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{pid}){SPC}",
                        wx.GetActiveWindow())
+    PUBLISHER.unsubscribe(start_upgraded, RideRunnerStopped)
     if result:
         time.sleep(10)
         wx.App.Get().OnExit()
-    # _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}",
-    #           wx.GetActiveWindow())
 
 
 class LocalHtmlWindow(HtmlWindow):
@@ -277,4 +258,5 @@ class UpdateDialog(RIDEDialog):
     def on_upgrade_now(self, event):
         __ = event
         _add_content_to_clipboard(self._command)
+        self.Hide()
         do_upgrade(self._command, self._notebook)

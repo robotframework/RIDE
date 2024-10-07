@@ -19,11 +19,12 @@ import wx
 from .process import Process
 from ..widgets import Label, Font, VerticalSizer, HorizontalSizer
 from ..log import LogOutput
+from ..publish import RideRunnerStopped
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
-FINNISHED = _('finished')
+FINISHED = _('finished')
 RUN_AGAIN = _('Run Again')
 RUNNING = _('running')
 STOP = _('Stop')
@@ -48,6 +49,11 @@ class Runner(wx.EvtHandler):
         self._config = config
         self._window = self._get_output_window(notebook)
         self.output_panel = self._window.output_panel
+        self._pid = None
+
+    @property
+    def pid(self):
+        return self._pid
 
     def _get_output_window(self, notebook):
         return _OutputWindow(notebook, self)
@@ -62,8 +68,11 @@ class Runner(wx.EvtHandler):
         try:
             self._process.start()
             self._timer.Start(500)
+            self._pid = self._process.pid
+            return self._pid
         except Exception as err:
             wx.MessageBox(str(err), style=wx.ICON_ERROR)
+            return -1
 
     def on_timer(self, event=None):
         __ = event
@@ -114,7 +123,8 @@ class _OutputWindow(wx.Panel):  # wx.ScrolledWindow):
             self.output_panel.update(output)
             self.SetVirtualSize(self.output_panel.Size)
         if finished:
-            self._rename_tab(f"{self._runner.name} ({FINNISHED})")
+            RideRunnerStopped(process=self._runner.pid).publish()
+            self._rename_tab(f"{self._runner.name} ({FINISHED})")
             self.Parent.allow_closing(self)
             self._state_button.enable_run_again()
             size = (max(85, self._font_size * len(' ' + RUN_AGAIN + ' ')), max(28, self._font_size * 3))
