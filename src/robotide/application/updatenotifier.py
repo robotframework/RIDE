@@ -32,7 +32,7 @@ from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
 from ..postinstall import MessageDialog
-from ..publish import PUBLISHER, RideRunnerStarted, RideRunnerStopped
+from ..publish import PUBLISHER, RideRunnerStopped
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -164,7 +164,6 @@ def do_upgrade(command, notebook):
     config = RunnerCommand('Upgrade RIDE', command, 'Uses pip to upgrade RIDE.')
     PUBLISHER.subscribe(start_upgraded, RideRunnerStopped)
     result = ui.Runner(config, notebook).run()
-    # result = 0
     time.sleep(10)
     if result == -1:
         _askyesno(_("Failed to Upgrade"), f"{SPC}{_('An error occurred when installing new version')}",
@@ -173,15 +172,17 @@ def do_upgrade(command, notebook):
 
 
 def start_upgraded(message):
+    __ = message
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
     wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
-    pid = psutil.Process.pid
+    pid = psutil.Process
     result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{pid}){SPC}",
                        wx.GetActiveWindow())
     PUBLISHER.unsubscribe(start_upgraded, RideRunnerStopped)
     if result:
         time.sleep(10)
-        wx.App.Get().OnExit()
+        wx.CallAfter(wx.App.Get().Close)
+        # wx.App.Get().OnExit()
 
 
 class LocalHtmlWindow(HtmlWindow):
@@ -258,5 +259,5 @@ class UpdateDialog(RIDEDialog):
     def on_upgrade_now(self, event):
         __ = event
         _add_content_to_clipboard(self._command)
-        self.Hide()
+        self.Close()
         do_upgrade(self._command, self._notebook)
