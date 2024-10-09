@@ -27,8 +27,7 @@ SPC = "  "
 
 
 def restart_dialog():
-    if not _askyesno(
-           _("Re-open RIDE for Language Change"),
+    if not _askyesno(_("Re-open RIDE for Language Change"),
             f"{SPC}{_('Language change will only be correct after re-opening RIDE.')}"
             f"{SPC}\n{SPC}{_('Do you want to CLOSE RIDE now?')}\n{SPC}"
             # f"{_('After restarting RIDE you will see another dialog informing to close this RIDE instance.')}"
@@ -41,16 +40,15 @@ def restart_dialog():
 
 def do_restart():
     my_pid = psutil.Process()
-    command = sys.executable + " -m robotide.__init__ --noupdatecheck"
     # DEBUG: The starting of new RIDE instance with subsequent closing of this instance,
     # makes problems in editing the current file, and even opening new file. Because of
-    # this, the restarting is disabled, until someone finds a good way to clean-up memory.
-    # wx.CallLater(100, subprocess.Popen, command.split(' '), start_new_session=True)
-    # Wait 10 seconds before trying to kill this process
-    """ Not working well:
-    wx.CallLater(10000, psutil.Process.kill, my_pid.pid)
-    """
-    wx.CallLater(5000, _askyesno, _("Completed Language Change"),
-                 f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}",
-                 wx.GetActiveWindow())
-
+    # this, the restarting was disabled, until someone finds a good way to clean-up memory.
+    command = sys.executable + " -m robotide.__init__ --noupdatecheck"
+    wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
+    result = _askyesno(_("Completed Language Change"),
+                       f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}"
+                       f"\n{SPC}{_('Do you want to CLOSE RIDE now?')}\n{SPC}",
+                       wx.GetActiveWindow())
+    if result:
+        wx.CallLater(1000, wx.App.Get().GetTopWindow().Close)
+        return True

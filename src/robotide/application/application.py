@@ -15,6 +15,8 @@
 
 import builtins
 import os
+from csv import excel
+
 import wx
 from contextlib import contextmanager
 from pathlib import Path
@@ -332,24 +334,25 @@ class RIDE(wx.App):
         self._locale.AddCatalog('RIDE')
         if len(message.keys) > 1:  # Avoid initial setting
             from multiprocessing import shared_memory
-            from .restartutil import restart_dialog
+            from .restartutil import do_restart
             new_locale = self._locale.GetName()
             # print(f"DEBUG: application.py RIDE change_locale from {initial_locale} to {new_locale}")
             if initial_locale != new_locale:
-                if restart_dialog():  # DEBUG: See the in implementation why we don't restart
-                    # print("DEBUG: application.py RIDE change_locale Restart accepted.")
-                    # Shared memory to store language definition
+                #if restart_dialog():  # DEBUG: See the in implementation why we don't restart
+                # print("DEBUG: application.py RIDE change_locale Restart accepted.")
+                # Shared memory to store language definition
+                try:
+                    sharemem = shared_memory.ShareableList(['en'], name="language")
+                except FileExistsError:  # Other instance created file
+                    sharemem = shared_memory.ShareableList(name="language")
+                result = do_restart()
+                if result:
                     try:
-                        sharemem = shared_memory.ShareableList(['en'], name="language")
-                    except FileExistsError:  # Other instance created file
-                        sharemem = shared_memory.ShareableList(name="language")
-                    finally:
                         sharemem.shm.close()
                         sharemem.shm.unlink()
-                    # wx.CallAfter(self.ExitMainLoop)
-                    # wx.CallLater(1000, self.Destroy)
-                    wx.CallLater(1000, self.ExitMainLoop)
-                    # self.DeletePendingEvents()
+                    except FileNotFoundError:
+                        pass
+
 
     @staticmethod
     def update_excludes(message):

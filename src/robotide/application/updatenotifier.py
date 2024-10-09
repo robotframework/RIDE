@@ -175,14 +175,14 @@ def start_upgraded(message):
     __ = message
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
     wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
-    pid = psutil.Process
-    result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{pid}){SPC}",
+    p = psutil.Process()
+    result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{p.pid}){SPC}"
+                                               f"\n{SPC}{_('Do you want to CLOSE RIDE now?')}\n{SPC}",
                        wx.GetActiveWindow())
     PUBLISHER.unsubscribe(start_upgraded, RideRunnerStopped)
     if result:
-        time.sleep(10)
-        wx.CallAfter(wx.App.Get().Close)
-        # wx.App.Get().OnExit()
+        wx.CallAfter(wx.App.Get().GetTopWindow().Close)
+        # wx.CallAfter(p.terminate)
 
 
 class LocalHtmlWindow(HtmlWindow):
