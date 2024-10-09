@@ -108,7 +108,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def setUp(self):
         self._callback_called = False
-        self._version = None
+        self._newest_version = None
         self._url = None
         self.app = MyApp()
         settings = self.app.settings
@@ -141,9 +141,9 @@ class UpdateNotifierTestCase(unittest.TestCase):
         __ = notebook
         self.assertFalse(self._callback_called)
         self._callback_called = True
-        self.assertNotEqual(None, version)
-        self._version = version
-        self.assertNotEqual(None, url)
+        self.assertIsNotNone(version)
+        self._newest_version = version
+        self.assertIsNotNone(url)
         self._url = url
         self.assertEqual(dict, type(settings))
 
@@ -151,8 +151,15 @@ class UpdateNotifierTestCase(unittest.TestCase):
     def _update_notifier_controller(settings, notebook, current, new, url='some url'):
         ctrl = UpdateNotifierController(settings, notebook)
         ctrl.VERSION = current
-        ctrl._get_newest_version = lambda: new
-        ctrl._get_download_url = lambda v: url if v == new else None
+        def _new():
+            return new
+        ctrl._get_newest_version = _new
+        def _url():
+            return url
+        ctrl._get_download_url = _url
+        def _null():
+            return None
+        ctrl._get_rf_pypi_data = _null
         return ctrl
 
     @staticmethod
@@ -165,11 +172,11 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0', '1', 'http://xyz.abc.efg.di')
         ctrl.notify_update_if_needed(self._callback)
-        self.assertEqual('1', self._version)
-        self.assertEqual('http://xyz.abc.efg.di', self._url)
         self.assertTrue(self._callback_called)
+        self.assertEqual('1', self._newest_version)
+        self.assertEqual('http://xyz.abc.efg.di', self._url)
         self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
@@ -179,9 +186,9 @@ class UpdateNotifierTestCase(unittest.TestCase):
         ctrl = self._update_notifier_controller(settings, self.notebook, '2.0', '2.0.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(self._callback_called)
-        self.assertEqual('2.0.1', self._version)
+        self.assertEqual('2.0.1', self._newest_version)
         self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
 
     def test_last_update_done_less_than_a_week_ago(self):
         original_time = time.time() - 60 * 60 * 24 * 3
@@ -205,14 +212,14 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.55', '0.55')
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_no_update_found_dev(self):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.56', '0.56')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False, show_no_update=False)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_no_update_found_dev_notify(self):
@@ -225,7 +232,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings(check_for_updates=None, last_update_check=None)
         ctrl = self._update_notifier_controller(settings, self.notebook,'1.0.2', '1.0.2')
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
@@ -233,7 +240,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings(check_for_updates=None, last_update_check=None)
         ctrl = self._update_notifier_controller(settings, self.notebook, '1.2', '2.0')
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
@@ -246,7 +253,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
         ctrl._get_newest_version = throw_timeout_error
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 10)  # The dialog timeout in 10 seconds
         self.assertFalse(self._callback_called)
 
     def test_download_url_checking_timeouts(self):
@@ -261,14 +268,14 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
         ctrl._get_download_url = throw_timeout_error
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_server_returns_no_versions(self):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '1.2.2', None)
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
@@ -276,7 +283,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.44', '0.43.1')
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
@@ -284,7 +291,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.43.0', '0.43.1')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 19)  # The dialog timeout in 20 seconds
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 19)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
@@ -292,7 +299,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev14')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 20)  # The dialog timeout in 20 seconds
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 20)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
@@ -300,7 +307,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev12')
         ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 20)  # The dialog timeout in 20 seconds
+        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 20)  # The dialog timeout in 20 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
