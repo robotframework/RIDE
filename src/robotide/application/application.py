@@ -15,8 +15,6 @@
 
 import builtins
 import os
-from csv import excel
-
 import wx
 from contextlib import contextmanager
 from pathlib import Path
