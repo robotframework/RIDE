@@ -31,6 +31,15 @@ from robotide.lib.compat.parsing import language
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
+FORCE_TAGS = 'Force Tags'
+DEFAULT_TAGS = 'Default Tags'
+TEST_TAGS = 'Test Tags'
+SUITE_SETUP = 'Suite Setup'
+SUITE_TEAR = 'Suite Teardown'
+TEST_SETUP = 'Test Setup'
+TEST_TEAR = 'Test Teardown'
+RET_VAL = 'Return Value'
+TEST_TEMPL = 'Test Template'
 
 def editor_dialog(obj, lang='en'):
     set_lang = lang if lang and len(lang) > 0 else 'en'
@@ -295,11 +304,11 @@ class _SettingDialog(_Dialog):
 
 
 class ForceTagsDialog(_SettingDialog):
-    _title_nt = 'Force Tags'
+    _title_nt = FORCE_TAGS
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Force Tags'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=FORCE_TAGS):
         __ = title
-        self._title = _('Force Tags')
+        self._title = _(FORCE_TAGS)
         _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -308,11 +317,11 @@ class ForceTagsDialog(_SettingDialog):
 
 
 class DefaultTagsDialog(_SettingDialog):
-    _title_nt = 'Default Tags'
+    _title_nt = DEFAULT_TAGS
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Default Tags'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=DEFAULT_TAGS):
         __ = title
-        self._title = _('Default Tags')
+        self._title = _(DEFAULT_TAGS)
         _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -321,11 +330,11 @@ class DefaultTagsDialog(_SettingDialog):
 
 
 class TestTagsDialog(_SettingDialog):
-    _title_nt = 'Test Tags'
+    _title_nt = TEST_TAGS
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Test Tags'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_TAGS):
         __ = title
-        self._title = _('Test Tags')
+        self._title = _(TEST_TAGS)
         _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -367,11 +376,11 @@ class _FixtureDialog(_SettingDialog):
 
 class SuiteSetupDialog(_FixtureDialog):
     tooltip = _("Suite Setup is run before any tests")
-    _title_nt = 'Suite Setup'
+    _title_nt = SUITE_SETUP
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Suite Setup'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=SUITE_SETUP):
         __ = title
-        self._title = _('Suite Setup')
+        self._title = _(SUITE_SETUP)
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -380,11 +389,11 @@ class SuiteSetupDialog(_FixtureDialog):
 
 
 class SuiteTeardownDialog(_FixtureDialog):
-    _title_nt = 'Suite Teardown'
+    _title_nt = SUITE_TEAR
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Suite Teardown'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=SUITE_TEAR):
         __ = title
-        self._title = _('Suite Teardown')
+        self._title = _(SUITE_TEAR)
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -394,11 +403,11 @@ class SuiteTeardownDialog(_FixtureDialog):
 
 class TestSetupDialog(_FixtureDialog):
     __test__ = False
-    _title_nt = 'Test Setup'
+    _title_nt = TEST_SETUP
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Test Setup'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_SETUP):
         __ = title
-        self._title = _('Test Setup')
+        self._title = _(TEST_SETUP)
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -408,11 +417,11 @@ class TestSetupDialog(_FixtureDialog):
 
 class TestTeardownDialog(_FixtureDialog):
     __test__ = False
-    _title_nt = 'Test Teardown'
+    _title_nt = TEST_TEAR
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Test Teardown'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_TEAR):
         __ = title
-        self._title = _('Test Teardown')
+        self._title = _(TEST_TEAR)
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -463,11 +472,11 @@ class TemplateDialog(_FixtureDialog):
 
 class TestTemplateDialog(_FixtureDialog):
     __test__ = False
-    _title_nt = 'Test Template'
+    _title_nt = TEST_TEMPL
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Test Template'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=TEST_TEMPL):
         __ = title
-        self._title = _('Test Template')
+        self._title = _(TEST_TEMPL)
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -492,11 +501,11 @@ class ArgumentsDialog(_SettingDialog):
 
 
 class ReturnValueDialog(_SettingDialog):
-    _title_nt = 'Return Value'
+    _title_nt = RET_VAL
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Return Value'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt=RET_VAL):
         __ = title
-        self._title = _('Return Value')
+        self._title = _(RET_VAL)
         _SettingDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
