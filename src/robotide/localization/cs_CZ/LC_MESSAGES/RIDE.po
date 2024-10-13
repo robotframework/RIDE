@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-10-09 16:44+0100\n"
-"PO-Revision-Date: 2024-09-03 11:12\n"
+"PO-Revision-Date: 2024-10-13 00:56\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
-"Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,11 +15,14 @@ msgstr ""
 "X-Crowdin-Language: cs\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"Language: cs_CZ\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:406
 msgid "Found Robot Framework version %s from %s."
 msgstr "Robot Framework verze %s byla nalezena z %s."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
@@ -28,139 +30,165 @@ msgstr "Robot Framework verze %s byla nalezena z %s."
 msgid "Help"
 msgstr "Nápověda"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
 msgstr "Poznámky k vydání"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
 msgstr "Zobrazit poznámky k vydání"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
 msgstr "Offline protokol změn"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
 msgstr "Zobrazit offline ZMĚNU"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
 msgstr "Zkontrolujte online verzi na "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
 msgstr "Znovu otevřít RIDE pro změnu jazyka"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr "Změna jazyka bude korektní pouze po opětovném otevření RIDE."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:180
 msgid "Do you want to CLOSE RIDE now?"
 msgstr "Chcete nyní UZAVŘIT JÍZD?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
 msgstr "Dokončená změna jazyka"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "You should close this RIDE (Process ID = "
 msgstr "Měli byste uzavřít tuto RIDE (Process ID = "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
 msgid "New development version is available."
 msgstr "Je k dispozici nová vývojová verze."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
 msgid "Upgrade?"
 msgstr "Vylepšit?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
 msgid "You may install version %s with:"
 msgstr "Verze %s můžete nainstalovat pomocí:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:114
 msgid "Click OK to Upgrade now!"
 msgstr "Klepněte na tlačítko OK pro aktualizaci nyní!"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:218
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Po aktualizaci uvidíte další dialogové okno pro uzavření této instance RIDE."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Po aktualizaci uvidíte další dialogové okno pro uzavření této instance RIDE."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:123
 msgid "No Upgrade Available"
 msgstr "K dispozici není žádná aktualizace"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:123
 msgid "You have the latest version of RIDE."
 msgstr "Máte nejnovější verzi RIDE."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:124
 msgid "              Have a nice day :)"
 msgstr "              Příjemný den :)"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:169
 msgid "An error occurred when installing new version"
 msgstr "Při instalaci nové verze došlo k chybě"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:169
 msgid "Failed to Upgrade"
 msgstr "Aktualizace se nezdařila"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "Completed Upgrade"
 msgstr "Dokončená aktualizace"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:205
 msgid "Update available"
 msgstr "K dispozici je aktualizace"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:213
 msgid " available from "
 msgstr " k dispozici od "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:213
 msgid "New version "
 msgstr "Nová verze "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:214
 msgid "See this version "
 msgstr "Zobrazit tuto verzi "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
 msgid "You can update with the command:"
 msgstr "Můžete aktualizovat příkazem:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:217
 msgid "Or, click <b>Upgrade Now</b>"
 msgstr "Nebo klikněte <b>Upgradujte nyní</b>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:219
 msgid "See the latest development "
 msgstr "Zobrazit nejnovější vývoj "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:224
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"Používám jinou metodu pro RIDE aktualizace\n"
+msgstr "Používám jinou metodu pro RIDE aktualizace\n"
 " a nepotřebuji automatické kontroly aktualizací"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:229
 msgid "remind me later"
 msgstr "Připomenout později"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:235
 msgid "Upgrade Now"
 msgstr "Upgradovat nyní"
@@ -194,45 +222,44 @@ msgid "Some of the icons are from %s."
 msgstr "Některé ikony jsou od %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s správce projektu děkuje původním autorům a všem uživatelům a "
-"spolupracovníkům."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s správce projektu děkuje původním autorům a všem uživatelům a spolupracovníkům."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"Zvláštní poděkování %s za to, že sponzoroval vývoj přeložené kompatibility "
-"testovacích suites s %s verzí 6.1 v jejich %s."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "Zvláštní poděkování %s za to, že sponzoroval vývoj přeložené kompatibility testovacích suites s %s verzí 6.1 v jejich %s."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
 msgstr "Možnosti záznamu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:433
 msgid "Output directory: "
 msgstr "Výstupní složka: "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:453
 msgid "Add suite name to log names"
 msgstr "Přidat název do názvů logů"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:456
 msgid "Add timestamp to log names"
 msgstr "Přidat časové razítko k názvům protokolů"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:459
 msgid "Save Console and Message logs"
 msgstr "Uložit konzoli a protokoly zpráv"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:477
 msgid "Select Logs Directory"
 msgstr "Vyberte adresář logů"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:499
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:483
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:487
@@ -241,55 +268,68 @@ msgstr "Vyberte adresář logů"
 msgid "Arguments"
 msgstr "Argumenty"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:512
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:538
 msgid "Arguments for the test run. Arguments are space separated list."
 msgstr "Argumenty pro běh testu. Argumenty jsou seznam oddělený mezerami."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:557
 msgid "Does not execute - help or version option given"
 msgstr "Neprovede - nápověda nebo volba verze"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:562
 msgid "Unknown option(s):"
 msgstr "Neznámé možnosti:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:568
 msgid "Tests filters"
 msgstr "Testovací filtry"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:578
 msgid "Only run tests with these tags:"
 msgstr "Proveďte zkoušky pouze s těmito štítky:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:581
 msgid "Skip tests with these tags:"
 msgstr "Přeskočit testy s těmito štítky:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:679
 msgid "Script to run tests:"
 msgstr "Skript k provedení testů:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:99
 msgid "Stop a running test"
 msgstr "Zastavit běh zkoušky"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Step over"
 msgstr "Překročení"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:131
 msgid "A plugin for running tests from within RIDE"
 msgstr "Plugin pro běh testů z RIDE"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:158
 msgid "Run"
 msgstr "Spustit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:227
 msgid "Run Tests"
 msgstr "Spustit testy"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:227
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:237
@@ -306,249 +346,290 @@ msgstr "Spustit testy"
 msgid "Tools"
 msgstr "Nástroje a nářadí"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:229
 msgid "Run the selected tests"
 msgstr "Spustit vybrané testy"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
 msgid "Run Tests with Debug"
 msgstr "Spustit testy s laděním"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:234
 msgid "Run the selected tests with Debug"
 msgstr "Spustit vybrané testy s laděním"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:237
 msgid "Stop Test Run"
 msgstr "Zastavit zkušební běh"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:321
 msgid "[ SENDING STOP SIGNAL ]\n"
 msgstr "[ SENDING STOP SIGNAL ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:328
 msgid "[ SENDING PAUSE SIGNAL ]\n"
 msgstr "[ ODESLÁVÁNÍ PALUBNÍCH SIGNÁLŮ ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:334
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
 msgstr "[ SENDING CONTINUE SIGNAL ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:340
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr "[ ODESÍLÁNÍ KUPUJÍCÍHO SIGNÁLU ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:346
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
 msgstr "[ ODESLÁVÁNÍ SIGNÁLU PŘEPRAVY KROKU ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:379
 msgid "command: %s\n"
 msgstr "příkaz: %s\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:449
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"Existují neuložené úpravy.\n"
+msgstr "Existují neuložené úpravy.\n"
 "        Chcete uložit všechny změny a spustit testy?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:451
 msgid "Unsaved Modifications"
 msgstr "Neuložené úpravy"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:460
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
 msgstr ""
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:462
 msgid "No tests selected"
 msgstr "Nebyly vybrány žádné testy"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:538
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "Test dokončen {}"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:572
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr "Protokol zpráv překročil 80% paměti procesu, nyní se zastaví..."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:740
 msgid "Start"
 msgstr "Začít"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:741
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:744
 msgid "Start robot"
 msgstr "Spustit robota"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:742
 msgid "Start running the robot test suite"
 msgstr "Zahájit spuštění testovací sady robota"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:743
 msgid "Debug"
 msgstr "Debug"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:745
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Začněte běžet testovací balík s DEBUG loglevel"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:747
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Zastavit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:751
 msgid "Pause"
 msgstr "Pozastavit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:753
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:754
 msgid "Pause test execution"
 msgstr "Pozastavit provedení testu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:755
 msgid "Continue"
 msgstr "Pokračovat"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:758
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:759
 msgid "Continue test execution"
 msgstr "Pokračovat v provádění testu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:760
 msgid "Next"
 msgstr "Další"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:762
 msgid "Step next"
 msgstr "Další krok"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Execution Profile:  "
 msgstr "Profil spuštění:  "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:790
 msgid "Choose which method to use for running the tests"
 msgstr "Vyberte, jakou metodu pro provedení testů"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:797
 msgid "Open Logs Directory"
 msgstr "Otevřít adresář logů"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:799
 msgid "View All Logs in Explorer"
 msgstr "Zobrazit všechny logy v Průzkumníku"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:800
 msgid " Report"
 msgstr " Nahlásit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:801
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Zobrazit zprávu robota v prohlížeči (CtrlCmd-R)"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:803
 msgid " Log"
 msgstr " Záznamy"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:804
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Zobrazit protokol robotů v prohlížeči (CtrlCmd-L)"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:811
 msgid " Autosave  "
 msgstr " Autosave  "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:812
 msgid "Automatically save all changes before running"
 msgstr "Automaticky uložit všechny změny před spuštěním"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:817
 msgid " Pause after failure  "
 msgstr " Pozastavit po selhání  "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:818
 msgid "Automatically pause after failing keyword"
 msgstr "Automaticky pozastavit po selhání klíčového slova"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:926
 msgid "Console log"
 msgstr "Protokol konzole"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:930
 msgid "Message log"
 msgstr "Protokol zpráv"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1053
 msgid "Starting test:"
 msgstr "Počáteční zkouška:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1058
 msgid "Ending test:"
 msgstr "Zkouška na konci:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1066
 msgid "UNKNOWN STATUS:"
 msgstr "NEZNÁMÝ STAV:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
 msgid "<<  PAUSED  >>"
 msgstr "<< PAUZED >>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1099
 msgid "<< CONTINUE >>"
 msgstr "<< KONTINUE >>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1140
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"Neexistuje adresář se záznamy. \n"
+msgstr "Neexistuje adresář se záznamy. \n"
 "Prosím, spusťte testy a zkuste to znovu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1142
 msgid "No logs directory"
 msgstr "Adresář bez logů"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1228
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "uplynulý čas: %s  pass: %s  přeskočení: %s  selhalo: %s"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1259
 msgid "  current keyword: "
 msgstr "  aktuální klíčové slovo: "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
-msgid ""
-"[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgid "[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[Navigate]\n"
-"        ! o &Zpět | Vraťte se zpět na předchozí místo ve stromu | Alt-%s | "
-"ART_GO_BACK\n"
-"        ! o &Předem | Přejít vpřed na další místo ve stromu | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgstr "[Navigate]\n"
+"        ! o &Zpět | Vraťte se zpět na předchozí místo ve stromu | Alt-%s | ART_GO_BACK\n"
+"        ! o &Předem | Přejít vpřed na další místo ve stromu | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 msgid "Add Tag to selected"
 msgstr "Přidat značku k vybranému"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
@@ -558,14 +639,17 @@ msgstr "Přidat značku k vybranému"
 msgid "Edit"
 msgstr "Upravit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 msgid "Clear Selected"
 msgstr "Vymazat vybrané"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:70
 msgid "Add Tag To Selected"
 msgstr "Přidat značku k vybranému"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:70
 msgid "Enter Tag Name"
 msgstr "Zadejte název štítku"
@@ -648,25 +732,16 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Pomoc s obsahem (Ctrl-Space nebo Ctrl-Alt-Space) | Zobrazit možné klíčové "
-"slovo a dokončení proměnné | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Pomoc s obsahem (Ctrl-Space nebo Ctrl-Alt-Space) | Zobrazit možné klíčové slovo a dokončení proměnné | | | POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"Výchozí editor pluginu. Také známý jako Grid nebo Editor článků.\n"
-"\n"
-"    Tento plugin implementuje editory pro různé položky testovacích dat "
-"Robot Framework\n"
+msgstr "Výchozí editor pluginu. Také známý jako Grid nebo Editor článků.\n\n"
+"    Tento plugin implementuje editory pro různé položky testovacích dat Robot Framework\n"
 "    .\n"
 "    "
 
@@ -675,8 +750,7 @@ msgid "Editor"
 msgstr "Editor"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:27
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
 msgstr "Možné potrubí v hodnotě musí být uniknuto zpětným lomítkem jako '\\|'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:28
@@ -684,82 +758,54 @@ msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
 msgstr "Oddělte značky znakem potrubí jako 'tag | druhá značka | 3rd'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:29
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
 msgstr "Oddělte možné argumenty znakem \"Mé klíčové slovo | arg 1 | arg 2\"."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:30
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
-msgstr ""
-"Použij syntaxi času jako '1min 10' nebo '2 hodiny' nebo zadej hodnotu jako "
-"sekundy.\n"
-"Před robotem v3. .1 volitelná zpráva mohla být zadána jako '3 minuty | Moje "
-"zpráva zde'."
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
+msgstr "Použij syntaxi času jako '1min 10' nebo '2 hodiny' nebo zadej hodnotu jako sekundy.\n"
+"Před robotem v3. .1 volitelná zpráva mohla být zadána jako '3 minuty | Moje zpráva zde'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | "
-"${arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"Zadejte argumenty oddělené znakem potrubí jako '${arg1} | ${arg2}'.\n"
-"Výchozí hodnoty jsou uvedeny pomocí stejného znaménka a posledním argumentem "
-"může být proměnná seznamu.\n"
+msgstr "Zadejte argumenty oddělené znakem potrubí jako '${arg1} | ${arg2}'.\n"
+"Výchozí hodnoty jsou uvedeny pomocí stejného znaménka a posledním argumentem může být proměnná seznamu.\n"
 "Příklad: '${arg1} | ${arg2}=výchozí hodnota | @{rest}'.\n"
 "Poznámka. V tomto poli můžete použít zkratky proměnných."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"Alias může být použit k importu stejné knihovny vícekrát s různými jmény.\n"
+msgstr "Alias může být použit k importu stejné knihovny vícekrát s různými jmény.\n"
 "Alias je předveden: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:39
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" . Všimněte si, že od Robota v6.0, importy se starým S NÁZEV jsou nahrazeny "
-"AS."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " . Všimněte si, že od Robota v6.0, importy se starým S NÁZEV jsou nahrazeny AS."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:41
 msgid "Give name and value of the variable."
 msgstr "Uveďte název a hodnotu proměnné."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:42
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Uveďte název a hodnotu proměnné. Vložte proměnné položky do samostatných "
-"buněk."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Uveďte název a hodnotu proměnné. Vložte proměnné položky do samostatných buněk."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:44
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
-msgstr ""
-"Zadejte název a hodnotu proměnné. Vložte položky ve slovníku do samostatných "
-"buněk."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
+msgstr "Zadejte název a hodnotu proměnné. Vložte položky ve slovníku do samostatných buněk."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
 msgid "Individual items must be in format `key=value`"
 msgstr "Jednotlivé položky musí být ve formátu `key=value`"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Uveďte název, volitelné argumenty a volitelný alias knihovny pro import."
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Uveďte název, volitelné argumenty a volitelný alias knihovny pro import."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:47
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
@@ -796,8 +842,7 @@ msgstr "Kromě toho jsou URL převedeny na klikatelné odkazy."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
-"Tyto značky jsou v této zkušební sadě nastaveny na všechny zkušební případy."
+msgstr "Tyto značky jsou v této zkušební sadě nastaveny na všechny zkušební případy."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:61
@@ -806,150 +851,88 @@ msgid "Inherited tags are not shown in this view."
 msgstr "Zděděné štítky nejsou zobrazeny v tomto zobrazení."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:57
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Tyto značky jsou nastaveny na všechny zkušební případy v této zkušební sadě, "
-"pokud zkušební případy nemají vlastní značky."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Tyto značky jsou nastaveny na všechny zkušební případy v této zkušební sadě, pokud zkušební případy nemají vlastní značky."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Tyto značky jsou aplikovány na všechny zkušební případy v tomto testovacím "
-"balíku. Toto pole existuje od Robot Framework 6. a nahradí Vynucený a "
-"výchozí štítky po verzi 7.0."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Tyto značky jsou aplikovány na všechny zkušební případy v tomto testovacím balíku. Toto pole existuje od Robot Framework 6. a nahradí Vynucený a výchozí štítky po verzi 7.0."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:63
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Tyto štítky jsou kromě vynucené značky nastaveny na tento zkušební případ a "
-"přepíší možné výchozí štítky."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Tyto štítky jsou kromě vynucené značky nastaveny na tento zkušební případ a přepíší možné výchozí štítky."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Toto klíčové slovo se provede před provedením některého ze zkušebních "
-"případů nebo méně úrovňových souprav."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Toto klíčové slovo se provede před provedením některého ze zkušebních případů nebo méně úrovňových souprav."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:68
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Toto klíčové slovo se provede po provedení všech testovacích případů a "
-"balíků s nižší úrovní."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Toto klíčové slovo se provede po provedení všech testovacích případů a balíků s nižší úrovní."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Toto klíčové slovo se provede před každým testovacím případem v této sadě, "
-"pokud ho nepřevezmou testovací případy."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Toto klíčové slovo se provede před každým testovacím případem v této sadě, pokud ho nepřevezmou testovací případy."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:72
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Toto klíčové slovo se spustí po každém testovacím případu v této sadě, pokud "
-"jej nepřevezmou testovací případy."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Toto klíčové slovo se spustí po každém testovacím případu v této sadě, pokud jej nepřevezmou testovací případy."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:74
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"Toto klíčové slovo se spustí před jinými klíčovými slovy v tomto testovacím "
-"případě nebo klíčovým slovem."
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "Toto klíčové slovo se spustí před jinými klíčovými slovy v tomto testovacím případě nebo klíčovým slovem."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
-"Ve zkušebních případech přepíše možné nastavení zkoušky nastavené na úrovni "
-"apartmá."
+msgstr "Ve zkušebních případech přepíše možné nastavení zkoušky nastavené na úrovni apartmá."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:76
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Nastavení v klíčových slovech existuje od robota v7.0."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Toto klíčové slovo se spustí po jiných klíčových slovech v tomto testovacím "
-"případě nebo klíčovém slově, i když test nebo klíčové slovo selže."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Toto klíčové slovo se spustí po jiných klíčových slovech v tomto testovacím případě nebo klíčovém slově, i když test nebo klíčové slovo selže."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
-"Ve zkušebních případech přepíše možné rozebrání ze zkoušky nastavené na "
-"úrovni apartmá."
+msgstr "Ve zkušebních případech přepíše možné rozebrání ze zkoušky nastavené na úrovni apartmá."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
 msgid "Specifies the default template keyword used by tests in this suite."
 msgstr "Určuje výchozí klíčové slovo šablony používané testy v tomto balíku."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:82
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"Testovací případy budou obsahovat pouze data, která budou použita jako "
-"argumenty pro toto klíčové slovo."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "Testovací případy budou obsahovat pouze data, která budou použita jako argumenty pro toto klíčové slovo."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid "Specifies the template keyword to use."
 msgstr "Určuje klíčové slovo šablony."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:84
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"Samotný test bude obsahovat pouze data, která budou použita jako argumenty "
-"pro toto klíčové slovo."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "Samotný test bude obsahovat pouze data, která budou použita jako argumenty pro toto klíčové slovo."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
-"Zadejte hodnotu návratu. Použijte znak potrubí pro oddělení více hodnot."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
+msgstr "Zadejte hodnotu návratu. Použijte znak potrubí pro oddělení více hodnot."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Maximální doba trvání zkoušky v této sadě může běžet před tím, než je rázně "
-"přeruší."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Maximální doba trvání zkoušky v této sadě může běžet před tím, než je rázně přeruší."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
-"Může být přepsáno jednotlivými zkušebními případy pomocí nastavení časového "
-"limitu."
+msgstr "Může být přepsáno jednotlivými zkušebními případy pomocí nastavení časového limitu."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
-msgstr ""
-"Maximální doba, po kterou může toto test/klíčové slovo spustit před jeho "
-"rázným přerušením."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
+msgstr "Maximální doba, po kterou může toto test/klíčové slovo spustit před jeho rázným přerušením."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:92
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"U zkušebních případů toto nastavení přepíše časový limit testu nastavený na "
-"úrovni instalace."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "U zkušebních případů toto nastavení přepíše časový limit testu nastavený na úrovni instalace."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
 msgid "Give a name and a value for the suite metadata."
@@ -1161,12 +1144,8 @@ msgid "Columns"
 msgstr "Sloupce"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Počet sloupců zobrazených v tomto editoru. Vybraná hodnota je uložena a "
-"používána globálně."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Počet sloupců zobrazených v tomto editoru. Vybraná hodnota je uložena a používána globálně."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1299,35 +1278,25 @@ msgid "Swap Row Up\tCtrl-T"
 msgstr "Prohodit řádek nahoru, Ctrl-T"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:919
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>Klíčové slovo nebylo zjištěno RIDE</b>\n"
+msgstr "<b>Klíčové slovo nebylo zjištěno RIDE</b>\n"
 "        <br>Možné opravy:<br>\n"
 "        <ul>\n"
-"            <li>Importovat knihovnu nebo zdrojový soubor obsahující klíčové "
-"slovo.</li>\n"
+"            <li>Importovat knihovnu nebo zdrojový soubor obsahující klíčové slovo.</li>\n"
 "            <li>Pro chyby při importu knihovny: Zvažte import spec XML\n"
-"            (Nástroje / Importovat XML Spec knihovny nebo přidáním XML "
-"souboru s\n"
-"            správným názvem do PYTHONPATH) pro povolení dokončení klíčových "
-"slov\n"
+"            (Nástroje / Importovat XML Spec knihovny nebo přidáním XML souboru s\n"
+"            správným názvem do PYTHONPATH) pro povolení dokončení klíčových slov\n"
 "            například pro knihovny Java.\n"
-"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot "
-"Framework.</li>\n"
+"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot Framework.</li>\n"
 "        </ul>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1156
@@ -1440,46 +1409,32 @@ msgid "Import Library Spec XML"
 msgstr "Importovat XML Spec knihovny"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:672
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>Možné opravy a poznámky:<br>\n"
+msgstr "<br>Možné opravy a poznámky:<br>\n"
 "        <ul>\n"
 "            <li>Chyba importu je zobrazena červenou barvou.</li>\n"
-"            <li>Viz nástroje / Zobrazit RIDE log pro detailní informace o "
-"selhání.</li>\n"
-"            <li>Pokud import obsahuje proměnnou, kterou RIDE "
-"neinicializoval, zvažte přidání proměnné\n"
+"            <li>Viz nástroje / Zobrazit RIDE log pro detailní informace o selhání.</li>\n"
+"            <li>Pokud import obsahuje proměnnou, kterou RIDE neinicializoval, zvažte přidání proměnné\n"
 "            do proměnné tabulky s výchozí hodnotou.</li>\n"
-"            <li>V případě selhání importu knihovny: Zvažte import spec XML "
-"(Nástroje / Importovat XML Spec knihovny nebo\n"
-"            přidáním XML souboru se správným názvem do PYTHONPATH) pro "
-"povolení dokončení klíčových slov\n"
+"            <li>V případě selhání importu knihovny: Zvažte import spec XML (Nástroje / Importovat XML Spec knihovny nebo\n"
+"            přidáním XML souboru se správným názvem do PYTHONPATH) pro povolení dokončení klíčových slov\n"
 "            například v knihovnách Java.\n"
-"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot "
-"Framework.\n"
+"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot Framework.\n"
 "            Další informace naleznete v \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1524,11 +1479,9 @@ msgid "Get help"
 msgstr "Získat pomoc"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1012
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://pygments."
-"org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1544,21 +1497,17 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
-"html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>Barvení syntaxe</h1>\n"
+msgstr "<h1>Barvení syntaxe</h1>\n"
 "        <p>\n"
 "        \n"
-" colorization syntaxe pro Textové editaci používá <a href='https://pygments."
-"org/'>Pygments</a> zvýraznění syntaxe.\n"
+" colorization syntaxe pro Textové editaci používá <a href='https://pygments.org/'>Pygments</a> zvýraznění syntaxe.\n"
 "        </p>\n"
 "        <p>\n"
 "        Nainstalujte z příkazové řádky Pygments s:\n"
@@ -1574,13 +1523,11 @@ msgstr ""
 "        <p>\n"
 "        Pokud nemáte pip nebo easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
-"html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >postupujte podle pokynů</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Pro více informací o instalaci Pygions <a href='https://pygments.org/"
-"download/'>viz stránka</a>.\n"
+"        Pro více informací o instalaci Pygions <a href='https://pygments.org/download/'>viz stránka</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1608,6 +1555,7 @@ msgstr "Protokol o parseru"
 msgid "View Parser Log"
 msgstr "Zobrazit protokol parseru"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
 msgstr "Vytvořit RIDE zástupce plochy"
@@ -1732,11 +1680,9 @@ msgid "Auto size columns"
 msgstr "Auto size columns"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:259
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"Maximální velikost sloupce\n"
+msgstr "Maximální velikost sloupce\n"
 "(použije se při zapnuté auto velikosti)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:263
@@ -1896,53 +1842,57 @@ msgstr "Import knihovny a PYTHONPATH"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
-"Čárkami oddělený seznam knihoven, které mají být automaticky importovány."
+msgstr "Čárkami oddělený seznam knihoven, které mají být automaticky importovány."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Čárkami oddělený seznam adresářů, které mají být přidány do PYTHONPATH při "
-"hledání knihoven."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Čárkami oddělený seznam adresářů, které mají být přidány do PYTHONPATH při hledání knihoven."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
 msgstr "Čárkami oddělený seznam adresářů obsahujících spec knihovny."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:41
 msgid "Save or Load Settings"
 msgstr "Uložit nebo načíst nastavení"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:47
 msgid "Load settings from file..."
 msgstr "Načíst nastavení ze souboru..."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
 msgid "Save settings to file..."
 msgstr "Uložit nastavení do souboru..."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:57
 msgid "Current directory:"
 msgstr "Aktuální adresář:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:74
 msgid "File with Settings to Load"
 msgstr "Soubor s nastavením k načtení"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:100
 msgid "Save Settings to file"
 msgstr "Uložit nastavení do souboru"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:113
 msgid "Could not open settings file \"%s\" for writing"
 msgstr "Nelze otevřít soubor nastavení \"%s\" pro zápis"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:125
 msgid "Error trying to get '%s' from file %s"
 msgstr "Chyba při pokusu získat '%s' ze souboru %s"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:140
 msgid "Invalid config file '%s': %s"
 msgstr "Neplatný konfigurační soubor '%s': %s"
@@ -1985,8 +1935,7 @@ msgid "Line separator:"
 msgstr "Oddělovač řádků:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
 msgstr "Možné hodnoty jsou původní (současné OS) CRLF (Windows) a LF (Unixy)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:68
@@ -1997,14 +1946,17 @@ msgstr "Oddělené prostory"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "Počet mezer mezi buňkami při ukládání ve formátu txt"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
 msgstr "Přidat nedávno otevřené soubory do menu souboru."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
 msgstr "Žádné nedávné soubory"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
@@ -2014,46 +1966,38 @@ msgstr "Žádné nedávné soubory"
 msgid "File"
 msgstr "Soubor"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:119
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:125
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:153
 msgid "Exit"
 msgstr "Ukončit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:142
 msgid "Open %s"
 msgstr "Otevřít %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
-"command does not work.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr ""
-"Zadaný řetězec příkazu bude rozdělen od mezery na příkaz\n"
+msgstr "Zadaný řetězec příkazu bude rozdělen od mezery na příkaz\n"
 "a jeho argumenty. Pokud příkaz nebo některý z argumentů vyžaduje\n"
-"interní prostory, musí být napsány jako '<SPACE>'.\n"
-"\n"
+"interní prostory, musí být napsány jako '<SPACE>'.\n\n"
 "Příkaz bude proveden v systému přímo bez otevření skořápky.\n"
 "To znamená, že příkazy shell a rozšíření nejsou k dispozici. Například,\n"
-"ve Windows dávkových souborech, které mají být provedeny, musí obsahovat '. "
-"Rozšíření a příkaz 'dir'\n"
-"nefunguje.\n"
-"\n"
+"ve Windows dávkových souborech, které mají být provedeny, musí obsahovat '. Rozšíření a příkaz 'dir'\n"
+"nefunguje.\n\n"
 "Příklady:\n"
 "    robot. at --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -2078,18 +2022,13 @@ msgid "Command"
 msgstr "Příkaz"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"Plugin pro provádění příkazů v systému.\n"
-"\n"
+msgstr "Plugin pro provádění příkazů v systému.\n\n"
 "    Tento modul umožňuje vytváření trvalých konfigurací spouštění a\n"
-"    jejich spuštění. Výstup provedeného příkazu je zobrazen na samostatné "
-"kartě\n"
+"    jejich spuštění. Výstup provedeného příkazu je zobrazen na samostatné kartě\n"
 "."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
@@ -2110,38 +2049,41 @@ msgstr "Znovu spustit"
 msgid "running"
 msgstr "běží"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
 msgstr "Hledat testy"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
 msgstr "Vyhledávání značek"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
 msgstr "Zkouška"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:66
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
 msgstr "Výsledky: "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Najděte shody pomocí vzorců značek. Další informace naleznete v uživatelské "
-"příručce RF nebo 'robot --help'."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Najděte shody pomocí vzorců značek. Další informace naleznete v uživatelské příručce RF nebo 'robot --help'."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:849
 msgid "Include"
 msgstr "Zahrnout"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:117
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:389
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:485
@@ -2149,11 +2091,13 @@ msgstr "Zahrnout"
 msgid "Exclude"
 msgstr "Vyjmout"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
 msgstr "Přidat vše k vybranému"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:156
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:164
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:211
@@ -2161,18 +2105,22 @@ msgstr "Přidat vše k vybranému"
 msgid "Results: %d"
 msgstr "Výsledky: %d"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
 msgstr "Informace "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
 msgstr "Najděte shodu podle názvu testu, dokumentace nebo štítku."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
 msgstr "Hledat termín"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "Plugin pro vyhledávání na základě jména, značek a dokumentace"
@@ -2182,12 +2130,10 @@ msgid "Library Spec XML|*.xml|All Files|*.*"
 msgstr "Knihovna Spec XML|*.xml|Všechny soubory|*.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:77
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"Knihovna \"%s\" importována\n"
+msgstr "Knihovna \"%s\" importována\n"
 "z \"%s\"\n"
 "To může vyžadovat RIDE restart."
 
@@ -2256,11 +2202,9 @@ msgid "Change recursively"
 msgstr "Změnit rekurzivně"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:395
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"Zadejte formát pro inicializaci souboru v adresáři\n"
+msgstr "Zadejte formát pro inicializaci souboru v adresáři\n"
 "\"%s\"."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:409
@@ -2288,12 +2232,8 @@ msgid "All files|*.*"
 msgstr "Všechny soubory|*.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"Poskytuje strom zobrazení souborů a složek. Otevře vybranou položku "
-"kliknutím pravým tlačítkem myši."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "Poskytuje strom zobrazení souborů a složek. Otevře vybranou položku kliknutím pravým tlačítkem myši."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:117
@@ -2331,8 +2271,7 @@ msgstr "Klíčová slova pro hledání"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
-"Plugin pro vyhledávání klíčových slov na základě jména nebo dokumentace."
+msgstr "Plugin pro vyhledávání klíčových slov na základě jména nebo dokumentace."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -2360,28 +2299,19 @@ msgstr "[File]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&Nový projekt | Vytvořte novou špičkovou úroveň | Ctrlcmd-N | ART_NEW\n"
+msgstr "!&Nový projekt | Vytvořte novou špičkovou úroveň | Ctrlcmd-N | ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!&Otevřete testovací soubor | Otevřete soubor obsahující testy | Ctrlcmd-O | "
-"ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&Otevřete testovací soubor | Otevřete soubor obsahující testy | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Otevřete &adresář | Otevřený adresář obsahující datové soubory | Shift-"
-"Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Otevřete &adresář | Otevřený adresář obsahující datové soubory | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!Otevřít externí soubor | Otevřít soubor v editoru kódu | | ART_NORMAL_FILE\n"
+msgstr "!Otevřít externí soubor | Otevřít soubor v editoru kódu | | ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
@@ -2389,9 +2319,7 @@ msgstr "!&Uložit | Uložit vybraný datafil | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!Uložit &všechny | Uložit všechny změny | Ctrlcmd-Shift-S | "
-"ART_FILE_SAVE_AS\n"
+msgstr "!Uložit &všechny | Uložit všechny změny | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2431,8 +2359,7 @@ msgstr "!Wiki | RIDE User Guide (Wiki)\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
-"!Nahlásit problém | Otevřete prohlížeč pro SEARCH na systému problémů RIDE\n"
+msgstr "!Nahlásit problém | Otevřete prohlížeč pro SEARCH na systému problémů RIDE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
@@ -2469,11 +2396,9 @@ msgid "Test Suites"
 msgstr "Testovací sady"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:401
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"Existují neuložené úpravy.\n"
+msgstr "Existují neuložené úpravy.\n"
 "Chcete uložit změny před ukončením?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:403
@@ -2482,11 +2407,9 @@ msgid "Warning"
 msgstr "Varování"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:490
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"Existují neuložené úpravy.\n"
+msgstr "Existují neuložené úpravy.\n"
 "Chcete pokračovat bez uložení?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:532
@@ -2566,18 +2489,12 @@ msgid "Plugin"
 msgstr "Zásuvný modul"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:93
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Info. Povolení a vypnutí pluginů může vyžadovat RIDE restartování menu, aby "
-"fungoval."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Info. Povolení a vypnutí pluginů může vyžadovat RIDE restartování menu, aby fungoval."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
-"(zastaralé) Poskytuje náhled testovacích údajů ve formátech HTML, TSV a TXT."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(zastaralé) Poskytuje náhled testovacích údajů ve formátech HTML, TSV a TXT."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
@@ -2605,12 +2522,9 @@ msgid "Search unused keywords"
 msgstr "Hledat nepoužitá klíčová slova"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"Tento dialog vám pomůže najít nepoužitá klíčová slova v rámci otevřeného "
-"projektu.\n"
+msgstr "Tento dialog vám pomůže najít nepoužitá klíčová slova v rámci otevřeného projektu.\n"
 "Pokud chcete, můžete vyhledávání omezit na sadu souborů s filtrem."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
@@ -2631,14 +2545,10 @@ msgid "Use RegEx"
 msgstr "Použít RegEx"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. common,"
-"abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"Zde můžete definovat jeden nebo více řetězců oddělených čárkou (např. běžný,"
-"abc,123).\n"
+msgstr "Zde můžete definovat jeden nebo více řetězců oddělených čárkou (např. běžný,abc,123).\n"
 "Filtr se shoduje, pokud je alespoň jeden řetězec součástí názvu souboru.\n"
 "Pokud nezadáváte žádné řetězce, všechny otevřené soubory jsou zahrnuty"
 
@@ -2697,12 +2607,8 @@ msgid "(None)"
 msgstr "(Žádné)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"Klíčová slova následujících souborů budou zahrnuta do vyhledávání:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "Klíčová slova následujících souborů budou zahrnuta do vyhledávání:\n\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2753,11 +2659,9 @@ msgid "Excluded Tag Search"
 msgstr "Vyhledávání štítků s vyloučením"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"Celkové testy %d, Testy se značkami %d, Unikátní tagy %d\n"
+msgstr "Celkové testy %d, Testy se značkami %d, Unikátní tagy %d\n"
 "Aktuálně vybrané testy %d"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
@@ -2868,11 +2772,9 @@ msgid "Expand all"
 msgstr "Rozbalit vše"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:431
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Složka obsahuje neuložená data!\n"
+msgstr "Složka obsahuje neuložená data!\n"
 "Před vyloučením musíte uložit data."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
@@ -2906,11 +2808,9 @@ msgstr "Odstranit pouze pro čtení"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:517
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:619
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Soubor obsahuje neuložená data!\n"
+msgstr "Soubor obsahuje neuložená data!\n"
 "Před vyloučením musíte uložit data."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:557
@@ -2984,3 +2884,4 @@ msgstr "Importuji název"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:154
 msgid "%s cannot be empty"
 msgstr "%s nemůže být prázdný"
+
