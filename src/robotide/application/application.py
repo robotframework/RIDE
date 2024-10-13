@@ -16,6 +16,7 @@
 import builtins
 import os
 import wx
+
 from contextlib import contextmanager
 from pathlib import Path
 from ..namespace import Namespace
