@@ -7,16 +7,157 @@ The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 
-== https://github.com/robotframework/RIDE[Unreleased]
+// == https://github.com/robotframework/RIDE[Unreleased]
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.rst[2.1] - 2024-10-13
 
 === Added
-
+  (2.1 - 2024-10-13)
 - Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter
 ``browser`` in the section ``[Plugins][[Test Runner]]``.
+  (2.1b1 - 2024-09-21)
+- Added color to Test Runner Console Log final output, report and log since RF v7.1rc1.
+- Added Korean language support for UI, experimental.
+- Added option ``caret style`` to change insert caret to `block` or `line` in Text Editor, by editing ``settings.cfg``.
+The color of the caret is the same as `setting` and will be adjusted for better contrast with the background.
+  (2.1a3 - 2024-07-22)
+- Added support for Setup in keywords, since Robot Framework version 7.0.
+- Added support for new VAR marker, since Robot Framework version 7.0.
+- Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter ``notebook theme``
+takes values from 0 to 5. See wxPython, demo for agw.aui for details.
+- Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or higher.
+- Added to Grid Editor, changing Zoom In/Out with ``Ctrl-Mouse Wheel`` and setting at Preferences.
+- Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data
+Driven or Templated; Left Mouse Click, selects the column cells.
+- Added command line option, ``--settingspath``, to select a different configuration. For example, you can have different
+colour settings or UI language.
+- Added different settings file, according the actual Python executable, if not the original installed.
+This allows different configurations, like, for example, in a virtual environment
+- Added context option ``Open Containing Folder`` to test suites directories in Project Explorer.
+- Added a setting for a specific file manager by editing the settings.cfg file. Add the string parameter ``file manager`` in the section ``[General]``.
+- Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, and new lines are added at Text Editor.
+- Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
+localized sections only stay translated after Apply in Text Editor.
+- Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or
+higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Language is selected from
+Tools->Preferences->General.
+- Added support for language configured test suites, with installed Robot Framework version 6.1 or higher.
+- Fields are shown in the language of the files in Grid Editor (will be configurable in future versions).
+- Tooltips for the fields are always shown in English.
+- Colorization for language configured files is working in Text Editor.
+  (2.0.8.1 - 2023-11-01)
+- Added auto update check when development version is installed
+- Added menu option ``Help->Check for Upgrade`` which allows to force update check and install development version
+- Added ``Upgrade Now`` action to update dialog.
+- Added Test Tags field (new, since Robot Framework 6.0) to Test Suites settings. This field will replace Default and
+Force Tags settings, after Robot Framework 7.0
+- Added content help pop-up on Text Editor by pressing ``Ctrl`` for text at cursor position or selected autocomplete list item
+- Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders
+- Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences
+- Added variables creation shortcuts (``Ctrl-1,2,5``) to fields Arguments in Grid Editor
+- Added support for JSON variables, by using the installed Robot Framework import method
+  (2.0.7 - 2023-08-13)
+- Added indication of matching brackets, ``()``, ``{}``, ``[]``, in Text Editor
+- Added context menu to RIDE tray icon. Options Show, Hide and Close
+- Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text Editor
+  Note: This feature is working fine in Fedora 38, but not on Windows and macOS.
+  (2.0.6 - 2023-06-10)
+- Added boolean parameter ``filter newlines`` to Grid Editor with default ``True``, to hide or show newlines in cells
+  (2.0.5 - 2023-05-08)
+- Added ``FOR`` scope markers (``IN``, ``IN RANGE``, ``IN ENUMERATE``, ``IN ZIP``) to auto-complete list
+- Added support to read environment variable ``ROBOT_VERSION`` to apply some conditions.
+- Added note on Test Timeout that **timeout message** is not supported since Robot v3.0.1
+- Added the note, 'Colors will be active after next RIDE restart.' to the Preferences of Test Runner.
 
 === Changed
-
+  (2.1 - 2024-10-13)
 - Changed the order of insert and delete rows in Grid Editor rows context menu.
+  (2.1b1 - 2024-09-21)
+- Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.
+  (2.1a3 - 2024-07-22)
+- Improved release packaging of RIDE, by using entry_points in setuptools configuration.
+- Parsing of clipboard content to separate by cells in Grid Editor. NOTE: Need to Apply Changes in Text Editor to be effective.
+- Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.
+- Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.
+  (2.0.8.1 - 2023-11-01)
+- Improved keywords documentation search, by adding current dir to search
+- Improved Move up/down, ``Alt-UpArrow``/``Alt-DownArrow`` in Text Editor, to have proper indentation and selection
+- Improved **RIDE Log** and **Parser Log** windows to allow Zoom In/Out with ``Ctrl-Mouse Wheel``
+- Hide continuation markers in Project Tree
+- Improved content assistance in Text Editor by allowing to filter list as we type
+- Improved file changes detection to only consider valid formats
+- Improved keyword ``Find Usages`` to return more matches. Fails to find mixed spaces and ``_``
+- In Grid Editor ``Ctrl-Shift-4`` now replaces escaped spaces ``\\ `` by spaces
+  (2.0.7 - 2023-08-13)
+- Improve Text Editor auto-suggestions to keep libraries prefixes.
+  (2.0.6 - 2023-06-10)
+- Changed ``tasks.py`` to test ``utest/application/test_app_main.py`` isolated from the other tests
+- Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT
+- Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor
+- Changed ``tasks.py`` to test ``utest/application/test_app_main.py`` isolated from the other tests
+- Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT
+- Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor
+  (2.0.5 - 2023-05-08)
+- Changed alias marker on library imports to consider variable ``ROBOT_VERSION``. If version is lower than 6.0, uses ``'WITH NAME'``, otherwise will use ``'AS'``
+  (2.0.3 - 2023-04-16)
+- Allow to do auto-suggestions of keywords in Grid Editor without a shortcut, if you want to enable or disable this feature you can config in `Tools-> Preferences -> Grid Editor -> Enable auto suggestions`
+- Made ``\\n`` visible when editing cells in Grid Editor (problematic in Windows)
+
+=== Fixed
+  (2.1 - 2024-10-13)
+- Fixed recognition of variables imported from YAML, JSON and Python files.
+  (2.1b1 - 2024-09-21)
+- Fixed validation of multiple arguments with default values in Grid Editor.
+- Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.
+- Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.
+- Fixed delete variable from Test Suite settings remaining in Project Explorer.
+- Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.- Fixed validation of multiple arguments with default values in Grid Editor.
+- Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.
+- Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.
+- Fixed delete variable from Test Suite settings remaining in Project Explorer.
+- Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.
+  (2.1a3 - 2024-07-22)
+- Fixed multiline variables in Variables section. In Text Editor they are separated by ... continuation marker.
+In Grid Editor use | (pipe) to separate lines.
+- Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.
+- Fixed plugin Run Anything (Macros) not showing output and broken actions.
+- Fixed headers and blank spacing in Templated tests
+- Fixed removal of continuation marker in steps
+- Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
+- Fixed New User Keyword dialog not allowing empty Arguments field
+  (2.0.8.1 - 2023-11-01)
+- Fixed escaped spaces showing in Text Editor on commented cells
+- Fixed resource files dissapearing from Project tree on Windows
+- Fixed missing indication of link for User Keyword, when pressing ``Ctrl`` in Grid Editor
+- Fixed exception when finding GREY color for excluded files and directories in Project Tree
+- Colorization of Grid Editor cells after the continuation marker ``...`` and correct parsing of those lines
+- Colorization of Grid Editor cells when contents is list or dictionary variables
+- Validation of Grid Editor arguments types in keywords definitions. Now accepts ``@{}`` named-only marker
+- Position of cursor in Text Editor auto-suggestions when line contains multibyte characters
+- Drag and drop of variables defined with comments between resource files
+  (2.0.7 - 2023-08-13)
+- Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux
+- Fixed not working the deletion of cells commented with ``\# `` in Grid Editor with ``Ctrl-Shift-D``
+- Fixed empty line being always added to the Variables section in Text Editor
+- Fixed wrong project reloading when file system changes detected, and other related problems
+- Fixed control commands (``FOR``, ``IF``, ``TRY``, etc) being colorized as valid keywords when typed not in all caps in Grid Editor
+- Fixed title of User Keyword in Grid Editor always showing ``Find Usages`` instead of the keyword name
+- Fixed renaming keywords when they were arguments of ``Run Keywords`` in Setups and Teardowns
+  (2.0.5 - 2023-05-08)
+- Fixed auto-indent on block commands in Text Editor
+  (2.0.3 - 2023-04-16)
+- Fixed missing auto-enclosing when in Cell Editor in Linux
+- Fixed RIDE will crash when using third party input method in Mac OS
+- Fixed missing color definition for keyword call in Text Editor
+- Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor
+- Fixed selection and persistance of colors in File Explorer and Project Tree panels
+- Fixed not using defined color for help and HTML content
+- Fixed missing newlines in sections separation
+
+=== Removed
+  (2.1a3 - 2024-07-22)
+- Removed support for HTML file format (obsolete since Robot Framework 3.2)
+- Removed support for old Python versions, 3.6 nd 3.7.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1b1.rst[2.1b1] - 2024-09-21
 
@@ -129,10 +270,6 @@ Force Tags settings, after Robot Framework 7.0
 - Improved keyword ``Find Usages`` to return more matches. Fails to find mixed spaces and ``_``
 - In Grid Editor ``Ctrl-Shift-4`` now replaces escaped spaces ``\\ `` by spaces
 
-=== Removed
-
--
-
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.7.rst[2.0.7] - 2023-08-13
 
 === Added
@@ -201,6 +338,7 @@ Force Tags settings, after Robot Framework 7.0
 - Fixed selection and persistance of colors in File Explorer and Project Tree panels
 - Fixed not using defined color for help and HTML content
 - Fixed missing newlines in sections separation
+
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.rst[2.0] - 2023-03-01
 

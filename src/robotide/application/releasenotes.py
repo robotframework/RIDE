@@ -148,6 +148,7 @@ RELEASE_NOTES = f"""
 
 <div class="document">
 
+<h2 align='center'>RIDE is celebrating 16 years on this date!</h2>
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
@@ -159,6 +160,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Fixed recognition of variables imported from YAML, JSON and Python files.</li>
 <li>✔ - Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
 <b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
 <li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
@@ -202,6 +204,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed recognition of variables imported from YAML, JSON and Python files.</li>
 <li>Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
 <b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
 <li>Changed the order of insert and delete rows in Grid Editor rows context menu.</li>
@@ -290,7 +293,8 @@ all caps in Grid Editor</li>
 ARROW_RIGHT</li>
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
-<p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
+<!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
+-->
 <p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.2, which we recommend.
 </strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
@@ -311,11 +315,11 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade --pre robotframework-ride=={VERSION}
+pip install --upgrade robotframework-ride=={VERSION}
 </pre>
 <p>to install exactly this release, which is the same as using</p>
 <pre class="literal-block">
-pip install --upgrade --pre robotframework-ride
+pip install --upgrade robotframework-ride
 </pre>
 
 <p>Alternatively you can download the source
@@ -332,7 +336,11 @@ pip install -U https://github.com/robotframework/RIDE/archive/master.zip
  href="https://github.com/robotframework/RIDE/blob/master/CONTRIBUTING.adoc">CONTRIBUTING.adoc</a>.</p>
 <p>See the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/F.A.Q.">FAQ</a> for
  important info about <cite>: FOR</cite> changes and other known issues and workarounds.</p>
-<p>A possible way to start RIDE is:</p>
+<p>To start RIDE from a command window, shell or terminal, just enter:</p>
+<pre>ride</pre>
+<p>You can also pass some arguments, like a path for a test suite file or directory.<p>
+<pre>ride example.robot</pre>
+<p>Another possible way to start RIDE is:</p>
 <pre class="literal-block">
 python -m robotide.__init__
 </pre>
@@ -340,7 +348,8 @@ python -m robotide.__init__
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 08/October/2024.</p>
+<p>RIDE {VERSION} was released on 13/October/2024 (<a href="https://github.com/robotframework/RIDE/wiki/Old-Release-Notes
+#ride-010">16 years after its first version</a>).</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

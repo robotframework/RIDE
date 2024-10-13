@@ -669,5 +669,4 @@ class VariablesImportController(_ImportController):
     is_resource = False
 
     def has_error(self):
-        # print(f"DEBUG: settingcontrollers.py VariablesImportController data={self._data}")
         return not self.parent.parent.is_variables_import_ok(self._data)
