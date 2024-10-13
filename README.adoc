@@ -22,11 +22,9 @@ You can use the tag *robotframework-ide* to search and ask on https://stackoverf
 
 == **Welcome to the development version of RIDE - next major release will be version 2.2**
 
-<!--
-If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.0.8.1[release/2.0.8.1]**
+// If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.0.8.1[release/2.0.8.1]**
 
-See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.1.rst[release notes] for latest release version 2.0.8.1
--->
+// See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.1.rst[release notes] for latest release version 2.0.8.1
 
 **Version https://github.com/robotframework/RIDE/tree/release/2.0.8.1[2.0.8.1] was the last release supporting Python 3.6 and 3.7**
 
@@ -46,12 +44,9 @@ Likewise, the current version of wxPython, is 4.2.2, but RIDE is known to work w
 
 `pip install -U https://github.com/robotframework/RIDE/archive/master.zip`
 
-<!--
+//(3.8 &lt;= python &lt;=  3.12) Install current Beta version (2.1b1) with:
 
-(3.8 &lt;= python &lt;=  3.12) Install current Beta version (2.1b1) with:
-
-`pip install -U --pre robotframework-ride`
--->
+//`pip install -U --pre robotframework-ride`
 
 **See the https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e[FAQ] at https://github.com/robotframework/RIDE/wiki[Wiki]**
 

@@ -163,7 +163,7 @@ RELEASE_NOTES = f"""
 <li>✔ - Fixed recognition of variables imported from YAML, JSON and Python files.</li>
 <li>✔ - Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
 <b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
-<li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
+<li>✔ - Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
 <li>✔ - Added Korean language support for UI.</li>
 <li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
