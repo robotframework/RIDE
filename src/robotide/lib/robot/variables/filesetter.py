@@ -12,9 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+#
+# This file contains code taken from RobotFramework 7.1
 
 import inspect
 import io
+import json
 try:
     import yaml
 except ImportError:
@@ -22,8 +25,27 @@ except ImportError:
 
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.output import LOGGER
-from robotide.lib.robot.utils import (get_error_message, is_dict_like, is_list_like,
-                         is_string, seq2str2, type_name, DotDict, Importer)
+from robotide.lib.robot.utils import (DotDict, get_error_message, Importer, is_dict_like,
+                                      is_list_like, type_name,)
+
+
+def dot_dict(value):
+    if is_dict_like(value):
+        return DotDict((k, dot_dict(v)) for k, v in value.items())
+    if is_list_like(value):
+        return [dot_dict(v) for v in value]
+    return value
+
+def make_var(name, value):
+    var_value = dot_dict(value)
+    if is_dict_like(var_value):
+        symbol = '&'
+    elif  is_list_like(var_value):
+        symbol = '@'
+    else:
+        symbol = '$'
+    var_name = f"{symbol}" + "{" + name + "}"
+    return var_name, var_value
 
 
 class VariableFileSetter(object):
@@ -36,61 +58,31 @@ class VariableFileSetter(object):
         self._set(variables, overwrite)
         return variables
 
-    def _import_if_needed(self, path_or_variables, args=None):
-        if not is_string(path_or_variables):
+    @staticmethod
+    def _import_if_needed(path_or_variables, args=None):
+        if not isinstance(path_or_variables, str):
             return path_or_variables
-        LOGGER.info("Importing variable file '%s' with args %s"
-                    % (path_or_variables, args))
-        if path_or_variables.lower().endswith('.yaml'):
+        LOGGER.info(f"Importing variable file '{path_or_variables}' with args {args}.")
+        if path_or_variables.lower().endswith(('.yaml', '.yml')):
             importer = YamlImporter()
+        elif path_or_variables.lower().endswith('.json'):
+            importer = JsonImporter()
         else:
             importer = PythonImporter()
         try:
-            return importer.import_variables(path_or_variables, args)
-        except:
-            args = 'with arguments %s ' % seq2str2(args) if args else ''
-            raise DataError("Processing variable file '%s' %sfailed: %s"
-                            % (path_or_variables, args, get_error_message()))
+            var_result = importer.import_variables(path_or_variables, args)
+            return var_result
+        except Exception:
+            args = f'with arguments {args} ' if args else ''
+            raise DataError(f"Processing variable file '{path_or_variables}' "
+                            f"{args}failed: {get_error_message()}")
 
     def _set(self, variables, overwrite=False):
         for name, value in variables:
             self._store.add(name, value, overwrite)
 
 
-class YamlImporter(object):
-
-    def import_variables(self, path, args=None):
-        if args:
-            raise DataError('YAML variable files do not accept arguments.')
-        variables = self._import(path)
-        return [('${%s}' % name, self._dot_dict(value))
-                for name, value in variables]
-
-    def _import(self, path):
-        with io.open(path, encoding='UTF-8') as stream:
-            variables = self._load_yaml(stream)
-        if not is_dict_like(variables):
-            raise DataError('YAML variable file must be a mapping, got %s.'
-                            % type_name(variables))
-        return variables.items()
-
-    def _load_yaml(self, stream):
-        if not yaml:
-            raise DataError('Using YAML variable files requires PyYAML module '
-                            'to be installed. Typically you can install it '
-                            'by running `pip install pyyaml`.')
-        if yaml.__version__.split('.')[0] == '3':
-            return yaml.load(stream)
-        return yaml.full_load(stream)
-
-
-    def _dot_dict(self, value):
-        if is_dict_like(value):
-            value = DotDict((n, self._dot_dict(v)) for n, v in value.items())
-        return value
-
-
-class PythonImporter(object):
+class PythonImporter:
 
     def import_variables(self, path, args=None):
         importer = Importer('variable file').import_class_or_module_by_path
@@ -98,26 +90,34 @@ class PythonImporter(object):
         return self._get_variables(var_file, args)
 
     def _get_variables(self, var_file, args):
-        if self._is_dynamic(var_file):
-            variables = self._get_dynamic(var_file, args)
-        else:
-            variables = self._get_static(var_file)
-        return list(self._decorate_and_validate(variables))
-
-    def _is_dynamic(self, var_file):
-        return (hasattr(var_file, 'get_variables') or
-                hasattr(var_file, 'getVariables'))
-
-    def _get_dynamic(self, var_file, args):
         get_variables = (getattr(var_file, 'get_variables', None) or
-                         getattr(var_file, 'getVariables'))
-        variables = get_variables(*args)
+                         getattr(var_file, 'getVariables', None))
+        if get_variables:
+            variables = self._get_dynamic(get_variables, args)
+        elif not args:
+            variables = self._get_static(var_file)
+        else:
+            raise DataError('Static variable files do not accept arguments.')
+        decorated = self._decorate_and_validate(variables)
+        return decorated
+
+    def _get_dynamic(self, get_variables, args):
+        positional, named = self._resolve_arguments(get_variables, args)
+        variables = get_variables(*positional, **dict(named))
         if is_dict_like(variables):
             return variables.items()
-        raise DataError("Expected '%s' to return dict-like value, got %s."
-                        % (get_variables.__name__, type_name(variables)))
+        raise DataError(f"Expected '{get_variables.__name__}' to return "
+                        f"a dictionary-like value, got {type_name(variables)}.")
 
-    def _get_static(self, var_file):
+    @staticmethod
+    def _resolve_arguments(get_variables, args):
+        # Avoid cyclic import. Yuck.
+        from robot.running.arguments import PythonArgumentParser
+        spec = PythonArgumentParser('variable file').parse(get_variables)
+        return spec.resolve(args)
+
+    @staticmethod
+    def _get_static(var_file):
         names = [attr for attr in dir(var_file) if not attr.startswith('_')]
         if hasattr(var_file, '__all__'):
             names = [name for name in names if name in var_file.__all__]
@@ -129,20 +129,65 @@ class PythonImporter(object):
     def _decorate_and_validate(self, variables):
         for name, value in variables:
             name = self._decorate(name)
-            self._validate(name, value)
+            if name[0] == '@':
+                if not is_list_like(value):
+                    raise DataError(f"Invalid variable '{name}': Expected a "
+                                    f"list-like value, got {type_name(value)}.")
+                value = list(value)
+            elif name[0] == '&':
+                if not is_dict_like(value):
+                    raise DataError(f"Invalid variable '{name}': Expected a "
+                                    f"dictionary-like value, got {type_name(value)}.")
+                value = DotDict(value)
             yield name, value
 
-    def _decorate(self, name):
+    @staticmethod
+    def _decorate(name):
         if name.startswith('LIST__'):
             return '@{%s}' % name[6:]
         if name.startswith('DICT__'):
             return '&{%s}' % name[6:]
         return '${%s}' % name
 
-    def _validate(self, name, value):
-        if name[0] == '@' and not is_list_like(value):
-            raise DataError("Invalid variable '%s': Expected list-like value, "
-                            "got %s." % (name, type_name(value)))
-        if name[0] == '&' and not is_dict_like(value):
-            raise DataError("Invalid variable '%s': Expected dict-like value, "
-                            "got %s." % (name, type_name(value)))
+
+class JsonImporter:
+
+    def import_variables(self, path, args=None):
+        if args:
+            raise DataError('JSON variable files do not accept arguments.')
+        variables = self._import(path)
+        return [make_var(name, value) for name, value in variables]
+
+    @staticmethod
+    def _import(path):
+        with io.open(path, encoding='UTF-8') as stream:
+            variables = json.load(stream)
+        if not is_dict_like(variables):
+            raise DataError(f'JSON variable file must be a mapping, '
+                            f'got {type_name(variables)}.')
+        return variables.items()
+
+
+class YamlImporter:
+
+    def import_variables(self, path, args=None):
+        if args:
+            raise DataError('YAML variable files do not accept arguments.')
+        variables = self._import(path)
+        return [make_var(name, value) for name, value in variables]
+
+    def _import(self, path):
+        with io.open(path, encoding='UTF-8') as stream:
+            variables = self._load_yaml(stream)
+        if not is_dict_like(variables):
+            raise DataError(f'YAML variable file must be a mapping, '
+                            f'got {type_name(variables)}.')
+        return variables.items()
+
+    @staticmethod
+    def _load_yaml(stream):
+        if not yaml:
+            raise DataError('Using YAML variable files requires PyYAML module '
+                            'to be installed. Typically you can install it '
+                            'by running `pip install pyyaml`.')
+        return yaml.full_load(stream)

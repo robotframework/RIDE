@@ -375,14 +375,20 @@ class _VariableStash(object):
         return {}
 
     def set_from_file(self, varfile_path, args):
+        from ..robotapi import Variables
+        from robotide.lib.robot.variables.store import VariableStore
+        class Dummy:
+            language='En'
+        parent = Dummy()
+        store = VariableStore(Variables(parent, ""))
         try:
-            vars_from_file = VariableFileSetter(None)._import_if_needed(
-                varfile_path, args)
+            vars_from_file = VariableFileSetter(store)
+            resulting_vars = vars_from_file._import_if_needed(varfile_path, args)
         except (robotapi.DataError, Exception) as e:
             print(f"namespace._VariableStash.set_from_file: unexpected DataError: variable_path {varfile_path} "
                   f"args {args}")
             raise e
-        for name, value in vars_from_file:
+        for name, value in resulting_vars:
             self.set(name, value, varfile_path)
 
     @staticmethod
@@ -447,7 +453,6 @@ class DatafileRetriever(object):
 
     def is_variables_import_ok(self, datafile, imp, ctx):
         self._get_vars_recursive(datafile, ctx)
-        # print(f"DEBUG: Namespace is_variables_import_ok source={datafile.source}  imp={imp}")
         return self._import_vars(ctx, datafile, imp)
 
     @staticmethod
@@ -522,12 +527,10 @@ class DatafileRetriever(object):
     def _import_vars(ctx, datafile, imp):
         varfile_path = os.path.abspath(os.path.join(datafile.directory, ctx.replace_variables(imp.name)))
         args = [ctx.replace_variables(a) for a in imp.args]
-        # print("DEBUG: Namespace _import_vars: %s args %s\n" % (varfile_path, args))
         try:
             ctx.vars.set_from_file(varfile_path, args)
             return True
         except (robotapi.DataError, Exception):
-            # print("DEBUG: Namespace Error at import_vars: %s\n" % str(e))
             return False  # DEBUG: log somewhere
 
     def _var_collector(self, res, ctx, items):
