@@ -20,6 +20,10 @@ from ..robotapi import ALIAS_MARKER
 _ = GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = GetTranslation
 
+PH_ESCAPE ="%(ESCAPE)s"  # PH = Place Holder
+INHERIT_TAG = "Inherited tags are not shown in this view."
+PH_TAGS = "%(TAG)s"
+PH_FIXTURE = "%(FIXTURE)s"
 
 def get_help(title):
     _HELPS = {}
@@ -46,44 +50,44 @@ def get_help(title):
                _("Give name, optional arguments and optional alias of the library to import."),
                _("Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."), "%(ALIAS)s", '',
                "Variables", _("Give path and optional arguments of the variable file to import."),
-               _("Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."), "%(ESCAPE)s", '',
+               _("Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."), PH_ESCAPE, '',
                "Resource", _("Give path to the resource file to import."),
                _("Existing resources will be automatically loaded to the resource tree."),
                _("New resources must be created separately."), '', "Documentation", _("Give the documentation."),
                _("Simple formatting like *bold* and _italic_ can be used."),
                _("Additionally, URLs are converted to clickable links."), '', "Force Tags",
                _("These tags are set to all test cases in this test suite."),
-               _("Inherited tags are not shown in this view."), "%(TAG)s", "%(ESCAPE)s", '', "Default Tags",
+               _(INHERIT_TAG), PH_TAGS, PH_ESCAPE, '', "Default Tags",
                _("These tags are set to all test cases in this test suite unless test cases have their own tags."),
-               "%(TAG)s", "%(ESCAPE)s", '', "Test Tags",
+               PH_TAGS, PH_ESCAPE, '', "Test Tags",
                _("These tags are applied to all test cases in this test suite. "
                  "This field exists since Robot Framework 6.0 and will replace "
-                 "Force and Default Tags after version 7.0."), _("Inherited tags are not shown in this view."),
-               "%(TAG)s", "%(ESCAPE)s", '', "Tags",
+                 "Force and Default Tags after version 7.0."), _(INHERIT_TAG),
+               PH_TAGS, PH_ESCAPE, '', "Tags",
                _("These tags are set to this test case in addition to "
                  "Force Tags and they override possible Default Tags."),
-               _("Inherited tags are not shown in this view."), "%(TAG)s", "%(ESCAPE)s", '', "Suite Setup",
+               _(INHERIT_TAG), PH_TAGS, PH_ESCAPE, '', "Suite Setup",
                _("This keyword is executed before executing any of the test cases or lower level suites."),
-               "%(FIXTURE)s", "%(ESCAPE)s", '', "Suite Teardown",
+               PH_FIXTURE, PH_ESCAPE, '', "Suite Teardown",
                _("This keyword is executed after all test cases and lower level suites have been executed."),
-               "%(FIXTURE)s", "%(ESCAPE)s", '', "Test Setup",
+               PH_FIXTURE, PH_ESCAPE, '', "Test Setup",
                _("This keyword is executed before every test case in this suite unless test cases override it."),
-               "%(FIXTURE)s", "%(ESCAPE)s", '', "Test Teardown",
+               PH_FIXTURE, PH_ESCAPE, '', "Test Teardown",
                _("This keyword is executed after every test case in this suite unless test cases override it."),
-               "%(FIXTURE)s", "%(ESCAPE)s", '', "Setup",
+               PH_FIXTURE, PH_ESCAPE, '', "Setup",
                _("This keyword is executed before other keywords in this test case or keyword."),
                _("In test cases, overrides possible Test Setup set on the suite level."),
-               _("Setup in keywords exists since Robot v7.0."), "%(FIXTURE)s", "%(ESCAPE)s", '', "Teardown",
+               _("Setup in keywords exists since Robot v7.0."), PH_FIXTURE, PH_ESCAPE, '', "Teardown",
                _("This keyword is executed after other keywords in this test case or keyword even if the test or "
                  "keyword fails."),
                _("In test cases, overrides possible Test Teardown set on the suite level."),
-               "%(FIXTURE)s", "%(ESCAPE)s", '', "Test Template",
+               PH_FIXTURE, PH_ESCAPE, '', "Test Template",
                _("Specifies the default template keyword used by tests in this suite."),
                _("The test cases will contain only data to use as arguments to that keyword."), '', "Template",
                _("Specifies the template keyword to use."),
                _("The test itself will contain only data to use as arguments to that keyword."), '', "Arguments",
-               "%(ARGUMENTS)s", "%(ESCAPE)s", '', "Return Value",
-               _("Specify the return value. Use a pipe character to separate multiple values."), "%(ESCAPE)s",
+               "%(ARGUMENTS)s", PH_ESCAPE, '', "Return Value",
+               _("Specify the return value. Use a pipe character to separate multiple values."), PH_ESCAPE,
                "The '[Return]' setting is deprecated since Robot v7.0. Use the 'RETURN' statement instead.", '',
                "Test Timeout",
                _("Maximum time test cases in this suite are allowed to execute before aborting them forcefully."),
