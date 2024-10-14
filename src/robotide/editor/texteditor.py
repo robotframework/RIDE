@@ -65,6 +65,7 @@ PLUGIN_NAME = 'Text Edit'
 TOKEN_TXT = 'Token('
 TXT_NUM_SPACES = 'txt number of spaces'
 ZOOM_FACTOR = 'zoom factor'
+RSPC = r"\s{2}"
 
 
 def read_language(content):
@@ -88,17 +89,11 @@ def obtain_language(existing, content):
     except AttributeError:  # Unittests fails here
         set_lang = []
     doc_lang = read_language(content)
-    # print(f"DEBUG: textedit.py validate_and_update EMTER obtain_language={doc_lang}")
     adoc_lang = []
     if doc_lang is not None:
         if isinstance(doc_lang, str):
             adoc_lang.append(doc_lang)
-        for idx, lang in enumerate(adoc_lang):
-            try:
-                mlang = Language.from_name(lang.replace('_', '-').strip())
-            except ValueError as e:
-                raise e
-            set_lang[idx] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
+        set_lang = _get_lang(adoc_lang)
     elif len(set_lang) > 0:
         if existing is not None:
             if isinstance(existing, list):
@@ -112,9 +107,17 @@ def obtain_language(existing, content):
                 set_lang[0] = 'en'
     else:
         set_lang[0] = 'en'
-    # print(f"DEBUG: textedit.py validate_and_update obtain_language RETURN ={[set_lang[0]]}")
     return [set_lang[0]]
 
+def _get_lang(adoc_lang: list) -> list:
+    set_lang =[]
+    for idx, lang in enumerate(adoc_lang):
+        try:
+            mlang = Language.from_name(lang.replace('_', '-').strip())
+        except ValueError:
+            raise ValueError
+        set_lang[idx] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
+    return set_lang
 
 def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
     if isinstance(lang, list):
@@ -132,28 +135,23 @@ def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
             if with_variant_code in ("PtBr", "ZhCn", "ZhTw") and not iso:
                 return with_variant_code
     if iso:
-        variant = {"bs":"BA", "cs":"CZ", "da":"DK", "en":"US", "hi":"IN", "ja":"JP",
-                   "ko":"KR", "sv":"SE", "uk":"UA", "vi":"VN"}
-        code = clean_lang[0].lower()
-        if lc == 1:
-            if code in variant.keys():
-                return f"{code}_{variant[code].upper()}"
-            else:
-                return f"{code}_{code.upper()}"
-        else:
-            return f"{code}_{clean_lang[1].upper()}"
+        return _four_letters_code(code)
     return code.title()
 
+def _four_letters_code(clean_lang: list) -> str:
+    variant = {"bs": "BA", "cs": "CZ", "da": "DK", "en": "US", "hi": "IN", "ja": "JP",
+               "ko": "KR", "sv": "SE", "uk": "UA", "vi": "VN"}
+    lc = len(clean_lang)
+    code = clean_lang[0].lower()
+    if lc == 1:
+        if code in variant.keys():
+            return f"{code}_{variant[code].upper()}"
+        else:
+            return f"{code}_{code.upper()}"
+    else:
+        return f"{code}_{clean_lang[1].upper()}"
 
-def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
-    if isinstance(old_lang, list):
-        old_lang = old_lang[0]
-    if isinstance(new_lang, list):
-        new_lang = new_lang[0]
-    old_lang = old_lang.title()
-    new_lang = new_lang.title()
-    if old_lang == new_lang:
-        return m_text
+def _get_lang_classes(old_lang: str, new_lang: str) -> (Language, Language):
     try:
         old_lang_class = Language.from_name(old_lang)
     except ValueError as ex:
@@ -164,6 +162,47 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     except ValueError as ex:
         print(ex)
         new_lang_class = Language.from_name('English')
+    return old_lang_class, new_lang_class
+
+def _check_lang_error(node_info: tuple, m_text) -> (bool, str):
+    signal_correct_language = False
+    if node_info != ('', ) and node_info[0] == 'ERROR':
+        c_msg = node_info[1].replace(TOKEN_TXT, '').replace(')', '').split(',')
+        line = c_msg[1].replace('\'', '').strip()
+        # print(f"DEBUG: textedit.py transform_doc_language ERROR:{line}")
+        if line.startswith(LANG_SETTING):
+            tail = line.replace(LANG_SETTING, '')
+            # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
+            m_text = m_text.replace(LANG_SETTING + tail, LANG_SETTING + 'English' + '  # ' + tail)
+            signal_correct_language = True
+    return signal_correct_language, m_text
+
+def _final_lang_transformation(signal_correct_language: bool, old_lang_name: str, new_lang_name: str, m_text: str) -> str:
+    if signal_correct_language:
+        m_text = m_text.replace(fr'{LANG_SETTING}English', fr'{LANG_SETTING}{new_lang_name}')
+    else:
+        m_text = m_text.replace(fr'{LANG_SETTING}{old_lang_name}', fr'{LANG_SETTING}{new_lang_name}')
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    try:
+        mlang = Language.from_name(new_lang_name.replace('_', '-'))
+        set_lang[0] = get_rf_lang_code(mlang.code)
+    except ValueError:
+        set_lang[0] = 'en'
+    return m_text
+
+def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
+    if isinstance(old_lang, list):
+        old_lang = old_lang[0]
+    if isinstance(new_lang, list):
+        new_lang = new_lang[0]
+    old_lang = old_lang.title()
+    new_lang = new_lang.title()
+    if old_lang == new_lang:
+        return m_text
+    old_lang_class, new_lang_class = _get_lang_classes(old_lang, new_lang)
     old_lang_name = old_lang_class.name
     new_lang_name = new_lang_class.name
     if old_lang_name == new_lang_name:
@@ -234,35 +273,8 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     old_false_strings = old_lang_class.false_strings
     new_true_strings = new_lang_class.true_strings
     new_false_strings = new_lang_class.false_strings
-    sinal_correct_language = False  # If error in Language, do final replacement
-    if node_info != ('', ):
-        if node_info[0] == 'ERROR':
-            c_msg = node_info[1].replace(TOKEN_TXT, '').replace(')', '').split(',')
-            line = c_msg[1].replace('\'', '').strip()
-            # print(f"DEBUG: textedit.py transform_doc_language ERROR:{line}")
-            if line.startswith(LANG_SETTING):
-                tail = line.replace(LANG_SETTING, '')
-                # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
-                m_text = m_text.replace(LANG_SETTING + tail, LANG_SETTING + 'English' + '  # ' + tail)
-                sinal_correct_language = True
-        """        
-        if node_info[0] == 'INVALID_HEADER':
-            # print(f"DEBUG: textedit.py transform_doc_language INVALID_HEADER: {node_info[1]}")
-            old_header = node_info[1].split(',')[1]
-            old_header = old_header.replace('* ', '').replace(' *', '').replace('*', '').strip('\' ')
-            headers = list(old_lang_headers.keys())
-            try:
-                idx = headers.index(old_header)
-            except ValueError:
-                # print(f"DEBUG: language.py get_english_label Exception at getting index {old_lang} returning= m_text")
-                return m_text
-            en_label = list(old_lang_headers.values())[idx]
-            new_header = list(new_lang_headers.keys())[idx]
-            print(f"DEBUG: textedit.py transform_doc_language OLD_HEADER: {old_header} en_label={en_label} "
-                  f"{new_header=}")
-            m_text = m_text.replace(old_header, new_header)
-        """
-
+    # If error in Language, do final replacement
+    signal_correct_language, m_text = _check_lang_error(node_info, m_text)
     for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
         m_text = re.sub(r"[*]+\s"+fr"{old}"+r"\s[*]+", fr"*** {new} ***", m_text)
     # Settings must be replaced individually
@@ -303,35 +315,19 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     m_text = re.sub(fr'^{old_name_setting}\b', fr'{new_name_setting}', m_text, flags=re.M)
 
     for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(RSPC+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_when_prefixes, new_lang_when_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(RSPC+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_then_prefixes, new_lang_then_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(RSPC+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_and_prefixes, new_lang_and_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(RSPC+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
-        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
+        m_text = re.sub(RSPC+fr"{old}"+r"\s", fr"  {new} ", m_text)
 
     # Before ending, we replace broken keywords from excluded known bad tanslations
     m_text = transform_standard_keywords(new_lang_name, m_text)
-    # print(f"DEBUG: texteditor.py transform_doc_language {m_text=}")
-
-    if sinal_correct_language:
-        m_text = m_text.replace(fr'{LANG_SETTING}English', fr'{LANG_SETTING}{new_lang_name}')
-    else:
-        m_text = m_text.replace(fr'{LANG_SETTING}{old_lang_name}', fr'{LANG_SETTING}{new_lang_name}')
-
-    try:
-        set_lang = shared_memory.ShareableList(name="language")
-    except AttributeError:  # Unittests fails here
-        set_lang = []
-    try:
-        mlang = Language.from_name(new_lang_name.replace('_', '-'))
-        set_lang[0] = get_rf_lang_code(mlang.code)
-    except ValueError:
-        set_lang[0] = 'en'
-    return m_text
+    return _final_lang_transformation(signal_correct_language, old_lang_name, new_lang_name, m_text)
 
 def transform_standard_keywords(new_lang: str, content: str) -> str:
     """
@@ -477,6 +473,31 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             set_lang = []
         self._doc_language = set_lang[0] = lang
 
+    def _check_message(self, message: RideMessage) -> None:
+        if isinstance(message, RideOpenSuite):  # Not reached
+            self._editor.reset()
+            self._editor.set_editor_caret_position()
+        if isinstance(message, RideNotebookTabChanging):  # Not reached
+            return
+        # Workaround for remarked dirty with Ctrl-S
+        if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):
+            self._save_flag = 1
+            RideBeforeSaving().publish()
+        if self.is_focused() and self._save_flag == 1 and isinstance(message, RideDataDirtyCleared):
+            self._save_flag = 2
+        if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
+            self._save_flag = 3
+            wx.CallAfter(self._editor.mark_file_dirty, False)
+        # DEBUG: This is the unwanted chnge after saving but excluded in this block for performance
+        # if self.is_focused() and self._save_flag == 3 and isinstance(message, RideDataChangedToDirty):
+        #     self._save_flag = 4
+        #     wx.CallAfter(self._editor.mark_file_dirty, False)
+        if isinstance(message, RideBeforeSaving):
+            self._editor.is_saving = False
+            # Reset counter for Workaround for remarked dirty with Ctrl-S
+            self._save_flag = 0
+            self._apply_txt_changes_to_model()
+
     def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """
         try:
@@ -485,29 +506,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 return
             if self._should_process_data_changed_message(message):
                 # print(f"DEBUG: textedit after _should_process_data_changed_message save_flag={self._save_flag}")
-                if isinstance(message, RideOpenSuite):  # Not reached
-                    self._editor.reset()
-                    self._editor.set_editor_caret_position()
-                if isinstance(message, RideNotebookTabChanging):  # Not reached
-                    return
-                # Workaround for remarked dirty with Ctrl-S
-                if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):
-                    self._save_flag = 1
-                    RideBeforeSaving().publish()
-                if self.is_focused() and self._save_flag == 1 and isinstance(message, RideDataDirtyCleared):
-                    self._save_flag = 2
-                if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
-                    self._save_flag = 3
-                    wx.CallAfter(self._editor.mark_file_dirty, False)
-                # DEBUG: This is the unwanted chnge after saving but excluded in this block for performance
-                # if self.is_focused() and self._save_flag == 3 and isinstance(message, RideDataChangedToDirty):
-                #     self._save_flag = 4
-                #     wx.CallAfter(self._editor.mark_file_dirty, False)
-                if isinstance(message, RideBeforeSaving):
-                    self._editor.is_saving = False
-                    # Reset counter for Workaround for remarked dirty with Ctrl-S
-                    self._save_flag = 0
-                    self._apply_txt_changes_to_model()
+                self._check_message(message)
                 self._refresh_timer.Start(500, True)
                 # For performance reasons only run after all the data changes
         except AttributeError:
@@ -1769,66 +1768,72 @@ class SourceEditor(wx.Panel):
             close_symbol = open_symbol
         return open_symbol + value + close_symbol
 
+    def _prepare_selection(self, start, end):
+        new_end_line = end_line = self.source_editor.LineFromPosition(end)
+        last_line = self.source_editor.GetLineCount()
+        # get the next row content
+        if end_line + 1 < last_line - 3:
+            rowbelow = self.source_editor.GetLine(end_line + 1)
+            # exception if moving block is long assignemnt or arguments with continuation markers extend selection
+            is_marker = self.first_non_space_content(rowbelow)
+            if is_marker == '...':
+                new_end_line = self.find_initial_keyword(end_line, up=False)
+        if new_end_line != end_line:  # Extend selection
+            new_end_pos = self.source_editor.GetLineEndPosition(new_end_line - 1)
+            self.source_editor.SetSelection(start, new_end_pos - 1)
+
+    def _above_row_selection(self, new_ini_line, ini_line):
+        # get the previous row content
+        rowabove = self.source_editor.GetLine(ini_line - 1)
+        is_marker = self.first_non_space_content(rowabove)
+        if is_marker == '...':
+            new_ini_line = max(1, self.find_initial_keyword(ini_line))
+        self.source_editor.BeginUndoAction()
+        if new_ini_line != ini_line:
+            # Move block to up new_ini_line
+            delta = ini_line - new_ini_line
+            for _ in range(0, delta):
+                self.source_editor.MoveSelectedLinesUp()
+        else:
+            self.source_editor.MoveSelectedLinesUp()
+
     def move_row_up(self, event):
         __ = event
         start, end = self.source_editor.GetSelection()
         new_ini_line = ini_line = self.source_editor.LineFromPosition(start)
-        new_end_line = end_line = self.source_editor.LineFromPosition(end)
-        last_line = self.source_editor.GetLineCount()
-        # selection not on top?
-        if ini_line > 0:
-            # get the next row content
-            if end_line + 1 < last_line - 3:
-                rowbelow = self.source_editor.GetLine(end_line + 1)
-                # exception if moving block is long assignemnt or arguments with continuation markers extend selection
-                is_marker = self.first_non_space_content(rowbelow)
-                if is_marker == '...':
-                    new_end_line = self.find_initial_keyword(end_line, up=False)
-            if new_end_line != end_line:  # Extend selection
-                new_end_pos = self.source_editor.GetLineEndPosition(new_end_line - 1)
-                self.source_editor.SetSelection(start, new_end_pos-1)
-            # exception if is long assignemnt or arguments with continuation markers get top line
-            # get the previous row content
-            rowabove = self.source_editor.GetLine(ini_line - 1)
-            is_marker = self.first_non_space_content(rowabove)
-            if is_marker == '...':
-                new_ini_line = max(1, self.find_initial_keyword(ini_line))
-            self.source_editor.BeginUndoAction()
-            if new_ini_line != ini_line:
-                # Move block to up new_ini_line
-                delta = ini_line - new_ini_line
-                for _ in range(0, delta):
-                    self.source_editor.MoveSelectedLinesUp()
-            else:
-                self.source_editor.MoveSelectedLinesUp()
-            self.source_editor.EndUndoAction()
-            # New selection
-            start, end = self.source_editor.GetSelection()
-            new_end_line = self.source_editor.LineFromPosition(end - 1)  # One char before
-            nendpos = self.source_editor.GetLineEndPosition(new_end_line)
-            self.source_editor.SetAnchor(nendpos)
-            new_ini_line = self.source_editor.LineFromPosition(start)
-            # indentation after move
-            new_top = self.source_editor.GetLine(new_ini_line)
-            rowbelow = self.source_editor.GetLine(new_end_line + 1)
-            old_start = self.first_non_space(rowbelow)
-            new_start = self.first_non_space(new_top)
-            was_end_old = rowbelow[old_start:old_start+3] == 'END'
-            was_end_new = new_top[new_start:new_start+3] == 'END'
-            if new_start == old_start and was_end_old and was_end_new:
-                self.deindent_line(new_end_line + 1)
+        if ini_line == 0:
+            return
+        self._prepare_selection(start, end)
+        # exception if is long assignemnt or arguments with continuation markers get top line
+        self._above_row_selection(new_ini_line, ini_line)
+        self.source_editor.EndUndoAction()
+        # New selection
+        start, end = self.source_editor.GetSelection()
+        new_end_line = self.source_editor.LineFromPosition(end - 1)  # One char before
+        nendpos = self.source_editor.GetLineEndPosition(new_end_line)
+        self.source_editor.SetAnchor(nendpos)
+        new_ini_line = self.source_editor.LineFromPosition(start)
+        # indentation after move
+        new_top = self.source_editor.GetLine(new_ini_line)
+        rowbelow = self.source_editor.GetLine(new_end_line + 1)
+        old_start = self.first_non_space(rowbelow)
+        new_start = self.first_non_space(new_top)
+        was_end_old = rowbelow[old_start:old_start+3] == 'END'
+        was_end_new = new_top[new_start:new_start+3] == 'END'
+        if new_start == old_start and was_end_old and was_end_new:
+            self.deindent_line(new_end_line + 1)
+            self.indent_block()
+        elif new_start == old_start and was_end_old:
+            self.indent_block()
+        start, end = self.source_editor.GetSelection()
+        if old_start > new_start and was_end_new:
+            self.deindent_line(new_end_line + 1)
+            if was_end_old:
                 self.indent_block()
-            elif new_start == old_start and was_end_old:
-                self.indent_block()
-            start, end = self.source_editor.GetSelection()
-            if old_start > new_start and was_end_new:
-                self.deindent_line(new_end_line + 1)
-                if was_end_old:
-                    self.indent_block()
-            if new_start < old_start and not was_end_new:
-                self.indent_block()
-            elif new_start > old_start:
-                self.deindent_block()
+        if new_start < old_start and not was_end_new:
+            self.indent_block()
+        elif new_start > old_start:
+            self.deindent_block()
 
     def find_initial_keyword(self, start: int, up=True):
         if up:
@@ -2430,28 +2435,24 @@ class RobotDataEditor(stc.StyledTextCtrl):
             # Tips
             if event.ShiftDown():
                 self.show_kw_doc()
-                '''
-                self.CallTipSetBackground("yellow")
-                self.CallTipShow(pos, f"lots of of text: blah, blah, blah\n\n"
-                                 "show some suff, maybe parameters..\n\n"
-                                 f"fubar(param1, param2)\n\nContext: {selected}"
-                                  )
-                '''
             # Code completion
             else:
                 self.parent.on_content_assist(event)
             self.key_trigger = 0
         else:
-            if self.autocomplete and not event.ControlDown():
-                if 32 < key < 256 and self.key_trigger > -1:
-                    if self.key_trigger < 2:
-                        self.key_trigger += 1
-                    else:
-                        self.key_trigger = -1
-                        self.parent.on_content_assist(event)
-                else:
-                    self.key_trigger = 0
+            self._try_autocomplete(key, event)
         event.Skip()
+
+    def _try_autocomplete(self, key: int, event: wx.KeyEvent) -> None:
+        if self.autocomplete and not event.ControlDown():
+            if 32 < key < 256 and self.key_trigger > -1:
+                if self.key_trigger < 2:
+                    self.key_trigger += 1
+                else:
+                    self.key_trigger = -1
+                    self.parent.on_content_assist(event)
+            else:
+                self.key_trigger = 0
 
     def set_text(self, text):
         self.SetReadOnly(False)
