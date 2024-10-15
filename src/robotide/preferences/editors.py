@@ -20,8 +20,12 @@ from wx import Colour
 from wx.lib.masked import NumCtrl
 
 from .settings import RideSettings
-from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
-                                      StringChoiceEditor, PreferencesColorPicker)
+# from robotide.ui.preferences_dialogs import PreferencesPanel
+from ..ui import preferences_dialogs as pdiag
+# from . import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
+#                                       StringChoiceEditor, PreferencesColorPicker)
+from robotide.ui.preferences_dialogs import PreferencesPanel
+
 from ..widgets import Label
 from .managesettingsdialog import SaveLoadSettings
 from ..context import IS_WINDOWS
@@ -126,7 +130,7 @@ class EditorPreferences(PreferencesPanel):
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
-        f = IntegerChoiceEditor(
+        f = pdiag.IntegerChoiceEditor(
             self._settings, 'font size', _('Font Size'),
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=30)
@@ -135,18 +139,18 @@ class EditorPreferences(PreferencesPanel):
         sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
-            z = SpinChoiceEditor(
+            z = pdiag.SpinChoiceEditor(
                 self._settings, 'zoom factor', _('Zoom Factor'), (-10, 20))
             l_zoom = z.label(self)
             set_colors(l_zoom, self.background_color, self.foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if FIXED_FONT in self._settings:
-            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
+            l_ff, editor = pdiag.boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
             set_colors(l_ff, self.background_color, self.foreground_color)
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
-            s = StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
+            s = pdiag.StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
             l_font = s.label(self)
             set_colors(l_font, self.background_color, self.foreground_color)
             sizer.AddMany([l_font, s.chooser(self)])
@@ -197,7 +201,7 @@ class TextEditorPreferences(EditorPreferences):
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
             set_colors(label, self.background_color, self.foreground_color)
-            button = PreferencesColorPicker(
+            button = pdiag.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
@@ -228,7 +232,7 @@ class TextEditorPreferences(EditorPreferences):
     def _create_text_config_editor(self):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-        l_auto_suggest, editor = boolean_editor(self, settings, 'enable auto suggestions',
+        l_auto_suggest, editor = pdiag.boolean_editor(self, settings, 'enable auto suggestions',
                                                 _('Enable auto suggestions'))
         set_colors(l_auto_suggest, self.background_color, self.foreground_color)
         sizer.AddMany([l_auto_suggest, editor])
@@ -253,17 +257,17 @@ class GridEditorPreferences(EditorPreferences):
         set_colors(l_col_size, self.background_color, self.foreground_color)
         sizer.Add(l_col_size)
         sizer.Add(self._number_editor(settings, 'col size'))
-        l_auto_size, editor = boolean_editor(self, settings, 'auto size cols', _('Auto size columns'))
+        l_auto_size, editor = pdiag.boolean_editor(self, settings, 'auto size cols', _('Auto size columns'))
         set_colors(l_auto_size, self.background_color, self.foreground_color)
         sizer.AddMany([l_auto_size, editor])
         l_max_size = self._label_for(_('Max column size\n(applies when auto size is on)'))
         set_colors(l_max_size, self.background_color, self.foreground_color)
         sizer.Add(l_max_size)
         sizer.Add(self._number_editor(settings, 'max col size'))
-        l_word_wrap, editor = boolean_editor(self, settings, 'word wrap', _('Word wrap and auto size rows'))
+        l_word_wrap, editor = pdiag.boolean_editor(self, settings, 'word wrap', _('Word wrap and auto size rows'))
         set_colors(l_word_wrap, self.background_color, self.foreground_color)
         sizer.AddMany([l_word_wrap, editor])
-        l_auto_suggest, editor = boolean_editor(self, settings, 'enable auto suggestions',
+        l_auto_suggest, editor = pdiag.boolean_editor(self, settings, 'enable auto suggestions',
                                                 _('Enable auto suggestions'))
         set_colors(l_auto_suggest, self.background_color, self.foreground_color)
         sizer.AddMany([l_auto_suggest, editor])
@@ -306,7 +310,7 @@ class GridEditorPreferences(EditorPreferences):
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             set_colors(lbl, self.background_color, self.foreground_color)
-            btn = PreferencesColorPicker(
+            btn = pdiag.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
             colors_sizer.Add(btn, (row, 2),
@@ -329,7 +333,7 @@ class GridEditorPreferences(EditorPreferences):
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             set_colors(lbl, self.background_color, self.foreground_color)
-            btn = PreferencesColorPicker(
+            btn = pdiag.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
             colors_sizer.Add(btn, (row, 0),
@@ -373,9 +377,9 @@ class TestRunnerPreferences(EditorPreferences):
             add_colors = "-C ansi"
         else:
             add_colors = "-C on"
-        l_usecolor, usecolor = boolean_editor(self, settings, 'use colors',
+        l_usecolor, usecolor = pdiag.boolean_editor(self, settings, 'use colors',
                                               f"{_('Shows console colors set by')} {add_colors} ")
-        l_confirm, editor = boolean_editor(self, settings, 'confirm run',
+        l_confirm, editor = pdiag.boolean_editor(self, settings, 'confirm run',
                                            _('Asks for confirmation to run all tests if none selected '))
         set_colors(l_confirm, self.background_color, self.foreground_color)
         set_colors(l_usecolor, self.background_color, self.foreground_color)
@@ -400,7 +404,7 @@ class TestRunnerPreferences(EditorPreferences):
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
             set_colors(label, self.background_color, self.foreground_color)
-            button = PreferencesColorPicker(
+            button = pdiag.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)

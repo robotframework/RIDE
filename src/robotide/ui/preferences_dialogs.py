@@ -17,9 +17,8 @@ import builtins
 import textwrap
 
 import wx
-from wx import Colour
 
-from ..preferences.settings import RideSettings
+# from ..preferences.settings import RideSettings  # DEBUG Removed to fix "cicular import"
 from ..context import IS_LINUX
 from ..widgets import HelpLabel, Label, TextField
 
@@ -35,6 +34,7 @@ class PreferencesPanel(wx.Panel):
         self.name_tr = name_tr
         # self.location = (_("Preferences"),)
         # self.title = _("Preferences")
+        from ..preferences.settings import RideSettings
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self._gsettings = RideSettings()
         self.settings = self._gsettings['General']
@@ -71,6 +71,7 @@ class PreferencesComboBox(wx.ComboBox):
         self.key = key
         # wx.ComboBox(self, parent, id, self._get_value(), size=self._get_size(choices),
         #             choices=choices, style=wx.CB_READONLY)
+        from ..preferences.settings import RideSettings
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
                                                   size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
@@ -119,6 +120,7 @@ class PreferencesSpinControl(wx.SpinCtrl):
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
+        from ..preferences.settings import RideSettings
         super(PreferencesSpinControl, self).__init__(parent, id,
             size=self._get_size(choices[-1]))
 
@@ -160,7 +162,8 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.settings = settings
         self.key = key
         # print(f"DEBUG: Preferences ColourPicker value type {type(settings[key])}")
-        value = Colour(settings[key])
+        value = wx.Colour(settings[key])
+        from ..preferences.settings import RideSettings
         super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
         self._gsettings = RideSettings()
         self.psettings = self._gsettings['General']
@@ -192,6 +195,7 @@ class _ChoiceEditor(object):
         self._label = label
         self._choices = choices
         self._help = help
+        from ..preferences.settings import RideSettings
         self._gsettings = RideSettings()
         self.csettings = self._gsettings['General']
         self.background_color = self.csettings['background']
@@ -231,6 +235,7 @@ class SpinChoiceEditor(_ChoiceEditor):
 
 def boolean_editor(parent, settings, name, label, help=''):
     editor = _create_checkbox_editor(parent, settings, name, help)
+    from ..preferences.settings import RideSettings
     _gsettings = RideSettings()
     bsettings = _gsettings['General']
     background_color = bsettings['background']
@@ -255,6 +260,7 @@ def _create_checkbox_editor(parent, settings, name, help):
 def comma_separated_value_editor(parent, settings, name, label, thelp=''):
     initial_value = ', '.join(settings.get(name, ""))
     editor = TextField(parent, initial_value)
+    from ..preferences.settings import RideSettings
     _gsettings = RideSettings()
     esettings = _gsettings['General']
     background_color = esettings['background']

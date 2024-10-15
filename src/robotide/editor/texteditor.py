@@ -93,7 +93,7 @@ def obtain_language(existing, content):
     if doc_lang is not None:
         if isinstance(doc_lang, str):
             adoc_lang.append(doc_lang)
-        set_lang = _get_lang(adoc_lang)
+        set_lang = _get_lang(set_lang, adoc_lang)
     elif len(set_lang) > 0:
         if existing is not None:
             if isinstance(existing, list):
@@ -109,15 +109,16 @@ def obtain_language(existing, content):
         set_lang[0] = 'en'
     return [set_lang[0]]
 
-def _get_lang(adoc_lang: list) -> list:
-    set_lang =[]
+
+def _get_lang(set_lang:list, adoc_lang: list) -> list:
     for idx, lang in enumerate(adoc_lang):
         try:
             mlang = Language.from_name(lang.replace('_', '-').strip())
-        except ValueError:
-            raise ValueError
-        set_lang[idx] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
+        except ValueError as e:
+            raise e
+        set_lang[idx] = get_rf_lang_code(mlang.code) # .code.replace('-','_')
     return set_lang
+
 
 def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
     if isinstance(lang, list):
@@ -135,8 +136,9 @@ def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
             if with_variant_code in ("PtBr", "ZhCn", "ZhTw") and not iso:
                 return with_variant_code
     if iso:
-        return _four_letters_code(code)
+        return _four_letters_code(clean_lang)
     return code.title()
+
 
 def _four_letters_code(clean_lang: list) -> str:
     variant = {"bs": "BA", "cs": "CZ", "da": "DK", "en": "US", "hi": "IN", "ja": "JP",
@@ -151,6 +153,7 @@ def _four_letters_code(clean_lang: list) -> str:
     else:
         return f"{code}_{clean_lang[1].upper()}"
 
+
 def _get_lang_classes(old_lang: str, new_lang: str) -> (Language, Language):
     try:
         old_lang_class = Language.from_name(old_lang)
@@ -164,6 +167,7 @@ def _get_lang_classes(old_lang: str, new_lang: str) -> (Language, Language):
         new_lang_class = Language.from_name('English')
     return old_lang_class, new_lang_class
 
+
 def _check_lang_error(node_info: tuple, m_text) -> (bool, str):
     signal_correct_language = False
     if node_info != ('', ) and node_info[0] == 'ERROR':
@@ -176,6 +180,7 @@ def _check_lang_error(node_info: tuple, m_text) -> (bool, str):
             m_text = m_text.replace(LANG_SETTING + tail, LANG_SETTING + 'English' + '  # ' + tail)
             signal_correct_language = True
     return signal_correct_language, m_text
+
 
 def _final_lang_transformation(signal_correct_language: bool, old_lang_name: str, new_lang_name: str, m_text: str) -> str:
     if signal_correct_language:
@@ -329,6 +334,7 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     m_text = transform_standard_keywords(new_lang_name, m_text)
     return _final_lang_transformation(signal_correct_language, old_lang_name, new_lang_name, m_text)
 
+
 def transform_standard_keywords(new_lang: str, content: str) -> str:
     """
     This function must be called after proper setting of parameters old_lang, new_lang. From transform_doc_language.
@@ -344,9 +350,9 @@ def transform_standard_keywords(new_lang: str, content: str) -> str:
         return content
 
     path_to_exclusion = f"{PATH_EXCLUSIONS}/../localization/{lang_code}/restore_keywords.json"
-    # print(f"DEBUG: texteditor.py transform_standard_keywords path={path_to_exclusion}\n"
-    #       f"{lang_code=}\n"
-    #       f"{mlang.code=}")
+    print(f"DEBUG: texteditor.py transform_standard_keywords path={path_to_exclusion}\n"
+          f"{lang_code=}\n"
+          f"{mlang.code=}")
     import json
 
     try:
