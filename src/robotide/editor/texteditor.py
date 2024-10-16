@@ -15,6 +15,7 @@
 import builtins
 import os
 import re
+import tempfile
 from io import StringIO, BytesIO
 from os.path import dirname
 from time import time
@@ -115,6 +116,7 @@ def _get_lang(set_lang:list, adoc_lang: list) -> list:
         try:
             mlang = Language.from_name(lang.replace('_', '-').strip())
         except ValueError as e:
+            print(f"DEBUG: TextEditor, could not find Language:{lang}")
             raise e
         set_lang[idx] = get_rf_lang_code(mlang.code) # .code.replace('-','_')
     return set_lang
@@ -642,6 +644,9 @@ class DataValidationHandler(object):
             self._doc_language = lang
         else:
             self._get_shared_doc_lang()
+        file = tempfile.NamedTemporaryFile(prefix="model_saved_from_RIDE_",
+                                           suffix=".robot", mode="w+", delete=False)
+        self.tempfilename=file.name
 
     def _get_shared_doc_lang(self):
         try:
@@ -754,7 +759,7 @@ class DataValidationHandler(object):
             validator.visit(model)
         except DataError as err:
             result = (err.message, err.details)
-        model.save("/tmp/model_saved_from_RIDE.robot")
+        model.save(self.tempfilename)
         # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
         #       f"Save model in /tmp/model_saved_from_RIDE.robot"
         #       f" result={result}")
@@ -1644,9 +1649,11 @@ class SourceEditor(wx.Panel):
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
             self.mark_file_dirty(self.source_editor.GetModify())
-        elif (not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
+        elif ((not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
+             or keycode in (ord('d'), ord('D')))
               and event.ControlDown() and not event.ShiftDown()):
             # We need to ignore this in Linux, because it does double-action
+            # We need to ignore Ctl-D because Scintilla does Duplicate line
             self.mark_file_dirty(self.source_editor.GetModify())
             return
         elif keycode in (ord('g'), ord('G')) and event.ControlDown():
@@ -1654,10 +1661,6 @@ class SourceEditor(wx.Panel):
                 wx.CallAfter(self.on_find_backwards, event)
             else:
                 wx.CallAfter(self.on_find, event)
-            return
-        elif keycode in (ord('d'), ord('D')) and event.ControlDown() and not event.ShiftDown():
-            # We need to ignore because Scintilla does Duplicate line
-            self.mark_file_dirty(self.source_editor.GetModify())
             return
         elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
             # This must be the last branch to activate actions before doc
@@ -1841,44 +1844,49 @@ class SourceEditor(wx.Panel):
         elif new_start > old_start:
             self.deindent_block()
 
+    def _find_up_kw(self, start:int) -> int:
+        if start <= 3:
+            return start
+        text = self.source_editor.GetLine(start)
+        is_marker = self.first_non_space_content(text)  # check if selection starts with marker
+        if is_marker == '...':
+            return start
+        is_marker = '...'
+        found = False
+        line = start - 2
+        while is_marker == '...' and line > 2:
+            row = self.source_editor.GetLine(line)
+            is_marker = self.first_non_space_content(row)
+            if is_marker != '...':
+                found = True
+                break
+            line -= 1
+        return line if found else start - 1
+
+    def _find_down_kw(self, start:int) -> int:
+        last_line = self.source_editor.GetLineCount()
+        if start > last_line - 3:
+            return start
+        text = self.source_editor.GetLine(start)
+        is_marker = self.first_non_space_content(text)  # check if selection starts with marker
+        if is_marker == '...':
+            return start
+        is_marker = '...'
+        found = False
+        line = start + 2
+        while is_marker == '...' and line < last_line - 2:
+            row = self.source_editor.GetLine(line)
+            is_marker = self.first_non_space_content(row)
+            if is_marker != '...':
+                found = True
+                break
+            line += 1
+        return line if found else start + 1
+
     def find_initial_keyword(self, start: int, up=True):
         if up:
-            if start <= 3:
-                return
-            text = self.source_editor.GetLine(start)
-            is_marker = self.first_non_space_content(text)  # check if selection starts with marker
-            if is_marker == '...':
-                return start
-            is_marker = '...'
-            found = False
-            line = start - 2
-            while is_marker == '...' and line > 2:
-                row = self.source_editor.GetLine(line)
-                is_marker = self.first_non_space_content(row)
-                if is_marker != '...':
-                    found = True
-                    break
-                line -= 1
-            return line if found else start - 1
-        else:
-            last_line = self.source_editor.GetLineCount()
-            if start > last_line - 3:
-                return
-            text = self.source_editor.GetLine(start)
-            is_marker = self.first_non_space_content(text)  # check if selection starts with marker
-            if is_marker == '...':
-                return start
-            is_marker = '...'
-            found = False
-            line = start + 2
-            while is_marker == '...' and line < last_line - 2:
-                row = self.source_editor.GetLine(line)
-                is_marker = self.first_non_space_content(row)
-                if is_marker != '...':
-                    found = True
-                    break
-                line += 1
-            return line if found else start + 1
+            return self._find_up_kw(start)
+        return self._find_down_kw(start)
 
     def first_non_space_content(self, text):
         start = self.first_non_space(text)
@@ -1911,24 +1919,8 @@ class SourceEditor(wx.Panel):
         top_content = self.source_editor.GetLine(ini_line)
         # exception if is long assignement or arguments with continuation markers get below line
         is_marker = self.first_non_space_content(top_content)
-        # get the next row content and length
-        rowbelow = self.source_editor.GetLine(end_line + 1)
         if is_marker != '...':
-            if end_line + 2 < last_line - 1:
-                # exception if is long assignement or arguments with continuation markers get below line
-                is_marker = self.first_non_space_content(rowbelow)
-                if is_marker == '...':
-                    new_end_line = self.find_initial_keyword(end_line, up=False)
-            if new_end_line != end_line:  # Extend selection
-                new_end_pos = self.source_editor.GetLineEndPosition(new_end_line-1)
-                self.source_editor.SetSelection(start, new_end_pos - 1)
-                self.source_editor.SetAnchor(start)
-            # exception if target is long assignemnt or arguments with continuation markers get end line
-            # get the after below row content
-            rowafterbelow = self.source_editor.GetLine(new_end_line + 2)  # Checking if is continuation arguments
-            is_marker = self.first_non_space_content(rowafterbelow)
-            if is_marker == '...':
-                new_ini_line = self.find_initial_keyword(new_end_line + 1, up=False)
+            new_ini_line = self._set_pos_by_marker(new_ini_line, new_end_line, end_line, last_line, start)
         self.source_editor.BeginUndoAction()
         if new_ini_line != ini_line:
             # Move block to down new_ini_line
@@ -1965,10 +1957,35 @@ class SourceEditor(wx.Panel):
         if new_start > old_start and was_end_new and was_end_old:
             self.indent_line(new_ini_line - 1)
         # New selection
+        self._set_new_selection(new_ini_line, new_end_line)
+
+    def _set_pos_by_marker(self, new_ini_line:int, new_end_line:int, end_line:int, last_line:int, start:int) -> int:
+        # get the next row content and length
+        rowbelow = self.source_editor.GetLine(end_line + 1)
+        if end_line + 2 < last_line - 1:
+            # exception if is long assignement or arguments with continuation markers get below line
+            is_marker = self.first_non_space_content(rowbelow)
+            if is_marker == '...':
+                new_end_line = self.find_initial_keyword(end_line, up=False)
+        if new_end_line != end_line:  # Extend selection
+            new_end_pos = self.source_editor.GetLineEndPosition(new_end_line - 1)
+            self._select_anchor(start, new_end_pos - 1)
+        # exception if target is long assignemnt or arguments with continuation markers get end line
+        # get the after below row content
+        rowafterbelow = self.source_editor.GetLine(new_end_line + 2)  # Checking if is continuation arguments
+        is_marker = self.first_non_space_content(rowafterbelow)
+        if is_marker == '...':
+            new_ini_line = self.find_initial_keyword(new_end_line + 1, up=False)
+        return new_ini_line
+
+    def _set_new_selection(self, new_ini_line: int, new_end_line: int) -> None:
         nstartpos = self.source_editor.PositionFromLine(new_ini_line)
         nendpos = self.source_editor.GetLineEndPosition(new_end_line)
-        self.source_editor.SetSelection(nstartpos, nendpos)
-        self.source_editor.SetAnchor(nstartpos)
+        self._select_anchor(nstartpos, nendpos)
+
+    def  _select_anchor(self, start:int, end:int) -> None:
+        self.source_editor.SetSelection(start, end)
+        self.source_editor.SetAnchor(start)
 
     def delete_row(self, event):
         __ = event
