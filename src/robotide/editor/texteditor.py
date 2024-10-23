@@ -1572,15 +1572,6 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetKeyCode()
         keyvalue = event.GetUnicodeKey()
-        # print(f"DEBUG: TextEditor key up focused={self.is_focused()} modify {self.source_editor.GetModify()}")
-        # if keycode == wx.WXK_TAB:
-        #     print("DEBUG: TextEditor key up TAB")
-        #     return
-        if IS_WINDOWS and keycode == wx.WXK_DELETE:
-            self.mark_file_dirty(self.source_editor.GetModify())
-            print(f"DEBUG: TextEditor on_editor_key event={event} raw_key={keycode} wx.WXK_C ={wx.WXK_CONTROL}"
-                  f"\n KEY=DELETE DIRTY:{self.dirty}")
-            return
         if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             self.mark_file_dirty(self.source_editor.GetModify())
             return
@@ -1617,9 +1608,6 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             self.mark_file_dirty(self.source_editor.GetModify())
-            # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}"
-            #       f"\n KEY=DELETE DIRTY:{self.dirty}")
-            # event.Skip()
             return
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
