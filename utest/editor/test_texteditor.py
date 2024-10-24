@@ -596,6 +596,31 @@ class TestEditorCommands(unittest.TestCase):
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_miscellanous(self):
+        spaces = ' ' * self.plugin._editor_component.tab_size
+        content = [spaces + 'Log' + spaces + 'This is ${unknown}\n']
+        pos = len(spaces + 'Log')
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos - len('Log'), pos)
+        stylizer = self.plugin._editor_component.source_editor.stylizer
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        font_size = stylizer._font_size()
+        font_face = stylizer._font_face()
+        zoom_factor = stylizer._zoom_factor()
+
+        assert font_size == 10
+        assert font_face in ["Noto Sans", "Courier New"]
+        assert zoom_factor == 0
+        # print(f"DEBUG: fulltext:\n{fulltext}")
+        stylizer.set_styles(True)
+        stylizer.stylize()
+
+        assert fulltext == spaces + 'Log' + spaces + 'This is ${unknown}\n'
+        # Uncomment next lines if you want to see the app
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
 
 class TestLanguageFunctions(unittest.TestCase):
 
