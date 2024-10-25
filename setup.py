@@ -28,7 +28,8 @@ REQUIREMENTS = ['PyPubSub',
                 'psutil',
                 'Pywin32; sys_platform=="win32"',
                 'wxPython',
-                'packaging']
+                'packaging',
+                'requests>=2.32.2']
 
 PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],

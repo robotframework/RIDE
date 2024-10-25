@@ -17,3 +17,5 @@ from .excludes_dialogs import ExcludePreferences
 from .progress import LoadProgressObserver
 from .treeplugin import Tree
 from .mainframe import ToolBar
+from .preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
+                                  StringChoiceEditor, PreferencesColorPicker)

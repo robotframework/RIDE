@@ -50,7 +50,17 @@ _DEFAULT_FONT_SIZE = 11
 COL_HEADER_EDITOR = wx.NewId()
 PLUGIN_NAME = 'Editor'
 ZOOM_FACTOR = 'zoom factor'
-
+INS_ROWS = 'Insert Rows\tCtrl-I'
+DEL_ROWS = 'Delete Rows\tCtrl-D'
+CMT_CELLS = 'Comment Cells\tCtrl-Shift-3'
+UCMT_CELLS = 'Uncomment Cells\tCtrl-Shift-4'
+MV_CUR_DWN = 'Move Cursor Down\tAlt-Enter'
+CMT_ROWS = 'Comment Rows\tCtrl-3'
+UCMT_ROWS = 'Uncomment Rows\tCtrl-4'
+MV_ROWS_UP = 'Move Rows Up\tAlt-Up'
+MV_ROWS_DWN = 'Move Rows Down\tAlt-Down'
+SWAP_ROWS_UP = 'Swap Row Up\tCtrl-T'
+REN_KW = 'Rename Keyword'
 
 def requires_focus(function):
     def _row_header_selected_on_linux(self):
@@ -84,7 +94,7 @@ class KeywordEditor(GridEditor, Plugin):
                             parent.plugin.grid_popup_creator)
         self._popup_items = ([
                              _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
-                             _('Insert Rows\tCtrl-I'), _('Delete Rows\tCtrl-D'), '---',
+                             _(INS_ROWS), _(DEL_ROWS), '---',
                              _('Select All\tCtrl-A'), '---', _('Cut\tCtrl-X'), _('Copy\tCtrl-C'),
                              _('Paste\tCtrl-V'), _('Insert\tCtrl-Shift-V'), '---', _('Delete\tDel'),
                              '---'] +
@@ -92,7 +102,7 @@ class KeywordEditor(GridEditor, Plugin):
                               _('Create Keyword'),
                               _('Extract Keyword'),
                               _('Extract Variable'),
-                              _('Rename Keyword'),
+                              _(REN_KW),
                               _('Find Where Used'),
                               _('JSON Editor\tCtrl-Shift-J'),
                               '---',
@@ -105,19 +115,19 @@ class KeywordEditor(GridEditor, Plugin):
                               _('Make List Variable\tCtrl-2'),
                               _('Make Dict Variable\tCtrl-5'),
                               '---',
-                              _('Comment Cells\tCtrl-Shift-3'),
-                              _('Uncomment Cells\tCtrl-Shift-4'),
-                              _('Move Cursor Down\tAlt-Enter'),
+                              _(CMT_CELLS),
+                              _(UCMT_CELLS),
+                              _(MV_CUR_DWN),
                               '---',
-                              _('Comment Rows\tCtrl-3'),
-                              _('Uncomment Rows\tCtrl-4'),
-                              _('Move Rows Up\tAlt-Up'),
-                              _('Move Rows Down\tAlt-Down'),
-                              _('Swap Row Up\tCtrl-T')
+                              _(CMT_ROWS),
+                              _(UCMT_ROWS),
+                              _(MV_ROWS_UP),
+                              _(MV_ROWS_DWN),
+                              _(SWAP_ROWS_UP)
                               ])
         self._popup_items_nt = ([
                                  'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
-                                 'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
+                                 INS_ROWS, DEL_ROWS, '---',
                                  'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
                                  'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel',
                                  '---'] +
@@ -125,7 +135,7 @@ class KeywordEditor(GridEditor, Plugin):
                                 'Create Keyword',
                                 'Extract Keyword',
                                 'Extract Variable',
-                                'Rename Keyword',
+                                REN_KW,
                                 'Find Where Used',
                                 'JSON Editor\tCtrl-Shift-J',
                                 '---',
@@ -138,15 +148,15 @@ class KeywordEditor(GridEditor, Plugin):
                                 'Make List Variable\tCtrl-2',
                                 'Make Dict Variable\tCtrl-5',
                                 '---',
-                                'Comment Cells\tCtrl-Shift-3',
-                                'Uncomment Cells\tCtrl-Shift-4',
-                                'Move Cursor Down\tAlt-Enter',
+                                CMT_CELLS,
+                                UCMT_CELLS,
+                                MV_CUR_DWN,
                                 '---',
-                                'Comment Rows\tCtrl-3',
-                                'Uncomment Rows\tCtrl-4',
-                                'Move Rows Up\tAlt-Up',
-                                'Move Rows Down\tAlt-Down',
-                                'Swap Row Up\tCtrl-T'
+                                CMT_ROWS,
+                                UCMT_ROWS,
+                                MV_ROWS_UP,
+                                MV_ROWS_DWN,
+                                SWAP_ROWS_UP
                                 ])
         self._parent = parent
         self._plugin = parent.plugin
@@ -314,13 +324,6 @@ class KeywordEditor(GridEditor, Plugin):
         event.Skip()
 
     def on_kill_focus(self, event):
-        # if self.col_label_element:
-        #     try:
-        #         self.col_label_element[0].Destroy()
-        #     except RuntimeError:
-        #         print("DEBUG: on_kill_focus exception called")
-        #     finally:
-        #         del self.col_label_element
         self._tooltips.hide()
         self._hide_link_if_necessary()
         event.Skip()
@@ -350,28 +353,28 @@ class KeywordEditor(GridEditor, Plugin):
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
         popupitems = [
-                    _('Insert Rows\tCtrl-I'),
-                    _('Delete Rows\tCtrl-D'),
-                    _('Comment Rows\tCtrl-3'),
-                    _('Uncomment Rows\tCtrl-4'),
-                    _('Move Rows Up\tAlt-Up'),
-                    _('Move Rows Down\tAlt-Down'),
-                    _('Swap Row Up\tCtrl-T'),
+                    _(INS_ROWS),
+                    _(DEL_ROWS),
+                    _(CMT_ROWS),
+                    _(UCMT_ROWS),
+                    _(MV_ROWS_UP),
+                    _(MV_ROWS_DWN),
+                    _(SWAP_ROWS_UP),
                     '---',
-                    _('Comment Cells\tCtrl-Shift-3'),
-                    _('Uncomment Cells\tCtrl-Shift-4'),
+                    _(CMT_CELLS),
+                    _(UCMT_CELLS),
                     ]
         popupitems_nt = [
-                    'Insert Rows\tCtrl-I',
-                    'Delete Rows\tCtrl-D',
-                    'Comment Rows\tCtrl-3',
-                    'Uncomment Rows\tCtrl-4',
-                    'Move Rows Up\tAlt-Up',
-                    'Move Rows Down\tAlt-Down',
-                    'Swap Row Up\tCtrl-T',
+                    INS_ROWS,
+                    DEL_ROWS,
+                    CMT_ROWS,
+                    UCMT_ROWS,
+                    MV_ROWS_UP,
+                    MV_ROWS_DWN,
+                    SWAP_ROWS_UP,
                     '---',
-                    'Comment Cells\tCtrl-Shift-3',
-                    'Uncomment Cells\tCtrl-Shift-4',
+                    CMT_CELLS,
+                    UCMT_CELLS,
                     ]
         PopupMenu(self, PopupMenuItems(self, popupitems, popupitems_nt))
         event.Skip()
@@ -407,7 +410,6 @@ class KeywordEditor(GridEditor, Plugin):
         if keycode == wx.WXK_ESCAPE:
             wx.CallAfter(edit.Destroy)
         if keycode == wx.WXK_RETURN:
-            # element = event.GetPosition()
             value = edit.GetValue()
             if value == '':
                 del self._controller.data.parent.header[col+1]
@@ -652,8 +654,6 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_cut(self, event=None):
-        # self._clipboard_handler.cut()
-        # print(f"DEBUG: kweditor.py on_cut called event {str(event)}")
         self.cut()
         self.on_delete(event)
 
@@ -680,19 +680,22 @@ class KeywordEditor(GridEditor, Plugin):
                 if isinstance(data, str):
                     data = [[self._string_to_cell(data)]]
                 elif isinstance(data, list) and isinstance(data[0], list):
-                    main_data = []
-                    for ldata in data:
-                        new_data = []
-                        for rdata in ldata:
-                            sdata = self._string_to_cell(rdata)
-                            new_data.append(sdata)
-                        main_data.append(new_data)
-                    data = main_data
+                    data = self._get_main_data(data)
                 self._execute(command_class(self.selection.topleft, data))
+
+    def _get_main_data(self, data: []) -> []:
+        main_data = []
+        for ldata in data:
+            new_data = []
+            for rdata in ldata:
+                sdata = self._string_to_cell(rdata)
+                new_data.append(sdata)
+            main_data.append(new_data)
+        return main_data
 
     def _string_to_cell(self, content: str) -> str:
         spaces = ' ' * self._spacing
-        cells = content.replace(' | ', spaces).replace(spaces, '\t').strip()  # TODO: Make this cells
+        cells = content.replace(' | ', spaces).replace(spaces, '\t').strip()  # DEBUG: Make this cells
         return cells
 
     # DEBUG
@@ -789,8 +792,6 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == ord('C'):
             self.on_copy(event)
         elif keycode == ord('X'):
-            # print("DEBUG: kweditor.py _call_ctrl_function Pressed CTRL-X")
-            # self.on_cut(event)
             return False
         elif keycode == ord('V'):
             self.on_paste(event)
@@ -843,14 +844,8 @@ class KeywordEditor(GridEditor, Plugin):
             return False  # event must not be skipped in this case
         return True
 
-        """
-        elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-            print(f"DEBUG kweditor call move_rews ky={keycode}")
-            # Mac Option key(⌥)
-            self._move_rows(keycode)
-        """
-
     def on_key_down(self, event):
+        # print(f"DEBUG: KeywordEditor on_key_down event={event} focus={self.is_focused()}")
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
         if event.ControlDown():
             if event.ShiftDown():
@@ -865,6 +860,7 @@ class KeywordEditor(GridEditor, Plugin):
             event.Skip()
 
     def on_char(self, event):
+        # print(f"DEBUG: KeywordEditor on_char event={event} focus={self.is_focused()}")
         key_char = event.GetUnicodeKey()
         if key_char < ord(' '):
             return
@@ -954,6 +950,7 @@ class KeywordEditor(GridEditor, Plugin):
         self.open_cell_editor()
 
     def on_key_up(self, event):
+        # print(f"DEBUG: KeywordEditor on_key_up event={event} focus={self.is_focused()}")
         event.Skip()  # DEBUG seen this skip as soon as possible
         self._tooltips.hide()
         self._hide_link_if_necessary()
@@ -1153,7 +1150,7 @@ class KeywordEditor(GridEditor, Plugin):
         old_name = self._current_cell_value()
         if not old_name.strip() or variablematcher.is_variable(old_name):
             return
-        new_name = wx.GetTextFromUser(_('New name'), _('Rename Keyword'), default_value=old_name)
+        new_name = wx.GetTextFromUser(_('New name'), _(REN_KW), default_value=old_name)
         if new_name:
             self._execute(RenameKeywordOccurrences(
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
