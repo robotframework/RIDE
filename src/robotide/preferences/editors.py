@@ -16,19 +16,14 @@
 from os.path import abspath, dirname, join
 import builtins
 import wx
-from wx import Colour
 from wx.lib.masked import NumCtrl
 
 from .settings import RideSettings
-# from robotide.ui.preferences_dialogs import PreferencesPanel
 from ..ui import preferences_dialogs as pdiag
-# from . import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
-#                                       StringChoiceEditor, PreferencesColorPicker)
 from robotide.ui.preferences_dialogs import PreferencesPanel
 
 from ..widgets import Label
 from .managesettingsdialog import SaveLoadSettings
-from ..context import IS_WINDOWS
 from functools import lru_cache
 
 try:  # import installed version first

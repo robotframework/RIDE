@@ -26,7 +26,6 @@ from ..ui import LoadProgressObserver
 from ..ui.mainframe import RideFrame
 from .. import publish
 from .. import context, contrib
-# from ..context import coreplugins
 from ..preferences import Preferences, RideSettings
 from ..application.pluginloader import PluginLoader
 from ..application.editorprovider import EditorProvider
@@ -176,27 +175,14 @@ class RIDE(wx.App):
             aui_default_tool_bar_art = AuiDefaultToolBarArt()
             aui_default_tool_bar_art.SetDefaultColours(wx.GREEN)
             widget.SetBackgroundColour(background)
-            # widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
-            # widget.SetOwnForegroundColour(foreground)
-            """
-            widget.SetBackgroundColour(Colour(200, 222, 40))
-            widget.SetOwnBackgroundColour(Colour(200, 222, 40))
-            widget.SetForegroundColour(Colour(7, 0, 70))
-            widget.SetOwnForegroundColour(Colour(7, 0, 70))
-            """
-            # or
         elif isinstance(widget, wx.Control):
             if not isinstance(widget, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
                 widget.SetForegroundColour(foreground)
                 widget.SetBackgroundColour(background)
-                # widget.SetOwnBackgroundColour(background)
-                # widget.SetOwnForegroundColour(foreground)
             else:
                 widget.SetForegroundColour(secondary_foreground)
                 widget.SetBackgroundColour(secondary_background)
-                # widget.SetOwnBackgroundColour(secondary_background)
-                # widget.SetOwnForegroundColour(secondary_foreground)
         elif isinstance(widget, (wx.TextCtrl, TabFrame, AuiTabCtrl)):
             widget.SetForegroundColour(foreground_text)  # or fore_color
             widget.SetBackgroundColour(background_help)  # or back_color
@@ -206,19 +192,14 @@ class RIDE(wx.App):
         elif isinstance(widget, wx.MenuItem):
             widget.SetTextColour(foreground)
             widget.SetBackgroundColour(background)
-            # print(f"DEBUG: Application ApplyTheme wx.MenuItem {type(widget)}")
         else:
             widget.SetBackgroundColour(background)
-            # widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
-            # widget.SetOwnForegroundColour(foreground)
 
     def _WalkWidgets(self, widget, indent=0, indent_level=4, theme=None):
-        # print(' ' * indent + widget.__class__.__name__)
         if theme is None:
             theme = {}
         widget.Freeze()
-        # print(f"DEBUG Application General : _WalkWidgets background {theme['background']}")
         self._ApplyThemeToWidget(widget=widget, theme=theme)
         for child in widget.GetChildren():
             if not child.IsTopLevel():  # or isinstance(child, wx.PopupWindow)):
@@ -230,7 +211,6 @@ class RIDE(wx.App):
     def SetGlobalColour(self, message):
         if message.keys[0] != "General":
             return
-        # print(f"DEBUG Application General : Enter SetGlobalColour message= {message.keys[0]}")
         app = wx.App.Get()
         _root = app.GetTopWindow()
         theme = self.settings.get_without_default('General')
@@ -241,7 +221,6 @@ class RIDE(wx.App):
         font.SetPointSize(font_size)
         _root.SetFont(font)
         self._WalkWidgets(_root, theme=theme)
-        # print(f"DEBUG Application General : SetGlobalColour AppliedWidgets check Filexplorer and Tree")
         if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
             self.fileexplorerplugin.settings['background'] = theme['background']
             self.fileexplorerplugin.settings['foreground'] = theme['foreground']
@@ -260,69 +239,12 @@ class RIDE(wx.App):
             self.treeplugin.settings[FONT_FACE] = theme[FONT_FACE]
             if self.treeplugin.settings['opened']:
                 self.treeplugin.on_show_tree(None)
-        """
-        all_windows = list()
-        general = self.settings.get('General', None)
-        # print(f"DEBUG: Application General {general['background']} Type message {type(message)}")
-        # print(f"DEBUG: Application General message keys {message.keys} old {message.old} new {message.new}")
-        background = general['background']
-        foreground = general['foreground']
-        background_help = general[BACKGROUND_HELP]
-        foreground_text = general[FOREGROUND_TEXT]
-        font_size = general[FONT_SIZE]
-        font_face = general[FONT_FACE]
-        font = _root.GetFont()
-        font.SetFaceName(font_face)
-        font.SetPointSize(font_size)
-        _root.SetFont(font)
-
-        def _iterate_all_windows(root):
-            if hasattr(root, 'GetChildren'):
-                children = root.GetChildren()
-                if children:
-                    for c in children:
-                        _iterate_all_windows(c)
-            all_windows.append(root)
-
-        _iterate_all_windows(_root)
-
-        for w in all_windows:
-            if hasattr(w, 'SetHTMLBackgroundColour'):
-                w.SetHTMLBackgroundColour(wx.Colour(background_help))
-                w.SetForegroundColour(wx.Colour(foreground_text))  # 7, 0, 70))
-            elif hasattr(w, 'SetBackgroundColour'):
-                w.SetBackgroundColour(wx.Colour(background))  # 44, 134, 179))
-
-                # if hasattr(w, 'SetOwnBackgroundColour'):
-                #     w.SetOwnBackgroundColour(wx.Colour(background))  # 44, 134, 179))
-
-                if hasattr(w, 'SetForegroundColour'):
-                    w.SetForegroundColour(wx.Colour(foreground))  # 7, 0, 70))
-
-                # if hasattr(w, 'SetOwnForegroundColour'):
-                #    w.SetOwnForegroundColour(wx.Colour(foreground))  # 7, 0, 70))
-
-            if hasattr(w, 'SetFont'):
-                w.SetFont(font)
-            """
 
     def change_locale(self, message):
         if message.keys[0] != "General":
             return
         initial_locale = self._locale.GetName()
-        if languages:
-            from ..preferences import Languages
-            names = [n for n in Languages.names]
-        else:
-            names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
-        general = self.settings.get_without_default('General')
-        language = general.get('ui language', 'English')
-        try:
-            idx = [lang[0] for lang in names].index(language)
-            code = names[idx][2]
-        except (IndexError, ValueError):
-            print(f"DEBUG: application.py RIDE change_locale ERROR: Could not find {language=}")
-            code = wx.LANGUAGE_ENGLISH_WORLD
+        code = self._get_language_code()
         del self._locale
         self._locale = wx.Locale(code)
         if not self._locale.IsOk():
@@ -352,6 +274,21 @@ class RIDE(wx.App):
                     except FileNotFoundError:
                         pass
 
+    def _get_language_code(self) -> str:
+        if languages:
+            from ..preferences import Languages
+            names = [n for n in Languages.names]
+        else:
+            names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
+        general = self.settings.get_without_default('General')
+        language = general.get('ui language', 'English')
+        try:
+            idx = [lang[0] for lang in names].index(language)
+            code = names[idx][2]
+        except (IndexError, ValueError):
+            print(f"DEBUG: application.py RIDE change_locale ERROR: Could not find {language=}")
+            code = wx.LANGUAGE_ENGLISH_WORLD
+        return code
 
     @staticmethod
     def update_excludes(message):
