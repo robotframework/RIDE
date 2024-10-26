@@ -102,12 +102,12 @@ class UpdateNotifierController(object):
 
 def upgrade_from_dev_dialog(version_installed, notebook, show_no_update=False):
     dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
-                                  'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
+                                  'RIDE/develop/src/robotide/version.py', timeout=1).read().decode('utf-8')
     matches = re.findall(r"VERSION\s*=\s*'([\w.]*)'", dev_version)
     version_latest = matches[0] if matches else None
     if cmp_versions(version_installed, version_latest) == -1:
         # Here is the Menu Help->Upgrade insertion part, try to highlight menu # wx.CANCEL_DEFAULT
-        command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/master.zip"
+        command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/develop.zip"
         _add_content_to_clipboard(command)
         if not _askyesno(_("Upgrade?"), f"{SPC}{_('New development version is available.')}{SPC}\n{SPC}"
                                         f"{_('You may install version %s with:') % version_latest}\n"
