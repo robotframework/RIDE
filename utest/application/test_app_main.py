@@ -241,7 +241,7 @@ class TestMisc(unittest.TestCase):
 
         main_app = RIDE()
         code = main_app._get_language_code()
-        assert code in (175, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
+        assert code in (wx.LANGUAGE_ENGLISH, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
 
 
 if __name__ == '__main__':
