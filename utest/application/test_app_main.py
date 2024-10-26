@@ -230,5 +230,19 @@ class TestMain(unittest.TestCase):
             robotide._replace_std_for_win()
 
 
+class TestMisc(unittest.TestCase):
+
+    def tearDown(self):
+        builtins.__import__ = real_import
+
+    def test_get_code(self):
+        import wx
+        from robotide.application import RIDE
+
+        main_app = RIDE()
+        code = main_app._get_language_code()
+        assert code in (175, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
+
+
 if __name__ == '__main__':
     unittest.main()
