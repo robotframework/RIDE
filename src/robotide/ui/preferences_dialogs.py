@@ -31,8 +31,6 @@ class PreferencesPanel(wx.Panel):
     def __init__(self, parent=None, name_tr=None, *args, **kwargs):
         self.tree_item = None
         self.name_tr = name_tr
-        # self.location = (_("Preferences"),)
-        # self.title = _("Preferences")
         from ..preferences.settings import RideSettings
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self._gsettings = RideSettings()
@@ -275,8 +273,6 @@ def comma_separated_value_editor(parent, settings, name, label, thelp=''):
         evt.Skip()
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value(evt))
     elabel = Label(parent, label=label)
-    # background_color = esettings['background']
-    # foreground_color = esettings['foreground']
     elabel.SetBackgroundColour(background_color)
     elabel.SetForegroundColour(foreground_color)
     return elabel, editor

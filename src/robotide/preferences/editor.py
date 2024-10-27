@@ -64,11 +64,7 @@ class PreferenceEditor(wx.Dialog):
         self.font.SetPointSize(self._general_settings[FONT_SIZE])
         self.SetFont(self.font)
         self.SetBackgroundColour(Colour(self._general_settings['background']))
-        ## self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        ## self.SetOwnForegroundColour(Colour(7, 0, 70))
-        # self.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
         self.SetForegroundColour(Colour(self._general_settings['foreground']))
-        # self.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
         self._closing = False
 
         panels = preferences.preference_panels
@@ -224,10 +220,6 @@ class PanelContainer(wx.Panel):
         self.title.SetFont(font)
         self.title.SetForegroundColour(self.settings['foreground'])
         self.title.SetBackgroundColour(self.settings['background'])
-        # self.title.SetBackgroundColour(Colour(200, 222, 40))
-        # self.title.SetForegroundColour(Colour(7, 0, 70))
-        # self.SetBackgroundColour(Colour(200, 222, 40))
-        # self.SetForegroundColour(Colour(7, 0, 70))
         self.SetForegroundColour(self.settings['foreground'])
         self.SetBackgroundColour(self.settings['background'])
 
@@ -242,17 +234,8 @@ class PanelContainer(wx.Panel):
         if self._current_panel is not None:
             self._current_panel.Hide()
         self._current_panel = panel
-        ## self.SetForegroundColour(self.settings['foreground'])
-        ## self.SetOwnBackgroundColour(self.settings['background'])
-        ## self.SetOwnForegroundColour(Colour(255, 255, 255))
-        ## self.SetBackgroundColour(self.settings['background'])
         panel.SetForegroundColour(self.settings['foreground'])  # Critical text all black on
         panel.SetBackgroundColour(self.settings['background'])  # Black background
-        ## self.SetBackgroundColour(Colour(200, 222, 40))
-        ## self.SetForegroundColour(Colour(7, 0, 70))
-        ## panel.SetBackgroundColour(Colour(200, 222, 40))
-        ## panel.SetForegroundColour(Colour(255, 255, 255))
-        ## panel.SetForegroundColour(Colour(7, 0, 70))
         panel.Show()
         sizer = self.panels_container.GetSizer()
         item = sizer.GetItem(panel)

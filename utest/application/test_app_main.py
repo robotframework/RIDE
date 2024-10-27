@@ -232,9 +232,6 @@ class TestMain(unittest.TestCase):
 
 class TestMisc(unittest.TestCase):
 
-    def tearDown(self):
-        builtins.__import__ = real_import
-
     def test_get_code(self):
         import wx
         from robotide.application import RIDE
