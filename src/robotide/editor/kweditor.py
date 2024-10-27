@@ -845,7 +845,6 @@ class KeywordEditor(GridEditor, Plugin):
         return True
 
     def on_key_down(self, event):
-        # print(f"DEBUG: KeywordEditor on_key_down event={event} focus={self.is_focused()}")
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
         if event.ControlDown():
             if event.ShiftDown():
@@ -860,7 +859,6 @@ class KeywordEditor(GridEditor, Plugin):
             event.Skip()
 
     def on_char(self, event):
-        # print(f"DEBUG: KeywordEditor on_char event={event} focus={self.is_focused()}")
         key_char = event.GetUnicodeKey()
         if key_char < ord(' '):
             return
@@ -950,7 +948,6 @@ class KeywordEditor(GridEditor, Plugin):
         self.open_cell_editor()
 
     def on_key_up(self, event):
-        # print(f"DEBUG: KeywordEditor on_key_up event={event} focus={self.is_focused()}")
         event.Skip()  # DEBUG seen this skip as soon as possible
         self._tooltips.hide()
         self._hide_link_if_necessary()

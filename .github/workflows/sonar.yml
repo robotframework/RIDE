@@ -28,16 +28,21 @@ jobs:
       - name: Install invoke and any other packages
         run: pip install coverage invoke pytest
       - name: Install wxPython
-        run: pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
+        run: pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
       - name: Install RIDE dependencies
-        run: pip install -r requirements-dev.txt
+        run: |
+             git submodule update --init --recursive
+             pip install -r requirements-dev.txt
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
-        run: pip install .
+        run: |
+             git submodule update --init --recursive
+             pip install .
       - name: Run RIDE unit-tests
         run: |
           export DISPLAY=:1
+          git submodule update --init --recursive
           invoke test-ci
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master

@@ -17,7 +17,8 @@ import os
 import shutil
 
 from ..context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY, EXECUTABLE
-from .configobj import ConfigObj, ConfigObjError, Section, UnreprError
+# from .configobj import ConfigObj, ConfigObjError, Section, UnreprError
+from . import ConfigObj, ConfigObjError, Section, UnreprError
 from .excludes_class import Excludes
 from ..publish import RideSettingsChanged
 
@@ -78,11 +79,11 @@ class SettingsMigrator(object):
     SETTINGS_VERSION = 'settings_version'
 
     def __init__(self, default_path, user_path):
-        self._default_settings = ConfigObj(default_path, unrepr=True)
+        self._default_settings = ConfigObj(default_path, encoding='UTF-8', unrepr=True)
         self._user_path = user_path
         # print("DEBUG: Settings migrator 1: %s\ndefault_path %s" % (self._default_settings.__repr__(), default_path))
         try:
-            self._old_settings = ConfigObj(user_path, unrepr=True)
+            self._old_settings = ConfigObj(user_path, encoding='UTF-8', unrepr=True)
         except UnreprError as err:  # DEBUG errored file
             # print("DEBUG: Settings migrator ERROR -------- %s path %s" %
             #      (self._old_settings.__repr__(), user_path))
@@ -340,7 +341,7 @@ class Settings(_Section):
 
     def __init__(self, user_path):
         try:
-            _Section.__init__(self, ConfigObj(user_path, unrepr=True))
+            _Section.__init__(self, ConfigObj(user_path, encoding='UTF-8', unrepr=True))
         except UnreprError as error:
             raise ConfigurationError(error)
         self.excludes = Excludes(SETTINGS_DIRECTORY)

@@ -20,7 +20,25 @@ from utest.resources import datafilereader
 
 from robotide.contrib.testrunner.testrunner import Process
 
-if VERSION >= '4.0':
+if VERSION >= '7.1.1':
+    console_out = b"==============================================================================\n" \
+                  b"Small Test                                                                    \n" \
+                  b"==============================================================================\n" \
+                  b"Small Test.Test                                                               \n" \
+                  b"==============================================================================\n" \
+                  b"Passing                                                               | PASS |\n" \
+                  b"------------------------------------------------------------------------------\n" \
+                  b"Failing                                                               | FAIL |\n" \
+                  b"this fails\n" \
+                  b"------------------------------------------------------------------------------\n" \
+                  b"Small Test.Test                                                       | FAIL |\n" \
+                  b"2 tests, 1 passed, 1 failed\n" \
+                  b"==============================================================================\n" \
+                  b"Small Test                                                            | FAIL |\n" \
+                  b"2 tests, 1 passed, 1 failed\n" \
+                  b"==============================================================================\n" \
+                  b"Output:  NONE\n"
+elif VERSION >= '4.0':
     console_out = b"==============================================================================\n" \
                   b"Small Test                                                                    \n" \
                   b"==============================================================================\n" \
@@ -73,6 +91,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         print(output, errors)
         parsed_output = bytes(output.replace(b'\r', b''))
         parsed_errors = bytes(errors.replace(b'\r', b''))
+        assert parsed_output == console_out
         self.assertTrue(parsed_output.startswith(console_out), msg=repr(output))
         # Because of deprecation messages in RF 3.1, from Equal to Regex
         self.assertRegex(parsed_errors, b".*\\[ WARN \\] this passes\n")

@@ -66,27 +66,30 @@ jobs:
       image: fedora:latest
       options: --privileged
     steps:
-    - uses: actions/checkout@v3.3.0
-      with:
-        submodules: false
     - name: Configure container environment
       run: |
         sudo dnf update -y
         sudo dnf install -y git
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: false
     - name: Setup environment
       run: |
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
         sudo dnf downgrade -y mesa* --refresh
-        sudo -H pip install -r requirements-dev.txt
+        git submodule update --init --recursive
+        pip install -r requirements-dev.txt
     - name: Run tests
       run: |
         Xvfb &
         export DISPLAY=:0
         export GITHUB_ACTIONS=True
+        git submodule update --init --recursive
         invoke test-ci
     - name: Install and run
       run: |
+        git submodule update --init --recursive
         pip install .
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
         sleep 10
@@ -103,20 +106,24 @@ jobs:
         submodules: false
     - name: Fetch tags
       run: |
-        git fetch --prune --depth=1 --no-recurse-submodules
+        git fetch --prune --depth=1 --recurse-submodules
+        git submodule update --init --recursive
     - name: Setup environment
       run: |
         sudo apt update -y
         sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
-        sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
-        sudo pip install -r requirements-dev.txt
+        git submodule update --init --recursive
+        pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
+        pip install -r requirements-dev.txt
     - name: Run tests
       run: |
         Xvfb &
         export DISPLAY=:0
+        git submodule update --init --recursive
         invoke test-ci
     - name: Install and run
       run: |
+        git submodule update --init --recursive
         pip install .
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
         sleep 10
