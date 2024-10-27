@@ -370,6 +370,8 @@ def tags_test(ctx):
     _set_development_path()
     try:
         import subprocess
+        g = subprocess.Popen(["git", "submodule", "update"])
+        g.communicate(b'')
         p = subprocess.Popen(["/usr/bin/python", "/home/helio/github/RIDE/src/robotide/editor/tags.py"])
         p.communicate(b'')
     finally:
@@ -405,6 +407,8 @@ def test_ci(ctx, test_filter=''):
 
     try:
         import subprocess
+        g = subprocess.Popen(["git", "submodule", "update"])
+        g.communicate(b'')
 
         a = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.1", "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v", "utest/application/test_app_main.py"])
         a.communicate(b'')
