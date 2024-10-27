@@ -79,6 +79,7 @@ jobs:
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
         sudo dnf downgrade -y mesa* --refresh
         sudo -H pip install -r requirements-dev.txt
+        git submodule init
         git submodule update 
     - name: Run tests
       run: |
