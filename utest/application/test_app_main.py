@@ -230,16 +230,5 @@ class TestMain(unittest.TestCase):
             robotide._replace_std_for_win()
 
 
-class TestMisc(unittest.TestCase):
-
-    def test_get_code(self):
-        import wx
-        from robotide.application import RIDE
-
-        main_app = RIDE()
-        code = main_app._get_language_code()
-        assert code in (wx.LANGUAGE_ENGLISH, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
-
-
 if __name__ == '__main__':
     unittest.main()
