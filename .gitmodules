@@ -1,0 +1,3 @@
+[submodule "src/robotide/preferences/configobj"]
+	path = src/robotide/preferences/configobj
+	url = https://github.com/DiffSK/configobj.git

@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from .configobj.src.configobj import ConfigObj, ConfigObjError, Section, UnreprError
 from .editor import PreferenceEditor
 from .editors import GridEditorPreferences, TextEditorPreferences, TestRunnerPreferences
 from .general import DefaultPreferences

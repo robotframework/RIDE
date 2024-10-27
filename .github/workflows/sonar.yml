@@ -31,6 +31,7 @@ jobs:
         run: pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
       - name: Install RIDE dependencies
         run: pip install -r requirements-dev.txt
+             git submodule update
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE

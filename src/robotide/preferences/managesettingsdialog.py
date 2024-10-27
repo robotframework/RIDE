@@ -18,7 +18,8 @@ import wx
 
 from wx import Colour
 from ..widgets import RIDEDialog, VerticalSizer
-from .configobj import ConfigObj, UnreprError
+# from .configobj import ConfigObj, UnreprError
+from . import ConfigObj, UnreprError
 from .settings import ConfigurationError, _Section, initialize_settings
 
 from ..context import SETTINGS_DIRECTORY
@@ -117,7 +118,7 @@ class SaveLoadSettings(RIDEDialog):
 
     def load_and_merge(self, user_path):
         try:
-            nnew_settings = ConfigObj(user_path, unrepr=True)
+            nnew_settings = ConfigObj(user_path, encoding='UTF-8', unrepr=True)
             mysection = nnew_settings.get(self._section)
             if not mysection:
                 mysection = nnew_settings['Plugins'].get(self._section)
