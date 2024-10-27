@@ -35,10 +35,12 @@ jobs:
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
-        run: pip install .
+        run: git submodule update --init --recursive
+             pip install .
       - name: Run RIDE unit-tests
         run: |
           export DISPLAY=:1
+          git submodule update --init --recursive
           invoke test-ci
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
