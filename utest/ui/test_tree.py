@@ -93,7 +93,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(self.frame.Close)
         wx.CallAfter(self.app.ExitMainLoop)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # self.app.MainLoop()  # With this here, there is no Segmentation fault
         self.app = None
 
     def _create_model(self):

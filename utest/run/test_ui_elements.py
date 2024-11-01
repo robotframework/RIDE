@@ -80,12 +80,12 @@ class _BaseDialogTest(unittest.TestCase):
         self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
                                                             MenuBar(self.frame), ToolBar(self.frame),
                                                             ShortcutRegistry(self.frame)), settings)
-        self.frame.Show()
+        # self.frame.Show()
         self.model = self._create_model()
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(self.app.ExitMainLoop)
+        # wx.CallAfter(self.app.ExitMainLoop)
         self.app.Destroy()
         self.app = None
 
@@ -138,7 +138,7 @@ class TestLogOutput(_BaseDialogTest):
         time.sleep(1)
         log_output.update_log(['line one', 'line two'])
         time.sleep(1)
-        self.frame.Maximize()
+        # self.frame.Maximize()
         sim = wx.UIActionSimulator()
         sim.KeyDown(keycode=wx.WXK_CONTROL_A)
         time.sleep(5)

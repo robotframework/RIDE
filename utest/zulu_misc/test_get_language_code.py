@@ -23,7 +23,7 @@ class TestMisc(unittest.TestCase):
         code = main_app._get_language_code()
         assert code in (wx.LANGUAGE_ENGLISH, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
         # Uncomment next lines if you want to see the app
-        wx.CallLater(8000, main_app.ExitMainLoop)
+        # wx.CallLater(8000, main_app.ExitMainLoop)
         # main_app.MainLoop()
 
 
