@@ -39,8 +39,6 @@ class DataFileWriter(object):
             :py:class:`~robot.parsing.model.TestDataDirectory`
         """
         with WritingContext(datafile, **self._options) as ctx:
-            print(f"DEBUG: datafilewiter.py DataFileWriter write call FileWriter context.txt_column_count={ctx.txt_column_count}"
-                  f" should include: configuration.txt_column_count")
             FileWriter(ctx).write(datafile)
 
 

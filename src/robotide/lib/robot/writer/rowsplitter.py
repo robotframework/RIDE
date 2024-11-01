@@ -95,11 +95,8 @@ class RowSplitter(object):
             split_at = self._cols
         else:
             split_at = None
-        print(f"DEBUG: rowsplitter.py RowSplitter _split_row before split {split_at=} row={row}")
         while row:
             current, row = self._split(row, forced_index=split_at)
-            print(f"DEBUG: rowsplitter.py RowSplitter _split_row current={current} row={row} table "
-                  f"type={self._table_type}")
             yield self._escape_last_cell_if_empty(current)
             if row:
                 row = self._continue_row(row, indent)
@@ -115,7 +112,6 @@ class RowSplitter(object):
 
     def _get_possible_split_indices(self, data):
         min_index = self._get_first_non_empty_index(data, indented=True) + 1
-        print(f"DEBUG: rowsplitter.py RowSplitter _get_possible_split_indices min_index={min_index}")
         if data[min_index-1].startswith('['):  # Special cases of [Arguments], [Teardown], e.t.c.
             cols = self._cols + 20  # big number
         else:

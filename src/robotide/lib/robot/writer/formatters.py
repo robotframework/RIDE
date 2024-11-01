@@ -127,11 +127,11 @@ def translate_header(header: str, language=None) -> str:
         return header
     tr_header = list(get_headers_for(language, header, lowercase=False))
     if len(tr_header) > 1:
-        print(f"DEBUG: formatters.py translate_header  header={header} language={language}"
-              f" before pop tr_header={tr_header}")
+        # print(f"DEBUG: formatters.py translate_header  header={header} language={language}"
+        #       f" before pop tr_header={tr_header}")
         tr_header.pop(tr_header.index(header))
     tr_header = tr_header[0]
-    print(f"DEBUG: formatters.py translate_header  header={tr_header}")
+    # print(f"DEBUG: formatters.py translate_header  header={tr_header}")
     return tr_header
 
 
