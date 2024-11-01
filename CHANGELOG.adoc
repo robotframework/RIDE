@@ -14,6 +14,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Changed the workflow for the development versions of RIDE. Now, development versions are taken from the ``develop`` branch, and the ``master`` will stay with released version.
 - Changed the way ``configobj`` code is imported. Now is a submodule obtained from https://github.com/DiffSK/configobj.
 
+=== Fixed
+
+- Fixed long arguments in fixtures appearing splitted in Grid Editor. Still, arguments info will not be correct at calling step.
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.rst[2.1] - 2024-10-13
 
 === Added
