@@ -155,7 +155,7 @@ RELEASE_NOTES = f"""
   moment 7.1.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.12.</li>
+<li>This version supports Python 3.8 up to 3.13.</li>
 <li>There are some changes, or known issues:<ul>
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
@@ -227,7 +227,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 1/November/2024.</p>
+<p>RIDE {VERSION} was released on 5/November/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
