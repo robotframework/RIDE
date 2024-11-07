@@ -381,6 +381,8 @@ class _VariableStash(object):
             language='En'
         parent = Dummy()
         store = VariableStore(Variables(parent, ""))
+        print(f"namespace._VariableStash.set_from_file: variable_path {varfile_path} "
+              f"args {args}")
         try:
             vars_from_file = VariableFileSetter(store)
             resulting_vars = vars_from_file._import_if_needed(varfile_path, args)

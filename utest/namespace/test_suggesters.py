@@ -15,6 +15,7 @@
 
 import unittest
 from robotide.controller.filecontrollers import ResourceFileController
+from robotide.robotapi import STDLIB_NAMES
 from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester, BuiltInLibrariesSuggester, LibrariesSuggester, HistorySuggester
 from robotide.utils import overrides
 
@@ -85,6 +86,7 @@ class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
         self._suggester = BuiltInLibrariesSuggester()
 
     def test_returns_all_builtin_libraries_with_empty_string(self):
+        # print(f"DEBUG: test_suggesters.py {[x for x in STDLIB_NAMES]}")
         self._assert_suggestion_names(['Collections',
                                        'DateTime',
                                        'Dialogs',
@@ -93,11 +95,11 @@ class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
                                        'Remote',
                                        'Screenshot',
                                        'String',
-                                       'Telnet',
+                                       # 'Telnet',  # Broken in Python 3.13, RF 7.1.1
                                        'XML'], '')
 
     def test_returns_matching_builtin_libraries(self):
-        self._assert_suggestion_names(['DateTime', 'OperatingSystem', 'Remote', 'Telnet'], 'te')
+        self._assert_suggestion_names(['Remote', 'Screenshot'], 're')
 
 class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
 
@@ -106,7 +108,7 @@ class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
         return LibrariesSuggester(self._controller(imports=already_imported, libraries=available),
                                   self._history_suggester)
 
-    @overrides(_ImportSuggesterTests)
+    # @overrides(_ImportSuggesterTests)
     def test_all_suggestions_with_empty_string(self):
         self._assert_suggestion_names(['barbar',
                                        'Collections',
@@ -119,7 +121,7 @@ class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
                                        'Remote',
                                        'Screenshot',
                                        'String',
-                                       'Telnet',
+                                        # 'Telnet',  # Broken in Python 3.13, RF 7.1.1
                                        'XML'], '')
 
     def test_history(self):

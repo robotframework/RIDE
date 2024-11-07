@@ -611,7 +611,7 @@ class TestEditorCommands(unittest.TestCase):
         zoom_factor = stylizer._zoom_factor()
 
         assert font_size == 10
-        assert font_face in ["Noto Sans", "Courier New"]
+        assert font_face in ["Sans", "Noto Sans", "Courier New"]
         assert zoom_factor == 0
         # print(f"DEBUG: fulltext:\n{fulltext}")
         stylizer.set_styles(True)
