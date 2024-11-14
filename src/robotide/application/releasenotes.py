@@ -125,7 +125,7 @@ version = VERSION
 milestone = re.split('[ab-]', VERSION)[0]
 
 WELCOME_TEXT = f"""
-<h2>Welcome to use RIDE version {version}</h2>
+<h2>Welcome to use RIDE <b>DEVELOPMENT</b> version {version}</h2>
 
 <p>Thank you for using the <a href="https://robotframework.org/">Robot Framework</a> IDE (RIDE).</p>
 
@@ -148,150 +148,32 @@ RELEASE_NOTES = f"""
 
 <div class="document">
 
-<h2 align='center'>RIDE is celebrating 16 years on this date!</h2>
-
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
- {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
+ {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at
   this
-  moment 7.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
+  moment 7.1.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.12.</li>
+<li>This version supports Python 3.8 up to 3.13.</li>
 <li>There are some changes, or known issues:<ul>
-<li>❌ - Removed support for Python 3.6 and 3.7</li>
-<li>✔ - Fixed recognition of variables imported from YAML, JSON and Python files.</li>
-<li>✔ - Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
-<b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
-<li>✔ - Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
-<li>✔ - Added Korean language support for UI.</li>
-<li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
-<em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
- background.</li>
-<li>✔ - Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
-this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
-<li>✔ - Added support for Setup in keywords, since Robot Framework version 7.0.</li>
-<li>✔ - Added support for new VAR marker, since Robot Framework version 7.0.</li>
-<li>✔ - Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
-<li>✔ - Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
-<li>✔ - Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for
- Data 
-Driven or Templated; Left Mouse Click, selects the column cells.</li>
-<li>✔ - Added command line option, <b>--settingspath</b>, to select a different configuration.</li>
-<li>✔ - Added different settings file, according the actual Python executable, if not the original installed.</li>
-<li>✔ - Added a selector for Tasks and Language to the New Project dialog.</li>
-<li>✔ - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
-higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Still missing translation 
-of some elements.</li> 
-<li>✔ - Added support for language configured test suites, with languages from installed Robot Framework version 6.1,
- or 
-higher.</li> 
-<li>✔ - On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with
- the 
-documentation, at Mouse Pointer position.</li> 
-<li>✔ - RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
-<li>✔ - Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
-<li>✔ - When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of 
-suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
-<li>✔ - Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
+<li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
+ is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
 version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
- on other IDE or Editors.</li>
+ on other IDE or Editors. The option to not reformat the file is not working.</li>
 </ul>
 </li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Fixed recognition of variables imported from YAML, JSON and Python files.</li>
-<li>Added a setting for a specific Browser by editing the settings.cfg file. Add the string parameter 
-<b>browser</b> in the section <b>[Plugins][[Test Runner]]</b></li>
-<li>Changed the order of insert and delete rows in Grid Editor rows context menu.</li>
-<li>Fixed validation of multiple arguments with default values in Grid Editor.</li>
-<li>Added color to Test Runner Console Log final output, report and log since RF v7.1rc1.</li>
-<li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
-<li>Added Korean language support for UI, experimental.</li>
-<li>Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.</li>
-<li>Fixed delete variable from Test Suite settings remaining in Project Explorer.</li>
-<li>Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
-<em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
- background.</li>
-<li>Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.</li>
-<li>Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
-this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
-<li>Added support for Setup in keywords, since Robot Framework version 7.0.</li>
-<li>Fixed multiline variables in Variables section. In Text Editor they are separated by ... continuation marker.
-In Grid Editor use | (pipe) to separate lines.</li>
-<li>Added support for new VAR marker, since Robot Framework version 7.0.</li>
-<li>Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter <b>notebook theme</b> 
- takes values from 0 to 5. See wxPython, demo for agw.aui for details.</li>
-<li>Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or
- higher.</li>
-<li>Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.</li>
-<li>Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.</li>
-<li>Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.</li>
-<li>Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
-<li>Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
-<li>Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data 
-Driven or Templated; Left Mouse Click, selects the column cells.</li>
-<li>Added command line option, <b>--settingspath</b>, to select a different configuration.</li>
-<li>Added different settings file, according the actual Python executable, if not the original installed.</li>
-<li>Fixed headers and blank spacing in Templated tests.</li>
-<li>Added context option <b>Open Containing Folder</b> to test suites directories in Project Explorer.</li>
-<li>Added a setting for a specific file manager by editing the settings.cfg file. Add the string parameter 
-<b>file manager</b>
-in the section <b>[General]</b></li>
-<li>Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, 
-and new lines are added at Text Editor.</li>
-<li>Fixed removal of continuation marker in steps</li>
-<li>Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation.</li>
-<li>Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
-localized sections only stay translated after Apply in Text Editor.</li>
-<li>Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
-higher. Language is selected from Tools->Preferences->General.</li>
-<li>Removed support for HTML file format (obsolete since Robot Framework 3.2)</li>
-<li>Added support for language configured test suites. Fields are shown in the language of the files in Grid Editor.
- Tooltips are always shown in English. Colorization for language configured files is working in Text Editor.</li>
-<li>Fixed New User Keyword dialog not allowing empty Arguments field</li>
-<li>Fixed escaped spaces showing in Text Editor on commented cells</li>
-<li>Improved keywords documentation search, by adding current dir to search</li>
-<li>Improved Move up/down, <b>Alt-UpArrow</b>/<b>Alt-DownArrow</b> in Text Editor, to have proper indentation and 
-selection</li>
-<li>Added auto update check when development version is installed</li>
-<li>Added menu option <b>Help-&gt;Check for Upgrade</b> which allows to force update check and install development 
-version</li>
-<li>Added <b>Upgrade Now</b> action to update dialog.</li>
-<li>Added <b>Test Tags</b> field (new, since Robot Framework 6.0) to Test Suites settings. This field will replace 
-<b>Default</b> and <b>Force Tags</b> settings, after Robot Framework 7.0</li>
-<li>Improved <b>RIDE Log</b> and <b>Parser Log</b> windows to allow Zoom In/Out with <b>Ctrl-Mouse Wheel</b></li>
-<li>Hide continuation markers in Project Tree</li>
-<li>Improved content assistance in Text Editor by allowing to filter list as we type</li>
-<li>Fixed resource files disappearing from Project tree on Windows</li>
-<li>Fixed missing indication of link for User Keyword, when pressing <b>Ctrl</b> in Grid Editor</li>
-<li>Added content help pop-up on Text Editor by pressing <b>Ctrl</b> for text at cursor position or selected 
-autocomplete list item</li>
-<li>Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders</li>
-<li>Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences</li>
-<li>Fixed exception when finding GREY color for excluded files and directories in Project Tree</li>
-<li>Added support for JSON variables, by using the installed Robot Framework import method</li>
-<li>Colorization of Grid Editor cells after the continuation marker <b>...</b> and correct parsing of those lines</li> 
-<li>Colorization of Grid Editor cells when contents is list or dictionary variables</li>
-<li>Added indication of matching brackets, <b>()</b>, <b>"""'''{}'''f"""</b>, <b>[]</b>, in Text Editor</li>
-<li>Fixed non synchronized expanding/collapse of Settings panel in Grid Editor, on Linux</li>
-<li>Fixed not working the deletion of cells commented with <b># </b> in Grid Editor with <b>Ctrl-Shift-D</b></li> 
-<li>Fixed empty line being always added to the Variables section in Text Editor</li>
-<li>Improved project file system changes and reloading</li>
-<li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
-<li>Added synchronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
- Editor</li>
-<li>Control commands (<b>FOR</b>, <b>IF</b>, <b>TRY</b>, etc) will only be colorized as valid keywords when typed in 
-all caps in Grid Editor</li>
-<li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False, by editing 
-<em>settings.cfg</em></li>
-<li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or 
-ARROW_RIGHT</li>
-<li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
+<li>Fixed broken go to definition after editing content in resource files.</li>
+<li>Fixed long arguments in fixtures appearing splitted in Grid Editor. Still, arguments info will not be correct at
+ calling step. Fixed long arguments in fixtures appearing splitted in Grid Editor.
+ Still, arguments info will not be correct at calling step.</li>
+<li>Fixed double action on Linux when pressing the DEL key</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
@@ -313,11 +195,11 @@ from the <a class="reference external" href="https://github.com/robotframework/R
  issue tracker</a>.
 You should see <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/">Robot Framework
  Forum</a> if your problem is already known.</p>
-<p>To install with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
+<p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride=={VERSION}
+pip install --upgrade robotframework-ride==2.1
 </pre>
-<p>to install exactly this release, which is the same as using</p>
+<p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
 pip install --upgrade robotframework-ride
 </pre>
@@ -330,26 +212,23 @@ installation approaches, see the <a class="reference external"
 If you want to help in the development of RIDE, by reporting issues in current development version, you can install
  with:</p>
 <pre class="literal-block">
-pip install -U https://github.com/robotframework/RIDE/archive/master.zip
+pip install -U https://github.com/robotframework/RIDE/archive/develop.zip
 </pre>
 <p>Important document for helping with development is the <a class="reference external"
- href="https://github.com/robotframework/RIDE/blob/master/CONTRIBUTING.adoc">CONTRIBUTING.adoc</a>.</p>
-<p>See the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/F.A.Q.">FAQ</a> for
- important info about <cite>: FOR</cite> changes and other known issues and workarounds.</p>
+ href="https://github.com/robotframework/RIDE/blob/develop/CONTRIBUTING.adoc">CONTRIBUTING.adoc</a>.</p>
 <p>To start RIDE from a command window, shell or terminal, just enter:</p>
 <pre>ride</pre>
 <p>You can also pass some arguments, like a path for a test suite file or directory.<p>
 <pre>ride example.robot</pre>
 <p>Another possible way to start RIDE is:</p>
 <pre class="literal-block">
-python -m robotide.__init__
+python -m robotide
 </pre>
 <p>You can then go to <cite>Tools&gt;Create RIDE Desktop Shortcut</cite>, or run the shortcut creation script with:</p>
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 13/October/2024 (<a href="https://github.com/robotframework/RIDE/wiki/Old-Release-Notes
-#ride-010">16 years after its first version</a>).</p>
+<p>RIDE {VERSION} was released on 14/November/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

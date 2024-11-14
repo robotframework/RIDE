@@ -1,5 +1,5 @@
-#  Copyright 2008-2015 Nokia Networks
-#  Copyright 2016-     Robot Framework Foundation
+# coding=utf-8
+#  Copyright 2024-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,9 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .excludes_dialogs import ExcludePreferences
-from .progress import LoadProgressObserver
-from .treeplugin import Tree
-from .mainframe import ToolBar
-from .preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
-                                  StringChoiceEditor, PreferencesColorPicker)
+# This file was copied and modified from https://github.com/DiffSK/configobj tests
+
+import pytest
+
+from configobj import ConfigObj
+from configobj.validate import Validator
+
+@pytest.fixture
+def empty_cfg():
+    return ConfigObj()
+
+
+@pytest.fixture
+def val():
+    return Validator()

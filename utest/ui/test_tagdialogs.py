@@ -232,7 +232,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(self.app.ExitMainLoop)
+        # wx.CallAfter(self.app.ExitMainLoop)
         # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
         self.app.Destroy()

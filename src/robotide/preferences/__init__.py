@@ -13,13 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from .configobj.src.configobj import ConfigObj, ConfigObjError, Section, UnreprError
 from .editor import PreferenceEditor
 from .editors import GridEditorPreferences, TextEditorPreferences, TestRunnerPreferences
 from .general import DefaultPreferences
 from .imports import ImportPreferences
 from .saving import SavingPreferences
 from .settings import Settings, initialize_settings, RideSettings
-from ..ui import ExcludePreferences
 
 import wx
 
@@ -63,6 +63,7 @@ class Preferences(object):
             self._preference_panels.remove(panel_class)
 
     def _add_builtin_preferences(self):
+        from ..ui import ExcludePreferences
         self.add(DefaultPreferences)
         self.add(SavingPreferences)
         self.add(ImportPreferences)

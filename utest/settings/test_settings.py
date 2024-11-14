@@ -21,7 +21,7 @@ import pytest
 from robotide.preferences import settings
 from robotide.preferences.settings import Settings, SectionError,\
     ConfigurationError, initialize_settings, SettingsMigrator
-from robotide.preferences.configobj import UnreprError
+from robotide.preferences.configobj.src.configobj import UnreprError
 
 from resources.setting_utils import TestSettingsHelper
 

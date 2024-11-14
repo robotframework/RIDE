@@ -39,8 +39,7 @@ class Languages:
             print(lang.name, lang.code)
     """
 
-    def __init__(self, languages: 'Iterable[LanguageLike]|LanguageLike|None' = (),
-                 add_english: bool = True):
+    def __init__(self, languages: 'Iterable[LanguageLike]|LanguageLike|None' = (), add_english: bool = True):
         """
         :param languages: Initial language or list of languages.
             Languages can be given as language codes or names, paths or names of
@@ -98,7 +97,8 @@ class Languages:
             self._add_language(lang)
         self._bdd_prefix_regexp = None
 
-    def _exists(self, path: Path):
+    @staticmethod
+    def _exists(path: Path):
         try:
             return path.exists()
         except OSError:    # Can happen on Windows w/ Python < 3.10.
@@ -131,7 +131,8 @@ class Languages:
                     returned.extend(self._import_language_module(lang))
         return returned
 
-    def _resolve_languages(self, languages, add_english=True):
+    @staticmethod
+    def _resolve_languages(languages, add_english=True):
         if not languages:
             languages = []
         elif is_list_like(languages):
@@ -142,7 +143,8 @@ class Languages:
             languages.append(En())
         return languages
 
-    def _get_available_languages(self) -> 'dict[str, type[Language]]':
+    @staticmethod
+    def _get_available_languages() -> 'dict[str, type[Language]]':
         available = {}
         for lang in Language.__subclasses__():
             available[normalize(cast(str, lang.code), ignore='-')] = lang
@@ -771,6 +773,9 @@ class Pl(Language):
     false_strings = ['Fałsz', 'Nie', 'Wyłączone', 'Nic']
 
 
+RU_RES = 'Ресурс'
+RU_TES = 'Шаблон'
+
 class Uk(Language):
     """Ukrainian"""
     settings_header = 'Налаштування'
@@ -780,7 +785,7 @@ class Uk(Language):
     keywords_header = 'Ключових слова'
     comments_header = 'Коментарів'
     library_setting = 'Бібліотека'
-    resource_setting = 'Ресурс'
+    resource_setting = RU_RES
     variables_setting = 'Змінна'
     documentation_setting = 'Документація'
     metadata_setting = 'Метадані'
@@ -800,7 +805,7 @@ class Uk(Language):
     tags_setting = 'Теги'
     setup_setting = 'Встановлення'
     teardown_setting = 'Cпростовувати пункт за пунктом'
-    template_setting = 'Шаблон'
+    template_setting = RU_TES
     timeout_setting = 'Час вийшов'
     arguments_setting = 'Аргументи'
     given_prefixes = ['Дано']
@@ -861,7 +866,7 @@ class Ru(Language):
     keywords_header = 'Ключевые слова'
     comments_header = 'Комментарии'
     library_setting = 'Библиотека'
-    resource_setting = 'Ресурс'
+    resource_setting = RU_RES
     variables_setting = 'Переменные'
     documentation_setting = 'Документация'
     metadata_setting = 'Метаданные'
@@ -881,7 +886,7 @@ class Ru(Language):
     tags_setting = 'Метки'
     setup_setting = 'Инициализация'
     teardown_setting = 'Завершение'
-    template_setting = 'Шаблон'
+    template_setting = RU_TES
     timeout_setting = 'Лимит'
     arguments_setting = 'Аргументы'
     given_prefixes = ['Дано']
@@ -1065,7 +1070,7 @@ class Bg(Language):
     keywords_header = 'Ключови думи'
     comments_header = 'Коментари'
     library_setting = 'Библиотека'
-    resource_setting = 'Ресурс'
+    resource_setting = RU_RES
     variables_setting = 'Променлива'
     documentation_setting = 'Документация'
     metadata_setting = 'Метаданни'
@@ -1085,7 +1090,7 @@ class Bg(Language):
     tags_setting = 'Етикети'
     setup_setting = 'Първоначални настройки'
     teardown_setting = 'Приключване'
-    template_setting = 'Шаблон'
+    template_setting = RU_TES
     timeout_setting = 'Таймаут'
     arguments_setting = 'Аргументи'
     given_prefixes = ['В случай че']

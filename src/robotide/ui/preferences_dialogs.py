@@ -17,9 +17,7 @@ import builtins
 import textwrap
 
 import wx
-from wx import Colour
 
-from ..preferences.settings import RideSettings
 from ..context import IS_LINUX
 from ..widgets import HelpLabel, Label, TextField
 
@@ -33,8 +31,7 @@ class PreferencesPanel(wx.Panel):
     def __init__(self, parent=None, name_tr=None, *args, **kwargs):
         self.tree_item = None
         self.name_tr = name_tr
-        # self.location = (_("Preferences"),)
-        # self.title = _("Preferences")
+        from ..preferences.settings import RideSettings
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self._gsettings = RideSettings()
         self.settings = self._gsettings['General']
@@ -66,12 +63,11 @@ class PreferencesPanel(wx.Panel):
 
 class PreferencesComboBox(wx.ComboBox):
     """A combobox tied to a specific setting. Saves value to disk after edit."""
-    def __init__(self, parent, id, settings, key, choices):
+    def __init__(self, parent, elid, settings, key, choices):
         self.settings = settings
         self.key = key
-        # wx.ComboBox(self, parent, id, self._get_value(), size=self._get_size(choices),
-        #             choices=choices, style=wx.CB_READONLY)
-        super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
+        from ..preferences.settings import RideSettings
+        super(PreferencesComboBox, self).__init__(parent, elid, self._get_value(),
                                                   size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
         self._gsettings = RideSettings()
@@ -85,13 +81,14 @@ class PreferencesComboBox(wx.ComboBox):
     def _get_value(self):
         return self.settings[self.key]
 
-    def _get_size(self, choices=[]):
+    @staticmethod
+    def _get_size(choices=None):
         """ In Linux with GTK3 wxPython 4, there was not enough spacing.
             The value 72 is there for 2 digits numeric lists, for
             IntegerPreferenceComboBox.
             This issue only occurs in Linux, for Mac and Windows using default size.
         """
-        if IS_LINUX and choices:
+        if IS_LINUX and isinstance(choices, list):
             return wx.Size(max(max(len(str(s)) for s in choices) * 9, 144), 30)
         return wx.DefaultSize
 
@@ -116,10 +113,11 @@ class IntegerPreferenceComboBox(PreferencesComboBox):
 class PreferencesSpinControl(wx.SpinCtrl):
     """A spin control tied to a specific setting. Saves value to disk after edit."""
 
-    def __init__(self, parent, id, settings, key, choices):
+    def __init__(self, parent, elid, settings, key, choices):
         self.settings = settings
         self.key = key
-        super(PreferencesSpinControl, self).__init__(parent, id,
+        from ..preferences.settings import RideSettings
+        super(PreferencesSpinControl, self).__init__(parent, elid,
             size=self._get_size(choices[-1]))
 
         self._gsettings = RideSettings()
@@ -136,7 +134,8 @@ class PreferencesSpinControl(wx.SpinCtrl):
     def _get_value(self):
         return self.settings[self.key]
 
-    def _get_size(self, max_value):
+    @staticmethod
+    def _get_size(max_value):
         """ In Linux with GTK3 wxPython 4, there was not enough spacing.
             The value 72 is there for 2 digits numeric lists, for
             IntegerPreferenceComboBox.
@@ -156,12 +155,13 @@ class PreferencesSpinControl(wx.SpinCtrl):
 
 class PreferencesColorPicker(wx.ColourPickerCtrl):
     """A colored button that opens a color picker dialog"""
-    def __init__(self, parent, id, settings, key):
+    def __init__(self, parent, elid, settings, key):
         self.settings = settings
         self.key = key
         # print(f"DEBUG: Preferences ColourPicker value type {type(settings[key])}")
-        value = Colour(settings[key])
-        super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
+        value = wx.Colour(settings[key])
+        from ..preferences.settings import RideSettings
+        super(PreferencesColorPicker, self).__init__(parent, elid, colour=value)
         self._gsettings = RideSettings()
         self.psettings = self._gsettings['General']
         background_color = self.psettings['background']
@@ -186,12 +186,13 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
 class _ChoiceEditor(object):
     _editor_class = None
 
-    def __init__(self, settings, setting_name, label, choices, help=''):
+    def __init__(self, settings, setting_name, label, choices, elhelp=''):
         self._settings = settings
         self._setting_name = setting_name
         self._label = label
         self._choices = choices
-        self._help = help
+        self._help = elhelp
+        from ..preferences.settings import RideSettings
         self._gsettings = RideSettings()
         self.csettings = self._gsettings['General']
         self.background_color = self.csettings['background']
@@ -229,8 +230,9 @@ class SpinChoiceEditor(_ChoiceEditor):
     _editor_class = PreferencesSpinControl
 
 
-def boolean_editor(parent, settings, name, label, help=''):
-    editor = _create_checkbox_editor(parent, settings, name, help)
+def boolean_editor(parent, settings, name, label, elhelp=''):
+    editor = _create_checkbox_editor(parent, settings, name, elhelp)
+    from ..preferences.settings import RideSettings
     _gsettings = RideSettings()
     bsettings = _gsettings['General']
     background_color = bsettings['background']
@@ -243,18 +245,19 @@ def boolean_editor(parent, settings, name, label, help=''):
     return blabel, editor
 
 
-def _create_checkbox_editor(parent, settings, name, help):
+def _create_checkbox_editor(parent, settings, name, elhelp):
     initial_value = settings.get(name, "")
     editor = wx.CheckBox(parent)
     editor.SetValue(initial_value)
     editor.Bind(wx.EVT_CHECKBOX, lambda evt: settings.set(name, editor.GetValue()))
-    editor.SetToolTip(help)
+    editor.SetToolTip(elhelp)
     return editor
 
 
 def comma_separated_value_editor(parent, settings, name, label, thelp=''):
     initial_value = ', '.join(settings.get(name, ""))
     editor = TextField(parent, initial_value)
+    from ..preferences.settings import RideSettings
     _gsettings = RideSettings()
     esettings = _gsettings['General']
     background_color = esettings['background']
@@ -270,8 +273,6 @@ def comma_separated_value_editor(parent, settings, name, label, thelp=''):
         evt.Skip()
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value(evt))
     elabel = Label(parent, label=label)
-    # background_color = esettings['background']
-    # foreground_color = esettings['foreground']
     elabel.SetBackgroundColour(background_color)
     elabel.SetForegroundColour(foreground_color)
     return elabel, editor

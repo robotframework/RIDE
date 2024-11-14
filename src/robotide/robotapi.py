@@ -31,6 +31,9 @@ from .lib.robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePop
 from .lib.robot.parsing.robotreader import RobotReader
 from .lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
 from .lib.robot.libraries import STDLIBS as STDLIB_NAMES
+from  platform import python_version
+if python_version() >= '3.13':
+    STDLIB_NAMES = STDLIB_NAMES.difference(['Telnet'])
 from .lib.robot.running.usererrorhandler import UserErrorHandler
 from .lib.robot.running.arguments.embedded import EmbeddedArgumentParser
 from .lib.robot.utils import normpath, NormalizedDict

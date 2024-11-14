@@ -28,7 +28,8 @@ REQUIREMENTS = ['PyPubSub',
                 'psutil',
                 'Pywin32; sys_platform=="win32"',
                 'wxPython',
-                'packaging']
+                'packaging',
+                'requests>=2.32.2']
 
 PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],
@@ -47,6 +48,14 @@ for curr_dir, _, files in os.walk('src/robotide/localization'):
              my_list.append(os.path.join(curr_dir, item).replace('\\', '/').replace('src/robotide/localization/', ''))
 
 PACKAGE_DATA['robotide.localization'] = my_list[:]
+
+my_list = []
+for curr_dir, _, files in os.walk('src/robotide/preferences/configobj/src/configobj'):
+    for item in files:
+        if '.' in item:
+             my_list.append(os.path.join(curr_dir, item).replace('\\', '/').replace('src/robotide/preferences/configobj/src/configobj/', ''))
+
+PACKAGE_DATA['robotide.preferences.configobj.src.configobj'] = my_list[:]
 
 LONG_DESCRIPTION = """
 Robot Framework is a generic test automation framework for acceptance
@@ -101,6 +110,7 @@ setup(
     url='https://github.com/robotframework/RIDE/',
     download_url='https://pypi.python.org/pypi/robotframework-ride',
     install_requires=REQUIREMENTS,
+    include_package_data=True,
     package_dir={'': SOURCE_DIR},
     packages=find_packages(SOURCE_DIR),
     package_data=PACKAGE_DATA,

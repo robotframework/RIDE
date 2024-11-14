@@ -32,11 +32,13 @@ class ProgressObserver(object):
 
     def finish(self):
         self._progressbar.Destroy()
-        context.LOG.report_parsing_errors()
+        if hasattr(context.LOG, 'report_parsing_errors'):
+            context.LOG.report_parsing_errors()
 
     def error(self, msg):
         self.finish()
-        context.LOG.error(msg)
+        if hasattr(context.LOG, 'error'):
+            context.LOG.error(msg)
 
 
 class LoadProgressObserver(ProgressObserver):

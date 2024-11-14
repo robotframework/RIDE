@@ -163,14 +163,14 @@ class TestEditorCommands(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
         PUBLISHER.unsubscribe_all()
         self.app.project.close()
-        wx.CallAfter(self.app.ExitMainLoop)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # wx.CallAfter(self.app.ExitMainLoop)
+        # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
         self.shared_mem.shm.close()
         self.shared_mem.shm.unlink()
@@ -476,8 +476,8 @@ class TestEditorCommands(unittest.TestCase):
         print(f"DEBUG: after_apply len={len(after_apply)} initial content len={len(content)}:\n{after_apply}")
         # assert fulltext == content[0] + content[1] + content[2]
         # Uncomment next lines if you want to see the app
-        wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_get_selected_or_near_text(self):
@@ -593,9 +593,34 @@ class TestEditorCommands(unittest.TestCase):
         assert position == text_length
 
         # Uncomment next lines if you want to see the app
-        wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
 
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_miscellanous(self):
+        spaces = ' ' * self.plugin._editor_component.tab_size
+        content = [spaces + 'Log' + spaces + 'This is ${unknown}\n']
+        pos = len(spaces + 'Log')
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos - len('Log'), pos)
+        stylizer = self.plugin._editor_component.source_editor.stylizer
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        font_size = stylizer._font_size()
+        font_face = stylizer._font_face()
+        zoom_factor = stylizer._zoom_factor()
+
+        assert font_size == 10
+        assert font_face in ["Sans", "Noto Sans", "Courier New"]
+        assert zoom_factor == 0
+        # print(f"DEBUG: fulltext:\n{fulltext}")
+        stylizer.set_styles(True)
+        stylizer.stylize()
+
+        assert fulltext == spaces + 'Log' + spaces + 'This is ${unknown}\n'
+        # Uncomment next lines if you want to see the app
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
 
 class TestLanguageFunctions(unittest.TestCase):
 
@@ -623,14 +648,14 @@ class TestLanguageFunctions(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
         PUBLISHER.unsubscribe_all()
         self.app.project.close()
-        wx.CallAfter(self.app.ExitMainLoop)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # wx.CallAfter(self.app.ExitMainLoop)
+        # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
         self.shared_mem.shm.close()
         self.shared_mem.shm.unlink()
@@ -679,8 +704,8 @@ class TestLanguageFunctions(unittest.TestCase):
         # print(f"DEBUG: fulltext:\n{fulltext}")
         # assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
-        wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
 
     def test_get_rf_lang_code(self):
         lang = ['en']
@@ -709,7 +734,7 @@ class TestLanguageFunctions(unittest.TestCase):
             content = fp.readlines()
         content = "".join(content)
         self.plugin._editor_component.source_editor.set_text(content)
-        # print(f"DEBUG: content:\n{content}")
+        print(f"DEBUG: content:\n{content}")
 
         for lang in LANGUAGES:
             self.set_language(lang[0])

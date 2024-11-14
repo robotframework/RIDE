@@ -172,6 +172,6 @@ class UIUnitTestBase(unittest.TestCase):
         self.app = wx.App()
 
     def tearDown(self):
-        wx.CallAfter(self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # wx.CallAfter(self.app.ExitMainLoop)
+        # self.app.MainLoop()
         self.app = None

@@ -140,7 +140,7 @@ class SettingEditor(wx.Panel):
         except AttributeError:
             pass
 
-    def refresh(self, controller):
+    def refresh_values(self, controller):
         self._controller = controller
         self.update_value()
 

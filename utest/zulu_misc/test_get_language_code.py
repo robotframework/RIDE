@@ -1,5 +1,4 @@
-#  Copyright 2008-2015 Nokia Networks
-#  Copyright 2016-     Robot Framework Foundation
+#  Copyright 2024-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +11,21 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import unittest
 
-from .excludes_dialogs import ExcludePreferences
-from .progress import LoadProgressObserver
-from .treeplugin import Tree
-from .mainframe import ToolBar
-from .preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
-                                  StringChoiceEditor, PreferencesColorPicker)
+class TestMisc(unittest.TestCase):
+
+    def test_get_code(self):
+        import wx
+        from robotide.application import RIDE
+
+        main_app = RIDE()
+        code = main_app._get_language_code()
+        assert code in (wx.LANGUAGE_ENGLISH, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
+        # Uncomment next lines if you want to see the app
+        # wx.CallLater(8000, main_app.ExitMainLoop)
+        # main_app.MainLoop()
+
+
+if __name__ == '__main__':
+    unittest.main()
