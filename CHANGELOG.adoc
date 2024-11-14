@@ -16,6 +16,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed broken go to definition after editing content in resource files.
+
 - Fixed long arguments in fixtures appearing splitted in Grid Editor. Still, arguments info will not be correct at calling step.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.rst[2.1] - 2024-10-13

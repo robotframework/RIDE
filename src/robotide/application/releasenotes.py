@@ -163,15 +163,16 @@ RELEASE_NOTES = f"""
 version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
- on other IDE or Editors.</li>
+ on other IDE or Editors. The option to not reformat the file is not working.</li>
 </ul>
 </li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed broken go to definition after editing content in resource files.</li>
 <li>Fixed long arguments in fixtures appearing splitted in Grid Editor. Still, arguments info will not be correct at
- calling step.Fixed long arguments in fixtures appearing splitted in Grid Editor.
- Still, arguments info will not be correct at calling step./li>
+ calling step. Fixed long arguments in fixtures appearing splitted in Grid Editor.
+ Still, arguments info will not be correct at calling step.</li>
 <li>Fixed double action on Linux when pressing the DEL key</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
@@ -227,7 +228,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 5/November/2024.</p>
+<p>RIDE {VERSION} was released on 14/November/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

@@ -741,7 +741,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _get_datafile_node(self, datafile):
         for node in self.datafile_nodes:
-            if self.controller.get_handler(node).item == datafile:
+            item = self.controller.get_handler(node).item
+            if item == datafile:  # This only works before editing a resource item because the obj id changes
+                return node
+            if type(item) == type(datafile) and hasattr(item, 'name') and item.name == datafile.name:
                 return node
         return None
 
