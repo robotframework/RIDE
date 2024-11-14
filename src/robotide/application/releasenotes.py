@@ -125,7 +125,7 @@ version = VERSION
 milestone = re.split('[ab-]', VERSION)[0]
 
 WELCOME_TEXT = f"""
-<h2>Welcome to use RIDE <b>DEVELOPMENT</b> version {version}</h2>
+<h2>Welcome to use RIDE version {version}</h2>
 
 <p>Thank you for using the <a href="https://robotframework.org/">Robot Framework</a> IDE (RIDE).</p>
 
@@ -171,8 +171,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 <ul class="simple">
 <li>Fixed broken go to definition after editing content in resource files.</li>
 <li>Fixed long arguments in fixtures appearing splitted in Grid Editor. Still, arguments info will not be correct at
- calling step. Fixed long arguments in fixtures appearing splitted in Grid Editor.
- Still, arguments info will not be correct at calling step.</li>
+ calling step.</li>
 <li>Fixed double action on Linux when pressing the DEL key</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
@@ -184,8 +183,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
   manager.</p>
 <p>The <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc">
 CHANGELOG.adoc</a> lists the changes done on the different versions.</p>
-<p>All issues targeted for RIDE v2.1 can be found
-from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.1">issue
+<p>All issues targeted for RIDE v2.2 can be found
+from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.2">issue
  tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
 <a class="reference external" href="https://groups.google.com/group/robotframework-users">robotframework-users</a>
@@ -197,7 +196,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.1
+pip install --upgrade robotframework-ride==2.1.1
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">

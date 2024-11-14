@@ -22,8 +22,8 @@ the generic https://opensource.guide/[Open Source Guides] first.
 Bugs and enhancements are tracked in the
 https://github.com/robotframework/RIDE/issues[issue tracker].
 If you are unsure if something is a bug or is a feature worth
-implementing, you can first ask on link:https://forum.robotframework.org/c/tools/ride/21/[RIDE-users] 
-(#RIDE on irc.freenode.net), or on
+implementing, you can first ask on link:https://forum.robotframework.org/c/tools/ride/21/[RIDE]
+(RIDE at Forum), or on
 https://robotframework-slack-invite.herokuapp.com[Slack]. These and
 other similar forums, not the issue tracker, are also places where to
 ask general questions.
@@ -105,6 +105,33 @@ to create dedicated topic branches for pull requests instead of creating
 them based on the master branch. This is especially important if you
 plan to work on multiple pull requests at the same time.
 
+=== RIDE Code Setup
+
+The basic code setup of RIDE, needs a additional steps since v2.1.1 (November 2024):
+
+. Forking the project (Web interface)
+. Clone (for example) ``git clone git@github.com:robotframework/RIDE.git``
+. ``cd RIDE``
+. `pip install -U -r requirements-dev.txt`
+. ``git submodule init``
+. ``git submodule update``
+
+Then you may change to the ``develop`` branch, which should be the base for features or fixes branches, and the target for pull requests. Example:
+
+. ``git checkout develop``
+. ``git submodule init``
+. ``git submodule update``
+. ``git pull origin develop``
+. ``git checkout -b a_new_branch_based_on_develop``
+. After changes, you add new files, ``git add a_new_file``
+. You add and commit the modified files, ``git -a -m "The short message with info about the change``
+. You push the commit to your fork, ``git push origin a_new_branch_based_on_develop``
+. You may repeat the commit/push and when ready create a Pull Request to your ``develop`` branch, or
+. You checkout your ``develop``branch, and merge with ``git merge a_new_branch_based_on_develop``
+. Later you should keep the ``develop`` branch updated by pulling from your remote, ``git pull origin develop``, or
+. By pushing ``git push origin develop``
+. Finaly, you can create a Pull Request from your fork to the target ``develop`` branch of the original RIDE project.
+
 === Coding conventions
 
 NOTE: RIDE graphical user interface, can only exist due the use of wxPython (from wxWidgets). Users wanting to write Python code for RIDE, should be acquainted with https://wxpython.org[wxPython] in particular by exploring its demo.
@@ -122,7 +149,7 @@ should be clear enough that comments are generally not needed.
 
 All code, including test code, must be compatible with all supported
 Python interpreters and versions. Most importantly this means that the
-code must support Python 3 (actually, greater than 3.6). RIDE's code still have some Python 2 conditioning, due to its dual compatibility on version 1.7.4.2, and also in the included Robot Framework library from version 3.1.2.
+code must support Python 3 (actually, greater than 3.7, currently 3.13). RIDE's code may still have some Python 2 conditioning, due to its dual compatibility on version 1.7.4.2, and also in the included Robot Framework library from version 3.1.2.
 
 ==== Line length
 
@@ -225,7 +252,7 @@ Please contact us via Slack, if you would like to join this testing group.
 Once you have code, documentation and tests ready, it is time to
 finalize the pull request.
 
-=== Acknowledgments
+=== Acknowledgements
 
 If you have done any non-trivial change and would like to be credited,
 remind us to add `acknowledge` tag to the issue. This way we will add
