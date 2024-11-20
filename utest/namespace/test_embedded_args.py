@@ -27,9 +27,9 @@ class KWMock(object):
 
 class TestEmbeddedArgs(unittest.TestCase):
 
-    def test_extra_arguments_are_illegal(self):
-        with pytest.raises(TypeError):
-            EmbeddedArgsHandler(KWMock('add user ${user} to db', ['${arg}']))
+    def test_extra_arguments_are_no_longer_illegal(self):
+        handler = EmbeddedArgsHandler(KWMock('add user ${user} to db', ['${arg}']))
+        assert handler.embedded_args == ['user']
 
     def test_no_embedded_arguments(self):
         with pytest.raises(TypeError):

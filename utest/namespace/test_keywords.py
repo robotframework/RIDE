@@ -58,20 +58,14 @@ class TestKeywords(unittest.TestCase):
         assert self.kws.get('But my kw')
 
     def test_embedded_args(self):
-        assert self.kws.get(
-            'john should embed arguments and something')
-        assert self.kws.get(
-            'WHEN john should embed arguments and something')
-        assert self.kws.get(
-            'but john should embed arguments and something')
-        assert not self.kws.get(
-            'this keyword has real args')
+        assert self.kws.get('john should embed arguments and something')
+        assert self.kws.get('WHEN john should embed arguments and something')
+        assert self.kws.get('but john should embed arguments and something')
+        assert self.kws.get('this keyword has real args')  # Now it is possible to have normal arguments
 
     def test_embedded_args_are_space_sensitive(self):
-        assert not self.kws.get(
-            'john shouldembed arguments and something')
-        assert not self.kws.get(
-            'given johnshould embed arguments and something')
+        assert not self.kws.get('john shouldembed arguments and something')
+        assert not self.kws.get('given johnshould embed arguments and something')
 
     def test_first_come_prioritized_when_same_short_name(self):
         kws = _Keywords([ItemMock('My kw', ['${arg}'], 'source.My kw'),

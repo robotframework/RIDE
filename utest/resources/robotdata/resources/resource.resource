@@ -24,3 +24,10 @@ Funny Def Value
 
 Duplicate UK
     No Operation
+
+User ${action} Email
+    Log    Keyword call is "User ${action} Email"    console=True
+
+Server ${action} To User
+    [Arguments]    ${user}
+    Log    Keyword call is "Server ${action} To User" where \${user}=${user}    console=True

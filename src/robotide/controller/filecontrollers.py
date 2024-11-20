@@ -265,6 +265,8 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def is_user_keyword(self, datafile, value):
         _ = datafile
+        # print(f"DEBUG: filecontrollers.py _DataController is_user_keyword datafile={datafile} "
+        #       f" value={value}")
         return WithNamespace.is_user_keyword(self, self.datafile, value)
 
     def is_library_keyword(self, datafile, value):

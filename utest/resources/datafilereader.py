@@ -56,6 +56,7 @@ SIMPLE_TEST_SUITE_PATH = _makepath('simple_testsuite_with_different_namespaces')
 FOR_LOOP_PATH = _makepath('forloop')
 
 ARGUMENTS_PATH = _makepath('arguments_suite')
+EMBEDDED_PROJECT = _makepath('Embedded_arguments.robot')
 
 SIMPLE_PROJECT = _makepath('simple', 'test.robot')
 
