@@ -125,7 +125,7 @@ version = VERSION
 milestone = re.split('[ab-]', VERSION)[0]
 
 WELCOME_TEXT = f"""
-<h2>Welcome to use RIDE <b>DEVELOPMENT</b> version {version}</h2>
+<h2>Welcome to use RIDE version {version}</h2>
 
 <p>Thank you for using the <a href="https://robotframework.org/">Robot Framework</a> IDE (RIDE).</p>
 
