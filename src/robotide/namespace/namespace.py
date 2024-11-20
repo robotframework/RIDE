@@ -203,6 +203,8 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
+        # print(f"DEBUG: namespace.py Namespace find_user_keyword datafile={datafile} "
+        #       f" kw_name={kw_name} keyword={kw}")
         return kw if isinstance(kw, UserKeywordInfo) else None
 
     def is_user_keyword(self, datafile, kw_name):
@@ -633,18 +635,28 @@ class _Keywords(object):
         try:
             handler = EmbeddedArgsHandler(kw)
             self.embedded_keywords[handler.name_regexp] = kw
+            if hasattr(handler, 'longname_regexp'):
+                self.embedded_keywords[handler.longname_regexp] = kw
+            # print(f"DEBUG: namespace.py _add_embedded add kw={kw.name} longname={kw.longname}\n"
+            #       f"handler.name_regexp={handler.name_regexp}")
         except TypeError:
             pass
 
     def get(self, kw_name):
         if kw_name in self.keywords:
             return self.keywords[kw_name]
+        # print(f"DEBUG: namespace.py _Keywords get keywords {self.keywords}")
         bdd_name = self._get_bdd_name(kw_name)
         if bdd_name and bdd_name in self.keywords:
             return self.keywords[bdd_name]
+        # print(f"DEBUG: namespace.py _Keywords get embedded kws {self.embedded_keywords}"
+        #       f"\nseaching keyword={kw_name}")
         for regexp in self.embedded_keywords:
-            if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
-                return self.embedded_keywords[regexp]
+            try:
+                if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
+                    return self.embedded_keywords[regexp]
+            except AttributeError:
+                pass
         return None
 
     def _get_bdd_name(self, kw_name):

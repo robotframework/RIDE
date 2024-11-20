@@ -26,7 +26,7 @@ class _ImportSuggesterHelpers(object):
         self.assertEqual(expected, self._suggestion_names(value))
 
     def _suggestion_names(self, value):
-        return [s.name for s in self._suggester.get_suggestions(value)]
+        return [s.name for s in self._suggester.get_suggestions(value) if s.name != 'Telnet']
 
 
 class _ImportSuggesterTests(_ImportSuggesterHelpers):

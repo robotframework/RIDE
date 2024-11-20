@@ -415,5 +415,57 @@ class TestCellInfo(unittest.TestCase):
         assert cell_info.content_type == contenttype
 
 
+
+class TestEmbeddedCellInfo(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.project_ctrl = datafilereader.construct_project(datafilereader.EMBEDDED_PROJECT)
+        # print(f"DEBUG: TestEmbeddedCellInfo setUpClass project_ctrl: {cls.project_ctrl.display_name}"
+        #       f" {cls.project_ctrl.datafiles}")
+        cls.testsuite = cls.project_ctrl.datafiles[0]
+        cls.test1 = cls.testsuite.tests[0]
+        cls.test2 = cls.testsuite.tests[1]
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.project_ctrl.close()
+
+    def test_var_and_kw(self):
+        # print("DEBUG: test_var_and_kw:")
+        # for s in self.test1.steps:
+        #     print(f"{s.as_list()}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, self.test1)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL, self.test1)
+        self._verify_cell_info(0, 2, ContentType.STRING, CellType.OPTIONAL, self.test1)
+        self._verify_cell_info(1, 0, ContentType.USER_KEYWORD, CellType.KEYWORD, self.test1)
+        self._verify_cell_info(2, 0, ContentType.USER_KEYWORD, CellType.KEYWORD, self.test1)
+        # This was at TearDown
+        self.test1.execute(delete_rows([i for i in range(len(self.test1.steps))]))
+
+    def test_var_and_kw_prefix_resource(self):
+        # print("DEBUG: test_var_and_kw:")
+        # for s in self.test2.steps:
+        #     print(f"{s.as_list()}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, self.test2)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL, self.test2)
+        self._verify_cell_info(0, 2, ContentType.STRING, CellType.OPTIONAL, self.test2)
+        self._verify_cell_info(1, 0, ContentType.USER_KEYWORD, CellType.KEYWORD, self.test2)
+        self._verify_cell_info(2, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, self.test2)
+        self._verify_cell_info(2, 1, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL, self.test2)
+        self._verify_cell_info(2, 2, ContentType.STRING, CellType.OPTIONAL, self.test2)
+        self._verify_cell_info(3, 0, ContentType.USER_KEYWORD, CellType.KEYWORD, self.test2)
+        self._verify_cell_info(3, 1, ContentType.VARIABLE, CellType.MANDATORY, self.test2)
+        # This was at TearDown
+        self.test2.execute(delete_rows([i for i in range(len(self.test2.steps))]))
+
+    @staticmethod
+    def _verify_cell_info(row, col, contenttype, celltype, macro=None):
+        cell_info = macro.get_cell_info(row, col)
+        # print(f"DEBUG:test_cellinfo type cell_type{cell_info.cell_type} content_type{cell_info.content_type}")
+        assert cell_info.cell_type == celltype
+        assert cell_info.content_type == contenttype
+
+
 if __name__ == "__main__":
     unittest.main()

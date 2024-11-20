@@ -15,7 +15,6 @@
 
 from .desktopshortcut import ShortcutPlugin
 
-
 import sys
 try:
     import wx
@@ -30,7 +29,7 @@ except ImportError:
                      "or pip install wxPython")
     exit(-1)
 
-from os import environ
+from os import environ, getlogin
 from os.path import exists, join
 from robotide.widgets import RIDEDialog
 
@@ -180,7 +179,7 @@ def _create_desktop_shortcut_linux(frame=None):
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho"}
-    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
+    user = getlogin()
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
         directory = join("/home", user, ndesktop)
@@ -254,7 +253,7 @@ def _create_desktop_shortcut_mac(frame=None):
         if exists(ride_app_pc_path):
             shutil.rmtree(ride_app_pc_path, True)
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
-        user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
+        user = getlogin()
         user_desktop_link = '/Users/' + user + '/Desktop/' + ride_app_name
         if exists(user_desktop_link):
             os.remove(user_desktop_link)

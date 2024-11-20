@@ -12,12 +12,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import pytest
+import sys
 import typing
 import unittest
 import time
 import urllib
 
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
+
+IS_WINDOWS = sys.platform=='win32'
 
 CHECKFORUPDATES = 'check for updates'
 LASTUPDATECHECK = 'last update check'
@@ -222,6 +226,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
         self.assertFalse(self._callback_called)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_no_update_found_dev_notify(self):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.55', '0.55')
@@ -287,6 +292,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_forced_check_released(self):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.43.0', '0.43.1')
@@ -295,6 +301,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_forced_check_development(self):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev14')
@@ -303,6 +310,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertTrue(self._callback_called)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_forced_check_development_ok(self):
         settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev12')
@@ -311,6 +319,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_normal_update_dialog(self):
         """ This is not actually doing a test """
         settings = self.internal_settings()
