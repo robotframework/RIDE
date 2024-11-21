@@ -12,12 +12,15 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import os
 import pytest
 import sys
 import typing
 import unittest
 import time
 import urllib
+
+from unittest import mock
 
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 
@@ -137,9 +140,9 @@ class UpdateNotifierTestCase(unittest.TestCase):
         # wx.CallAfter(self.app.ExitMainLoop)
         # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
+        self.app.ExitMainLoop()
         self.app.Destroy()
         self.app = None
-
 
     def _callback(self, version, url, settings, notebook):
         __ = notebook
@@ -173,160 +176,179 @@ class UpdateNotifierTestCase(unittest.TestCase):
                 LASTUPDATECHECK: last_update_check}
 
     def test_normal_update(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0', '1', 'http://xyz.abc.efg.di')
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(self._callback_called)
-        self.assertEqual('1', self._newest_version)
-        self.assertEqual('http://xyz.abc.efg.di', self._url)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0', '1', 'http://xyz.abc.efg.di')
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertTrue(self._callback_called)
+            self.assertEqual('1', self._newest_version)
+            self.assertEqual('http://xyz.abc.efg.di', self._url)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            # Uncomment next lines if you want to see the app
+            # wx.CallLater(5000, self.app.ExitMainLoop)
+            # self.app.MainLoop()
 
     def test_update_when_trunk_version(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '2.0', '2.0.1')
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(self._callback_called)
-        self.assertEqual('2.0.1', self._newest_version)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '2.0', '2.0.1')
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertTrue(self._callback_called)
+            self.assertEqual('2.0.1', self._newest_version)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
 
     def test_last_update_done_less_than_a_week_ago(self):
-        original_time = time.time() - 60 * 60 * 24 * 3
-        settings = self.internal_settings(last_update_check=original_time)
-        ctrl = UpdateNotifierController(settings, self.notebook)
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertEqual(original_time, settings[LASTUPDATECHECK])
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            original_time = time.time() - 60 * 60 * 24 * 3
+            settings = self.internal_settings(last_update_check=original_time)
+            ctrl = UpdateNotifierController(settings, self.notebook)
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertEqual(original_time, settings[LASTUPDATECHECK])
+            self.assertFalse(self._callback_called)
 
     def test_check_for_updates_is_false(self):
-        settings = self.internal_settings(check_for_updates=False)
-        original_time = settings[LASTUPDATECHECK]
-        ctrl = UpdateNotifierController(settings, self.notebook)
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertFalse(settings[CHECKFORUPDATES])
-        self.assertEqual(original_time, settings[LASTUPDATECHECK])
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings(check_for_updates=False)
+            original_time = settings[LASTUPDATECHECK]
+            ctrl = UpdateNotifierController(settings, self.notebook)
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertFalse(settings[CHECKFORUPDATES])
+            self.assertEqual(original_time, settings[LASTUPDATECHECK])
+            self.assertFalse(self._callback_called)
 
     def test_no_update_found(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.55', '0.55')
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.55', '0.55')
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertFalse(self._callback_called)
 
     def test_no_update_found_dev(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.56', '0.56')
-        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False, show_no_update=False)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.56', '0.56')
+            ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False, show_no_update=False)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertFalse(self._callback_called)
 
     @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_no_update_found_dev_notify(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.55', '0.55')
-        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True, show_no_update=True)
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.55', '0.55')
+            ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True, show_no_update=True)
+            self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_checks_for_updates(self):
-        settings = self.internal_settings(check_for_updates=None, last_update_check=None)
-        ctrl = self._update_notifier_controller(settings, self.notebook,'1.0.2', '1.0.2')
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings(check_for_updates=None, last_update_check=None)
+            ctrl = self._update_notifier_controller(settings, self.notebook,'1.0.2', '1.0.2')
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_finds_an_update(self):
-        settings = self.internal_settings(check_for_updates=None, last_update_check=None)
-        ctrl = self._update_notifier_controller(settings, self.notebook, '1.2', '2.0')
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertTrue(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings(check_for_updates=None, last_update_check=None)
+            ctrl = self._update_notifier_controller(settings, self.notebook, '1.2', '2.0')
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertTrue(self._callback_called)
 
     def test_checking_timeouts(self):
-        settings = self.internal_settings()
-        ctrl = UpdateNotifierController(settings, self.notebook)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = UpdateNotifierController(settings, self.notebook)
 
-        def throw_timeout_error():
-            raise urllib.error.URLError('timeout')
+            def throw_timeout_error():
+                raise urllib.error.URLError('timeout')
 
-        ctrl._get_newest_version = throw_timeout_error
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 10)  # The dialog timeout in 10 seconds
-        self.assertFalse(self._callback_called)
+            ctrl._get_newest_version = throw_timeout_error
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 10)  # The dialog timeout in 10 seconds
+            self.assertFalse(self._callback_called)
 
     def test_download_url_checking_timeouts(self):
-        settings = self.internal_settings()
-        ctrl = UpdateNotifierController(settings, self.notebook)
-        ctrl.VERSION = '0'
-        ctrl._get_newest_version = lambda: '1'
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = UpdateNotifierController(settings, self.notebook)
+            ctrl.VERSION = '0'
+            ctrl._get_newest_version = lambda: '1'
 
-        def throw_timeout_error(*args):
-            _ = args
-            raise urllib.error.URLError('timeout')
+            def throw_timeout_error(*args):
+                _ = args
+                raise urllib.error.URLError('timeout')
 
-        ctrl._get_download_url = throw_timeout_error
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertFalse(self._callback_called)
+            ctrl._get_download_url = throw_timeout_error
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertFalse(self._callback_called)
 
     def test_server_returns_no_versions(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '1.2.2', None)
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '1.2.2', None)
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertFalse(self._callback_called)
 
     def test_server_returns_older_version(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.44', '0.43.1')
-        ctrl.notify_update_if_needed(self._callback)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.44', '0.43.1')
+            ctrl.notify_update_if_needed(self._callback)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 1)
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertFalse(self._callback_called)
 
     @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_forced_check_released(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.43.0', '0.43.1')
-        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 19)  # The dialog timeout in 20 seconds
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertTrue(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.43.0', '0.43.1')
+            ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 19)  # The dialog timeout in 20 seconds
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertTrue(self._callback_called)
 
     @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_forced_check_development(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev14')
-        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 20)  # The dialog timeout in 20 seconds
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertTrue(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev14')
+            ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 20)  # The dialog timeout in 20 seconds
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertTrue(self._callback_called)
 
     @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_forced_check_development_ok(self):
-        settings = self.internal_settings()
-        ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev12')
-        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False)
-        self.assertGreater(settings[LASTUPDATECHECK], time.time() - 20)  # The dialog timeout in 20 seconds
-        self.assertTrue(settings[CHECKFORUPDATES])
-        self.assertFalse(self._callback_called)
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            ctrl = self._update_notifier_controller(settings, self.notebook, '0.44dev12', '0.44.dev12')
+            ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False)
+            self.assertGreater(settings[LASTUPDATECHECK], time.time() - 20)  # The dialog timeout in 20 seconds
+            self.assertTrue(settings[CHECKFORUPDATES])
+            self.assertFalse(self._callback_called)
 
     @pytest.mark.skipif(IS_WINDOWS, reason='Causes: Windows fatal exception: access violation')
     def test_normal_update_dialog(self):
         """ This is not actually doing a test """
-        settings = self.internal_settings()
-        ctrl=UpdateDialog('1.0.0', 'http://localhost', settings, self.notebook,False)
-        wx.CallLater(3000, ctrl.EndModal,wx.CANCEL)
-        ctrl.ShowModal()
-        ctrl.Destroy()
+        with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
+            settings = self.internal_settings()
+            # path = os.getenv('RIDESETTINGS')
+            # print(f"DEBUG: test_updatenotifier.py test_normal_update_dialog  RIDESETTINGS{path=}")
+            ctrl=UpdateDialog('1.0.0', 'http://localhost', settings, self.notebook,False)
+            wx.CallLater(3000, ctrl.EndModal,wx.CANCEL)
+            ctrl.ShowModal()
+            ctrl.Destroy()
 
 
 if __name__ == '__main__':
