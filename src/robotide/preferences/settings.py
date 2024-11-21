@@ -356,12 +356,16 @@ class RideSettings(Settings):
         if path:
             self._default_path = path
         else:
-            self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        # print("DEBUG: RideSettings, default_path %s\n" % self._default_path)
+            path = os.getenv('RIDESETTINGS', 'user')
+            if path == 'user':
+                self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+            elif path.endswith('.cfg') and os.path.exists(path):
+                self._default_path = path
+        # print(f"DEBUG: settings.py RideSettings SETTINGS {self._default_path=}")
         user_path = initialize_settings(self._default_path)
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
-        # print("DEBUG: RideSettings, self._settings_dir %s\n" % self._settings_dir)
+        # print(f"DEBUG: RideSettings, self._settings_dir={self._settings_dir}")
         self.get('install root', os.path.dirname(os.path.dirname(__file__)))
         self.executable = self.get('executable', EXECUTABLE)
         if self.executable != EXECUTABLE:

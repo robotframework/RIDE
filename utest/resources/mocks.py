@@ -74,6 +74,15 @@ auto imports = []
 pythonpath = []
 [General]
 font size = 10
+font face = 'Source Code Pro'
+foreground = '#8FF0A4'
+background = '#A51D2D'
+secondary foreground = '#FFFF00'
+secondary background = '#4A060B'
+background help = '#FFBE6F'
+foreground text = '#613583'
+apply to panels = True
+ui language = 'English'
 '''
 
 
