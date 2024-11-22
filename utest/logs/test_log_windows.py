@@ -61,6 +61,10 @@ class TestLogWindows(unittest.TestCase):
             self._panel.SetSize(200, 400)
             self._panel.close(note)
 
+        myapp.ExitMainLoop()
+        myapp.Destroy()
+        myapp = None
+
     def test_message_log(self):
         result = message_to_string(log[0])
         assert result.strip() == '20230604 20:40:41.415 [INFO]: Found Robot Framework version 6.0.2 from path'

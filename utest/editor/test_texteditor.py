@@ -174,6 +174,7 @@ class TestEditorCommands(unittest.TestCase):
         # wx.CallAfter(wx.Exit)
         self.shared_mem.shm.close()
         self.shared_mem.shm.unlink()
+        self.app.ExitMainLoop()
         self.app.Destroy()
         self.app = None
 
@@ -659,6 +660,7 @@ class TestLanguageFunctions(unittest.TestCase):
         # wx.CallAfter(wx.Exit)
         self.shared_mem.shm.close()
         self.shared_mem.shm.unlink()
+        self.app.ExitMainLoop()
         self.app.Destroy()
         self.app = None
 

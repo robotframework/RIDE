@@ -87,7 +87,7 @@ class _BaseDialogTest(unittest.TestCase):
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(self.app.ExitMainLoop)
+        self.app.ExitMainLoop()
         self.app.Destroy()
         self.app = None
         # app.MainLoop()  # With this here, there is no Segmentation fault
