@@ -285,11 +285,10 @@ class StepController(_BaseController):
                    for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
+        print(f"DEBUG: stepcontrollers.py StepController kw_name_match: item={item} expected={expected}")
         if isinstance(expected, str):
-            return utils.eq(item, expected) or (
-                self._GIVEN_WHEN_THEN_MATCHER.match(item) and
-                utils.eq(
-                    self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
+            return utils.eq(item, expected) or (self._GIVEN_WHEN_THEN_MATCHER.match(item) and
+                                                utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
         return expected.match(item)
 
     def replace_keyword(self, new_name, old_name):
@@ -552,7 +551,8 @@ class StepController(_BaseController):
             next_step = self.parent.step(index + 1)
             next_step.recreate(next_step.as_list())
 
-    def notify_value_changed(self):
+    def notify_value_changed(self, old_name=None):
+        _ = old_name
         self.parent.notify_steps_changed()
 
     def increase_indent(self):

@@ -392,6 +392,11 @@ class RideUserKeywordRemoved(RideUserKeyword):
     data = ['datafile', 'name', 'item']
 
 
+class RideUserKeywordRenamed(RideUserKeyword):
+    """Sent after a user keyword is renamed"""
+    data = ['datafile', 'item', 'old_name']
+
+
 class RideItem(RideDataChanged):
     """Base class for all messages about changes to any data item."""
     data = ['item']

@@ -70,6 +70,8 @@ class _SettingController(ControllerWithParent):
 
     def contains_keyword(self, name):
         istring = isinstance(name, str)
+        print(f"DEBUG: settingcontrollers.py _SettingController contains_keyword: item={self} search="
+              f"{name}")
         matcher = name.match if not istring else lambda i: utils.eq(i, name)
         return self._contains_keyword(matcher)
 

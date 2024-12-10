@@ -102,8 +102,8 @@ class Occurrence(object):
             return self._value, new_name
         return new_name, self._value
 
-    def notify_value_changed(self):
-        self._item.notify_value_changed()
+    def notify_value_changed(self, old_name=None):
+        self._item.notify_value_changed(old_name)
 
 
 class _Command(object):
@@ -319,9 +319,10 @@ class RenameKeywordOccurrences(_ReversibleCommand):
     def _execute(self, context):
         self._observer.notify()
         self._occurrences = self._find_occurrences(context) if self._occurrences is None else self._occurrences
+        print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}")
         self._replace_keywords_in(self._occurrences)
         context.update_namespace()
-        self._notify_values_changed(self._occurrences)
+        self._notify_values_changed(self._occurrences, old_name=self._original_name)
         self._observer.finish()
 
     def _find_occurrences(self, context):
@@ -338,9 +339,9 @@ class RenameKeywordOccurrences(_ReversibleCommand):
             oc.replace_keyword(self._new_name)
             self._observer.notify()
 
-    def _notify_values_changed(self, occurrences):
+    def _notify_values_changed(self, occurrences, old_name=None):
         for oc in occurrences:
-            oc.notify_value_changed()
+            oc.notify_value_changed(old_name)
             self._observer.notify()
 
     def _get_undo_command(self):
@@ -656,6 +657,7 @@ class FindOccurrences(_Command):
         if keyword_name.strip() == '':
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self.normalized_name = normalize_kw_name(keyword_name)
+        print(f"DEBUG: ctlcommands.py FindOccurrences INIT keyword_name={keyword_name}")
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
         self._keyword_regexp = self._create_regexp(keyword_name)
@@ -670,7 +672,7 @@ class FindOccurrences(_Command):
             kw.name = keyword_name
             return EmbeddedArgsHandler(kw).name_regexp
         else:  # Certain kws are not found when with Gherkin
-            name_regexp = fr'^(.*?){re.escape(keyword_name)}$'
+            name_regexp = fr'^(.*?){re.escape(keyword_name)}$'  # DEBUG ([.]?) Consider kws from prefixed resources
             name = re.compile(name_regexp, re.IGNORECASE)
             return name
 
@@ -717,7 +719,9 @@ class FindOccurrences(_Command):
 
     def _find_occurrences_in(self, items):
         from .tablecontrollers import VariableTableController
+        print(f"DEBUG: ctrlcommands _find_occurrences_in NORMALIZED NAME {self.normalized_name}")
         for item in items:
+            print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item}")
             if self._contains_item(item) or (not isinstance(item, VariableTableController)
                                              and (item.contains_keyword(self.normalized_name) or
                                              item.contains_keyword(self.normalized_name.replace(' ', '_')))):
@@ -725,8 +729,7 @@ class FindOccurrences(_Command):
 
     def _contains_item(self, item):
         self._yield_for_other_threads()
-        return item.contains_keyword(
-            self._keyword_regexp or self._keyword_name)
+        return item.contains_keyword(self._keyword_regexp or self._keyword_name)
 
     @staticmethod
     def _yield_for_other_threads():

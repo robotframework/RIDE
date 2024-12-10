@@ -34,7 +34,7 @@ from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideIt
                        RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,
                        RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
                        RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, RideOpenResource,
-                       RideSuiteAdded, RideSelectResource, RideDataFileSet)
+                       RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged)
 from ..controller.ctrlcommands import MoveTo
 from ..pluginapi import Plugin
 from ..action import ActionInfo
@@ -306,6 +306,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def _subscribe_to_messages(self):
         subscriptions = [
             (self._item_changed, RideItem),
+            (self._item_changed, RideItemNameChanged),
             (self._resource_added, RideOpenResource),
             (self._select_resource, RideSelectResource),
             (self._suite_added, RideSuiteAdded),
@@ -734,8 +735,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             return
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self.controller.find_node_with_label(
-            parent_node, utils.normalize(uk.name))
+        node = self.controller.find_node_with_label(parent_node, utils.normalize(uk.name))
+        print(f"DEBUG: treeplugin.py Tree select_user_keyword_node node= {node}")
         if node != self.GetSelection():
             self.SelectItem(node)
 
@@ -1086,6 +1087,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def _item_changed(self, message):
         controller = message.item
         node = self.controller.find_node_by_controller(controller)
+        if hasattr(message, 'old_name'):
+            print(f"DEBUG: treeplugin.py Tree _item_changed RENAMED node={node}, old_name={message.old_name}")
         if node:
             self.SetItemText(node, message.item.name)
 

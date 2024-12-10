@@ -39,6 +39,7 @@ class UsagesDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         self._add_view_components()
         self.usages = usages or UsagesListModel([])
+        print(f"DEBUG: usagesdialog.py UsagesDialog INIT: usages={self.usages} NAME={name}")
         self.usage_list = VirtualList(self, self.usages.headers,
                                       self.usages)
         self.usage_list.SetBackgroundColour(Colour(self.color_secondary_background))
@@ -78,6 +79,9 @@ class UsagesDialog(RIDEDialog):
 class UsagesDialogWithUserKwNavigation(UsagesDialog):
 
     def __init__(self, name, highlight, controller, usages=None):
+        import os
+        print(f"DEBUG: usagesdialog.py UsagesDialogWithUserKwNavigation ENTER name={name},"
+              f" controller_name={controller.name}  usages={usages}")
         self.on_go_to_definition = lambda evt: highlight(controller, name)
         UsagesDialog.__init__(self, name, usages=usages)
 
@@ -152,7 +156,8 @@ class ResourceImportListModel(_UsagesListModel):
     def __init__(self, usages):
         _UsagesListModel.__init__(self, usages)
         self.headers = ['Name', 'Location']
-        self._cannot_rename_item_attr = wx.ListItemAttr()
+        # wxPyDeprecationWarning: Using deprecated class. Use ItemAttr instead
+        self._cannot_rename_item_attr = wx.ItemAttr()  # wx.ListItemAttr()
         self._cannot_rename_item_attr.SetBackgroundColour(wx.Colour(255, 64, 64))
 
     def item_text(self, row, col):

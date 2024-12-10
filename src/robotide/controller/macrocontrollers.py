@@ -43,6 +43,8 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
+        print(f"DEBUG: macrocontrollers.py ItemNameController contains_keyword: item={self._item.name} search="
+              f"{name}")
         if isinstance(name, str):
             return self._item.name == name
         return name.match(self._item.name)
@@ -57,8 +59,8 @@ class ItemNameController(object):
     def rename(self, new_name):
         self._item.rename(new_name)
 
-    def notify_value_changed(self):
-        self._item.notify_name_changed()
+    def notify_value_changed(self, old_name=None):
+        self._item.notify_name_changed(old_name)
 
     @property
     def parent(self):
