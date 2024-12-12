@@ -178,7 +178,7 @@ def _create_desktop_shortcut_linux(frame=None):
     # DEBUG: Add more languages
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
-               "pt": r"Área de Trabalho"}
+               "pt": r"Área de Trabalho", "zh": "Desktop"}
     user = getlogin()
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
