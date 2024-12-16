@@ -93,7 +93,8 @@ class Occurrence(object):
         return isinstance(self._item.parent, ForLoopStepController)
 
     def replace_keyword(self, new_name):
-        # print(f"DEBUG: ctrlcommands.py replace_keyword new_name={new_name}")
+        print(f"DEBUG: ctrlcommands.py Occurrence replace_keyword BEFORE new_name={new_name} value={self._value}"
+              f" self._replaced={self._replaced} item={self._item}")
         self._item.replace_keyword(*self._get_replace_values(new_name))
         self._replaced = not self._replaced
 
@@ -284,8 +285,9 @@ class RenameKeywordOccurrences(_ReversibleCommand):
         self._original_name, self._new_name = self._check_gherkin(new_name,
                                                                   original_name
                                                                   )
-        # print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences ENTER after check_gherkin\n"
-        #      f"self._original_name={self._original_name} self._new_name={self._new_name} ")
+        print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences ENTER after check_gherkin\n"
+              f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
+              f"self._new_name={self._new_name} ")
         self._observer = observer
         self._keyword_info = keyword_info
         self._occurrences = None
@@ -341,6 +343,12 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _notify_values_changed(self, occurrences, old_name=None):
         for oc in occurrences:
+            try:
+                print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
+                      f"oc= {oc.source} {oc.item} {oc.usage} {oc._value}")
+            except AttributeError:
+                print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
+                      f" in AttributeError oc= {oc.item} {oc.usage} {oc._value}")
             oc.notify_value_changed(old_name)
             self._observer.notify()
 
@@ -721,7 +729,7 @@ class FindOccurrences(_Command):
         from .tablecontrollers import VariableTableController
         print(f"DEBUG: ctrlcommands _find_occurrences_in NORMALIZED NAME {self.normalized_name}")
         for item in items:
-            print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item}")
+            # print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item}")
             if self._contains_item(item) or (not isinstance(item, VariableTableController)
                                              and (item.contains_keyword(self.normalized_name) or
                                              item.contains_keyword(self.normalized_name.replace(' ', '_')))):

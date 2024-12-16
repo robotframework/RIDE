@@ -39,6 +39,8 @@ class TestCaseEditor(_RobotTableEditor):
         self._editors.append(self.kweditor)
 
     def _name_changed(self, message):
+        print(f"DEBUG: macroeditors.py TestCaseEditor _name_changed ENTER {message}\n"
+              f" {message.item.name=} {self.controller}")
         if message.item == self.controller:
             self.header.SetLabel(message.item.name)
 

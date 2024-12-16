@@ -43,8 +43,8 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        print(f"DEBUG: macrocontrollers.py ItemNameController contains_keyword: item={self._item.name} search="
-              f"{name}")
+        # print(f"DEBUG: macrocontrollers.py ItemNameController contains_keyword: item={self._item.name} search="
+        #       f"{name}")
         if isinstance(name, str):
             return self._item.name == name
         return name.match(self._item.name)
@@ -60,6 +60,7 @@ class ItemNameController(object):
         self._item.rename(new_name)
 
     def notify_value_changed(self, old_name=None):
+        print(f"DEBUG: macrocontrollers.py notify_value_changed item={self._item.name} old_name={old_name}")
         self._item.notify_name_changed(old_name)
 
     @property
@@ -187,6 +188,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.notify_keyword_removed()
 
     def rename(self, new_name):
+        print(f"DEBUG: macrocontrollers.py WithStepsController rename BEFORE new_name={new_name} old_name={self.data.name}")
         self.data.name = new_name.strip()
         self.mark_dirty()
 
@@ -299,8 +301,10 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.update_namespace()
         self._notify(RideItemSettingsChanged)
 
-    def notify_steps_changed(self):
+    def notify_steps_changed(self, old_name=None):
         self._has_steps_changed = True
+        print(f"DEBUG: macrocontrollers.py WithStepsController notify_steps_changed: ENTER old_name={old_name}"
+              f" {self.parent} {self.source} {self} call self._notify")
         self._notify(RideItemStepsChanged)
 
     def _notify(self, messageclass):

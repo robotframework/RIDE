@@ -57,9 +57,9 @@ class Usages(object):
     def _run(self):
         wx.CallAfter(self._begin_search)
         names = [ self._name ]
-        if self.prefix != '' and '.' not in self._name:
-            names.append(f'{self.prefix}.{self._name}')
-        print(f"DEBUG: UsageRunner.py Usages _run before loop with _find_usages names={names}")
+        # if self.prefix != '' and '.' not in self._name:
+        #     names.append(f'{self.prefix}.{self._name}')
+        # print(f"DEBUG: UsageRunner.py Usages _run before loop with _find_usages names={names}")
         for name in names:  # DEBUG
             for usage in self._find_usages(name):
                 time.sleep(0)  # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
