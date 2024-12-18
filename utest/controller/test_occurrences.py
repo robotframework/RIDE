@@ -432,8 +432,7 @@ class RenameOccurrenceTest(unittest.TestCase):
                            testcase_settings_have_changed=False,
                            name_has_changed=False):
         assert self._steps_have_changed == steps_have_changed
-        assert (self._testcase_settings_have_changed ==
-                      testcase_settings_have_changed)
+        assert self._testcase_settings_have_changed == testcase_settings_have_changed
         assert self._name_has_changed == name_has_changed
 
     def _rename(self, original_name, new_name, source, usage):
@@ -482,12 +481,12 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_steps(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
 
     def test_rename_with_dollar_sign(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME+'$', TEST1_NAME,
                      'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
 
     def test_undo_rename_in_step(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
@@ -501,7 +500,7 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_steps_argument(self):
         self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         assert self.test_ctrl.steps[1].as_list() == ['Run Keyword',
                                                           UNUSED_KEYWORD_NAME]
 
@@ -544,13 +543,13 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_in_user_keywords(self):
         self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME,
                      USERKEYWORD1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
 
     def test_rename_given_prefixed_keywords(self):
         kw = 'BLOdkajasdj'
         self._add_step('Given '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
                          'Given '+UNUSED_KEYWORD_NAME)
 
@@ -558,7 +557,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         kw = 'fjsdklhf37849'
         self._add_step('wHEn   '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
                          'wHEn   '+UNUSED_KEYWORD_NAME)
 
@@ -566,7 +565,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         kw = 'djkfsekrhnbdxcvzo dsjah'
         self._add_step('THen '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
                          'THen '+UNUSED_KEYWORD_NAME)
 
@@ -574,7 +573,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         kw = 'mmxznbfje uiriweyi yr iu fjkdhzxck'
         self._add_step('AND '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
                          'AND '+UNUSED_KEYWORD_NAME)
 
@@ -582,7 +581,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         kw = 'sdlmclkds dslcm ldsm sdclmklm'
         self._add_step('bUt '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
                          'bUt '+UNUSED_KEYWORD_NAME)
 
@@ -590,7 +589,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         kw = 'When I say so'
         self._add_step(kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
-        self._expected_messages(steps_have_changed=True)
+        self._expected_messages(steps_have_changed=True, name_has_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
                          UNUSED_KEYWORD_NAME)
 

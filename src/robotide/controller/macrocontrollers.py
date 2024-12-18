@@ -297,7 +297,8 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         RideUserKeywordRemoved(datafile=self.datafile, name=self.name, item=self).publish()
         self.notify_steps_changed()
 
-    def notify_settings_changed(self):
+    def notify_settings_changed(self, old_name=None):
+        _ = old_name
         self.update_namespace()
         self._notify(RideItemSettingsChanged)
 
