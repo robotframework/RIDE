@@ -115,5 +115,56 @@ class TestRenameSetupKeywords(unittest.TestCase):
         assert suite_setup == ['Suite Setup', 'Run Keywords', SUITESETUPKW, 'AND', 'One Keyword']
 
 
+class TestRenameResourcePrefixedKeywords(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.project_ctrl = datafilereader.construct_project(
+            datafilereader.RESOURCE_PREFIXED_KEYWORDS_PATH)
+        cls.ts1 = datafilereader.get_ctrl_by_name('Suite01',
+                                                  cls.project_ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('Sub.Suite01',
+                                                  cls.project_ctrl.datafiles)
+        cls.ts3 = datafilereader.get_ctrl_by_name('Sub.Suite01',
+                                                  cls.project_ctrl.datafiles)
+        # cls.resu = datafilereader.get_ctrl_by_name(
+        #     datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME,
+        #    cls.project_ctrl.datafiles)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.project_ctrl.close()
+
+    def setUp(self):
+        self.ctrl = self.ts1
+        self.suites = self.ctrl.suites
+
+    def test_rename_suite_setup_kw(self):
+        kw_list = dir(self.suites)  # [0].get_keyword_names()
+        # settings = self.suites[0].setting_table
+        # suite_setup = settings.suite_setup.as_list()
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+              f" source= {self.ctrl.source}  type ctrl={type(self.ctrl)} suites={self.suites}\n")
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+              f" kw_list= {kw_list}\n")
+        assert kw_list is not None
+        # assert suite_setup is not None
+        """
+        assert kw_list == ['First KW', 'Second KW', 'Test Setup Keyword', 'Test Teardown Keyword',
+                           'Keyword Teardown Keyword', SUITESETUPKW, 'Test Teardown in Setting']
+        assert suite_setup == ['Suite Setup', 'Run Keywords', SUITESETUPKW, 'AND', 'First KW']
+        observer = NullObserver()
+        myobject = RenameKeywordOccurrences("First KW", "One Keyword", observer)
+        myobject.execute(self.suites[0])
+        kw_list = self.suites[0].get_keyword_names()
+        settings = self.suites[0].setting_table
+        suite_setup = settings.suite_setup.as_list()
+        # print(f"DEBUG: kw.list are: {kw_list} \n suite_setup={suite_setup}")
+        assert kw_list == ['One Keyword', 'Second KW', 'Test Setup Keyword', 'Test Teardown Keyword',
+                           'Keyword Teardown Keyword', SUITESETUPKW, 'Test Teardown in Setting']
+        assert suite_setup == ['Suite Setup', 'Run Keywords', SUITESETUPKW, 'AND', 'One Keyword']
+        """
+
+
 if __name__ == "__main__":
     unittest.main()

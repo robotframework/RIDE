@@ -68,6 +68,8 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORTS = _makepath('imports')
 
+RESOURCE_PREFIXED_KEYWORDS_PATH = _makepath('TestCases')
+
 PREAMBLE_NO_LANG = _makepath('language', 'preamble_no_lang.robot')
 PREAMBLE_UNKNOWN_LANG = _makepath('language', 'preamble_unknown_lang.robot')
 DUMMY_LANG = _makepath('language', 'dummy')
