@@ -16,6 +16,7 @@ import unittest
 import pytest
 from pytest import MonkeyPatch
 import builtins
+import wx
 
 real_import = builtins.__import__
 
@@ -232,15 +233,21 @@ class TestMain(unittest.TestCase):
 
 class TestMisc(unittest.TestCase):
 
+    def setUp(self):
+        from robotide.application import RIDE
+        self.main_app = RIDE()
+        self.settings = self.main_app.settings
+        self.frame = self.main_app.frame
+        self.main_app.SetExitOnFrameDelete(True)
+
+
     def tearDown(self):
         builtins.__import__ = real_import
+        self.main_app.Destroy()
+        self.main_app = None
 
     def test_get_code(self):
-        import wx
-        from robotide.application import RIDE
-
-        main_app = RIDE()
-        code = main_app._get_language_code()
+        code = self.main_app._get_language_code()
         assert code in (175, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
 
 
