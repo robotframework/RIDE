@@ -76,7 +76,7 @@ jobs:
         submodules: false
     - name: Setup environment
       run: |
-        sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
+        sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
         # sudo dnf downgrade -y mesa* --refresh
         git submodule update --init --recursive
         pip install -r requirements-dev.txt
