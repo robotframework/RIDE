@@ -158,6 +158,7 @@ class MyApp(wx.App):
         self.actions = None
         self.toolbar = None
         self._mgr = None
+        self.SetExitOnFrameDelete(True)
 
     def OnInit(self):  # Overrides wx method
         self.frame = MainFrame()
@@ -211,6 +212,8 @@ class MyApp(wx.App):
     def OnExit(self):  # Overrides wx method
         if hasattr(self, 'file_settings'):
             os.remove(self.file_settings)
+        # self.ExitMainLoop()
+        # self.Destroy()
 
 
 class TestRenameResourcePrefixedKeywords(unittest.TestCase):
@@ -259,15 +262,16 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
 
         self.ts1 = datafilereader.get_ctrl_by_name('Suite01',
                                                   self.app.project.datafiles)
-        self.ts2 = datafilereader.get_ctrl_by_name('Sub.Suite01',
-                                                  self.app.project.datafiles)
-        self.ts3 = datafilereader.get_ctrl_by_name('Sub.Suite01',
+        self.ts3 = datafilereader.get_ctrl_by_name('Suite02',
                                                   self.app.project.datafiles)
         # cls.resu = datafilereader.get_ctrl_by_name(
         #     datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME,
         #    cls.project_ctrl.datafiles)
-        self.ctrl = self.ts1
-        self.suites = self.ctrl.suites
+        self.res00 = datafilereader.get_ctrl_by_name('External Res', self.app.project.datafiles)  # OK
+        self.res01 = datafilereader.get_ctrl_by_name('Res01', self.app.project.datafiles)
+        self.res02 = datafilereader.get_ctrl_by_name('Res02', self.app.project.datafiles)
+        # self.ctrl = self.ts1
+        # self.suites = self.ctrl.suites
         self.app.tree.populate(self.app.project)
 
         for ridx, rdata in enumerate(DATA):
@@ -311,8 +315,8 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         self.plugin.unsubscribe_all()
         PUBLISHER.unsubscribe_all()
         self.app.project.close()
-        wx.CallAfter(self.app.ExitMainLoop)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # wx.CallAfter(self.app.ExitMainLoop)
+        # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
         self.app.Destroy()
         self.app = None
@@ -320,16 +324,158 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
             shutil.rmtree(DATADIR, ignore_errors=True)
 
     def test_rename_suite_setup_kw(self):
-        kw_list = dir(self.suites)  # [0].get_keyword_names()
+        ts_list = []
+        if isinstance(self.ts1, list):
+            for x in self.ts1:
+                ts_list.extend([s for s in x.tests.items])
+        else:
+            ts_list.append(self.ts1.tests.items)  # .get_keyword_names()  # [0].get_keyword_names() (self.suites)
+        res_list = []
+        if isinstance(self.res00, list):
+            for x in self.res00:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" type(x)={type(x)} res_list={self.res00}\n")
+                for y in x.keywords:
+                   res_list.append(y)
+        else:
+            for x in self.res00.keywords:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                  f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                res_list.append(x)
+        if isinstance(self.res01, list):
+            for x in self.res01:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" type(x)={type(x)} res_list={self.res01}\n")
+                for y in x.keywords:
+                    res_list.append(y)
+        else:
+            for x in self.res01.keywords:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                res_list.append(x)
+        if isinstance(self.res02, list):
+            for x in self.res02:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" type(x)={type(x)} res_list={self.res02}\n")
+                for y in x.keywords:
+                    res_list.append(y)
+        else:
+            for x in self.res02.keywords:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                res_list.append(x)
+        if isinstance(self.ts3, list):
+            for x in self.ts3:
+                ts_list.extend([s for s in x.tests.items])
+        else:
+            ts_list.append(self.ts3.tests.items)
         # settings = self.suites[0].setting_table
         # suite_setup = settings.suite_setup.as_list()
+        # print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+        #       f" source= {self.ctrl.source}  type ctrl={type(self.ctrl)} suites={self.suites}\n")
+        """
         print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
-              f" source= {self.ctrl.source}  type ctrl={type(self.ctrl)} suites={self.suites}\n")
+              f" type(kw_list)={type(kw_list)} kw_list= {kw_list}\n")
         print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
-              f" kw_list= {kw_list}\n")
-        assert kw_list is not None
-        wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+              f" type(res_list)={type(res_list)} res_list={res_list}\n")
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+              f" type(ts3_list)={type(ts3_list)} ts3_list={ts3_list}\n")
+        """
+        assert ts_list is not None
+        assert res_list is not None
+        steps = []
+        for k in ts_list + res_list:
+            if hasattr(k, 'steps'):
+                for s in k.steps:
+                    steps.extend(s.as_list())
+            # print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw k is {type(k)}")
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+              f" all steps ={steps[:]}\n")
+        """
+        for test in self.ts1:
+            print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw ts1 ={test.name} "
+                  f"source ={test.source}")
+            for nm in test.tests:
+                print(f"name={nm.name} ")
+        for kw in res_list:
+            print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw resource kw={kw}")
+        """
+        observer = NullObserver()
+        myobject = RenameKeywordOccurrences("keyword2", "kywd2", observer)
+
+        myobject.execute(self.ts1[0])
+        myobject.execute(self.ts1[1])
+        myobject.execute(self.ts3)
+        myobject.execute(self.res00)
+        myobject.execute(self.res01)
+        myobject.execute(self.res02)
+
+        # myobject.execute(self.project_ctrl.setting_table)
+        # After Rename
+        print(f"Result from Rename myobject={myobject}")
+        ts_list = []
+        if isinstance(self.ts1, list):
+            for x in self.ts1:
+                ts_list.extend([s for s in x.tests.items])
+        else:
+            ts_list.append(self.ts1.tests.items)  # .get_keyword_names()  # [0].get_keyword_names() (self.suites)
+        res_list = []
+        if isinstance(self.res00, list):
+            for x in self.res00:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" type(x)={type(x)} res_list={self.res00}\n")
+                for y in x.keywords:
+                    res_list.append(y)
+        else:
+            for x in self.res00.keywords:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                res_list.append(x)
+        if isinstance(self.res01, list):
+            for x in self.res01:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" type(x)={type(x)} res_list={self.res01}\n")
+                for y in x.keywords:
+                    res_list.append(y)
+        else:
+            for x in self.res01.keywords:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                res_list.append(x)
+        if isinstance(self.res02, list):
+            for x in self.res02:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" type(x)={type(x)} res_list={self.res02}\n")
+                for y in x.keywords:
+                    res_list.append(y)
+        else:
+            for x in self.res02.keywords:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+                      f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                res_list.append(x)
+        if isinstance(self.ts3, list):
+            for x in self.ts3:
+                ts_list.extend([s for s in x.tests.items])
+        else:
+            ts_list.append(self.ts3.tests.items)
+        ren_steps = []
+        for k in ts_list + res_list:
+            if hasattr(k, 'steps'):
+                for s in k.steps:
+                    ren_steps.extend(s.as_list())
+            # print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw k is {type(k)}")
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
+              f" all Renamed steps ={ren_steps[:]}\n")
+        assert steps[:] != ren_steps[:]
+        """    
+        for test in self.ts2:
+            print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw ts2 ={test.name} "
+                  f"source ={test.source}")
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw ts3 ={self.ts3.name}"
+              f" source ={self.ts3.source}")
+        """
+        # wx.CallLater(5000, self.app.frame.Destroy)
+        # self.app.MainLoop()
         # assert suite_setup is not None
         """
         assert kw_list == ['First KW', 'Second KW', 'Test Setup Keyword', 'Test Teardown Keyword',

@@ -282,12 +282,10 @@ class RenameKeywordOccurrences(_ReversibleCommand):
     _gherkin_prefix = re.compile('^(Given|When|Then|And|But) ', re.IGNORECASE)
 
     def __init__(self, original_name, new_name, observer, keyword_info=None):
-        self._original_name, self._new_name = self._check_gherkin(new_name,
-                                                                  original_name
-                                                                  )
+        self._original_name, self._new_name = self._check_gherkin(new_name, original_name)
         print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences ENTER after check_gherkin\n"
-              f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
-              f"self._new_name={self._new_name} ")
+            f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
+            f"self._new_name={self._new_name} ")
         self._observer = observer
         self._keyword_info = keyword_info
         self._occurrences = None
