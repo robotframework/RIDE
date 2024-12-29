@@ -31,7 +31,10 @@ class ProgressObserver(object):
         self._progressbar.Pulse()
 
     def finish(self):
-        self._progressbar.Destroy()
+        try:
+            self._progressbar.Destroy()
+        except RuntimeError:
+            pass
         if hasattr(context.LOG, 'report_parsing_errors'):
             context.LOG.report_parsing_errors()
 
@@ -55,5 +58,8 @@ class RenameProgressObserver(ProgressObserver):
 
     def notify(self):
         if time.time() - self._notification_occured > 0.1:
-            self._progressbar.Pulse()
+            try:
+                self._progressbar.Pulse()
+            except RuntimeError:
+                pass
             self._notification_occured = time.time()

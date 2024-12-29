@@ -260,16 +260,8 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         print(f"DEBUG: setUp() dir self.project_ctrl ={dir(self.project_ctrl)}"
               f"\nself.app.project={dir(self.app.project)} ")
 
-        self.ts1 = datafilereader.get_ctrl_by_name('Suite01',
-                                                  self.app.project.datafiles)
-        self.ts3 = datafilereader.get_ctrl_by_name('Suite02',
-                                                  self.app.project.datafiles)
-        # cls.resu = datafilereader.get_ctrl_by_name(
-        #     datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME,
-        #    cls.project_ctrl.datafiles)
-        self.res00 = datafilereader.get_ctrl_by_name('External Res', self.app.project.datafiles)  # OK
-        self.res01 = datafilereader.get_ctrl_by_name('Res01', self.app.project.datafiles)
-        self.res02 = datafilereader.get_ctrl_by_name('Res02', self.app.project.datafiles)
+        self._get_controllers()
+
         # self.ctrl = self.ts1
         # self.suites = self.ctrl.suites
         self.app.tree.populate(self.app.project)
@@ -282,6 +274,13 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
         self.frame.Show()
+
+    def _get_controllers(self):
+        self.ts1 = datafilereader.get_ctrl_by_name('Suite01', self.app.project.datafiles)
+        self.ts3 = datafilereader.get_ctrl_by_name('Suite02', self.app.project.datafiles)
+        self.res00 = datafilereader.get_ctrl_by_name('External Res', self.app.project.datafiles)  # OK
+        self.res01 = datafilereader.get_ctrl_by_name('Res01', self.app.project.datafiles)
+        self.res02 = datafilereader.get_ctrl_by_name('Res02', self.app.project.datafiles)
 
     def _register(self, iclass, eclass):
         self._registered_editors[iclass] = eclass
@@ -412,6 +411,8 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
 
         # myobject.execute(self.project_ctrl.setting_table)
         # After Rename
+        self._get_controllers()
+
         print(f"Result from Rename myobject={myobject}")
         ts_list = []
         if isinstance(self.ts1, list):
