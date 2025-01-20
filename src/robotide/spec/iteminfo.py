@@ -38,6 +38,7 @@ class ItemInfo(object):
         """
         self.name = name
         self.source = source
+        # print(f"DEBUG: iteminfo.py ItemInfo {name=} {source=}")
         if details is not None:
             self.details = details
         self._priority = PRIORITIES.get(self.__class__, PRIORITIES[ItemInfo])

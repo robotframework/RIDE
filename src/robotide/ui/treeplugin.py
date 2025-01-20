@@ -24,6 +24,7 @@ from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
 from ..context import IS_WINDOWS
+from ..controller import ResourceFileController
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed, RideTestSkipped,
                                 RideTestExecutionStarted, RideTestStopped, RideImportSetting, RideExcludesChanged,
                                 RideIncludesChanged, RideOpenSuite, RideNewProject)
@@ -686,7 +687,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         node = self.controller.find_node_by_controller(df)
         if not node:
             raise AssertionError('No node found with controller "%s"' % df)
+        old_name = node.GetText()
+        print(f"DEBUG: treeplugin.py Tree _filename_changed message={message} df={df}"
+              f" node={node} {old_name=} df.display_name={df.display_name}")
         wx.CallAfter(self.SetItemText, node, df.display_name)
+        if isinstance(df, ResourceFileController):
+            RideItemNameChanged(item=node, old_name=old_name, new_name=df.display_name).publish()
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())
@@ -1086,6 +1092,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             handler.on_move_down(event)
 
     def _item_changed(self, message):
+        print(f"DEBUG: treeplugin.py Tree _item_changed ENTER message={message}")
         if isinstance(message, RideItemNameChanged):
             return
         controller = message.item
@@ -1099,25 +1106,31 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _item_renamed(self, message):
         from ..lib.robot.parsing.settings import Resource
+        print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER message={message}")
         if not isinstance(message, RideItemNameChanged):
             return
         controller = message.item
-        print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER controller={controller.display_name}")
-        node = self.controller.find_node_by_controller(controller)
-        if hasattr(controller.datafile, 'setting_table'):
+        node = (self.controller.find_node_by_controller(controller) or
+                self.controller.find_node_with_label(controller, message.old_name))
+        print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER controller={controller}"
+              f" NODE={node}")
+        if hasattr(controller, 'datafile') and hasattr(controller.datafile, 'setting_table'):
             imports = controller.datafile.setting_table.imports
             print(f"DEBUG: treeplugin.py Tree _item_renamed HAS IMPORTS imports={imports}")
             for imp in imports:
-                if isinstance(imp, Resource):
+                if isinstance(imp, Resource) and hasattr(message.item, 'keyword'):
                     print(f"DEBUG: treeplugin.py Tree _item_renamed IMPORT message.item.name={message.item.keyword},"
                           f" old_name={message.old_name} resource name={imp.name}")
                     # print(f"DEBUG: treeplugin.py Tree _item_renamed IMPORT message.item.name={message},"
                     #       f" old_name={message.old_name} import={imp}")
                     self._rename_resource_kw(new_name=message.item.keyword, old_name=message.old_name, resource=imp)
-        # if node and hasattr(message, 'old_name'):
-        #     print(f"DEBUG: treeplugin.py Tree _item_renamed RENAMED node={node}, old_name={message.old_name}")
+        if node and hasattr(message, 'old_name'):
+            print(f"DEBUG: treeplugin.py Tree _item_renamed RENAMED node={node}, old_name={message.old_name}\n"
+                  f"new_name={message.new_name}")
+            # Here we need to rename all resourc prefixed occurrencees
+
         self.Refresh()
-        if node:
+        if node and hasattr(message.item, 'name'):
             self.EnsureVisible(node)
             self.SelectItem(node)
             self.SetItemText(node, message.item.name)

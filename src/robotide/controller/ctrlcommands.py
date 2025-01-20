@@ -347,7 +347,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
                       f"oc= {oc.source} {oc.item} {oc.usage} {oc._value}")
             except AttributeError:
                 print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
-                      f" in AttributeError oc= {oc.item} {oc.usage} {oc._value}")
+                      f" in AttributeError oc= {oc}")
             oc.notify_value_changed(old_name)
             self._observer.notify()
 
@@ -367,7 +367,7 @@ class RenameTest(_ReversibleCommand):
     def _execute(self, context):
         old_name = context.name
         context.test_name.rename(self._new_name)
-        context.test_name._item.notify_name_changed(old_name)
+        context.test_name._item.notify_name_changed(old_name=old_name, new_name=self._new_name)
 
     def _get_undo_command(self):
         return self
@@ -654,21 +654,38 @@ class UpdateVariableName(_Command):
 
 def normalize_kw_name(name):
     name = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', name)
-    return re.sub('([a-z0-9])([A-Z])', r'\1 \2', name).lower().replace('_', ' ')
+    # print(f"DEBUG: ctlcommands.py normalize_kw_name First step keyword_name={name}")
+    name = re.sub('([a-z0-9])([A-Z])', r'\1 \2', name).lower().replace('_', ' ')
+    # print(f"DEBUG: ctlcommands.py normalize_kw_name RETURN keyword_name={name}")
+    return name
 
 
 class FindOccurrences(_Command):
     modifying = False
 
-    def __init__(self, keyword_name, keyword_info=None):
+    def __init__(self, keyword_name, keyword_info=None, prefix=None):
         if keyword_name.strip() == '':
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self.normalized_name = normalize_kw_name(keyword_name)
         print(f"DEBUG: ctlcommands.py FindOccurrences INIT keyword_name={keyword_name}")
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
+        self.normalized_name_res = None
+        if self._keyword_info:
+            self.normalized_name_res = (keyword_name if '.' in keyword_name
+                                        else (self._keyword_info.source.replace('.robot', '').replace('.resource', '')
+                                        +"."+keyword_name))
+            self._keyword_source = self._keyword_info.source
+            # if keyword_name == self.normalized_name_res:
+            #     self.normalized_name_res = None
+        else:
+            self._keyword_source = None
+        self.prefix = prefix
+        if self.prefix and not self.normalized_name_res:
+            self.normalized_name_res = f"{self.prefix}.{self._keyword_name}"
+        print(f"DEBUG: ctlcommands.py FindOccurrences INIT normalized_name_res={self.normalized_name_res}"
+              f"\nSOURCE={self._keyword_source} PREFIX={self.prefix}")
         self._keyword_regexp = self._create_regexp(keyword_name)
-        self._keyword_source = None
 
     @staticmethod
     def _create_regexp(keyword_name):
@@ -684,9 +701,16 @@ class FindOccurrences(_Command):
             return name
 
     def execute(self, context):
+        print(f"DEBUG: ctrlcommands FindOccurrences EXECUTE context={context}")
         self._keyword_source = \
             self._keyword_info and self._keyword_info.source or \
             self._find_keyword_source(context.datafile_controller)
+        if not self.normalized_name_res:
+            self.normalized_name_res = (self._keyword_name if '.' in self._keyword_name
+                                        else (self._keyword_source.replace('.robot', '').replace('.resource', '')
+                                        +"."+self._keyword_name))
+        if self._keyword_name == self.normalized_name_res and '.' in self._keyword_name:
+            self._keyword_name = self._keyword_name.split('.')[-1]
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
@@ -710,11 +734,13 @@ class FindOccurrences(_Command):
                 yield item
         for kw_items in (self._items_from_keyword(kw) for kw in df.keywords):
             for item in kw_items:
+                # print(f"DEBUG: ctrlcommands FindOccurrences _items_from_datafile  kw_items yield {item}"
+                #      f"\nself._keyword_source = {self._keyword_source}")
                 yield item
 
     def _items_from_keyword(self, kw):
         return chain([kw.keyword_name] if kw.source == self._keyword_source
-                     else [], kw.steps, [kw.teardown] if kw.teardown else [])
+                     else [], kw.steps, [kw.setup] if kw.setup else [], [kw.teardown] if kw.teardown else [])
 
     @staticmethod
     def _items_from_test(test):
@@ -722,17 +748,58 @@ class FindOccurrences(_Command):
 
     def _find_keyword_source(self, datafile_controller):
         item_info = datafile_controller.keyword_info(None, self._keyword_name)
+        print(f"DEBUG: ctrlcommands _find_keyword_source datafile_controller={datafile_controller}"
+              f"item_info={item_info}")
         return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):
+        # print(f"DEBUG: ctrlcommands _find_occurrences_in ENTER normalized_name={self.normalized_name} WITH resource"
+        #      f" {self.normalized_name_res} PREFIX={self.prefix}\n"
+        #      f"LIST OF ITEMS={items}")
+        if not self._keyword_source.startswith(self.prefix):
+            print(f"DEBUG: ctrlcommands FindOccurrences _find_occurrences_in SKIP SEARCH"
+                  f" self._keyword_source={self._keyword_source}\n"
+                  f"prefix={self.prefix}")
+            yield None
+        else:
+            for item in items:
+                # print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item}")
+                if (self.normalized_name_res and (self.normalized_name_res.startswith(self.prefix)
+                        and item.contains_keyword(self.normalized_name_res)
+                        or item.contains_keyword(self._keyword_name))):
+                    # This block is active when finding from a cell with resource prefix
+                    print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item}  ADD TO OCCURRENCES: FOUND "
+                          f"{self.normalized_name_res}")
+                    yield Occurrence(item, self._keyword_name)
+                elif self._contains_exact_item(item):
+                    # print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item} NAME={self._keyword_name}"
+                    #       f" source={self._keyword_source}\n"
+                    #       f"self.normalized_name_res={self.normalized_name_res} parent={item.parent}\n"
+                    #       f" PREFIX={self.prefix}")
+                    # print(f"DEBUG: ctrlcommands _find_occurrences_in searching item type = {type(item)}"
+                    #       f" kwsource={self._keyword_source}")
+                    # if self._keyword_source.startswith(self.prefix):
+                    print(f"DEBUG: ctrlcommands _find_occurrences_in searching ADD TO OCCURRENCES: {self._keyword_name}")
+                    yield Occurrence(item, self._keyword_name)
+
+    def _contains_exact_item(self, item):
         from .tablecontrollers import VariableTableController
-        print(f"DEBUG: ctrlcommands _find_occurrences_in NORMALIZED NAME {self.normalized_name}")
-        for item in items:
-            # print(f"DEBUG: ctrlcommands _find_occurrences_in searching item={item}")
-            if self._contains_item(item) or (not isinstance(item, VariableTableController)
-                                             and (item.contains_keyword(self.normalized_name) or
-                                             item.contains_keyword(self.normalized_name.replace(' ', '_')))):
-                yield Occurrence(item, self._keyword_name)
+        match_name = self._contains_item(item)
+        if match_name and isinstance(match_name, re.Match) and '.' in match_name.string:
+                # print(f"DEBUG: ctrlcommands _find_occurrences_in _contains_exact_item PREFIXED Name={match_name}"
+                #       f"\n groups={match_name.groups()} string={match_name.string}"
+                #       f" RETURNS {match_name.string.startswith(self.prefix)}")
+                return match_name.string.startswith(self.prefix)  # Avoid false positive for res prefixed
+        elif match_name or (not isinstance(item, VariableTableController) and
+                          (item.contains_keyword(self.normalized_name) or
+                           item.contains_keyword(self.normalized_name.replace(' ', '_')))):
+            if match_name and isinstance(match_name, re.Match):
+                print(f"DEBUG: ctrlcommands _find_occurrences_in _contains_exact_item Matching Name={match_name}")
+            else:
+                 print(f"DEBUG: ctrlcommands _find_occurrences_in _contains_exact_item  item={item}"
+                       f"self.normalized_name={self.normalized_name} OR "
+                       f"underscore={self.normalized_name.replace(' ', '_')}")
+            return True
 
     def _contains_item(self, item):
         self._yield_for_other_threads()

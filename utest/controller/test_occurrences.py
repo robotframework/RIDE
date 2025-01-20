@@ -167,11 +167,12 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
     """
     # TODO This test fails in Python 3 because of order or returned item
     @unittest.skip("Sometimes FAILS with Python 3")
+    """
     def test_ignores_definition_in_base_resource(self):
         self.assert_occurrences(self.resu, 'Keyword In Both Resources', 1)
         occ = _first_occurrence(self.resu, 'Keyword In Both Resources')
-        assert_equal(occ.item.parent.source, 'inner_resource.robot')
-    """
+        assert occ.item.parent.source == 'testdata_resource.robot'  # was 'inner_resource.robot'
+
 
     def test_rename_resu_occurrence_in_case_of_double_definition(self):
         old_name = 'Keyword In Both Resources'

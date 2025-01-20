@@ -282,8 +282,15 @@ class StepController(_BaseController):
                    for item in self.as_list())
 
     def contains_keyword(self, name):
+        for item in [self.keyword or ''] + self.args:
+            matching = self._kw_name_match(item, name)
+            if matching is not None:
+                return matching
+        return False
+        """    
         return any(self._kw_name_match(item, name)
                    for item in [self.keyword or ''] + self.args)
+        """
 
     def _kw_name_match(self, item, expected):
         if isinstance(expected, str):
@@ -566,7 +573,7 @@ class StepController(_BaseController):
         print(f"DEBUG: stepcontrollers.py StepController notify_value_changed: ENTER old_name={old_name}"
               f" parent={self.parent.name}  calling self.parent.notify_steps_changed()")
         if old_name is not None:
-            RideItemNameChanged(item=self, old_name=old_name).publish()
+            RideItemNameChanged(item=self, old_name=old_name, new_name=None).publish()
         self.parent.notify_steps_changed(old_name)
 
     def increase_indent(self):

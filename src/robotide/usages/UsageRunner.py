@@ -20,23 +20,33 @@ import wx
 
 from robotide.usages import commands
 from . import usagesdialog
+from ..controller.filecontrollers import ResourceFileController
 
 
 class Usages(object):
 
     def __init__(self, controller, highlight, name=None, kw_info=None):
         self._name = name or controller.name
-        self._kw_info = kw_info
         self._controller = controller
         self._highlight = highlight
+        if kw_info is None and not isinstance(controller, ResourceFileController):
+            self._kw_info = self._controller.get_keyword_info(name)
+        else:
+            self._kw_info = kw_info
         # self.prefix = (os.path.basename(self._controller.data.source)
         #                .replace('robot', '').replace('resource', '')).split('.')
+        if self._kw_info:
+            self.prefix = self._kw_info.source.replace('robot', '').replace('resource', '').split('.')[0]
+        else:
+            self.prefix = os.path.basename(controller.source).split('.')[0]
+        """ DEBUG
         self.prefix = os.path.basename(self._controller.data.source).split('.')
         if len(self.prefix) == 2 and self.prefix[-1] in ['resource', 'robot']:
             self.prefix = self.prefix[0]
         else:
             self.prefix = ''
-        print(f"DEBUG: UsageRunner.py Usages INIT prefix={self.prefix}")
+        """
+        print(f"DEBUG: UsageRunner.py Usages INIT prefix={self.prefix} {self._kw_info=}")
         self._dlg = self._usages_dialog()
         self._worker = Thread(target=self._run)
         self._dialog_closed = False
@@ -45,8 +55,9 @@ class Usages(object):
         print(f"DEBUG: UsageRunner.py Usages _usages_dialog ENTER name={self._name},"
               f" controller_name={self._controller.name}  prefix={self.prefix}")
         if self._controller.name == self._name:
-            return usagesdialog.UsagesDialogWithUserKwNavigation(self._name, self._highlight, self._controller)
-        return usagesdialog.UsagesDialog(self._name)
+            return usagesdialog.UsagesDialogWithUserKwNavigation(self._name, self._highlight, self._controller,
+                                                                 prefix=self.prefix)
+        return usagesdialog.UsagesDialog(self._name, prefix=self.prefix)
 
     def show(self):
         self._dlg.add_selection_listener(self._highlight)
@@ -70,7 +81,7 @@ class Usages(object):
 
     def _find_usages(self, name):
         print(f"DEBUG: UsageRunner.py Usages _find_usages ENTER name={name} kw_info={self._kw_info}")
-        return self._controller.execute(commands.FindUsages(name, self._kw_info))
+        return self._controller.execute(commands.FindUsages(name, self._kw_info, prefix=self.prefix))
 
     def _begin_search(self):
         if not self._dialog_closed:

@@ -409,7 +409,7 @@ class RideItemStepsChanged(RideItem):
 
 class RideItemNameChanged(RideItem):
     """"""
-    data = ['item', 'old_name']
+    data = ['item', 'old_name', 'new_name']
 
 
 class RideItemSettingsChanged(RideItem):

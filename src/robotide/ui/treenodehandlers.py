@@ -748,6 +748,8 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         self._tree.add_keyword(parent_node, copied)
 
     def _create_rename_command(self, new_name):
+        print(f"DEBUG: treenodehandlers.py UserKeywodHandler _create_rename_command controller.name={self.controller.name}"
+              f", new_name={new_name} info={self.controller.info}")
         return ctrlcommands.RenameKeywordOccurrences(
             self.controller.name, new_name,
             RenameProgressObserver(self._tree.GetParent()),

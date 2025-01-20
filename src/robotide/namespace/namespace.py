@@ -203,8 +203,6 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
-        # print(f"DEBUG: namespace.py Namespace find_user_keyword datafile={datafile} "
-        #       f" kw_name={kw_name} keyword={kw}")
         return kw if isinstance(kw, UserKeywordInfo) else None
 
     def is_user_keyword(self, datafile, kw_name):
@@ -229,13 +227,14 @@ class Namespace(object):
         casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in UPPERCASE_KWS)
         kwds = self._retriever.get_keywords_cached(datafile, self._context_factory, caseless=not casesensitive)
         # print(f"DEBUG: namespace.py Namespace find_keyword will GET kw_name=={kw_name} casesensitive={casesensitive}")
-        return kwds.get(kw_name)
+        return kwds.get(kw_name, origin=datafile)
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
-        # print(f"DEBUG: namespace.py Namespace  keyword_details ENTER will look for name=={name}")
+        # print(f"DEBUG: namespace.py Namespace  keyword_details ENTER will look for name=={name} "
+        #       f"in datafile={datafile.source}")
         kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
 
@@ -548,7 +547,9 @@ class DatafileRetriever(object):
             words.extend(self.default_kws)
             values = _Keywords(words, caseless=caseless)
             self.keyword_cache.put(datafile.source, values)
-        # print(f"DEBUG: namespace.py DatafileRetrieve get_keywords_cached returning cached keywords values=={values}")
+        # print(f"DEBUG: namespace.py DatafileRetrieve get_keywords_cached returning cached keywords values=={values}"
+        #       f"\ndatafile={datafile.source}")
+        # print(f"DEBUG: namespace.py DatafileRetrieve get_keywords_cached datafile = {datafile.source}")
         return values
 
     def _get_user_keywords_from(self, datafile):
@@ -642,8 +643,11 @@ class _Keywords(object):
         except TypeError:
             pass
 
-    def get(self, kw_name):
+    def get(self, kw_name, origin=None):
         if kw_name in self.keywords:
+            filename = os.path.basename(origin.source)
+            # print(f"DEBUG: namespace.py _Keywords get keywords in loop FOUND {kw_name} @ {filename}"
+            #       f" RETURNING {self.keywords[kw_name]} {self.keywords[kw_name].source == filename}")
             return self.keywords[kw_name]
         # print(f"DEBUG: namespace.py _Keywords get keywords {self.keywords}")
         bdd_name = self._get_bdd_name(kw_name)

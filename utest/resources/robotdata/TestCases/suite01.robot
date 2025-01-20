@@ -21,3 +21,4 @@ case03
     res02.keyword3
     res01.keyword3
     Run Keyword    external_res.keyword3
+    external_res.keyword1    teste

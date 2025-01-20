@@ -16,7 +16,10 @@
 import os
 import sys
 import unittest
-from robotide.controller.ctrlcommands import RenameKeywordOccurrences, NullObserver
+from robotide.controller.ctrlcommands import (Undo, FindOccurrences, FindVariableOccurrences, NullObserver,
+                                              RenameKeywordOccurrences, ChangeCellValue)
+from robotide.controller.macrocontrollers import KeywordNameController
+
 from .base_command_test import TestCaseCommandTest
 from utest.resources import datafilereader
 
@@ -216,6 +219,15 @@ class MyApp(wx.App):
         # self.Destroy()
 
 
+def _first_occurrence(test_ctrl, kw_name):
+    occurrences = test_ctrl.execute(FindOccurrences(kw_name))
+    if not occurrences:
+        raise AssertionError('No occurrences found for "%s"' % kw_name)
+    return next(occurrences)
+    # see https://stackoverflow.com/questions/21622193/
+    # python-3-2-coroutine-attributeerror-generator-object-has-no-attribute-next
+
+
 class TestRenameResourcePrefixedKeywords(unittest.TestCase):
 
     def setUp(self):
@@ -254,8 +266,11 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         # self.editor = self.plugin.get_editor(TestCase)
         # Moved to test
         # self.plugin.enable()
-        self.project_ctrl = self.app.project.load_datafile(datafilereader.RESOURCE_PREFIXED_KEYWORDS_PATH,
-                                                           MessageRecordingLoadObserver())
+        # self.project_ctrl = self.app.project.load_datafile(datafilereader.RESOURCE_PREFIXED_KEYWORDS_PATH,
+        #                                                    MessageRecordingLoadObserver())
+        self.app.project.load_datafile(datafilereader.RESOURCE_PREFIXED_KEYWORDS_PATH, MessageRecordingLoadObserver())
+        testcase = TestDataDirectory(source=datafilereader.RESOURCE_PREFIXED_KEYWORDS_PATH, language=['English'])
+        self.project_ctrl = TestDataDirectoryController(testcase, self.app.project)
         # self.app.tree.set_editor(self.plugin._editor_component)
         print(f"DEBUG: setUp() dir self.project_ctrl ={dir(self.project_ctrl)}"
               f"\nself.app.project={dir(self.app.project)} ")
@@ -323,6 +338,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
             shutil.rmtree(DATADIR, ignore_errors=True)
 
     def test_rename_suite_setup_kw(self):
+        """
         ts_list = []
         if isinstance(self.ts1, list):
             for x in self.ts1:
@@ -335,11 +351,11 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
                 print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
                       f" type(x)={type(x)} res_list={self.res00}\n")
                 for y in x.keywords:
-                   res_list.append(y)
+                    res_list.append(y)
         else:
             for x in self.res00.keywords:
                 print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
-                  f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
+                      f" NOT LIST BRANCH type(x)={type(x)} res_list={x.steps}\n")
                 res_list.append(x)
         if isinstance(self.res01, list):
             for x in self.res01:
@@ -368,6 +384,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
                 ts_list.extend([s for s in x.tests.items])
         else:
             ts_list.append(self.ts3.tests.items)
+        """
         # settings = self.suites[0].setting_table
         # suite_setup = settings.suite_setup.as_list()
         # print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
@@ -380,6 +397,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
               f" type(ts3_list)={type(ts3_list)} ts3_list={ts3_list}\n")
         """
+        """
         assert ts_list is not None
         assert res_list is not None
         steps = []
@@ -391,6 +409,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw"
               f" all steps ={steps[:]}\n")
         """
+        """
         for test in self.ts1:
             print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw ts1 ={test.name} "
                   f"source ={test.source}")
@@ -399,8 +418,47 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         for kw in res_list:
             print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw resource kw={kw}")
         """
+        occ_list = []
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw controller={self.project_ctrl.datafiles}")
+        for obj in self.project_ctrl.datafiles:
+            print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw retrieve_test_controllers"
+                  f" obj={obj.display_name} source={obj.source} type={type(obj)}")
+            occurrences = obj.execute(FindOccurrences("keyword2"))
+            # print(occurrences)
+            occ_list.extend(occurrences)
+
+        print(f"Before Rename occ_list={occ_list}\n"
+              f" len={len(occ_list)}")
+        # for occ in occ_list:
+        #    print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw FindOccurrences occ={occ}")
+            #      f" {occ.item}")
+
         observer = NullObserver()
         myobject = RenameKeywordOccurrences("keyword2", "kywd2", observer)
+        print(f"Result from Rename myobject={myobject}")  # self.project_ctrl.datafiles: self.app.project.datafiles
+        for obj in self.app.project.datafiles:
+            myobject.execute(obj)
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords AFTER RENAME\n"
+              f"is_dirty? {self.app.project.is_dirty()}")
+
+        rocc_list = []
+        for obj in self.project_ctrl.datafiles:
+            occurrences = obj.execute(FindOccurrences("keyword2"))
+            rocc_list.extend(occurrences)
+        print(f"After Result from Rename rocc_list={rocc_list} len={len(rocc_list)}")
+        for occ in rocc_list:
+            print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw FindOccurrences occ={occ}")
+
+        """
+        occurrences = self.project_ctrl.execute(FindOccurrences("keyword2"))
+        occ = _first_occurrence(self.project_ctrl, 'keyword2')
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw Called _first_occurrence_first_occurrence"
+        3      f" occ={occ.item}")
+        # assert occ.item.parent.source == 'testdata_resource.robot'
+        print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw Called FindOccurrences occurrences={occurrences}")
+        for occ in occurrences:
+            print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw FindOccurrences occ={occ}"
+                  f" {occ.source}")
 
         myobject.execute(self.ts1[0])
         myobject.execute(self.ts1[1])
@@ -408,7 +466,9 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         myobject.execute(self.res00)
         myobject.execute(self.res01)
         myobject.execute(self.res02)
+        """
 
+        exit(0)
         # myobject.execute(self.project_ctrl.setting_table)
         # After Rename
         self._get_controllers()

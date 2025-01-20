@@ -61,7 +61,7 @@ class ItemNameController(object):
 
     def notify_value_changed(self, old_name=None):
         print(f"DEBUG: macrocontrollers.py notify_value_changed item={self._item.name} old_name={old_name}")
-        self._item.notify_name_changed(old_name)
+        self._item.notify_name_changed(old_name=old_name, new_name=self._item.name)
 
     @property
     def parent(self):
@@ -287,10 +287,10 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def validate_name(self, name):
         return self._parent.validate_name(name, self)
 
-    def notify_name_changed(self, old_name=None):
+    def notify_name_changed(self, old_name=None, new_name=None):
         self.update_namespace()
         self.mark_dirty()
-        RideItemNameChanged(item=self, old_name=old_name).publish()
+        RideItemNameChanged(item=self, old_name=old_name, new_name=new_name).publish()
 
     def notify_keyword_removed(self):
         self.update_namespace()

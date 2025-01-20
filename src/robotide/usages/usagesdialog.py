@@ -26,7 +26,7 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 class UsagesDialog(RIDEDialog):
 
-    def __init__(self, name, usages=None):
+    def __init__(self, name, usages=None, prefix=None):
         self._dots = None
         self._name = name
         self._selection_listeners = []
@@ -39,9 +39,8 @@ class UsagesDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         self._add_view_components()
         self.usages = usages or UsagesListModel([])
-        print(f"DEBUG: usagesdialog.py UsagesDialog INIT: usages={self.usages} NAME={name}")
-        self.usage_list = VirtualList(self, self.usages.headers,
-                                      self.usages)
+        print(f"DEBUG: usagesdialog.py UsagesDialog INIT: usages={self.usages} NAME={name} prefix={prefix}")
+        self.usage_list = VirtualList(self, self.usages.headers, self.usages)
         self.usage_list.SetBackgroundColour(Colour(self.color_secondary_background))
         self.usage_list.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.usage_list.add_selection_listener(self._usage_selected)
@@ -78,12 +77,17 @@ class UsagesDialog(RIDEDialog):
 
 class UsagesDialogWithUserKwNavigation(UsagesDialog):
 
-    def __init__(self, name, highlight, controller, usages=None):
+    def __init__(self, name, highlight, controller, usages=None, prefix=None):
+        """
         import os
+        if not prefix:
+            prefix = os.path.basename(controller.source).split('.')[0]
+        """
         print(f"DEBUG: usagesdialog.py UsagesDialogWithUserKwNavigation ENTER name={name},"
-              f" controller_name={controller.name}  usages={usages}")
+              f" controller_name={controller.name}  usages={usages}"
+              f" source={controller.source} prefix={prefix}")
         self.on_go_to_definition = lambda evt: highlight(controller, name)
-        UsagesDialog.__init__(self, name, usages=usages)
+        UsagesDialog.__init__(self, name, usages=usages, prefix=prefix)
 
     def _add_view_components(self):
         button = ButtonWithHandler(self, _('Go to definition'), mk_handler='Go to definition',
