@@ -423,7 +423,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         for obj in self.project_ctrl.datafiles:
             print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw retrieve_test_controllers"
                   f" obj={obj.display_name} source={obj.source} type={type(obj)}")
-            occurrences = obj.execute(FindOccurrences("keyword2"))
+            occurrences = obj.execute(FindOccurrences("keyword1", prefix="res02"))
             # print(occurrences)
             occ_list.extend(occurrences)
 
@@ -434,7 +434,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
             #      f" {occ.item}")
 
         observer = NullObserver()
-        myobject = RenameKeywordOccurrences("keyword2", "kywd2", observer)
+        myobject = RenameKeywordOccurrences("keyword1", "kywd1", observer)
         print(f"Result from Rename myobject={myobject}")  # self.project_ctrl.datafiles: self.app.project.datafiles
         for obj in self.app.project.datafiles:
             myobject.execute(obj)
@@ -443,7 +443,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
 
         rocc_list = []
         for obj in self.project_ctrl.datafiles:
-            occurrences = obj.execute(FindOccurrences("keyword2"))
+            occurrences = obj.execute(FindOccurrences("keyword1", prefix="res02"))
             rocc_list.extend(occurrences)
         print(f"After Result from Rename rocc_list={rocc_list} len={len(rocc_list)}")
         for occ in rocc_list:
@@ -468,7 +468,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         myobject.execute(self.res02)
         """
 
-        return 
+        return
         # myobject.execute(self.project_ctrl.setting_table)
         # After Rename
         self._get_controllers()

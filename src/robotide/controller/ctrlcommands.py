@@ -319,8 +319,8 @@ class RenameKeywordOccurrences(_ReversibleCommand):
     def _execute(self, context):
         self._observer.notify()
         self._occurrences = self._find_occurrences(context) if self._occurrences is None else self._occurrences
-        print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}\n"
-              f"CONTEXT:{context}")
+        # print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}\n"
+        #       f"CONTEXT:{context}")
         self._replace_keywords_in(self._occurrences)
         context.update_namespace()
         self._notify_values_changed(self._occurrences, old_name=self._original_name)
@@ -701,7 +701,7 @@ class FindOccurrences(_Command):
             return name
 
     def execute(self, context):
-        print(f"DEBUG: ctrlcommands FindOccurrences EXECUTE context={context}")
+        # print(f"DEBUG: ctrlcommands FindOccurrences EXECUTE context={context}")
         self._keyword_source = \
             self._keyword_info and self._keyword_info.source or \
             self._find_keyword_source(context.datafile_controller)

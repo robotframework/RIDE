@@ -22,14 +22,14 @@ class FindUsages(FindOccurrences):
 
     def execute(self, context):
         from ..controller.macrocontrollers import KeywordNameController
-        print(f"DEBUG: usages/commands.py FindUsages execute context={context}")
+        # print(f"DEBUG: usages/commands.py FindUsages execute context={context}")
         prev = None
         for occ in FindOccurrences.execute(self, context):
-            if hasattr(occ, 'item'):
-                print(f"DEBUG: usages/commands.py FindUsages execute in loop occ={occ.item}")
-            else:
-                print(f"DEBUG: usages/commands.py FindUsages execute in loop NOT occ.item occ={occ}")
-                continue
+            # if hasattr(occ, 'item'):
+            #     print(f"DEBUG: usages/commands.py FindUsages execute in loop occ={occ.item}")
+            # else:
+            #     print(f"DEBUG: usages/commands.py FindUsages execute in loop NOT occ.item occ={occ}")
+            #     continue
             if hasattr(occ, 'item') and isinstance(occ.item, KeywordNameController):
                 continue
             if prev == occ:

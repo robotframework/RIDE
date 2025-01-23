@@ -39,7 +39,7 @@ class UsagesDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         self._add_view_components()
         self.usages = usages or UsagesListModel([])
-        print(f"DEBUG: usagesdialog.py UsagesDialog INIT: usages={self.usages} NAME={name} prefix={prefix}")
+        # print(f"DEBUG: usagesdialog.py UsagesDialog INIT: usages={self.usages} NAME={name} prefix={prefix}")
         self.usage_list = VirtualList(self, self.usages.headers, self.usages)
         self.usage_list.SetBackgroundColour(Colour(self.color_secondary_background))
         self.usage_list.SetForegroundColour(Colour(self.color_secondary_foreground))
@@ -83,9 +83,9 @@ class UsagesDialogWithUserKwNavigation(UsagesDialog):
         if not prefix:
             prefix = os.path.basename(controller.source).split('.')[0]
         """
-        print(f"DEBUG: usagesdialog.py UsagesDialogWithUserKwNavigation ENTER name={name},"
-              f" controller_name={controller.name}  usages={usages}"
-              f" source={controller.source} prefix={prefix}")
+        # print(f"DEBUG: usagesdialog.py UsagesDialogWithUserKwNavigation ENTER name={name},"
+        #       f" controller_name={controller.name}  usages={usages}"
+        #       f" source={controller.source} prefix={prefix}")
         self.on_go_to_definition = lambda evt: highlight(controller, name)
         UsagesDialog.__init__(self, name, usages=usages, prefix=prefix)
 
