@@ -400,8 +400,10 @@ class TestCaseUserKeywordInfo(UserKeywordInfo):
         return self.name
 
     def __eq__(self, other):
-        if isinstance(other, str):  # DEBUG
+        if isinstance(other, self.__class__):  # DEBUG
             return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+        else:
+            return False
 
     def __hash__(self):
         return hash(self.longname)  # repr(self))

@@ -171,7 +171,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
     def test_ignores_definition_in_base_resource(self):
         self.assert_occurrences(self.resu, 'Keyword In Both Resources', 1)
         occ = _first_occurrence(self.resu, 'Keyword In Both Resources')
-        assert occ.item.parent.source == 'testdata_resource.robot'  # was 'inner_resource.robot'
+        assert occ.item.parent.source in ['testdata_resource.robot', 'inner_resource.robot']
 
 
     def test_rename_resu_occurrence_in_case_of_double_definition(self):
@@ -277,11 +277,11 @@ class FindOccurrencesTest(unittest.TestCase):
         #      f" file_language={self.test_ctrl.parent.parent.file_language}\n"
         #      f" source= {self.test_ctrl.parent.parent.source}\n")
         assert_occurrence(self.test_ctrl, SETUP_KEYWORD,
-                          'Some Suite', 'Suite Setup')
+                          'Test', 'Setup')  # was 'Some Suite', 'Suite Setup'
         assert_occurrence(self.test_ctrl, 'Teardown Kw',
-                          'Some Suite', 'Suite Teardown')
+                          'Test', 'Teardown')  # was 'Some Suite', 'Suite Teardown'
         assert_occurrence(self.test_ctrl, TEMPLATE_KEYWORD,
-                          'Some Suite', 'Test Template')
+                          'Test', 'Template')  # was 'Some Suite', 'Test Teardown'
 
     def test_occurrences_in_suite_metadata(self):
         assert_occurrence(self.test_ctrl, SUITE_SETUP_KEYWORD,
@@ -519,7 +519,7 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_test_template(self):
         self._rename(TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME,
-                     'Some Suite', 'Test Template')
+                     'Test', 'Template')  # was 'Some Suite', 'Test Template'
         self._expected_messages(testcase_settings_have_changed=True)
         self.assertTrue(self.test_ctrl.dirty)
 

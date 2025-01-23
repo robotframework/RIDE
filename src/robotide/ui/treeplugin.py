@@ -24,7 +24,6 @@ from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
 from ..context import IS_WINDOWS
-from ..controller import ResourceFileController
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed, RideTestSkipped,
                                 RideTestExecutionStarted, RideTestStopped, RideImportSetting, RideExcludesChanged,
                                 RideIncludesChanged, RideOpenSuite, RideNewProject)
@@ -683,6 +682,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         wx.CallAfter(self._refresh_datafile_when_file_set, message.item)
 
     def _filename_changed(self, message):
+        from ..controller import ResourceFileController
         df = message.datafile
         node = self.controller.find_node_by_controller(df)
         if not node:
@@ -726,11 +726,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         Controller can be any of the controllers that are represented in the
         tree."""
         parent_node = self._get_datafile_node(controller.datafile)
-        print(f"DEBUG: treeplugin.py Tree select_node_by_data parent_node={parent_node}")
+        # print(f"DEBUG: treeplugin.py Tree select_node_by_data parent_node={parent_node}")
         if not parent_node:
             return None
-        if not self.IsExpanded(parent_node):
-            self._expand_and_render_children(parent_node)
+        # if not self.IsExpanded(parent_node):
+        self._expand_and_render_children(parent_node)
         node = self.controller.find_node_by_controller(controller)
         if node and node != self.GetSelection():
             self.SelectItem(node)
@@ -748,6 +748,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.SelectItem(node)
 
     def _get_datafile_node(self, datafile):
+        # print(f"DEBUG: treeplugin.py Tree _get_datafile_node ENTER dataffile= {datafile}")
         for node in self.datafile_nodes:
             item = self.controller.get_handler(node).item
             if item == datafile:  # This only works before editing a resource item because the obj id changes

@@ -20,12 +20,12 @@ import wx
 
 from robotide.usages import commands
 from . import usagesdialog
-from ..controller.filecontrollers import ResourceFileController
 
 
 class Usages(object):
 
     def __init__(self, controller, highlight, name=None, kw_info=None):
+        from ..controller.filecontrollers import ResourceFileController
         self._name = name or controller.name
         self._controller = controller
         self._highlight = highlight

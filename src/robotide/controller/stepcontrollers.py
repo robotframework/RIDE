@@ -297,10 +297,10 @@ class StepController(_BaseController):
             return utils.eq(item, expected) or (self._GIVEN_WHEN_THEN_MATCHER.match(item) and
                                                 utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
         matcher = expected.match(item)
-        if matcher:
-            old_prefix = matcher.group(1)
-            print(f"DEBUG: stepcontrollers.py StepController kw_name_match: RE expected={expected}"
-                  f" matcher={matcher} old_prefix={old_prefix}")
+        # if matcher:
+        #     old_prefix = matcher.group(1)
+        #     print(f"DEBUG: stepcontrollers.py StepController kw_name_match: RE expected={expected}"
+        #           f" matcher={matcher} old_prefix={old_prefix}")
         return matcher
 
     def replace_keyword(self, new_name, old_name):

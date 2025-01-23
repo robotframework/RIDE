@@ -645,7 +645,7 @@ class _Keywords(object):
 
     def get(self, kw_name, origin=None):
         if kw_name in self.keywords:
-            filename = os.path.basename(origin.source)
+            # filename = os.path.basename(origin.source)
             # print(f"DEBUG: namespace.py _Keywords get keywords in loop FOUND {kw_name} @ {filename}"
             #       f" RETURNING {self.keywords[kw_name]} {self.keywords[kw_name].source == filename}")
             return self.keywords[kw_name]

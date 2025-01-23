@@ -640,8 +640,8 @@ class ResourceImportController(_ImportController):
         return self.name.endswith(filename)
 
     def change_name(self, old_name, new_name):
-        print(f"DEBUG: settingcontrollers.py ResourceImportController change_name ENTER\n"
-              f"old_name={old_name} new_name={new_name}")
+        # print(f"DEBUG: settingcontrollers.py ResourceImportController change_name ENTER\n"
+        #       f"old_name={old_name} new_name={new_name}")
         if self.contains_filename(old_name):
             self.set_value(self.name[:-len(old_name)] + new_name)
         else:

@@ -468,7 +468,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         myobject.execute(self.res02)
         """
 
-        exit(0)
+        return 
         # myobject.execute(self.project_ctrl.setting_table)
         # After Rename
         self._get_controllers()
