@@ -730,6 +730,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         if not parent_node:
             return None
         # if not self.IsExpanded(parent_node):
+        self.EnsureVisible(parent_node)
         self._expand_and_render_children(parent_node)
         node = self.controller.find_node_by_controller(controller)
         if node and node != self.GetSelection():
@@ -740,6 +741,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         parent_node = self._get_datafile_node(uk.parent.parent)
         if not parent_node:
             return
+        self.EnsureVisible(parent_node)
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
         node = self.controller.find_node_with_label(parent_node, utils.normalize(uk.name))
@@ -1112,7 +1114,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             return
         controller = message.item
         node = (self.controller.find_node_by_controller(controller) or
-                self.controller.find_node_with_label(controller, message.old_name))
+                self.controller.find_node_with_label(controller, message.new_name))
         print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER controller={controller}"
               f" NODE={node}")
         if hasattr(controller, 'datafile') and hasattr(controller.datafile, 'setting_table'):
@@ -1181,7 +1183,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                     for k in keywords.items:
                         print(f"DEBUG: treeplugin.py Tree _rename_resource_kw keywords: {k=}")
                         if k.name == keyword_name:
-                            print(f"DEBUG: treeplugin.py Tree _rename_resource_kw CHANGING: {k.name=}")
+                            print(f"DEBUG: treeplugin.py Tree _rename_resource_kw CHANGING: {k.name=},"
+                                  f" {k.source=} {k.details=}")
                             if controller.validate_keyword_name(new_keyword_name):
                                 k.name = new_keyword_name
                                 RideUserKeywordRenamed(datafile=controller.datafile, item=k,

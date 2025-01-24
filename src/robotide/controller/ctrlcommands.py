@@ -792,7 +792,7 @@ class FindOccurrences(_Command):
         from .tablecontrollers import VariableTableController
         match_name = self._contains_item(item)
         # print(f"DEBUG: ctrlcommands _find_occurrences_in _contains_exact_item Match Name is TYPE {type(match_name)}")
-        if match_name and isinstance(match_name, re.Match) and '.' in match_name.string:
+        if match_name and isinstance(match_name, re.Match) and '.' in match_name.string and self.prefix:
                 # print(f"DEBUG: ctrlcommands _find_occurrences_in _contains_exact_item PREFIXED Name={match_name}"
                 #       f"\n groups={match_name.groups()} string={match_name.string}"
                 #       f" RETURNS {match_name.string.startswith(self.prefix)}")

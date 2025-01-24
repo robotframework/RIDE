@@ -74,6 +74,8 @@ class StepController(_BaseController):
     def __eq__(self, other):
         if self is other:
             return True
+        if not isinstance(other, StepController):
+            return False
         return self._steps_are_equal(self.step_controller_step, other.step_controller_step)
 
     @staticmethod
