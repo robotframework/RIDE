@@ -31,10 +31,10 @@ from ..ui.images import (RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_I
                          SKIPPED_IMAGE_INDEX, ROBOT_IMAGE_INDEX)
 from ..ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
 from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideItem, RideUserKeywordAdded,
-                       RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,
-                       RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
-                       RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, RideOpenResource,
-                       RideSuiteAdded, RideSelectResource, RideDataFileSet)
+                       RideTestCaseAdded, RideUserKeywordRemoved, RideUserKeywordRenamed,  RideTestCaseRemoved,
+                       RideDataFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,
+                       RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
+                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged)
 from ..controller.ctrlcommands import MoveTo
 from ..pluginapi import Plugin
 from ..action import ActionInfo
@@ -305,6 +305,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _subscribe_to_messages(self):
         subscriptions = [
+            (self._item_renamed, RideItemNameChanged),
             (self._item_changed, RideItem),
             (self._resource_added, RideOpenResource),
             (self._select_resource, RideSelectResource),
@@ -681,11 +682,17 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         wx.CallAfter(self._refresh_datafile_when_file_set, message.item)
 
     def _filename_changed(self, message):
+        from ..controller import ResourceFileController
         df = message.datafile
         node = self.controller.find_node_by_controller(df)
         if not node:
             raise AssertionError('No node found with controller "%s"' % df)
+        old_name = node.GetText()
+        # print(f"DEBUG: treeplugin.py Tree _filename_changed message={message} df={df}"
+        #       f" node={node} {old_name=} df.display_name={df.display_name}")
         wx.CallAfter(self.SetItemText, node, df.display_name)
+        if isinstance(df, ResourceFileController):
+            RideItemNameChanged(item=node, old_name=old_name, new_name=df.display_name).publish()
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())
@@ -719,12 +726,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         Controller can be any of the controllers that are represented in the
         tree."""
         parent_node = self._get_datafile_node(controller.datafile)
+        # print(f"DEBUG: treeplugin.py Tree select_node_by_data parent_node={parent_node}")
         if not parent_node:
             return None
-        if not self.IsExpanded(parent_node):
-            self._expand_and_render_children(parent_node)
+        # if not self.IsExpanded(parent_node):
+        self.EnsureVisible(parent_node)
+        self._expand_and_render_children(parent_node)
         node = self.controller.find_node_by_controller(controller)
-        if node != self.GetSelection():
+        if node and node != self.GetSelection():
             self.SelectItem(node)
         return node
 
@@ -732,14 +741,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         parent_node = self._get_datafile_node(uk.parent.parent)
         if not parent_node:
             return
+        self.EnsureVisible(parent_node)
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self.controller.find_node_with_label(
-            parent_node, utils.normalize(uk.name))
+        node = self.controller.find_node_with_label(parent_node, utils.normalize(uk.name))
+        # print(f"DEBUG: treeplugin.py Tree select_user_keyword_node node= {node}")
         if node != self.GetSelection():
             self.SelectItem(node)
 
     def _get_datafile_node(self, datafile):
+        # print(f"DEBUG: treeplugin.py Tree _get_datafile_node ENTER dataffile= {datafile}")
         for node in self.datafile_nodes:
             item = self.controller.get_handler(node).item
             if item == datafile:  # This only works before editing a resource item because the obj id changes
@@ -1084,14 +1095,115 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             handler.on_move_down(event)
 
     def _item_changed(self, message):
+        # print(f"DEBUG: treeplugin.py Tree _item_changed ENTER message={message}")
+        if isinstance(message, RideItemNameChanged):
+            return
         controller = message.item
         node = self.controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, message.item.name)
+            self.controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
+        # if controller.dirty:
 
+    def _item_renamed(self, message):
+        from ..lib.robot.parsing.settings import Resource
+        # print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER message={message}")
+        if not isinstance(message, RideItemNameChanged):
+            return
+        controller = message.item
+        # print(f"DEBUG: treeplugin.py Tree _item_renamed DEFINED controller={controller}"
+        #       f" old_name={message.old_name}  new_name={message.new_name}\n")
+        node = (self.controller.find_node_by_controller(controller) or
+                self.controller.find_node_with_label(controller, message.old_name))
+        # print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER controller={controller}"
+        #       f" NODE={node}")
+        if hasattr(controller, 'datafile') and hasattr(controller.datafile, 'setting_table'):
+            imports = controller.datafile.setting_table.imports
+            # print(f"DEBUG: treeplugin.py Tree _item_renamed HAS IMPORTS imports={imports}")
+            for imp in imports:
+                if isinstance(imp, Resource) and hasattr(message.item, 'keyword'):
+                    # print(f"DEBUG: treeplugin.py Tree _item_renamed IMPORT message.item.name={message.item.keyword},"
+                    #       f" old_name={message.old_name} resource name={imp.name}")
+                    # print(f"DEBUG: treeplugin.py Tree _item_renamed IMPORT message.item.name={message},"
+                    #       f" old_name={message.old_name} import={imp}")
+                    self._rename_resource_kw(new_name=message.item.keyword, old_name=message.old_name, resource=imp)
+        # if node and hasattr(message, 'old_name'):
+            # print(f"DEBUG: treeplugin.py Tree _item_renamed RENAMED node={node}, old_name={message.old_name}\n"
+            #      f"new_name={message.new_name}")
+            # Here we need to rename all resourc prefixed occurrencees
+
+        self.Refresh()
+        if node and hasattr(message.item, 'name'):
+            self.EnsureVisible(node)
+            self.SelectItem(node)
+            self.SetItemText(node, message.item.name)
+            new_name=self.GetItemText(node)
+            # print(f"DEBUG: treeplugin.py Tree _item_renamed AFTER RENAMED new_name={new_name}"
+            #       f" controller={controller.datafile}")
+        else:
+            return
         if controller.dirty:
             self.controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))
+
+    def _rename_resource_kw(self, new_name, old_name, resource):
+        prefix_new = new_name.split('.')[0]
+        prefix_old = old_name.split('.')[0]
+        prefix_res = os.path.basename(resource.name).split('.')[0]
+        if not prefix_new == prefix_old == prefix_res:
+            return
+        keyword_name = old_name.split('.')[-1]
+        new_keyword_name = new_name.split('.')[-1]
+        # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw {prefix_res=} {keyword_name=}")
+        res_name=os.path.basename(resource.name)
+        # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw {res_name=}")
+        res_node=self.FindItem(self._resource_root, res_name)
+        if res_node:
+            self.EnsureVisible(res_node)
+            # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw root node {res_node=}")
+            # node = self.controller.find_node_with_label(res_node, keyword_name)
+            self._expand_and_render_children(res_node)
+            node = self.FindItem(res_node, keyword_name)
+            if node:
+                from ..controller.ctrlcommands import RenameKeywordOccurrences
+                from ..ui.progress import RenameProgressObserver
+                nlabel = node.GetText()
+                # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw node label {nlabel} {keyword_name}")
+                if nlabel == keyword_name:
+                    # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw {node=} {nlabel} change to {new_keyword_name=}")
+                    self.EnsureVisible(node)
+                    # self.SetItemText(node, new_keyword_name)
+                    self.SelectItem(node)
+                    controller = self.get_selected_datafile_controller()
+                    keywords = controller.keywords
+                    keyword_names = controller.get_keyword_names()
+                    # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw already changed to {new_keyword_name=}"
+                    #       f" controller={controller} keywords={keywords} \n"
+                    #       f"{keyword_names=}")
+                    for k in keywords.items:
+                        # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw keywords: {k=}")
+                        if k.name == keyword_name:
+                            # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw CHANGING: {k.name=},"
+                            #       f" {k.source=} ")  # {k.details=}")
+                            if controller.validate_keyword_name(new_keyword_name):
+                                k.name = new_keyword_name
+                                node.SetText(new_keyword_name)
+                                RideUserKeywordRenamed(datafile=controller.datafile, item=k,
+                                                       old_name=keyword_name).publish()
+                                controller.mark_dirty()
+                                # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw DONE CHANGING: {k.name=}")
+                                # self.controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
+                                self.observer = RenameProgressObserver(self.GetParent())
+                                RenameKeywordOccurrences(keyword_name, new_keyword_name, self.observer)
+                                self.observer.finish()
+                                self.Collapse(res_node)
+                                self.Expand(res_node)
+                                self.Refresh()
+                                self.SelectItem(node)
+                            else:
+                                wx.MessageBox(f"Invalid keyword name: {new_keyword_name}",
+                                              "Failed Keyword Name Validation")
+                                return
 
     def _variable_moved_up(self, message):
         if self._should_update_variable_positions(message):

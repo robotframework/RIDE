@@ -8,10 +8,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
-== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.1.rst[2.1.1] - 2024-11-14
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.2.rst[2.1.2] - 2025-01-28
 
 === Fixed
 
+- Partial fix of no update of renaming resource prefixed keywords. Issue #1230 from 29 Jan 2013.
 - Fixed no recognition of keywords with embedded arguments and full name. Issue #1106 from 12 Sep 2012.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.1.rst[2.1.1] - 2024-11-14

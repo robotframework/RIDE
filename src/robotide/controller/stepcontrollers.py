@@ -18,6 +18,7 @@ import re
 from .. import robotapi, utils
 from .basecontroller import _BaseController
 from .cellinfo import CellPosition, CellType, CellInfo, CellContent, ContentType, UPPERCASE_KWS
+from ..publish.messages import RideItemNameChanged
 from ..namespace.local_namespace import local_namespace
 from ..utils import variablematcher
 
@@ -73,6 +74,8 @@ class StepController(_BaseController):
     def __eq__(self, other):
         if self is other:
             return True
+        if not isinstance(other, StepController):
+            return False
         return self._steps_are_equal(self.step_controller_step, other.step_controller_step)
 
     @staticmethod
@@ -281,29 +284,45 @@ class StepController(_BaseController):
                    for item in self.as_list())
 
     def contains_keyword(self, name):
+        for item in [self.keyword or ''] + self.args:
+            matching = self._kw_name_match(item, name)
+            if matching is not None:
+                return matching
+        return False
+        """    
         return any(self._kw_name_match(item, name)
                    for item in [self.keyword or ''] + self.args)
+        """
 
     def _kw_name_match(self, item, expected):
         if isinstance(expected, str):
-            return utils.eq(item, expected) or (
-                self._GIVEN_WHEN_THEN_MATCHER.match(item) and
-                utils.eq(
-                    self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
-        return expected.match(item)
+            return utils.eq(item, expected) or (self._GIVEN_WHEN_THEN_MATCHER.match(item) and
+                                                utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
+        matcher = expected.match(item)
+        # if matcher:
+        #     old_prefix = matcher.group(1)
+        #     print(f"DEBUG: stepcontrollers.py StepController kw_name_match: RE expected={expected}"
+        #           f" matcher={matcher} old_prefix={old_prefix}")
+        return matcher
 
     def replace_keyword(self, new_name, old_name):
         # DEBUG: Create setters for Step.name and Step.args
-        if self._kw_name_match(self.keyword or '', old_name):
-            self.step_controller_step.name = self.step_controller_step.cells[self.step_controller_step.inner_kw_pos] =\
+        new_match = self._kw_name_match(self.keyword or '', old_name)
+        if new_match:
+            # print(f"DEBUG: stepcontrollers.py StepController replace_keyword: ACTUAL CHANGE old_name={old_name}"
+            #       f" new_name={new_name} new_match={new_match}")
+            self.step_controller_step.name = self.step_controller_step.cells[self.step_controller_step.inner_kw_pos] = \
                 self._kw_name_replace(self.keyword, new_name, old_name)
         for index, value in enumerate(self.args):
             if self._kw_name_match(value, old_name):
                 self.step_controller_step.args[index] = self.step_controller_step.cells[
-                    self.step_controller_step.inner_kw_pos + 1 + index] =\
+                    self.step_controller_step.inner_kw_pos + 1 + index] = \
                     self._kw_name_replace(value, new_name, old_name)
 
     def _kw_name_replace(self, old_value, new_match, old_match):
+        # Here we should have a match for keywords prefixed with resource name
+        # print(f"DEBUG: stepcontrollers.py StepController _kw_name_replace: ENTER old_value={old_value}"
+        #       f" old_match={old_match} new_match={new_match}")
         old_prefix_matcher = self._GIVEN_WHEN_THEN_MATCHER.match(old_value)
         if not old_prefix_matcher:
             return new_match
@@ -552,8 +571,12 @@ class StepController(_BaseController):
             next_step = self.parent.step(index + 1)
             next_step.recreate(next_step.as_list())
 
-    def notify_value_changed(self):
-        self.parent.notify_steps_changed()
+    def notify_value_changed(self, old_name=None, new_name=None):
+        # print(f"DEBUG: stepcontrollers.py StepController notify_value_changed: ENTER old_name={old_name}"
+        #      f" parent={self.parent.name} new_name={new_name}  calling self.parent.notify_steps_changed()")
+        if old_name is not None:
+            RideItemNameChanged(item=self, old_name=old_name, new_name=new_name).publish()
+        self.parent.notify_steps_changed(old_name)
 
     def increase_indent(self):
         self.indent.append('')

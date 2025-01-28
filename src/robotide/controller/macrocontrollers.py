@@ -43,6 +43,8 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
+        # print(f"DEBUG: macrocontrollers.py ItemNameController contains_keyword: item={self._item.name} search="
+        #       f"{name}")
         if isinstance(name, str):
             return self._item.name == name
         return name.match(self._item.name)
@@ -51,14 +53,17 @@ class ItemNameController(object):
         return variablematcher.value_contains_variable(self._item.name, name)
 
     def replace_keyword(self, new_name, old_value=None):
-        print(f"DEBUG: macrocontrollers.py replace_keyword new_name={new_name} old_value={old_value}")
+        # print(f"DEBUG: macrocontrollers.py replace_keyword new_name={new_name} old_value={old_value}")
         self._item.rename(new_name)
 
     def rename(self, new_name):
         self._item.rename(new_name)
 
-    def notify_value_changed(self):
-        self._item.notify_name_changed()
+    def notify_value_changed(self, old_name=None, new_name=None):
+        # print(f"DEBUG: macrocontrollers.py notify_value_changed item={self._item.name} old_name={old_name}")
+        if not new_name:
+            new_name=self._item.name
+        self._item.notify_name_changed(old_name=old_name, new_name=new_name)
 
     @property
     def parent(self):
@@ -185,6 +190,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.notify_keyword_removed()
 
     def rename(self, new_name):
+        # print(f"DEBUG: macrocontrollers.py WithStepsController rename BEFORE new_name={new_name} old_name={self.data.name}")
         self.data.name = new_name.strip()
         self.mark_dirty()
 
@@ -283,22 +289,26 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def validate_name(self, name):
         return self._parent.validate_name(name, self)
 
-    def notify_name_changed(self, old_name=None):
+    def notify_name_changed(self, old_name=None, new_name=None):
         self.update_namespace()
         self.mark_dirty()
-        RideItemNameChanged(item=self, old_name=old_name).publish()
+        RideItemNameChanged(item=self, old_name=old_name, new_name=new_name).publish()
 
     def notify_keyword_removed(self):
         self.update_namespace()
         RideUserKeywordRemoved(datafile=self.datafile, name=self.name, item=self).publish()
         self.notify_steps_changed()
 
-    def notify_settings_changed(self):
+    def notify_settings_changed(self, old_name=None, new_name=None):
+        _ = old_name
+        _ = new_name
         self.update_namespace()
         self._notify(RideItemSettingsChanged)
 
-    def notify_steps_changed(self):
+    def notify_steps_changed(self, old_name=None):
         self._has_steps_changed = True
+        # print(f"DEBUG: macrocontrollers.py WithStepsController notify_steps_changed: ENTER old_name={old_name}"
+        #       f" {self.parent} {self.source} {self} call self._notify")
         self._notify(RideItemStepsChanged)
 
     def _notify(self, messageclass):

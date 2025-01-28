@@ -68,6 +68,8 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORTS = _makepath('imports')
 
+RESOURCE_PREFIXED_KEYWORDS_PATH = _makepath('TestCases')
+
 PREAMBLE_NO_LANG = _makepath('language', 'preamble_no_lang.robot')
 PREAMBLE_UNKNOWN_LANG = _makepath('language', 'preamble_unknown_lang.robot')
 DUMMY_LANG = _makepath('language', 'dummy')
@@ -118,7 +120,10 @@ def construct_project(datapath, temp_dir_for_excludes=None, file_language=None):
 
 
 def get_ctrl_by_name(name, datafiles):
+    files = []
     for file in datafiles:
         if file.name == name:
-            return file
+            files.append(file)
+    if files is not None:
+        return files if len(files) > 1 else files[0]
     return None

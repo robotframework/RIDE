@@ -70,6 +70,8 @@ class _SettingController(ControllerWithParent):
 
     def contains_keyword(self, name):
         istring = isinstance(name, str)
+        # print(f"DEBUG: settingcontrollers.py _SettingController contains_keyword: item={self} search="
+        #       f"{name}")
         matcher = name.match if not istring else lambda i: utils.eq(i, name)
         return self._contains_keyword(matcher)
 
@@ -101,8 +103,8 @@ class _SettingController(ControllerWithParent):
             self._data.comment = comment
             self.mark_dirty()
 
-    def notify_value_changed(self):
-        self._parent.notify_settings_changed()
+    def notify_value_changed(self, old_name=None, new_name=None):
+        self._parent.notify_settings_changed(old_name)
 
     def clear(self):
         self._data.reset()
@@ -638,6 +640,8 @@ class ResourceImportController(_ImportController):
         return self.name.endswith(filename)
 
     def change_name(self, old_name, new_name):
+        # print(f"DEBUG: settingcontrollers.py ResourceImportController change_name ENTER\n"
+        #       f"old_name={old_name} new_name={new_name}")
         if self.contains_filename(old_name):
             self.set_value(self.name[:-len(old_name)] + new_name)
         else:
