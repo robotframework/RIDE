@@ -309,8 +309,8 @@ class StepController(_BaseController):
         # DEBUG: Create setters for Step.name and Step.args
         new_match = self._kw_name_match(self.keyword or '', old_name)
         if new_match:
-            print(f"DEBUG: stepcontrollers.py StepController replace_keyword: ACTUAL CHANGE old_name={old_name}"
-                  f" new_name={new_name} new_match={new_match}")
+            # print(f"DEBUG: stepcontrollers.py StepController replace_keyword: ACTUAL CHANGE old_name={old_name}"
+            #       f" new_name={new_name} new_match={new_match}")
             self.step_controller_step.name = self.step_controller_step.cells[self.step_controller_step.inner_kw_pos] = \
                 self._kw_name_replace(self.keyword, new_name, old_name)
         for index, value in enumerate(self.args):
@@ -321,8 +321,8 @@ class StepController(_BaseController):
 
     def _kw_name_replace(self, old_value, new_match, old_match):
         # Here we should have a match for keywords prefixed with resource name
-        print(f"DEBUG: stepcontrollers.py StepController _kw_name_replace: ENTER old_value={old_value}"
-              f" old_match={old_match} new_match={new_match}")
+        # print(f"DEBUG: stepcontrollers.py StepController _kw_name_replace: ENTER old_value={old_value}"
+        #       f" old_match={old_match} new_match={new_match}")
         old_prefix_matcher = self._GIVEN_WHEN_THEN_MATCHER.match(old_value)
         if not old_prefix_matcher:
             return new_match
@@ -572,8 +572,8 @@ class StepController(_BaseController):
             next_step.recreate(next_step.as_list())
 
     def notify_value_changed(self, old_name=None, new_name=None):
-        print(f"DEBUG: stepcontrollers.py StepController notify_value_changed: ENTER old_name={old_name}"
-              f" parent={self.parent.name} new_name={new_name}  calling self.parent.notify_steps_changed()")
+        # print(f"DEBUG: stepcontrollers.py StepController notify_value_changed: ENTER old_name={old_name}"
+        #      f" parent={self.parent.name} new_name={new_name}  calling self.parent.notify_steps_changed()")
         if old_name is not None:
             RideItemNameChanged(item=self, old_name=old_name, new_name=new_name).publish()
         self.parent.notify_steps_changed(old_name)

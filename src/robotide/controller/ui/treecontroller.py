@@ -107,7 +107,7 @@ class TreeController(object):
         return self._find_node_with_predicate(self._tree.root, match_handler)
 
     def find_node_with_label(self, node, label):
-        print(f"DEBUG: treecontroller.py TreeController find_node_with_label node={node} LABEL={label}")
+        # print(f"DEBUG: treecontroller.py TreeController find_node_with_label node={node} LABEL={label}")
         def matcher(n): return utils.eq(self._tree.GetItemText(n), label)
         return self._find_node_with_predicate(node, matcher)
 

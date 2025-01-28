@@ -39,10 +39,10 @@ class TestCaseEditor(_RobotTableEditor):
         self._editors.append(self.kweditor)
 
     def _name_changed(self, message):
-        print(f"DEBUG: macroeditors.py TestCaseEditor _name_changed ENTER {message}\n")
+        # print(f"DEBUG: macroeditors.py TestCaseEditor _name_changed ENTER {message}\n")
         if message.item == self.controller:
             self.header.SetLabel(message.item.name)
-            print(f"DEBUG: macroeditors.py TestCaseEditor _name_changed  DONE {message.item.name=} {self.controller}")
+            # print(f"DEBUG: macroeditors.py TestCaseEditor _name_changed  DONE {message.item.name=} {self.controller}")
 
     def close(self):
         for editor in self._editors:

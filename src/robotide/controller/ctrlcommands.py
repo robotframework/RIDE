@@ -93,8 +93,8 @@ class Occurrence(object):
         return isinstance(self._item.parent, ForLoopStepController)
 
     def replace_keyword(self, new_name):
-        print(f"DEBUG: ctrlcommands.py Occurrence replace_keyword BEFORE new_name={new_name} value={self._value}"
-              f" self._replaced={self._replaced} item={self._item}")
+        # print(f"DEBUG: ctrlcommands.py Occurrence replace_keyword BEFORE new_name={new_name} value={self._value}"
+        #       f" self._replaced={self._replaced} item={self._item}")
         self._item.replace_keyword(*self._get_replace_values(new_name))
         self._replaced = not self._replaced
 
@@ -286,9 +286,9 @@ class RenameKeywordOccurrences(_ReversibleCommand):
         self._observer = observer
         self._keyword_info = keyword_info
         self._occurrences = None
-        print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences INIT\n"
-            f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
-            f"self._new_name={self._new_name} self._keyword_info={self._keyword_info} ")
+        # print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences INIT\n"
+        #     f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
+        #     f"self._new_name={self._new_name} self._keyword_info={self._keyword_info} ")
 
     def _check_gherkin(self, new_name, original_name):
         was_gherkin, keyword_name = self._get_gherkin(original_name)
@@ -319,8 +319,8 @@ class RenameKeywordOccurrences(_ReversibleCommand):
     def _execute(self, context):
         self._observer.notify()
         self._occurrences = self._find_occurrences(context) if self._occurrences is None else self._occurrences
-        print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}\n"
-              f"CONTEXT:{context}")
+        # print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}\n"
+        #       f"CONTEXT:{context}")
         self._replace_keywords_in(self._occurrences)
         context.update_namespace()
         self._notify_values_changed(self._occurrences, old_name=self._original_name)
@@ -342,12 +342,12 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _notify_values_changed(self, occurrences, old_name=None):
         for oc in occurrences:
-            try:
-                print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
-                      f"oc= {oc.source} {oc.item} {oc.usage} {oc._value}")
-            except AttributeError:
-                print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
-                      f" in AttributeError oc= {oc}")
+            # try:
+            #     print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
+            #           f"oc= {oc.source} {oc.item} {oc.usage} {oc._value}")
+            # except AttributeError:
+            #     print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
+            #           f" in AttributeError oc= {oc}")
             oc.notify_value_changed(old_name=old_name, new_name=self._new_name)
             self._observer.notify()
 
