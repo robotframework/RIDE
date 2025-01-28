@@ -103,8 +103,8 @@ class Occurrence(object):
             return self._value, new_name
         return new_name, self._value
 
-    def notify_value_changed(self, old_name=None):
-        self._item.notify_value_changed(old_name)
+    def notify_value_changed(self, old_name=None, new_name=None):
+        self._item.notify_value_changed(old_name=old_name, new_name=new_name)
 
 
 class _Command(object):
@@ -283,12 +283,12 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def __init__(self, original_name, new_name, observer, keyword_info=None):
         self._original_name, self._new_name = self._check_gherkin(new_name, original_name)
-        print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences ENTER after check_gherkin\n"
-            f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
-            f"self._new_name={self._new_name} ")
         self._observer = observer
         self._keyword_info = keyword_info
         self._occurrences = None
+        print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences INIT\n"
+            f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
+            f"self._new_name={self._new_name} self._keyword_info={self._keyword_info} ")
 
     def _check_gherkin(self, new_name, original_name):
         was_gherkin, keyword_name = self._get_gherkin(original_name)
@@ -319,8 +319,8 @@ class RenameKeywordOccurrences(_ReversibleCommand):
     def _execute(self, context):
         self._observer.notify()
         self._occurrences = self._find_occurrences(context) if self._occurrences is None else self._occurrences
-        # print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}\n"
-        #       f"CONTEXT:{context}")
+        print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _execute: found occurrences= {self._occurrences}\n"
+              f"CONTEXT:{context}")
         self._replace_keywords_in(self._occurrences)
         context.update_namespace()
         self._notify_values_changed(self._occurrences, old_name=self._original_name)
@@ -348,7 +348,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
             except AttributeError:
                 print(f"DEBUG: ctlcommands.py RenameKeywordOccurrences _notify_values_changed: "
                       f" in AttributeError oc= {oc}")
-            oc.notify_value_changed(old_name)
+            oc.notify_value_changed(old_name=old_name, new_name=self._new_name)
             self._observer.notify()
 
     def _get_undo_command(self):

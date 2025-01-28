@@ -7,7 +7,7 @@ Library           ../Sub/Lib/mykw.py
 *** Test Cases ***
 case01
     [Setup]    res01.keyword3
-    keyword2    lalala\nlala\nlala
+    keyword22    lalala\nlala\nlala
 
 case02
     log    ${CURDIR}

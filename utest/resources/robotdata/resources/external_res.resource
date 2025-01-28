@@ -14,12 +14,12 @@ keyword2
     [Arguments]    ${a}
     log    ${a}
     Log To Console    This is the argument \${a} = ${a} !
-    [Teardown]    keyword1    Called from external_resource at Teardown kw2
+    [Teardown]    res02.keyword11    Called from external_resource at Teardown kw2
 
-keyword3
-    [Setup]    res02.keyword3
-    keyword1    Called from external_resource
-    res02.keyword1    Called from external_resource    # Kw from res2 with a space in calling
+keyword33
+    [Setup]    res02.keyword33
+    keyword11    Called from external_resource
+    res02.keyword11    Called from external_resource    # Kw from res2 with a space in calling
 
 unusedkw
     [Arguments]    ${notused}=None

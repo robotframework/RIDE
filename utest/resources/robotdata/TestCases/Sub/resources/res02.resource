@@ -2,14 +2,14 @@
 Library           ./res.py
 
 *** Keywords ***
-keyword1
+keyword11
     [Arguments]    ${a}
     log    ${a} This is at Sub/Resources/res02.resource
-    Run Keyword    keyword3
+    Run Keyword    keyword33
 
 keyword2
     [Arguments]    ${a}
     log    ${a}
 
-keyword3
+keyword33
     res_kw

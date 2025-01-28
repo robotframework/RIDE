@@ -59,9 +59,11 @@ class ItemNameController(object):
     def rename(self, new_name):
         self._item.rename(new_name)
 
-    def notify_value_changed(self, old_name=None):
+    def notify_value_changed(self, old_name=None, new_name=None):
         print(f"DEBUG: macrocontrollers.py notify_value_changed item={self._item.name} old_name={old_name}")
-        self._item.notify_name_changed(old_name=old_name, new_name=self._item.name)
+        if not new_name:
+            new_name=self._item.name
+        self._item.notify_name_changed(old_name=old_name, new_name=new_name)
 
     @property
     def parent(self):
@@ -297,8 +299,9 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         RideUserKeywordRemoved(datafile=self.datafile, name=self.name, item=self).publish()
         self.notify_steps_changed()
 
-    def notify_settings_changed(self, old_name=None):
+    def notify_settings_changed(self, old_name=None, new_name=None):
         _ = old_name
+        _ = new_name
         self.update_namespace()
         self._notify(RideItemSettingsChanged)
 

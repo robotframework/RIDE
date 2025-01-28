@@ -1096,16 +1096,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _item_changed(self, message):
         print(f"DEBUG: treeplugin.py Tree _item_changed ENTER message={message}")
-        if isinstance(message, RideItemNameChanged):
-            return
+        # if isinstance(message, RideItemNameChanged):
+        #     return
         controller = message.item
         node = self.controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, message.item.name)
-
-        if controller.dirty:
-            self.controller.mark_node_dirty(
-                self._get_datafile_node(controller.datafile))
+            self.controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
+        # if controller.dirty:
 
     def _item_renamed(self, message):
         from ..lib.robot.parsing.settings import Resource
@@ -1113,8 +1111,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         if not isinstance(message, RideItemNameChanged):
             return
         controller = message.item
+        print(f"DEBUG: treeplugin.py Tree _item_renamed DEFINED controller={controller}"
+              f" old_name={message.old_name}  new_name={message.new_name}\n")
         node = (self.controller.find_node_by_controller(controller) or
-                self.controller.find_node_with_label(controller, message.new_name))
+                self.controller.find_node_with_label(controller, message.old_name))
         print(f"DEBUG: treeplugin.py Tree _item_renamed ENTER controller={controller}"
               f" NODE={node}")
         if hasattr(controller, 'datafile') and hasattr(controller.datafile, 'setting_table'):
@@ -1184,9 +1184,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                         print(f"DEBUG: treeplugin.py Tree _rename_resource_kw keywords: {k=}")
                         if k.name == keyword_name:
                             print(f"DEBUG: treeplugin.py Tree _rename_resource_kw CHANGING: {k.name=},"
-                                  f" {k.source=} {k.details=}")
+                                  f" {k.source=} ")  # {k.details=}")
                             if controller.validate_keyword_name(new_keyword_name):
                                 k.name = new_keyword_name
+                                node.SetText(new_keyword_name)
                                 RideUserKeywordRenamed(datafile=controller.datafile, item=k,
                                                        old_name=keyword_name).publish()
                                 controller.mark_dirty()
@@ -1197,7 +1198,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                                 self.observer.finish()
                                 self.Collapse(res_node)
                                 self.Expand(res_node)
-                                self.SelectItem(res_node)
+                                self.Refresh()
+                                self.SelectItem(node)
                             else:
                                 wx.MessageBox(f"Invalid keyword name: {new_keyword_name}",
                                               "Failed Keyword Name Validation")

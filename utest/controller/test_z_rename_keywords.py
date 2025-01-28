@@ -272,8 +272,8 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         testcase = TestDataDirectory(source=datafilereader.RESOURCE_PREFIXED_KEYWORDS_PATH, language=['English'])
         self.project_ctrl = TestDataDirectoryController(testcase, self.app.project)
         # self.app.tree.set_editor(self.plugin._editor_component)
-        print(f"DEBUG: setUp() dir self.project_ctrl ={dir(self.project_ctrl)}"
-              f"\nself.app.project={dir(self.app.project)} ")
+        # print(f"DEBUG: setUp() dir self.project_ctrl ={dir(self.project_ctrl)}"
+        #       f"\nself.app.project={dir(self.app.project)} ")
 
         self._get_controllers()
 
@@ -418,21 +418,26 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         for kw in res_list:
             print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw resource kw={kw}")
         """
-        occ_list = []
+        occ_list = set()
         print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw controller={self.project_ctrl.datafiles}")
         for obj in self.project_ctrl.datafiles:
             print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw retrieve_test_controllers"
                   f" obj={obj.display_name} source={obj.source} type={type(obj)}")
             occurrences = obj.execute(FindOccurrences("keyword1", prefix="res02"))
             # print(occurrences)
-            occ_list.extend(occurrences)
+            occ_list.add(occurrences)
 
-        print(f"Before Rename occ_list={occ_list}\n"
-              f" len={len(occ_list)}")
-        # for occ in occ_list:
-        #    print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw FindOccurrences occ={occ}")
-            #      f" {occ.item}")
-
+        # print(f"Before Rename occ_list={occ_list}\n"
+        #       f" len={len(occ_list)}")
+        for occ in occ_list:
+            for oo in occ:
+                print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw oo_item:{oo.item} "
+                      f" oo_value:{oo._value} ")  #
+                if not isinstance(oo.item, KeywordNameController):
+                    print(f"oo_source:{oo.source} ")
+           # print(f"DEBUG: TestRenameResourcePrefixedKeywords test_rename_suite_setup_kw FindOccurrences occ={occ}")
+           #      f" {occ.item}")
+        return
         observer = NullObserver()
         myobject = RenameKeywordOccurrences("keyword1", "kywd1", observer)
         print(f"Result from Rename myobject={myobject}")  # self.project_ctrl.datafiles: self.app.project.datafiles

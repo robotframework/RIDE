@@ -9,7 +9,7 @@ kw1
     # comment test testst
     log    ${a}
 
-keyword2
+keyword22
     [Arguments]    ${a}
     log    ${a}
     Log To Console    This is the argument \${a} = ${a} !

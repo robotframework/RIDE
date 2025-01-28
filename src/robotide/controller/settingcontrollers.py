@@ -103,7 +103,7 @@ class _SettingController(ControllerWithParent):
             self._data.comment = comment
             self.mark_dirty()
 
-    def notify_value_changed(self, old_name=None):
+    def notify_value_changed(self, old_name=None, new_name=None):
         self._parent.notify_settings_changed(old_name)
 
     def clear(self):

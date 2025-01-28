@@ -571,11 +571,11 @@ class StepController(_BaseController):
             next_step = self.parent.step(index + 1)
             next_step.recreate(next_step.as_list())
 
-    def notify_value_changed(self, old_name=None):
+    def notify_value_changed(self, old_name=None, new_name=None):
         print(f"DEBUG: stepcontrollers.py StepController notify_value_changed: ENTER old_name={old_name}"
-              f" parent={self.parent.name}  calling self.parent.notify_steps_changed()")
+              f" parent={self.parent.name} new_name={new_name}  calling self.parent.notify_steps_changed()")
         if old_name is not None:
-            RideItemNameChanged(item=self, old_name=old_name, new_name=None).publish()
+            RideItemNameChanged(item=self, old_name=old_name, new_name=new_name).publish()
         self.parent.notify_steps_changed(old_name)
 
     def increase_indent(self):

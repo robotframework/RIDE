@@ -15,6 +15,7 @@
 
 import builtins
 import wx
+from wx.lib.agw.customtreectrl import GenericTreeItem
 
 from robotide import utils
 from robotide.action.actioninfo import action_info_collection, ActionInfo
@@ -106,12 +107,17 @@ class TreeController(object):
         return self._find_node_with_predicate(self._tree.root, match_handler)
 
     def find_node_with_label(self, node, label):
+        print(f"DEBUG: treecontroller.py TreeController find_node_with_label node={node} LABEL={label}")
         def matcher(n): return utils.eq(self._tree.GetItemText(n), label)
         return self._find_node_with_predicate(node, matcher)
 
     def _find_node_with_predicate(self, node, predicate):
-        if node != self._tree.root and predicate(node):
+        # print(f"DEBUG: treecontroller.py TreeController find_node_with_label ENTER node={node}"
+        #       f" node is type={type(node)}")
+        if node != self._tree.root and isinstance(node, GenericTreeItem) and predicate(node):
             return node
+        if not isinstance(node, GenericTreeItem):
+            node = self._tree.root
         item, cookie = self._tree.GetFirstChild(node)
         while item:
             if predicate(item):
