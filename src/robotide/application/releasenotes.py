@@ -150,10 +150,8 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at
-  this
-  moment 7.1.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
-<p></p>
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> previous version, which was 7.1.1 
+ (currently is 7.2). However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.13.</li>
 <li>There are some changes, or known issues:<ul>
@@ -161,6 +159,7 @@ RELEASE_NOTES = f"""
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
 version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
+<li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings and changes.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors. The option to not reformat the file is not working.</li>
@@ -169,6 +168,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li><em>Partial fix</em> of no update of renaming resource prefixed keywords. Issue #1230 from 29 Jan 2013.</li>
 <li>Fixed no recognition of keywords with embedded arguments and full name. Issue #1106 from 12 Sep 2012.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
@@ -193,7 +193,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.1.1
+pip install --upgrade robotframework-ride==2.1.2
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -224,7 +224,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 20/November/2024.</p>
+<p>RIDE {VERSION} was released on 28/January/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
