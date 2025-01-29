@@ -60,10 +60,10 @@ on:
 jobs:
   fedora:
     name: Fedora
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
-      image: fedora:latest
+      image: fedora:41
       options: --privileged
     steps:
     - name: Configure container environment
@@ -96,7 +96,7 @@ jobs:
         killall xvfb-run
   debian:
     name: Debian
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
     if: ${{ !contains(github.ref, '/fedora/') }}
