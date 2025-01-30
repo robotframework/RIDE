@@ -168,8 +168,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li><em>Partial fix</em> of no update of renaming resource prefixed keywords. Issue #1230 from 29 Jan 2013.</li>
-<li>Fixed no recognition of keywords with embedded arguments and full name. Issue #1106 from 12 Sep 2012.</li>
+<li>Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doing right-click actions in
+ Project Explorer.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
@@ -224,7 +224,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 28/January/2025.</p>
+<p>RIDE {VERSION} was released on 30/January/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

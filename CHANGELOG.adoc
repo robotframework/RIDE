@@ -8,6 +8,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Fixed
+
+- Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.
+  When right clicking over Tree elements, to, for example, expand or select tests, we want to keep the Editor in the same file or position.
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.2.rst[2.1.2] - 2025-01-28
 
 === Fixed
