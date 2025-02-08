@@ -62,12 +62,19 @@ class GridEditor(grid.Grid):
         self.GetGridRowLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
         self.GetGridRowLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
+        """
+        DEBUG: This block adds aditional scrollbars in mains Grid Editor, making hard to focus on cells keeping the 
+               row numbers visible.
         if hasattr(parent, 'SetupScrolling'):
-            parent.SetupScrolling()
-        elif hasattr(self, 'SetupScrolling'):
-            self.SetupScrolling()
-        else:
-            print("DEBUG: GridBase init NO SetupScrolling\n")
+            parent.SetupScrolling(scrollToTop=True, scrollIntoView=True)
+            print("DEBUG: GridBase init at PARENT SetupScrolling\n")
+        elif
+        """
+        if hasattr(self, 'SetupScrolling'):
+            self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
+            # print("DEBUG: GridBase init at SELF SetupScrolling\n")
+        # else:
+        #     print("DEBUG: GridBase init NO SetupScrolling\n")
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.on_select_cell)

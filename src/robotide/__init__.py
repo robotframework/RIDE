@@ -136,7 +136,7 @@ def _replace_std_for_win():
             """ Override """
             pass
 
-    if sys.executable.endswith('pythonw.exe'):
+    if sys.executable.endswith('.exe'):
         # In windows, when launching RIDE with pythonw.exe
         # sys.stderr and sys.stdout will be None
         if sys.stderr is None:
