@@ -119,19 +119,7 @@ def upgrade_from_dev_dialog(version_installed, notebook, show_no_update=False):
                                         f"{SPC}\n", wx.GetActiveWindow(),  no_default=True):
             return False
         else:
-            import zipfile
-            backup_configobj = tempfile.NamedTemporaryFile(delete=False)
-            config_obj_dir = path.join(path.dirname(__file__), '../preferences/configobj')
-            files = os.listdir(config_obj_dir)
-            with zipfile.ZipFile(backup_configobj.name, 'w') as zzip:
-                for file in files:
-                    file_path = os.path.join(config_obj_dir, file)
-                    zzip.write(file_path)
             do_upgrade(command, notebook)
-            with zipfile.ZipFile(backup_configobj.name, 'r') as zzip:
-                zzip.extractall(config_obj_dir)
-            print(f"DEBUG: updatentivier, {config_obj_dir=} {backup_configobj.name}")
-            os.remove(backup_configobj.name)
             return True
     else:
         if show_no_update:
@@ -188,6 +176,26 @@ def do_upgrade(command, notebook):
 
 def start_upgraded(message):
     __ = message
+    import zipfile
+    import requests
+
+    def download_url(url, save_path, chunk_size=128):
+        r = requests.get(url, stream=True)
+        with open(save_path, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                fd.write(chunk)
+
+    backup_configobj = tempfile.NamedTemporaryFile(delete=False)
+    config_obj_dir = path.join(path.dirname(__file__), '../preferences')
+    # print(f"DEBUG: updatenotifier, Starting do_upgrade {config_obj_dir=} zip is {backup_configobj.name=}")
+    download_url('https://robotframework.transformidea.com/RIDE/packages/configobj.zip', backup_configobj.name)
+    with zipfile.ZipFile(backup_configobj, 'r') as zzip:
+        zzip.extractall(config_obj_dir)
+    # print(f"DEBUG: updatenotifier, {config_obj_dir=} extracted {backup_configobj.name}")
+    try:
+        os.remove(backup_configobj.name)
+    except  PermissionError:
+        pass
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
     wx.CallLater(1000, subprocess.Popen, command.split(' '), start_new_session=True)
     p = psutil.Process()
