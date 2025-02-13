@@ -13,9 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import builtins
+import os
 import re
 import subprocess
 import sys
+import tempfile
 # Configure wx uversion to allow running test app in __main__
 
 
@@ -27,6 +29,7 @@ import psutil
 import requests
 import wx
 from wx import Colour
+from os import path
 
 from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
@@ -116,7 +119,19 @@ def upgrade_from_dev_dialog(version_installed, notebook, show_no_update=False):
                                         f"{SPC}\n", wx.GetActiveWindow(),  no_default=True):
             return False
         else:
+            import zipfile
+            backup_configobj = tempfile.NamedTemporaryFile(delete=False)
+            config_obj_dir = path.join(path.dirname(__file__), '../preferences/configobj')
+            files = os.listdir(config_obj_dir)
+            with zipfile.ZipFile(backup_configobj.name, 'w') as zzip:
+                for file in files:
+                    file_path = os.path.join(config_obj_dir, file)
+                    zzip.write(file_path)
             do_upgrade(command, notebook)
+            with zipfile.ZipFile(backup_configobj.name, 'r') as zzip:
+                zzip.extractall(config_obj_dir)
+            print(f"DEBUG: updatentivier, {config_obj_dir=} {backup_configobj.name}")
+            os.remove(backup_configobj.name)
             return True
     else:
         if show_no_update:
@@ -174,7 +189,7 @@ def do_upgrade(command, notebook):
 def start_upgraded(message):
     __ = message
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
-    wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
+    wx.CallLater(1000, subprocess.Popen, command.split(' '), start_new_session=True)
     p = psutil.Process()
     result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{p.pid}){SPC}"
                                                f"\n{SPC}{_('Do you want to CLOSE RIDE now?')}\n{SPC}",
