@@ -62,8 +62,10 @@ class Languages:
     @property
     def bdd_prefix_regexp(self):
         if not self._bdd_prefix_regexp:
-            prefixes = '|'.join(self.bdd_prefixes).replace(' ', r'\s').lower()
-            self._bdd_prefix_regexp = re.compile(rf'({prefixes})\s', re.IGNORECASE)
+            # Sort prefixes by descending length so that the longest ones are matched first
+            prefixes = sorted(self.bdd_prefixes, key=len, reverse=True)
+            pattern = '|'.join(prefix.replace(' ', r'\s') for prefix in prefixes).lower()
+            self._bdd_prefix_regexp = re.compile(rf'({pattern})\s', re.IGNORECASE)
         return self._bdd_prefix_regexp
 
     def reset(self, languages: Iterable[LanguageLike] = (), add_english: bool = True):
@@ -557,11 +559,11 @@ class Fr(Language):
     template_setting = 'Modèle'
     timeout_setting = "Délai d'attente"
     arguments_setting = 'Arguments'
-    given_prefixes = ['Étant donné']
-    when_prefixes = ['Lorsque']
-    then_prefixes = ['Alors']
-    and_prefixes = ['Et']
-    but_prefixes = ['Mais']
+    given_prefixes = ['Soit', 'Sachant', 'Sachant que', "Sachant qu'", 'Étant donné', 'Étant donné que', "Etant donné qu'"]
+    when_prefixes = ['Quand', 'Lorsque', "Lorsqu'"]
+    then_prefixes = ['Alors', 'Donc']
+    and_prefixes = ['Et', 'Et que', "Et qu'"]
+    but_prefixes = ['Mais', 'Mais que', "Mais qu'"]
     true_strings = ['Vrai', 'Oui', 'Actif']
     false_strings = ['Faux', 'Non', 'Désactivé', 'Aucun']
 
