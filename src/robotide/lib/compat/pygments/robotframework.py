@@ -501,7 +501,9 @@ class GherkinTokenizer(object):
                 self.new_lang = new_lang
         if self.new_lang is None:
             self.new_lang = Language.from_name('En')
-        self.normalized_bdd_prefixes = normalize_pipe_list(list(self.new_lang.bdd_prefixes), spaces=False)
+        # Sort prefixes by descending length so that the longest ones are matched first
+        prefixes = sorted(self.new_lang.bdd_prefixes, key=len, reverse=True)
+        self.normalized_bdd_prefixes = normalize_pipe_list(list(prefixes), spaces=False)
         # print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
         #       f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
         #       f"PATTERN='^({self.normalized_bdd_prefixes}) '"

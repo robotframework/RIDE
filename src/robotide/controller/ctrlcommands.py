@@ -279,6 +279,7 @@ class NullObserver(object):
 
 
 class RenameKeywordOccurrences(_ReversibleCommand):
+    # TODO: Consider localization language Gherkin
     _gherkin_prefix = re.compile('^(Given|When|Then|And|But) ', re.IGNORECASE)
 
     def __init__(self, original_name, new_name, observer, keyword_info=None):
@@ -1339,7 +1340,7 @@ class SharpUncommentRow(_RowChangingCommand):
 
 
 INDENTED_INNER = ['ELSE', 'ELSE IF', 'EXCEPT', 'FINALLY']
-INDENTED_START = ['FOR', 'IF', 'WHILE', 'TRY'] + INDENTED_INNER
+INDENTED_START = ['FOR', 'GROUP', 'IF', 'WHILE', 'TRY'] + INDENTED_INNER
 
 
 def is_indent_start(cell):

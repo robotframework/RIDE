@@ -8,6 +8,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Added
+- Added syntax colorization for the ``GROUP`` marker. Improved colorization for multiple Gherkin words, for example in the French language.
+
 === Fixed
 
 - Fixed multiple scroll bars in Grid Editor when editing Test Cases or Keywords. This caused bad navigation on cells.
