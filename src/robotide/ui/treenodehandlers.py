@@ -753,10 +753,9 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         # print(f"DEBUG: treenodehandlers.py UserKeywodHandler _create_rename_command controller.name={self.controller.name}"
         #       f", new_name={new_name} info={self.controller.info}")
-        return ctrlcommands.RenameKeywordOccurrences(
-            self.controller.name, new_name,
-            RenameProgressObserver(self._tree.GetParent()),
-            self.controller.info)
+        return ctrlcommands.RenameKeywordOccurrences(self.controller.name, new_name,
+                                                     RenameProgressObserver(self._tree.GetParent()),
+                                                     self.controller.info, language=self.controller.language)
 
     def on_find_usages(self, event):
         Usages(self.controller, self._tree.highlight).show()

@@ -33,6 +33,12 @@ KEYWORD_NAME_FIELD = 'Keyword Name'
 TESTCASE_NAME_FIELD = 'Test Case Name'
 
 
+def obtain_bdd_prefixes(language):
+    from robotide.lib.compat.parsing.language import Language
+    lang = Language.from_name(language[0] if isinstance(language, list) else language)
+    bdd_prefixes = lang.bdd_prefixes
+    return list(bdd_prefixes)
+
 def _empty_step():
     return robotapi.Step([])
 
@@ -239,10 +245,15 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
             raise ValueError(validation.error_message)
         return self.datafile_controller.create_keyword(name, argstr)
 
-    @staticmethod
-    def _remove_bdd_prefix(name):
+    def _remove_bdd_prefix(self, name):
+        bdd_prefix = []
+        language = self.language[0] if isinstance(self.language, list) else self.language
+        if language and language.lower() not in ['en', 'english']:
+            bdd_prefix = [f"{x.lower()} " for x in obtain_bdd_prefixes(language)]
+        bdd_prefix += ['given ', 'when ', 'then ', 'and ', 'but ']
+        # print(f"DEBUG: macrocontrollers.py WithStepsController _remove_bdd_prefix bdd_prefix={bdd_prefix}")
         matcher = name.lower()
-        for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
+        for match in bdd_prefix:
             if matcher.startswith(match):
                 return name[len(match):]
         return name

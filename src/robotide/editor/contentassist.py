@@ -28,13 +28,20 @@ from ..publish import PUBLISHER
 from ..publish.messages import RideSettingsChanged
 
 
+def obtain_bdd_prefixes(language):
+    from robotide.lib.compat.parsing.language import Language
+    lang = Language.from_name(language[0] if isinstance(language, list) else language)
+    bdd_prefixes = lang.bdd_prefixes
+    return list(bdd_prefixes)
+
+
 _PREFERRED_POPUP_SIZE = (200, 400)
 _AUTO_SUGGESTION_CFG_KEY = "enable auto suggestions"
 
 
 class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
-    def __init__(self, suggestion_source, **kw):
+    def __init__(self, suggestion_source, language='En', **kw):
         super().__init__(**kw)
         from ..preferences import RideSettings
         _settings = RideSettings()
@@ -45,6 +52,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.color_secondary_foreground = self.general_settings['secondary foreground']
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
+        self.language = language
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
         self.Bind(wx.EVT_CHAR, self.on_char)
@@ -308,9 +316,13 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         (self.gherkin_prefix, value) = self._remove_bdd_prefix(value)
         return self._popup.content_assist_for(value, row=self._row)
 
-    @staticmethod
-    def _remove_bdd_prefix(name):
-        for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
+    def _remove_bdd_prefix(self, name):
+        bdd_prefix = []
+        if self.language.lower() not in ['en', 'english']:
+            bdd_prefix = [f"{x.lower()} " for x in obtain_bdd_prefixes(self.language)]
+        bdd_prefix += ['given ', 'when ', 'then ', 'and ', 'but ']
+        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase _remove_bdd_prefix bdd_prefix={bdd_prefix}")
+        for match in bdd_prefix:
             if name.lower().startswith(match):
                 return name[:len(match)], name[len(match):]
         return '', name
@@ -341,11 +353,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
-    def __init__(self, parent, plugin, controller):
+    def __init__(self, parent, plugin, controller, language='En'):
         """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
         instance """
 
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller),
+        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller), language=language,
                                             parent=parent, size=wx.DefaultSize,
                                             style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
@@ -356,8 +368,8 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
 
-    def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        super().__init__(suggestion_source, parent=parent,
+    def __init__(self, parent, suggestion_source, language='En', size=wx.DefaultSize):
+        super().__init__(suggestion_source, language=language, parent=parent,
                          size=size, style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(Colour(self.color_background_help))
         # self.SetOwnBackgroundColour(Colour(self.color_background_help))
@@ -367,8 +379,8 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
 
 class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
 
-    def __init__(self, parent, suggestion_source, pos, size=wx.DefaultSize):
-        super().__init__(suggestion_source,
+    def __init__(self, parent, suggestion_source, pos, language='En', size=wx.DefaultSize):
+        super().__init__(suggestion_source, language=language,
                          parent=parent, id=-1, value="", pos=pos, size=size,
                          style=wx.WANTS_CHARS | wx.BORDER_NONE | wx.WS_EX_TRANSIENT | wx.TE_PROCESS_ENTER |
                          wx.TE_NOHIDESEL)

@@ -598,7 +598,7 @@ class DatafileRetriever(object):
 class _Keywords(object):
 
     new_lang = None
-    regexp = re.compile(r"\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
+    # Not Used? regexp = re.compile(r"\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
 
     def __init__(self, keywords, caseless=True, new_lang=None):
         if not self.new_lang:
