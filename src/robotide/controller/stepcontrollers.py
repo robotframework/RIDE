@@ -39,7 +39,10 @@ class StepController(_BaseController):
     def __init__(self, parent, step):
         self.continuing_kw = None
         self._init(parent, step)
-        self._language = self.parent.language[0] if isinstance(self.parent.language, list) else self.parent.language
+        if hasattr(self.parent, 'language'):
+            self._language = self.parent.language[0] if isinstance(self.parent.language, list) else self.parent.language
+        else:
+            self._language = 'en'
         if self._language and self._language.lower() not in ['en', 'english']:
             bdd_prefix = f"{obtain_bdd_prefixes(self._language)}|{BDD_ENGLISH}"
         else:

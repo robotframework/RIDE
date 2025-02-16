@@ -9,7 +9,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
-- Added syntax colorization for the ``GROUP`` marker. Improved colorization for multiple Gherkin words, for example in the French language.
+- Added syntax colorization for the ``GROUP`` marker.
+
+=== Changed
+- Improved the recognition of BDD/Gherkin prefixes when localized in autocomplete on Grid Editor.
+- Improved colorization for multiple Gherkin words, for example in the French language.
 
 === Fixed
 

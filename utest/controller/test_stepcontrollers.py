@@ -13,12 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import re
 import unittest
 
 from robotide.controller.stepcontrollers import StepController
 
 
 class FakeStep(StepController):
+    _GIVEN_WHEN_THEN_MATCHER = re.compile(r'^(given|when|then|and|but)\s*', re.IGNORECASE)
 
     def __init__(self):
         pass
