@@ -559,7 +559,8 @@ class Fr(Language):
     template_setting = 'Modèle'
     timeout_setting = "Délai d'attente"
     arguments_setting = 'Arguments'
-    given_prefixes = ['Soit', 'Sachant', 'Sachant que', "Sachant qu'", 'Étant donné', 'Étant donné que', "Etant donné qu'"]
+    given_prefixes = ['Soit', 'Sachant', 'Sachant que', "Sachant qu'", 'Étant donné', 'Étant donné que',
+                      "Etant donné qu'"]
     when_prefixes = ['Quand', 'Lorsque', "Lorsqu'"]
     then_prefixes = ['Alors', 'Donc']
     and_prefixes = ['Et', 'Et que', "Et qu'"]

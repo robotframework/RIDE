@@ -22,15 +22,30 @@ from ..publish.messages import RideItemNameChanged
 from ..namespace.local_namespace import local_namespace
 from ..utils import variablematcher
 
+BDD_ENGLISH = 'given|when|then|and|but'
+
+def obtain_bdd_prefixes(language):
+    from robotide.lib.compat.parsing.language import Language
+    lang = Language.from_name(language[0] if isinstance(language, list) else language)
+    bdd_prefixes = [f"{x}|" for x in lang.bdd_prefixes]
+    bdd_prefixes = "".join(bdd_prefixes).strip('|')
+    return bdd_prefixes
+
 
 class StepController(_BaseController):
 
-    _GIVEN_WHEN_THEN_MATCHER = re.compile(r'^(given|when|then|and|but)\s*', re.I)
     indent = None
 
     def __init__(self, parent, step):
         self.continuing_kw = None
         self._init(parent, step)
+        self._language = self.parent.language[0] if isinstance(self.parent.language, list) else self.parent.language
+        if self._language and self._language.lower() not in ['en', 'english']:
+            bdd_prefix = f"{obtain_bdd_prefixes(self._language)}|{BDD_ENGLISH}"
+        else:
+            bdd_prefix = BDD_ENGLISH
+        self._GIVEN_WHEN_THEN_MATCHER = re.compile(fr'^({bdd_prefix})\s*', re.IGNORECASE)
+        # print(f"DEBUG: stepcontrollers.py StepController INIT {self.parent.language}")
         self.step_controller_step.args = self._change_last_empty_to_empty_var(
             self.step_controller_step.args, self.step_controller_step.comment)
 
