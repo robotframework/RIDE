@@ -25,6 +25,7 @@ from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
+from .pythoneditor import PythonSTC
 from . import _EDIT_nt, get_menudata
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
@@ -1523,7 +1524,7 @@ class SourceEditor(wx.Panel):
             self._stored_text = self.source_editor.GetText()
 
     def _create_editor_text_control(self, text=None, language=None):
-        self.source_editor = RobotDataEditor(self, language)
+        self.source_editor = RobotDataEditor(self, language=language)
         self.Sizer.add_expanding(self.source_editor)
         self.Sizer.Layout()
         if text is not None:
@@ -2393,11 +2394,13 @@ class SourceEditor(wx.Panel):
                 self._data.mark_data_pristine()
 
 
-class RobotDataEditor(stc.StyledTextCtrl):
+class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
     margin = 1
 
-    def __init__(self, parent, readonly=False, language=None):
-        stc.StyledTextCtrl.__init__(self, parent)
+    def __init__(self, parent, readonly=False, language=None, style=wx.BORDER_NONE):
+        PythonSTC.__init__(self, parent, -1, style=style)
+        self.SetUpEditor()
+        # stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
         self.language = language
         self._plugin = parent.plugin
@@ -2695,6 +2698,124 @@ class RobotDataEditor(stc.StyledTextCtrl):
         elif color_diff1 < color_diff3:
             return Colour(colour)
         return Colour('black')
+
+    def SetUpEditor(self):
+        """
+        This method carries out the work of setting up the Code editor.
+        It's seperate so as not to clutter up the init code.
+        """
+        import keyword
+
+        self.SetLexer(stc.STC_LEX_PYTHON)
+        self.SetKeyWords(0, " ".join(keyword.kwlist))
+
+        # Enable folding
+        self.SetProperty("fold", "1")
+
+        # Highlight tab/space mixing (shouldn't be any)
+        self.SetProperty("tab.timmy.whinge.level", "1")
+
+        # Set left and right margins
+        self.SetMargins(2, 2)
+
+        # Set up the numbers in the margin for margin #1
+        self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
+        # Reasonable value for, say, 4-5 digits using a mono font (40 pix)
+        self.SetMarginWidth(1, 40)
+
+        # Indentation and tab stuff
+        self.SetIndent(4)                 # Proscribed indent size for wx
+        self.SetIndentationGuides(True)   # Show indent guides
+        self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than delete 1 space
+        self.SetTabIndents(True)          # Tab key indents
+        self.SetTabWidth(4)               # Proscribed tab size for wx
+        self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
+        # White space
+        self.SetViewWhiteSpace(False)   # Don't view white space
+
+        # EOL: Since we are loading/saving ourselves, and the
+        # strings will always have \n's in them, set the STC to
+        # edit them that way.
+        self.SetEOLMode(wx.stc.STC_EOL_LF)
+        self.SetViewEOL(False)
+
+        # No right-edge mode indicator
+        self.SetEdgeMode(stc.STC_EDGE_NONE)
+
+        # Set up a margin to hold fold markers
+        self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
+        self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
+        self.SetMarginSensitive(2, True)
+        self.SetMarginWidth(2, 12)
+
+        # Global default style
+        if wx.Platform == '__WXMSW__':
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New
+        elif wx.Platform == '__WXMAC__':
+            # DEBUG: if this looks fine on Linux too, remove the Mac-specific case
+            # and use this whenever OS != MSW.
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
+                              'fore:#000000,back:#FFFFFF,face:Monaco')
+        else:
+            # print("DEBUG: Setup on Linux")
+            defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
+            # Courier, Space Mono, Source Pro Mono,
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Hack,size:%d' % defsize)
+        """
+        self.StyleSetBackground(stc.STC_STYLE_DEFAULT, Colour(200, 222, 40))
+        self.StyleSetForeground(stc.STC_STYLE_DEFAULT, Colour(7, 0, 70))
+        """
+        # Clear styles and revert to default.
+        self.StyleClearAll()
+
+        # Following style specs only indicate differences from default.
+        # The rest remains unchanged.
+
+        # Line numbers in margin
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, 'fore:#000000,back:#99A9C2')
+        # Highlighted brace
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, 'fore:#00009D,back:#FFFF00')
+        # Unmatched brace
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, 'fore:#00009D,back:#FF0000')
+        # Indentation guide
+        self.StyleSetSpec(wx.stc.STC_STYLE_INDENTGUIDE, "fore:#CDCDCD")
+
+        # Python styles
+        self.StyleSetSpec(wx.stc.STC_P_DEFAULT, 'fore:#000000')
+        # Comments
+        self.StyleSetSpec(wx.stc.STC_P_COMMENTLINE,  'fore:#008000,back:#F0FFF0')
+        self.StyleSetSpec(wx.stc.STC_P_COMMENTBLOCK, 'fore:#008000,back:#F0FFF0')
+        # Numbers
+        self.StyleSetSpec(wx.stc.STC_P_NUMBER, 'fore:#008080')
+        # Strings and characters
+        self.StyleSetSpec(wx.stc.STC_P_STRING, 'fore:#800080')
+        self.StyleSetSpec(wx.stc.STC_P_CHARACTER, 'fore:#800080')
+        # Keywords
+        self.StyleSetSpec(wx.stc.STC_P_WORD, 'fore:#000080,bold')
+        # Triple quotes
+        self.StyleSetSpec(wx.stc.STC_P_TRIPLE, 'fore:#800080,back:#FFFFEA')
+        self.StyleSetSpec(wx.stc.STC_P_TRIPLEDOUBLE, 'fore:#800080,back:#FFFFEA')
+        # Class names
+        self.StyleSetSpec(wx.stc.STC_P_CLASSNAME, 'fore:#0000FF,bold')
+        # Function names
+        self.StyleSetSpec(wx.stc.STC_P_DEFNAME, 'fore:#008080,bold')
+        # Operators
+        self.StyleSetSpec(wx.stc.STC_P_OPERATOR, 'fore:#800000,bold')
+        # Identifiers. I leave this as not bold because everything seems
+        # to be an identifier if it doesn't match the above criterae
+        self.StyleSetSpec(wx.stc.STC_P_IDENTIFIER, 'fore:#000000')
+
+        # Caret color
+        self.SetCaretForeground("BLUE")
+        # Selection background
+        # self.SetSelBackground(1, '#66CCFF')
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        """
+
+        self.SetSelBackground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
+        self.SetSelForeground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
 
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
