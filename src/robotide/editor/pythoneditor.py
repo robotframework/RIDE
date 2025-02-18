@@ -45,13 +45,13 @@ else:
 
 class PythonSTC(stc.StyledTextCtrl):
 
-    fold_symbols = 2
+    fold_symbols = 0
 
     def __init__(self, parent, idd, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
         stc.StyledTextCtrl.__init__(self, parent, idd, pos, size, style)
 
-        self.CmdKeyAssign(ord('B'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMIN)
-        self.CmdKeyAssign(ord('N'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMOUT)
+        # self.CmdKeyAssign(ord('B'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMIN)
+        # self.CmdKeyAssign(ord('N'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMOUT)
 
         self.SetLexer(stc.STC_LEX_PYTHON)
         self.SetKeyWords(0, " ".join(keyword.kwlist))
@@ -69,7 +69,7 @@ class PythonSTC(stc.StyledTextCtrl):
         self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
         self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
         self.SetMarginSensitive(2, True)
-        self.SetMarginWidth(2, 12)
+        self.SetMarginWidth(2, 24)
 
         if self.fold_symbols == 0:
             # Arrow pointing right for contracted folders, arrow pointing down for expanded
@@ -111,9 +111,11 @@ class PythonSTC(stc.StyledTextCtrl):
             self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPENMID, stc.STC_MARK_BOXMINUSCONNECTED, "white", "#808080")
             self.MarkerDefine(stc.STC_MARKNUM_FOLDERMIDTAIL, stc.STC_MARK_TCORNER,           "white", "#808080")
 
+        """
         self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
         self.Bind(stc.EVT_STC_MARGINCLICK, self.on_margin_click)
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
+        """
 
         # Make some styles,  The lexer defines what each style is used for, we
         # just have to define what each style looks like.  This set is adapted from
@@ -238,6 +240,8 @@ class PythonSTC(stc.StyledTextCtrl):
             self.BraceHighlight(brace_at_caret, brace_opposite)
 
     def on_margin_click(self, evt):
+        mod = evt.GetModificationType()
+        # print(f"DEBUG: pythoneditor.py PythonSTC on_margin_click mod={mod} Margin={evt.GetMargin()}")
         # fold and unfold as needed
         if evt.GetMargin() == 2:
             if evt.GetShift() and evt.GetControl():

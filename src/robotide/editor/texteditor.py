@@ -2394,12 +2394,11 @@ class SourceEditor(wx.Panel):
                 self._data.mark_data_pristine()
 
 
-class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
+class RobotDataEditor(PythonSTC):
     margin = 1
 
     def __init__(self, parent, readonly=False, language=None, style=wx.BORDER_NONE):
         PythonSTC.__init__(self, parent, -1, style=style)
-        self.SetUpEditor()
         # stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
         self.language = language
@@ -2408,7 +2407,7 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
         self._information_popup = None
         self._old_details = None
         self.readonly = readonly
-        self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
+        # self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
         self.SetUseTabs(False)
@@ -2420,9 +2419,13 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
         caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
         self.SetCaretStyle(caret_style)
         self.SetTabWidth(parent.tab_size)
-        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        margin_background = self._settings['General'].get('secondary background', '')
+        margin_foreground = self._settings['General'].get('secondary foreground', '')
+        self.SetUpEditor(tab_size=parent.tab_size, m_bg=margin_background, m_fg=margin_foreground)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
+        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        self.Bind(stc.EVT_STC_MARGINCLICK, self.on_margin_click)
         # DEBUG:
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         # Only set, after language: self.stylizer = RobotStylizer(self, self._settings, self.readonly)
@@ -2487,6 +2490,7 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_DEFAULT, "MM"))
         self.Update()
 
     def set_language(self, dlanguage):
@@ -2513,6 +2517,7 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
     def on_zoom(self, event):
         __ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_FOLDDISPLAYTEXT, "MM"))
         self._set_zoom()
 
     def _set_zoom(self):
@@ -2669,6 +2674,7 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
             self.BraceBadLight(brace_at_caret)
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
+        self.stylizer.stylize()
 
     def _show_keyword_details(self, value, coords=None):
         """
@@ -2699,7 +2705,7 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
             return Colour(colour)
         return Colour('black')
 
-    def SetUpEditor(self):
+    def SetUpEditor(self, tab_size=4, m_bg='', m_fg=''):
         """
         This method carries out the work of setting up the Code editor.
         It's seperate so as not to clutter up the init code.
@@ -2718,17 +2724,18 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
         # Set left and right margins
         self.SetMargins(2, 2)
 
+        self.SetMarginBackground(1, m_bg)
         # Set up the numbers in the margin for margin #1
         self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
         # Reasonable value for, say, 4-5 digits using a mono font (40 pix)
-        self.SetMarginWidth(1, 40)
+        # self.SetMarginWidth(1, 40)
 
         # Indentation and tab stuff
-        self.SetIndent(4)                 # Proscribed indent size for wx
+        self.SetIndent(tab_size)                 # Proscribed indent size for wx
         self.SetIndentationGuides(True)   # Show indent guides
         self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than delete 1 space
         self.SetTabIndents(True)          # Tab key indents
-        self.SetTabWidth(4)               # Proscribed tab size for wx
+        self.SetTabWidth(tab_size)               # Proscribed tab size for wx
         self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
         # White space
         self.SetViewWhiteSpace(False)   # Don't view white space
@@ -2746,7 +2753,10 @@ class RobotDataEditor(PythonSTC, stc.StyledTextCtrl):
         self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
         self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
         self.SetMarginSensitive(2, True)
-        self.SetMarginWidth(2, 12)
+        self.SetMarginBackground(2, m_bg)
+        self.SetFoldMarginColour(True, m_bg)
+        self.SetFoldMarginHiColour(True, m_bg)
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_FOLDDISPLAYTEXT, "MM"))
 
         # Global default style
         if wx.Platform == '__WXMSW__':
