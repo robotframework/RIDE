@@ -415,6 +415,10 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Make list variable body</td>
     </tr>
     <tr>
+        <td>CtrlCmd-5</td>
+        <td>Make dictionary variable body</td>
+    </tr>
+    <tr>
         <td>Alt-Up</td>
         <td>Move row(s) up</td>
     </tr>
@@ -455,8 +459,8 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Delete cell(s)</td>
     </tr>
     <tr>
-        <td>CtrlCmd-5</td>
-        <td>Make dictionary variable body</td>
+        <td>CtrlCmd-Shift Click on Folding marker</td>
+        <td>Expands or Collapses all Folding markers</td>
     </tr>
     <tr>
         <td>Enter</td>

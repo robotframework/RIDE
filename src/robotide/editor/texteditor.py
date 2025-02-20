@@ -2398,12 +2398,15 @@ class RobotDataEditor(PythonSTC):
     margin = 1
 
     def __init__(self, parent, readonly=False, language=None, style=wx.BORDER_NONE):
-        PythonSTC.__init__(self, parent, -1, style=style)
         # stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
         self.language = language
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
+        self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
+        self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
+        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols},
+                           style=style)
         self._information_popup = None
         self._old_details = None
         self.readonly = readonly
@@ -2414,14 +2417,13 @@ class RobotDataEditor(PythonSTC):
         caret_colour = self._settings[PLUGIN_NAME].get('setting', 'black')
         self._background = self._settings[PLUGIN_NAME].get('background', 'white')
         caret_colour = self.get_visible_color(caret_colour)
-        self.SetCaretForeground(Colour(caret_colour))
         caret_style = self._settings[PLUGIN_NAME].get('caret style', 'block')
         caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
         self.SetCaretStyle(caret_style)
-        self.SetTabWidth(parent.tab_size)
-        margin_background = self._settings['General'].get('secondary background', '')
-        margin_foreground = self._settings['General'].get('secondary foreground', '')
-        self.SetUpEditor(tab_size=parent.tab_size, m_bg=margin_background, m_fg=margin_foreground)
+        margin_background = self._settings['General'].get_without_default('secondary background')
+        margin_foreground = self._settings['General'].get_without_default('secondary foreground')
+        self.SetUpEditor(tab_size=parent.tab_size, tab_markers=self.tab_markers,
+                         m_bg=margin_background, m_fg=margin_foreground, caret_fg=caret_colour)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
         self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
@@ -2705,7 +2707,7 @@ class RobotDataEditor(PythonSTC):
             return Colour(colour)
         return Colour('black')
 
-    def SetUpEditor(self, tab_size=4, m_bg='', m_fg=''):
+    def SetUpEditor(self, tab_size=4, tab_markers=True, m_bg='', m_fg='', caret_fg: Colour = 'BLUE'):
         """
         This method carries out the work of setting up the Code editor.
         It's seperate so as not to clutter up the init code.
@@ -2732,7 +2734,7 @@ class RobotDataEditor(PythonSTC):
 
         # Indentation and tab stuff
         self.SetIndent(tab_size)                 # Proscribed indent size for wx
-        self.SetIndentationGuides(True)   # Show indent guides
+        self.SetIndentationGuides(tab_markers)   # Show indent guides
         self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than delete 1 space
         self.SetTabIndents(True)          # Tab key indents
         self.SetTabWidth(tab_size)               # Proscribed tab size for wx
@@ -2782,41 +2784,17 @@ class RobotDataEditor(PythonSTC):
         # The rest remains unchanged.
 
         # Line numbers in margin
-        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, 'fore:#000000,back:#99A9C2')
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, f'fore:{m_fg},back:{m_bg}')
         # Highlighted brace
         self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, 'fore:#00009D,back:#FFFF00')
         # Unmatched brace
         self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, 'fore:#00009D,back:#FF0000')
         # Indentation guide
-        self.StyleSetSpec(wx.stc.STC_STYLE_INDENTGUIDE, "fore:#CDCDCD")
-
-        # Python styles
-        self.StyleSetSpec(wx.stc.STC_P_DEFAULT, 'fore:#000000')
-        # Comments
-        self.StyleSetSpec(wx.stc.STC_P_COMMENTLINE,  'fore:#008000,back:#F0FFF0')
-        self.StyleSetSpec(wx.stc.STC_P_COMMENTBLOCK, 'fore:#008000,back:#F0FFF0')
-        # Numbers
-        self.StyleSetSpec(wx.stc.STC_P_NUMBER, 'fore:#008080')
-        # Strings and characters
-        self.StyleSetSpec(wx.stc.STC_P_STRING, 'fore:#800080')
-        self.StyleSetSpec(wx.stc.STC_P_CHARACTER, 'fore:#800080')
-        # Keywords
-        self.StyleSetSpec(wx.stc.STC_P_WORD, 'fore:#000080,bold')
-        # Triple quotes
-        self.StyleSetSpec(wx.stc.STC_P_TRIPLE, 'fore:#800080,back:#FFFFEA')
-        self.StyleSetSpec(wx.stc.STC_P_TRIPLEDOUBLE, 'fore:#800080,back:#FFFFEA')
-        # Class names
-        self.StyleSetSpec(wx.stc.STC_P_CLASSNAME, 'fore:#0000FF,bold')
-        # Function names
-        self.StyleSetSpec(wx.stc.STC_P_DEFNAME, 'fore:#008080,bold')
-        # Operators
-        self.StyleSetSpec(wx.stc.STC_P_OPERATOR, 'fore:#800000,bold')
-        # Identifiers. I leave this as not bold because everything seems
-        # to be an identifier if it doesn't match the above criterae
-        self.StyleSetSpec(wx.stc.STC_P_IDENTIFIER, 'fore:#000000')
+        if tab_markers:
+            self.StyleSetSpec(wx.stc.STC_STYLE_INDENTGUIDE, "fore:#CDCDCD")
 
         # Caret color
-        self.SetCaretForeground("BLUE")
+        self.SetCaretForeground(Colour(caret_fg))
         # Selection background
         # self.SetSelBackground(1, '#66CCFF')
         """

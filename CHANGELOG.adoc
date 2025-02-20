@@ -10,6 +10,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 - Added syntax colorization for the ``GROUP`` marker.
+- Added on Text Editor, tab indentation markers and ``tab markers`` boolean setting with default ``True``.
+- Added on Text Editor, folding margin with markers style configurable with ``fold symbols`` in settings.cfg.
 
 === Changed
 - Create directories when needed in New Project dialog.
