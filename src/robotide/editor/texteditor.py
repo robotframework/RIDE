@@ -25,6 +25,7 @@ from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
+from .pythoneditor import PythonSTC
 from . import _EDIT_nt, get_menudata
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
@@ -1523,7 +1524,7 @@ class SourceEditor(wx.Panel):
             self._stored_text = self.source_editor.GetText()
 
     def _create_editor_text_control(self, text=None, language=None):
-        self.source_editor = RobotDataEditor(self, language)
+        self.source_editor = RobotDataEditor(self, language=language)
         self.Sizer.add_expanding(self.source_editor)
         self.Sizer.Layout()
         if text is not None:
@@ -2393,33 +2394,40 @@ class SourceEditor(wx.Panel):
                 self._data.mark_data_pristine()
 
 
-class RobotDataEditor(stc.StyledTextCtrl):
+class RobotDataEditor(PythonSTC):
     margin = 1
 
-    def __init__(self, parent, readonly=False, language=None):
-        stc.StyledTextCtrl.__init__(self, parent)
+    def __init__(self, parent, readonly=False, language=None, style=wx.BORDER_NONE):
+        # stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
         self.language = language
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
+        self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
+        self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
+        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols},
+                           style=style)
         self._information_popup = None
         self._old_details = None
         self.readonly = readonly
-        self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
+        # self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
         self.SetUseTabs(False)
         caret_colour = self._settings[PLUGIN_NAME].get('setting', 'black')
         self._background = self._settings[PLUGIN_NAME].get('background', 'white')
         caret_colour = self.get_visible_color(caret_colour)
-        self.SetCaretForeground(Colour(caret_colour))
         caret_style = self._settings[PLUGIN_NAME].get('caret style', 'block')
         caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
         self.SetCaretStyle(caret_style)
-        self.SetTabWidth(parent.tab_size)
-        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        margin_background = self._settings['General'].get_without_default('secondary background')
+        margin_foreground = self._settings['General'].get_without_default('secondary foreground')
+        self.SetUpEditor(tab_size=parent.tab_size, tab_markers=self.tab_markers,
+                         m_bg=margin_background, m_fg=margin_foreground, caret_fg=caret_colour)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
+        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        self.Bind(stc.EVT_STC_MARGINCLICK, self.on_margin_click)
         # DEBUG:
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         # Only set, after language: self.stylizer = RobotStylizer(self, self._settings, self.readonly)
@@ -2484,6 +2492,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_DEFAULT, "MM"))
         self.Update()
 
     def set_language(self, dlanguage):
@@ -2510,6 +2519,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def on_zoom(self, event):
         __ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_FOLDDISPLAYTEXT, "MM"))
         self._set_zoom()
 
     def _set_zoom(self):
@@ -2666,6 +2676,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self.BraceBadLight(brace_at_caret)
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
+        self.stylizer.stylize()
 
     def _show_keyword_details(self, value, coords=None):
         """
@@ -2695,6 +2706,104 @@ class RobotDataEditor(stc.StyledTextCtrl):
         elif color_diff1 < color_diff3:
             return Colour(colour)
         return Colour('black')
+
+    def SetUpEditor(self, tab_size=4, tab_markers=True, m_bg='', m_fg='', caret_fg: Colour = 'BLUE'):
+        """
+        This method carries out the work of setting up the Code editor.
+        It's seperate so as not to clutter up the init code.
+        """
+        import keyword
+
+        self.SetLexer(stc.STC_LEX_PYTHON)
+        self.SetKeyWords(0, " ".join(keyword.kwlist))
+
+        # Enable folding
+        self.SetProperty("fold", "1")
+
+        # Highlight tab/space mixing (shouldn't be any)
+        self.SetProperty("tab.timmy.whinge.level", "1")
+
+        # Set left and right margins
+        self.SetMargins(2, 2)
+
+        self.SetMarginBackground(1, m_bg)
+        # Set up the numbers in the margin for margin #1
+        self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
+        # Reasonable value for, say, 4-5 digits using a mono font (40 pix)
+        # self.SetMarginWidth(1, 40)
+
+        # Indentation and tab stuff
+        self.SetIndent(tab_size)                 # Proscribed indent size for wx
+        self.SetIndentationGuides(tab_markers)   # Show indent guides
+        self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than delete 1 space
+        self.SetTabIndents(True)          # Tab key indents
+        self.SetTabWidth(tab_size)               # Proscribed tab size for wx
+        self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
+        # White space
+        self.SetViewWhiteSpace(False)   # Don't view white space
+
+        # EOL: Since we are loading/saving ourselves, and the
+        # strings will always have \n's in them, set the STC to
+        # edit them that way.
+        self.SetEOLMode(wx.stc.STC_EOL_LF)
+        self.SetViewEOL(False)
+
+        # No right-edge mode indicator
+        self.SetEdgeMode(stc.STC_EDGE_NONE)
+
+        # Set up a margin to hold fold markers
+        self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
+        self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
+        self.SetMarginSensitive(2, True)
+        self.SetMarginBackground(2, m_bg)
+        self.SetFoldMarginColour(True, m_bg)
+        self.SetFoldMarginHiColour(True, m_bg)
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_FOLDDISPLAYTEXT, "MM"))
+
+        # Global default style
+        if wx.Platform == '__WXMSW__':
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New
+        elif wx.Platform == '__WXMAC__':
+            # DEBUG: if this looks fine on Linux too, remove the Mac-specific case
+            # and use this whenever OS != MSW.
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
+                              'fore:#000000,back:#FFFFFF,face:Monaco')
+        else:
+            # print("DEBUG: Setup on Linux")
+            defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
+            # Courier, Space Mono, Source Pro Mono,
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Hack,size:%d' % defsize)
+        """
+        self.StyleSetBackground(stc.STC_STYLE_DEFAULT, Colour(200, 222, 40))
+        self.StyleSetForeground(stc.STC_STYLE_DEFAULT, Colour(7, 0, 70))
+        """
+        # Clear styles and revert to default.
+        self.StyleClearAll()
+
+        # Following style specs only indicate differences from default.
+        # The rest remains unchanged.
+
+        # Line numbers in margin
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, f'fore:{m_fg},back:{m_bg}')
+        # Highlighted brace
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, 'fore:#00009D,back:#FFFF00')
+        # Unmatched brace
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, 'fore:#00009D,back:#FF0000')
+        # Indentation guide
+        if tab_markers:
+            self.StyleSetSpec(wx.stc.STC_STYLE_INDENTGUIDE, "fore:#CDCDCD")
+
+        # Caret color
+        self.SetCaretForeground(Colour(caret_fg))
+        # Selection background
+        # self.SetSelBackground(1, '#66CCFF')
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        """
+
+        self.SetSelBackground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
+        self.SetSelForeground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
 
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
