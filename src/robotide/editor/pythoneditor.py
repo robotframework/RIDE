@@ -45,20 +45,19 @@ else:
 
 class PythonSTC(stc.StyledTextCtrl):
 
-    fold_symbols = 0
-
-    def __init__(self, parent, idd, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
+    def __init__(self, parent, idd, options: dict, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
         stc.StyledTextCtrl.__init__(self, parent, idd, pos, size, style)
 
         # self.CmdKeyAssign(ord('B'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMIN)
         # self.CmdKeyAssign(ord('N'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMOUT)
-
+        # self.tab_markers = options['tab markers']
+        self.fold_symbols = options['fold symbols']
         self.SetLexer(stc.STC_LEX_PYTHON)
         self.SetKeyWords(0, " ".join(keyword.kwlist))
 
         self.SetProperty("fold", "1")
         self.SetProperty("tab.timmy.whinge.level", "1")
-        self.SetMargins(0, 0)
+        self.SetMargins(2, 2)
 
         self.SetViewWhiteSpace(False)
         self.SetEdgeMode(stc.STC_EDGE_BACKGROUND)
@@ -162,7 +161,7 @@ class PythonSTC(stc.StyledTextCtrl):
         # End of line where string is not closed
         self.StyleSetSpec(stc.STC_P_STRINGEOL, "fore:#000000,face:%(mono)s,back:#E0C0E0,eol,size:%(size)d" % faces)
 
-        self.SetCaretForeground("BLUE")
+        # self.SetCaretForeground("BLUE")
 
         # register some images for use in the AutoComplete box.
         # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
