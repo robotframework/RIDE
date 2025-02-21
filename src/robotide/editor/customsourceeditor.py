@@ -22,7 +22,7 @@ import sys
 
 import wx
 import wx.stc as stc
-from .pythoneditor import PythonSTC
+from robotide.editor.pythoneditor import PythonSTC
 from wx import Colour
 
 # ---------------------------------------------------------------------------
@@ -37,8 +37,8 @@ wildcard = "All files (*.*)|*.*|"                \
 # ----------------------------------------------------------------------
 
 class SourceCodeEditor(PythonSTC):
-    def __init__(self, parent, style=wx.BORDER_NONE):
-        PythonSTC.__init__(self, parent, -1, style=style)
+    def __init__(self, parent, options, style=wx.BORDER_NONE):
+        PythonSTC.__init__(self, parent, -1, options, style=style)
         self.SetUpEditor()
 
     # Some methods to make it compatible with how the wxTextCtrl is used
@@ -240,9 +240,9 @@ class CodeEditorPanel(wx.Panel):
         self.path = filepath
         wx.Panel.__init__(self, parent, size=(1, 1))
         self.mainFrame = main_frame
-        self.editor = SourceCodeEditor(self)
+        self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2})
         self.editor.RegisterModifiedEvent(self.on_code_modified)
-
+        parent.SetName(f'Code Editor: {filepath}')
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -528,8 +528,9 @@ _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 
 
 def main(filepath, frame=None):
-    __name__ = 'Editor'
+    __name__ = f'Code Editor: {filepath}'
     app = wx.App()
+    app.SetAppDisplayName(__name__)
     if frame is None:
         frame = wx.Frame(None)
     CodeEditorPanel(frame, None, filepath)
