@@ -46,7 +46,7 @@ else:
 class PythonSTC(stc.StyledTextCtrl):
 
     def __init__(self, parent, idd, options: dict, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
-        stc.StyledTextCtrl.__init__(self, parent, idd, pos, size, style)
+        stc.StyledTextCtrl.__init__(self, parent=parent, id=idd, pos=pos, size=size, style=style)
 
         # self.CmdKeyAssign(ord('B'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMIN)
         # self.CmdKeyAssign(ord('N'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMOUT)
