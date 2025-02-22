@@ -61,6 +61,8 @@ class GridEditor(grid.Grid):
         self.GetGridColLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
         self.GetGridRowLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
         self.GetGridRowLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
+        self.SetLabelBackgroundColour(Colour(self.color_secondary_background))
+        self.SetLabelTextColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
         """
         DEBUG: This block adds aditional scrollbars in mains Grid Editor, making hard to focus on cells keeping the 

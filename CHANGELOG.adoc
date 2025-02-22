@@ -19,7 +19,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Improved colorization for multiple Gherkin words, for example in the French language.
 
 === Fixed
-
+- Fixed not set text color on row labels in Grid Editor. Now the General ``secondary foreground`` is applied.
 - Fixed multiple scroll bars in Grid Editor when editing Test Cases or Keywords. This caused bad navigation on cells.
 - Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.
   When right clicking over Tree elements, to, for example, expand or select tests, we want to keep the Editor in the same file or position.
