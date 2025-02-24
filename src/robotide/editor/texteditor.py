@@ -20,6 +20,7 @@ from io import StringIO, BytesIO
 from os.path import dirname
 from time import time
 
+import robot.libraries.BuiltIn
 import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
@@ -938,6 +939,8 @@ class SourceEditor(wx.Panel):
         self._tab_open = self._title  # When starting standalone this was not being set
         self._controller_for_context = None
         self._suggestions = None
+        self.doc_size: int = 0  # Number of lines in document to be used in collecting words
+        self._words_cache = set()  # Actual cache of words to add to suggestions
         self._stored_text = None
         self._ctrl_action = None
         self.is_saving = False  # To avoid double calls to save
@@ -1178,6 +1181,25 @@ class SourceEditor(wx.Panel):
             self.source_editor_parent.SetFocus()
             self.source_editor.Update()
 
+    def words_cache(self, doc_size: int):
+        if doc_size != self.doc_size:
+            words_list = self.collect_words(self.source_editor.GetText())
+            words_list = [w for w in words_list if len(w) > 2 ]
+            self._words_cache.update(words_list)
+            self.doc_size = doc_size
+        sugs_list = list(self._words_cache)
+        sugs_list.sort()
+        return set(sugs_list)
+
+    @staticmethod
+    def collect_words(text: str):
+        if not text:
+            return ['']
+        words = set(list(text.replace('\r\n', ' ').replace('\n', ' ').
+                         replace('=', '').split(' ')))
+        print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
+        return words
+
     def on_content_assist(self, event):
         """
         Produces an Auto Complete Suggestions list, from Scintilla. Based on selected content or nearby text.
@@ -1194,16 +1216,29 @@ class SourceEditor(wx.Panel):
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
         self.set_editor_caret_position()
+        self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
         sugs = []
         if selected:
             for start in selected:
-                sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+                found = []
+                for s in self._suggestions.get_suggestions(start):
+                    if hasattr(s, 'name'):
+                        found.append(s.name)
+                    else:
+                        found.append(s)
+                sugs.extend(found)
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
         sel = [s for s in selected] if selected else []
         entry_word = sel[0].split('.')[-1].strip()
         length_entered = len(entry_word)  # Because Libraries prefixed
-        sugs.extend(s.name for s in self._suggestions.get_suggestions(''))
+        found = []
+        for s in self._suggestions.get_suggestions(''):
+            if hasattr(s, 'name'):
+                found.append(s.name)
+            else:
+                found.append(s)
+        sugs.extend(found)
         if len(sugs) > 0:
             sugs = [s for s in sugs if s != '']
         if sugs:
@@ -1250,6 +1285,7 @@ class SourceEditor(wx.Panel):
             self.source_editor.set_language(self.language)
             self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
+        self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 
     def selected(self, data):
         if not self.source_editor:

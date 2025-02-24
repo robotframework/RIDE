@@ -42,6 +42,7 @@ class Namespace(object):
         self._update_listeners = set()
         self._init_caches()
         self._set_pythonpath()
+        self._words_cache = set()
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
@@ -136,7 +137,7 @@ class Namespace(object):
     def get_suggestions_for(self, controller, start):
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
-        sugs = set()
+        sugs = self._words_cache or set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start) or not self._looks_like_variable(start):
             sugs.update(self._variable_suggestions(controller, start, ctx))
@@ -237,6 +238,12 @@ class Namespace(object):
         #       f"in datafile={datafile.source}")
         kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
+
+    def update_words_cache(self, words_list:set, reset=False):
+        if reset:
+            self._words_cache.clear()
+            return
+        self._words_cache.update(words_list)
 
 
 class _RetrieverContextFactory(object):
