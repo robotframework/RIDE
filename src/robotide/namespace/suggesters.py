@@ -32,6 +32,20 @@ class SuggestionSource(object):
                 return self._controller.get_local_namespace.get_suggestions(value)
         return self._plugin.content_assist_values(value)  # DEBUG: Remove old functionality when no more needed
 
+    def update_from_local(self, words: set, language:str):
+        from ..lib.compat.parsing.languages import Language
+        if isinstance(language, list):
+            language = language[0]
+        if language in [None, '', 'English', 'En']:
+            localized = Language.from_name('en')
+        else:
+            localized = Language.from_name(language)
+        words.update(set(list(localized.headers.values()) + list(localized.settings.values()) +
+                         list(localized.bdd_prefixes) + localized.true_strings + localized.false_strings))
+        namespace = self._controller.get_local_namespace()
+        namespace.update_words_cache(words)
+        print(f"DEBUG: suggesters.py SuggestionSource update_from_local words={words} namespace={namespace} "
+              f"language={localized.name}")
 
 @total_ordering
 class _Suggester(object):
