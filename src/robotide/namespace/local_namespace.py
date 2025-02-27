@@ -94,6 +94,9 @@ class LocalRowNamespace(LocalMacroNamespace):
     @staticmethod
     def _remove_duplicates(suggestions, local_variables):
         def is_unique(gvar):
-            return utils.normalize(gvar.name) not in [utils.normalize(lvar.name) for lvar in local_variables]
+            if hasattr(gvar, 'name'):
+                return utils.normalize(gvar.name) not in [utils.normalize(lvar.name) for lvar in local_variables]
+            else:
+                return utils.normalize(gvar) not in [utils.normalize(lvar.name) for lvar in local_variables]
         unique = [gvar for gvar in suggestions if is_unique(gvar)]
         return unique + local_variables

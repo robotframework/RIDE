@@ -481,9 +481,9 @@ class Suggestions(object):
     @staticmethod
     def _get_duplicate_names(choices):
         results = set()
-        normalized_names = [utils.normalize(ch.name) for ch in choices]
+        normalized_names = [utils.normalize(ch.name if hasattr(ch, 'name') else ch) for ch in choices]
         for choice in choices:
-            normalized = utils.normalize(choice.name)
+            normalized = utils.normalize(choice.name if hasattr(choice, 'name') else choice)
             if normalized_names.count(normalized) > 1:
                 results.add(normalized)
         return results
@@ -493,17 +493,24 @@ class Suggestions(object):
                 choices]
 
     def _format(self, choice, prefix, duplicate_names):
-        return choice.name if self._matches_unique_shortname(
-            choice, prefix, duplicate_names) else choice.longname
+        if hasattr(choice, 'name'):
+            return choice.name if self._matches_unique_shortname(
+                choice, prefix, duplicate_names) else choice.longname
+        elif self._matches_unique_shortname(choice, prefix, duplicate_names):
+            return choice
 
     @staticmethod
     def _matches_unique_shortname(choice, prefix, duplicate_names):
         if isinstance(choice, VariableInfo):
             return True
-        if not utils.normalize(choice.name).startswith(
+        if hasattr(choice, 'name'):
+            name = choice.name
+        else:
+            name = choice
+        if not utils.normalize(name).startswith(
                 utils.normalize(prefix)):
             return False
-        if utils.normalize(choice.name) in duplicate_names:
+        if utils.normalize(name) in duplicate_names:
             return False
         return True
 

@@ -1195,8 +1195,7 @@ class SourceEditor(wx.Panel):
     def collect_words(text: str):
         if not text:
             return ['']
-        words = set(list(text.replace('\r\n', ' ').replace('\n', ' ').
-                         replace('=', '').split(' ')))
+        words = set(list(text.replace('\r\n', ' ').replace('\n', ' ').split(' ')))
         print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
         return words
 
