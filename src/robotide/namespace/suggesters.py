@@ -25,6 +25,7 @@ class SuggestionSource(object):
         self._controller = controller
 
     def get_suggestions(self, value, row=None):
+        # print(f"DEBUG: suggesters.py SuggestionSource get_suggestions ENTER value={value}")
         if self._controller:
             try:
                 return self._controller.get_local_namespace_for_row(row).get_suggestions(value)
