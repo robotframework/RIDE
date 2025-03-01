@@ -28,6 +28,8 @@ def normalize(string, ignore=(), caseless=True, spaceless=True):
     By default, string is turned to lower case and all whitespace is removed.
     Additional characters can be removed by giving them in ``ignore`` list.
     """
+    if not string or string == '':
+        return ''
     empty = u'' if is_unicode(string) else b''
     if PY3 and isinstance(ignore, bytes):
         # Iterating bytes in Python3 yields integers.

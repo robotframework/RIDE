@@ -20,7 +20,6 @@ from io import StringIO, BytesIO
 from os.path import dirname
 from time import time
 
-import robot.libraries.BuiltIn
 import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
@@ -1184,20 +1183,27 @@ class SourceEditor(wx.Panel):
     def words_cache(self, doc_size: int):
         if doc_size != self.doc_size:
             words_list = self.collect_words(self.source_editor.GetText())
-            words_list = [w for w in words_list if len(w) > 2 ]
             self._words_cache.update(words_list)
             self.doc_size = doc_size
-        sugs_list = list(self._words_cache)
-        sugs_list.sort()
-        return set(sugs_list)
+        return sorted(self._words_cache)
 
     @staticmethod
     def collect_words(text: str):
         if not text:
             return ['']
-        words = set(list(text.replace('\r\n', ' ').replace('\n', ' ').split(' ')))
+
+        def var_strip(txt:str):
+            return txt.strip('$&@%{[(')
+
+        words = set()
+        words_ = list(text.replace('\r\n', ' ').replace('\n', ' ').split(' '))
+        for w in words_:
+            wl = var_strip(w)
+            if wl and wl[0].isalpha():
+                words.add(w)
+
         print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
-        return words
+        return sorted(words)
 
     def on_content_assist(self, event):
         """
@@ -1216,7 +1222,7 @@ class SourceEditor(wx.Panel):
         selected = self.source_editor.get_selected_or_near_text()
         self.set_editor_caret_position()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
-        sugs = []
+        sugs = set()
         if selected:
             for start in selected:
                 found = []
@@ -1225,7 +1231,7 @@ class SourceEditor(wx.Panel):
                         found.append(s.name)
                     else:
                         found.append(s)
-                sugs.extend(found)
+                sugs.update(found)
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
         sel = [s for s in selected] if selected else []
@@ -1237,14 +1243,18 @@ class SourceEditor(wx.Panel):
                 found.append(s.name)
             else:
                 found.append(s)
-        sugs.extend(found)
+        sugs.update(found)
         if len(sugs) > 0:
-            sugs = [s for s in sugs if s != '']
+            # sugs = [s for s in sugs if s != '']
+            if '' in sugs:
+                sugs.remove('')
         if sugs:
             self.source_editor.AutoCompSetDropRestOfWord(False)
+            self.source_editor.AutoCompSetFillUps('=')
             self.source_editor.AutoCompSetIgnoreCase(True)
+            self.source_editor.AutoCompSetOrder(0)
             self.source_editor.AutoCompSetSeparator(ord(';'))
-            self.source_editor.AutoCompShow(length_entered, ";".join(sugs))
+            self.source_editor.AutoCompShow(length_entered, ";".join(sorted(sugs)))
             self.autocomp_pos = self.source_editor.AutoCompPosStart()
             self._showing_list = True
             # DEBUG: self.set_editor_caret_position()
