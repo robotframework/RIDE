@@ -239,11 +239,11 @@ class Namespace(object):
         kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
 
-    def update_words_cache(self, words_list:set, reset=False):
+    def update_words_cache(self, words_list:list, reset=False):
         if reset:
             self._words_cache.clear()
             return
-        self._words_cache.update(words_list)
+        self._words_cache.update(set(words_list))
 
 
 class _RetrieverContextFactory(object):

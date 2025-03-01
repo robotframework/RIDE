@@ -541,6 +541,8 @@ class ContentAssistPopup(object):
             self._list.ClearAll()
             self._parent.hide()
             return False
+        self._choices = sorted(set([c for c in self._choices if c is not None]))
+        # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
         self._list.populate(self._choices)
         return True
 
@@ -623,7 +625,7 @@ class ContentAssistPopup(object):
     def on_list_item_selected(self, event):
         self._selection = event.GetIndex()
         item = self._suggestions.get_item(event.GetText())
-        if item.details:
+        if hasattr(item, 'details') and item.details:
             self._details_popup.Show()
             self._details_popup.set_content(item.details, item.name)
         elif self._details_popup.IsShown():
