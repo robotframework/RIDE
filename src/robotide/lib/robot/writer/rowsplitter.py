@@ -112,7 +112,7 @@ class RowSplitter(object):
 
     def _get_possible_split_indices(self, data):
         min_index = self._get_first_non_empty_index(data, indented=True) + 1
-        if data[min_index-1].startswith('['):  # Special cases of [Arguments], [Teardown], e.t.c.
+        if min_index >= 1 and data[min_index-1].startswith('['):  # Special cases of [Arguments], [Teardown], e.t.c.
             cols = self._cols + 20  # big number
         else:
             cols = self._cols

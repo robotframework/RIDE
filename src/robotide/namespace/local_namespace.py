@@ -43,7 +43,7 @@ class LocalMacroNamespace(object):
                 pass
         return False
 
-    def update_words_cache(self, words_list: set, reset=False):
+    def update_words_cache(self, words_list: list, reset=False):
         return self.namespace.update_words_cache(words_list, reset)
 
 

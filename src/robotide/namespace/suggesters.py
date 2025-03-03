@@ -25,13 +25,25 @@ class SuggestionSource(object):
         self._controller = controller
 
     def get_suggestions(self, value, row=None):
-        # print(f"DEBUG: suggesters.py SuggestionSource get_suggestions ENTER value={value}")
-        if self._controller:
-            try:
-                return self._controller.get_local_namespace_for_row(row).get_suggestions(value)
-            except AttributeError:
-                return self._controller.get_local_namespace.get_suggestions(value)
-        return self._plugin.content_assist_values(value)  # DEBUG: Remove old functionality when no more needed
+        print(f"DEBUG: suggesters.py SuggestionSource get_suggestions ENTER value={value}")
+        start = value
+        while start and start[-1] in [']', '}', '=', ',']:
+            start = start[:-1]
+            print(f"DEBUG: suggesters.py SuggestionSource get_suggestions SEARCHING start={start}")
+        # If we have a space separated value, try first the value and then the last word
+        key = start.split(' ')[-1]
+        keys = [start, key] if start != key else [start]
+        sugs = set()
+        for initial in keys:
+            if self._controller:
+                try:
+                    sugs.update(self._controller.get_local_namespace_for_row(row).get_suggestions(initial))
+                except AttributeError:
+                    sugs.update(self._controller.get_local_namespace.get_suggestions(initial))
+                # return list(sugs)
+            sugs.update(self._plugin.content_assist_values(initial))  # DEBUG: Remove old functionality when no more needed
+            print(f"DEBUG: suggesters.py SuggestionSource get_suggestions IN LOOP initial ={initial} len sugs={len(sugs)}")
+        return list(sugs)
 
     def update_from_local(self, words: list, language:str):
         from ..lib.compat.parsing.languages import Language
@@ -44,7 +56,7 @@ class SuggestionSource(object):
         words.extend(set(list(localized.headers.values()) + list(localized.settings.values()) +
                          list(localized.bdd_prefixes) + localized.true_strings + localized.false_strings))
         namespace = self._controller.get_local_namespace()
-        namespace.update_words_cache(sorted(words))
+        namespace.update_words_cache(words)
         print(f"DEBUG: suggesters.py SuggestionSource update_from_local words={words} namespace={namespace} "
               f"language={localized.name}")
 

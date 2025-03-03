@@ -1213,6 +1213,32 @@ class KeywordEditor(GridEditor, Plugin):
             return False
         return True
 
+    """
+    def words_cache(self, doc_size: int):
+        if doc_size != self.doc_size:
+            words_list = self.collect_words(SOME_CONTENT)
+            self._words_cache.update(words_list)
+            self.doc_size = doc_size
+        return sorted(self._words_cache)
+
+    @staticmethod
+    def collect_words(text: str):
+        if not text:
+            return ['']
+
+        def var_strip(txt:str):
+            return txt.strip('$&@%{[(')
+
+        words = set()
+        words_ = list(text.replace('\r\n', ' ').replace('\n', ' ').split(' '))
+        for w in words_:
+            wl = var_strip(w)
+            if wl and wl[0].isalpha():
+                words.add(w)
+
+        print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
+        return sorted(words)
+    """
 
 class ContentAssistCellEditor(GridCellEditor):
 
@@ -1257,6 +1283,7 @@ class ContentAssistCellEditor(GridCellEditor):
 
     def Create(self, parent, idd, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller, self._language)
+        # self._tc.suggestion_source.update_from_local(self._controller.datafile, self._language)
         self.SetControl(self._tc)
         if evthandler:
             self._tc.PushEventHandler(evthandler)

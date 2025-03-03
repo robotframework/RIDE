@@ -357,7 +357,8 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
         """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
         instance """
 
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller), language=language,
+        self.suggestion_source = SuggestionSource(plugin, controller)
+        _ContentAssistTextCtrlBase.__init__(self, self.suggestion_source, language=language,
                                             parent=parent, size=wx.DefaultSize,
                                             style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
@@ -541,8 +542,8 @@ class ContentAssistPopup(object):
             self._list.ClearAll()
             self._parent.hide()
             return False
-        self._choices = sorted(set([c for c in self._choices if c is not None]))
-        # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
+        self._choices = list(set([c for c in self._choices if c is not None]))
+        print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
         self._list.populate(self._choices)
         return True
 
