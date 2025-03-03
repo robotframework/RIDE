@@ -30,6 +30,7 @@ class LocalMacroNamespace(object):
         self.namespace = namespace
 
     def get_suggestions(self, start):
+        print(f"DEBUG: local_namespace.py LocalMacroNamespace get_suggestions ENTER start={start}")
         return self.namespace.get_suggestions_for(self._controller, start)
 
     def has_name(self, value):
@@ -55,6 +56,8 @@ class LocalRowNamespace(LocalMacroNamespace):
 
     def get_suggestions(self, start):
         suggestions = LocalMacroNamespace.get_suggestions(self, start)
+        print(f"DEBUG: suggesters.py LocalRowNamespace get_suggestions after LocalMacroNamespace start={start}\n"
+              f"suggestions={suggestions}")
         if self._could_be_variable(start):
             suggestions = self._harvest_local_variables(start, suggestions)
         else:
