@@ -26,7 +26,7 @@ from .. import robotapi, utils
 from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
 from ..robotapi import VariableFileSetter
 from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, UserKeywordInfo,
-                             ArgumentInfo)
+                             ArgumentInfo, LibraryKeywordInfo, BlockKeywordInfo)
 from .cache import LibraryCache, ExpiringCache
 from .resourcefactory import ResourceFactory
 from .embeddedargs import EmbeddedArgsHandler
@@ -138,12 +138,19 @@ class Namespace(object):
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
         sugs = self._words_cache or set()
+        while start and start[-1] in [']', '}', '=', ',']:
+            start = start[:-1]
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start) or not self._looks_like_variable(start):
             sugs.update(self._variable_suggestions(controller, start, ctx))
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
         else:
             sugs.update(self._variable_suggestions(controller, start, ctx))
+        if not self._looks_like_variable(start):  # Search in content
+            for v in ['${', '@{', '&{', '%{', '$']:
+                sugs.update(self._content_suggestions(f'{v}{start}'))
+        else:
+            sugs.update(self._content_suggestions(start))
         sugs_list = list(sugs)
         sugs_list.sort()
         return sugs_list
@@ -163,8 +170,8 @@ class Namespace(object):
 
     @staticmethod
     def _looks_like_variable(start):
-        return len(start) == 1 and start[0] in ['$', '@', '&'] \
-            or (len(start) >= 2 and start[:2] in ['${', '@{', '&{']) \
+        return len(start) == 1 and start[0] in ['$', '@', '&', '%'] \
+            or (len(start) >= 2 and start[:2] in ['${', '@{', '&{', '%{']) \
             or len(start) >= 2 and start[0] == '$'
 
     def _variable_suggestions(self, controller, start, ctx):
@@ -172,6 +179,17 @@ class Namespace(object):
         variables = self._retriever.get_variables_from(
             controller.datafile, ctx)
         sugs = (v for v in variables if v.name_matches(start))
+        return sugs
+
+    def _content_suggestions(self, start):
+        sugs = set()
+        for v in self._words_cache:
+            if isinstance(v, (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, UserKeywordInfo,
+                             ArgumentInfo, LibraryKeywordInfo, BlockKeywordInfo)):
+                if v.name.lower().startswith(start.lower()):
+                    sugs.update(v.name)
+            elif v.lower().startswith(start.lower()) or v.strip('[').lower().startswith(start.lower()):
+                sugs.update(v)
         return sugs
 
     @staticmethod
