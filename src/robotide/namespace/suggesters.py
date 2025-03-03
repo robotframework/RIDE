@@ -29,7 +29,7 @@ class SuggestionSource(object):
         start = value
         while start and start[-1] in [']', '}', '=', ',']:
             start = start[:-1]
-            print(f"DEBUG: suggesters.py SuggestionSource get_suggestions SEARCHING start={start}")
+            # print(f"DEBUG: suggesters.py SuggestionSource get_suggestions SEARCHING start={start}")
         # If we have a space separated value, try first the value and then the last word
         key = start.split(' ')[-1]
         keys = [start, key] if start != key else [start]
@@ -131,6 +131,7 @@ class BuiltInLibrariesSuggester(_Suggester):
 
     def get_suggestions(self, name, *args):
         _ = args
+        print(f"DEBUG: suggesters.py BuiltInLibrariesSuggester get_suggestions ENTER name={name}")
         return [self._suggestion(n) for n in sorted(robotapi.STDLIB_NAMES)
                 if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
 

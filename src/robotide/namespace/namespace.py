@@ -138,6 +138,7 @@ class Namespace(object):
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
         sugs = self._words_cache or set()
+        print(f"DEBUG: namespace.py Namespace get_suggestions_for ENTER start={start} {datafile=} {ctx=} {sugs=}")
         while start and start[-1] in [']', '}', '=', ',']:
             start = start[:-1]
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
@@ -153,6 +154,7 @@ class Namespace(object):
             sugs.update(self._content_suggestions(start))
         sugs_list = list(sugs)
         sugs_list.sort()
+        print(f"DEBUG: namespace.py Namespace get_suggestions_for RETURN {sugs_list=}")
         return sugs_list
 
     def _get_suggestions_from_hooks(self, datafile, start):
@@ -188,7 +190,8 @@ class Namespace(object):
                              ArgumentInfo, LibraryKeywordInfo, BlockKeywordInfo)):
                 if v.name.lower().startswith(start.lower()):
                     sugs.update(v.name)
-            elif v.lower().startswith(start.lower()) or v.strip('[').lower().startswith(start.lower()):
+            elif (v.lower().startswith(start.lower()) or v.strip('$&@%{[(').lower()
+                    .startswith(start.strip('$&@%{[(').lower())):
                 sugs.update(v)
         return sugs
 

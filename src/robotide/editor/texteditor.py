@@ -1223,10 +1223,14 @@ class SourceEditor(wx.Panel):
         """
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
+        print(f"DEBUG: texteditor.py SourceEditor SELECTION selected = {selected}  is type={type(selected)}")
         self.set_editor_caret_position()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
         sugs = set()
         if selected:
+            selected = list(selected)
+            selected = ([selected[0], selected[-1].split(' ')[-1]] if selected[0] != selected[-1].split(' ')[-1]
+            else [selected[0]])
             for start in selected:
                 found = []
                 for s in self._suggestions.get_suggestions(start):
@@ -1235,22 +1239,25 @@ class SourceEditor(wx.Panel):
                     else:
                         found.append(s)
                 sugs.update(found)
+            print(f"DEBUG: texteditor.py SourceEditor on_content_assist FIRST SUGGESTION suggestions = {sugs}\n")
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
         sel = [s for s in selected] if selected else ['']
         entry_word = sel[0].split('.')[-1].strip()
         length_entered = len(entry_word)  # Because Libraries prefixed
-        print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
         # if sel[0] == '':
         # The case when we call Ctl+Space in empty line o always add suggestions
-        found = []
-        for start in sel:
+        # for start in sel:
+        print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        if sel[0] == '':
+            found = []
             for s in self._suggestions.get_suggestions(''):
                 if hasattr(s, 'name'):
                     found.append(s.name)
                 else:
                     found.append(s)
-        sugs.update(found)
+            sugs.update(found)
         if len(sel[0]) >= 2:  # Search again with and without variable prefixes
             found = []
             for start in sel:
