@@ -137,7 +137,7 @@ class Namespace(object):
     def get_suggestions_for(self, controller, start):
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
-        sugs = self._words_cache or set()
+        sugs = set()  # self._words_cache or
         print(f"DEBUG: namespace.py Namespace get_suggestions_for ENTER start={start} {datafile=} {ctx=} {sugs=}")
         while start and start[-1] in [']', '}', '=', ',']:
             start = start[:-1]
@@ -152,6 +152,7 @@ class Namespace(object):
                 sugs.update(self._content_suggestions(f'{v}{start}'))
         else:
             sugs.update(self._content_suggestions(start))
+        print(f"DEBUG: namespace.py Namespace get_suggestions_for FROM CONTENT start={start} {sugs=}")
         sugs_list = list(sugs)
         sugs_list.sort()
         print(f"DEBUG: namespace.py Namespace get_suggestions_for RETURN {sugs_list=}")
@@ -186,12 +187,18 @@ class Namespace(object):
     def _content_suggestions(self, start):
         sugs = set()
         for v in self._words_cache:
-            if isinstance(v, (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, UserKeywordInfo,
-                             ArgumentInfo, LibraryKeywordInfo, BlockKeywordInfo)):
+            if isinstance(v, (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, UserKeywordInfo,
+                              LibraryKeywordInfo, BlockKeywordInfo)):
                 if v.name.lower().startswith(start.lower()):
                     sugs.update(v.name)
-            elif (v.lower().startswith(start.lower()) or v.strip('$&@%{[(').lower()
-                    .startswith(start.strip('$&@%{[(').lower())):
+            elif isinstance(v, (VariableInfo, ArgumentInfo)):
+                if v.name_matches(start):
+                    print(f"DEBUG: namespace.py Namespace _content_suggestions SUGGESTION from VARIABLE {v.name=}")
+                    sugs.update(v.name)
+            elif (v.lower().startswith(start.lower()) or v.strip('$&@%{[()]}=').lower()
+                    .startswith(start.strip('$&@%{[()]}=').lower())):
+                print(f"DEBUG: namespace.py Namespace _content_suggestions SUGGESTION from STRING {v=}"
+                      f"\n v.lower().startswith(start.lower() ={v.lower().startswith(start.lower())}")
                 sugs.update(v)
         return sugs
 
