@@ -147,9 +147,10 @@ class Namespace(object):
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
         else:
             sugs.update(self._variable_suggestions(controller, start, ctx))
+        print(f"DEBUG: namespace.py Namespace get_suggestions_for BEFORE CONTENT start={start} {sugs=}")
         if not self._looks_like_variable(start):  # Search in content
             for v in ['${', '@{', '&{', '%{', '$']:
-                sugs.update(self._content_suggestions(f'{v}{start}'))
+                sugs.update(self._content_suggestions(f'{v}{utils.normalize(start)}'))
         else:
             sugs.update(self._content_suggestions(start))
         print(f"DEBUG: namespace.py Namespace get_suggestions_for FROM CONTENT start={start} {sugs=}")
@@ -190,16 +191,16 @@ class Namespace(object):
             if isinstance(v, (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, UserKeywordInfo,
                               LibraryKeywordInfo, BlockKeywordInfo)):
                 if v.name.lower().startswith(start.lower()):
-                    sugs.update(v.name)
+                    sugs.add(v.name)
             elif isinstance(v, (VariableInfo, ArgumentInfo)):
                 if v.name_matches(start):
                     print(f"DEBUG: namespace.py Namespace _content_suggestions SUGGESTION from VARIABLE {v.name=}")
-                    sugs.update(v.name)
+                    sugs.add(v.name)
             elif (v.lower().startswith(start.lower()) or v.strip('$&@%{[()]}=').lower()
                     .startswith(start.strip('$&@%{[()]}=').lower())):
                 print(f"DEBUG: namespace.py Namespace _content_suggestions SUGGESTION from STRING {v=}"
                       f"\n v.lower().startswith(start.lower() ={v.lower().startswith(start.lower())}")
-                sugs.update(v)
+                sugs.add(v)
         return sugs
 
     @staticmethod

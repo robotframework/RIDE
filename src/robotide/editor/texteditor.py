@@ -1243,7 +1243,7 @@ class SourceEditor(wx.Panel):
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
         sel = [s for s in selected] if selected else ['']
-        entry_word = sel[0].split('.')[-1].strip()
+        entry_word = sel[0].split('.')[-1].strip() if '.' in sel[0] else sel[0]
         length_entered = len(entry_word)  # Because Libraries prefixed
         # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
         # if sel[0] == '':
@@ -1276,7 +1276,9 @@ class SourceEditor(wx.Panel):
                                 found.append(s.name)
                             else:
                                 found.append(s)
-                sugs.update(found)
+            sugs.update(found)
+            print(f"DEBUG: texteditor.py SourceEditor on_content_assist VARIABLES SEARCH selection = {sel}\n"
+                  f"sugs={sugs}")
         if len(sugs) > 0:
             # sugs = [s for s in sugs if s != '']
             if '' in sugs:
