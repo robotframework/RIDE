@@ -609,7 +609,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        return self.notebook.current_page_title == self.title
+        try:
+            return self.notebook.current_page_title == self.title
+        except AttributeError:
+            return self._editor.is_focused()
 
 
 class DummyController(WithStepsController):
@@ -1223,8 +1226,12 @@ class SourceEditor(wx.Panel):
         """
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
-        print(f"DEBUG: texteditor.py SourceEditor SELECTION selected = {selected}  is type={type(selected)}")
+        # print(f"DEBUG: texteditor.py SourceEditor SELECTION selected = {selected}  is type={type(selected)}")
         self.set_editor_caret_position()
+        # Next is for the unit tests when the did not used open to get data:
+        if not self._suggestions:
+            self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
         sugs = set()
         if selected:
@@ -1239,7 +1246,7 @@ class SourceEditor(wx.Panel):
                     else:
                         found.append(s)
                 sugs.update(found)
-            print(f"DEBUG: texteditor.py SourceEditor on_content_assist FIRST SUGGESTION suggestions = {sugs}\n")
+            # print(f"DEBUG: texteditor.py SourceEditor on_content_assist FIRST SUGGESTION suggestions = {sugs}\n")
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
         sel = [s for s in selected] if selected else ['']
@@ -1249,7 +1256,7 @@ class SourceEditor(wx.Panel):
         # if sel[0] == '':
         # The case when we call Ctl+Space in empty line o always add suggestions
         # for start in sel:
-        print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
         if sel[0] == '':
             found = []
             for s in self._suggestions.get_suggestions(''):
@@ -1277,15 +1284,15 @@ class SourceEditor(wx.Panel):
                             else:
                                 found.append(s)
             sugs.update(found)
-            print(f"DEBUG: texteditor.py SourceEditor on_content_assist VARIABLES SEARCH selection = {sel}\n"
-                  f"sugs={sugs}")
+            # print(f"DEBUG: texteditor.py SourceEditor on_content_assist VARIABLES SEARCH selection = {sel}\n"
+            #       f"sugs={sugs}")
         if len(sugs) > 0:
             # sugs = [s for s in sugs if s != '']
             if '' in sugs:
                 sugs.remove('')
         suggestions=";".join(sorted(sugs))
-        print(f"DEBUG: texteditor.py SourceEditor on_content_assist BEFORE SHOW LIST suggestions = {suggestions}\n"
-              f" size={len(suggestions)} cache size={len(self._words_cache)}")
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist BEFORE SHOW LIST suggestions = {suggestions}\n"
+        #       f" size={len(suggestions)} cache size={len(self._words_cache)}")
         if len(suggestions) > 0:  # Consider using contentassist as in Grid Editor
             self.source_editor.AutoCompSetDropRestOfWord(False)
             self.source_editor.AutoCompSetFillUps('=')
@@ -1307,17 +1314,24 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        if self._data._doc_language is not None and len(self._data._doc_language) > 0:
+        if hasattr(self._data, '_doc_language') and self._data._doc_language is not None and len(self._data._doc_language) > 0:
             self.language = self._data._doc_language
+        elif hasattr(self._data, '_language') and self._data._language is not None and len(self._data._language) > 0:
+            self.language = self._data._language
         else:
             self.language = ['en']
         # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
-            if isinstance(self._data.wrapper_data, ResourceFileController):
-                self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
-                self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
+            if hasattr(self._data, 'wrapper_data'):
+                if isinstance(self._data.wrapper_data, ResourceFileController):
+                    self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
+                else:
+                    self._controller_for_context = self._data.wrapper_data.tests[0]
+            elif isinstance(self._data, ResourceFileController):
+                self._controller_for_context = self._data
             else:
-                self._suggestions = SuggestionSource(self.plugin, self._data.wrapper_data.tests[0])
+                self._controller_for_context = self._data.tests[0]
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
         except IndexError:  # It is a new project, no content yet
             self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
             self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
@@ -1330,7 +1344,8 @@ class SourceEditor(wx.Panel):
             self._create_editor_text_control(text=self._stored_text, language=self.language)
         else:
             self.source_editor.set_language(self.language)
-            self.source_editor.set_text(self._data.content)
+            if hasattr(self._data, 'content'):  # Special case for unit test
+                self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
         self._words_cache.clear()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
@@ -1472,7 +1487,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.WriteText(spaces)
 
     def reset(self):
-        if self._data and not self._data.wrapper_data.is_dirty:
+        if self._data and (hasattr(self._data, 'wrapper_data') and not self._data.wrapper_data.is_dirty):
             self.mark_file_dirty(False)
 
     def content_save(self, **args):

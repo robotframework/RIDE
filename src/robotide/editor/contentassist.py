@@ -19,6 +19,7 @@ from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 from os.path import relpath, dirname, isdir
 
+from .gridbase import GridEditor
 from .. import context, utils
 from ..context import IS_MAC, IS_WINDOWS, IS_WX_410_OR_HIGHER
 from ..namespace.suggesters import SuggestionSource
@@ -74,6 +75,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     @staticmethod
     def _get_auto_suggestion_config():
         from robotide.context import APP
+        if not APP:
+            return True
         settings = APP.settings['Grid']
         return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
 
@@ -540,7 +543,8 @@ class ContentAssistPopup(object):
         self._choices = self._suggestions.get_for(value, row=row)
         if not self._choices:
             self._list.ClearAll()
-            self._parent.hide()
+            if not isinstance(self._parent, GridEditor):
+                self._parent.hide()
             return False
         self._choices = list(set([c for c in self._choices if c is not None]))
         print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
