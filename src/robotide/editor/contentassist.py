@@ -547,7 +547,7 @@ class ContentAssistPopup(object):
                 self._parent.hide()
             return False
         self._choices = list(set([c for c in self._choices if c is not None]))
-        print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
+        # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
         self._list.populate(self._choices)
         return True
 

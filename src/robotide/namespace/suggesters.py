@@ -25,7 +25,7 @@ class SuggestionSource(object):
         self._controller = controller
 
     def get_suggestions(self, value, row=None):
-        print(f"DEBUG: suggesters.py SuggestionSource get_suggestions ENTER value={value}")
+        # print(f"DEBUG: suggesters.py SuggestionSource get_suggestions ENTER value={value}")
         start = value
         while start and start[-1] in [']', '}', '=', ',']:
             start = start[:-1]
@@ -46,7 +46,7 @@ class SuggestionSource(object):
                 # return list(sugs)
             if self._plugin:
                 sugs.update(self._plugin.content_assist_values(initial))  # DEBUG: Remove old functionality when no more needed
-            print(f"DEBUG: suggesters.py SuggestionSource get_suggestions IN LOOP initial ={initial} len sugs={len(sugs)}")
+            # print(f"DEBUG: suggesters.py SuggestionSource get_suggestions IN LOOP initial ={initial} len sugs={len(sugs)}")
         return list(sugs)
 
     def update_from_local(self, words: list, language:str):
@@ -61,8 +61,8 @@ class SuggestionSource(object):
                          list(localized.bdd_prefixes) + localized.true_strings + localized.false_strings))
         namespace = self._controller.get_local_namespace()
         namespace.update_words_cache(words)
-        print(f"DEBUG: suggesters.py SuggestionSource update_from_local words={words} namespace={namespace} "
-              f"language={localized.name}")
+        # print(f"DEBUG: suggesters.py SuggestionSource update_from_local words={words} namespace={namespace} "
+        #       f"language={localized.name}")
 
 @total_ordering
 class _Suggester(object):
@@ -135,7 +135,7 @@ class BuiltInLibrariesSuggester(_Suggester):
 
     def get_suggestions(self, name, *args):
         _ = args
-        print(f"DEBUG: suggesters.py BuiltInLibrariesSuggester get_suggestions ENTER name={name}")
+        # print(f"DEBUG: suggesters.py BuiltInLibrariesSuggester get_suggestions ENTER name={name}")
         return [self._suggestion(n) for n in sorted(robotapi.STDLIB_NAMES)
                 if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
 

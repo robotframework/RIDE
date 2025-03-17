@@ -1206,7 +1206,7 @@ class SourceEditor(wx.Panel):
             if wl and wl[0].isalpha():
                 words.add(w)
 
-        print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
+        # print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
         return sorted(words)
 
     def on_content_assist(self, event):
@@ -2570,7 +2570,7 @@ class RobotDataEditor(PythonSTC):
                 self.parent.on_content_assist(event)
             self.key_trigger = 0
         else:
-            print(f"DEBUG: texteditor.py RobotDataEditor on_key_pressed calling try_autocomplete key={key}")
+            # print(f"DEBUG: texteditor.py RobotDataEditor on_key_pressed calling try_autocomplete key={key}")
             self._try_autocomplete(key, event)
         event.Skip()
 

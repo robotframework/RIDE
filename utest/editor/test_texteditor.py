@@ -19,7 +19,6 @@ import time
 import pytest
 import unittest
 import wx
-from duckduckgo_search.cli import suggestions
 from wx.lib.agw.aui import AuiManager
 import wx.lib.agw.aui as aui
 from multiprocessing import shared_memory
@@ -36,8 +35,6 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
 from utest.resources import FakeSettings, FakeEditor
-# from robotide.ui import treeplugin as st
-# from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER, RideSuiteAdded, RideNotebookTabChanging
 from robotide.ui.treeplugin import Tree
 from robotide.ui.notebook import NoteBook
