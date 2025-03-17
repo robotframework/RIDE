@@ -609,7 +609,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        return self.notebook.current_page_title == self.title
+        try:
+            return self.notebook.current_page_title == self.title
+        except AttributeError:
+            return self._editor.is_focused()
 
 
 class DummyController(WithStepsController):
@@ -938,6 +941,8 @@ class SourceEditor(wx.Panel):
         self._tab_open = self._title  # When starting standalone this was not being set
         self._controller_for_context = None
         self._suggestions = None
+        self.doc_size: int = 0  # Number of lines in document to be used in collecting words
+        self._words_cache = set()  # Actual cache of words to add to suggestions
         self._stored_text = None
         self._ctrl_action = None
         self.is_saving = False  # To avoid double calls to save
@@ -1178,6 +1183,32 @@ class SourceEditor(wx.Panel):
             self.source_editor_parent.SetFocus()
             self.source_editor.Update()
 
+    def words_cache(self, doc_size: int):
+        if doc_size != self.doc_size:  # DEBUG The initial idea was to not update words list if no changes in doc
+            words_list = self.collect_words(self.source_editor.GetText())
+            self._words_cache.update(words_list)
+            self.doc_size = doc_size
+        return sorted(self._words_cache)
+
+    @staticmethod
+    def var_strip(txt:str):
+        for symb in '$&@%{[()]}':
+            txt = txt.strip(symb)
+        return txt
+
+    def collect_words(self, text: str):
+        if not text:
+            return ['']
+        words = set()
+        words_ = list(text.replace('\r\n', ' ').replace('\n', ' ').split(' '))
+        for w in words_:
+            wl = self.var_strip(w)
+            if wl and wl[0].isalpha():
+                words.add(w)
+
+        # print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
+        return sorted(words)
+
     def on_content_assist(self, event):
         """
         Produces an Auto Complete Suggestions list, from Scintilla. Based on selected content or nearby text.
@@ -1188,29 +1219,87 @@ class SourceEditor(wx.Panel):
         if not (self.is_focused() and self.plugin.is_focused()):  # DEBUG was typing text when at Grid Editor
             return
         __ = event
+        """
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
             return
+        """
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
+        # print(f"DEBUG: texteditor.py SourceEditor SELECTION selected = {selected}  is type={type(selected)}")
         self.set_editor_caret_position()
-        sugs = []
+        # Next is for the unit tests when the did not used open to get data:
+        if not self._suggestions:
+            self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
+        self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
+        sugs = set()
         if selected:
+            selected = list(selected)
+            selected = ([selected[0], selected[-1].split(' ')[-1]] if selected[0] != selected[-1].split(' ')[-1]
+            else [selected[0]])
             for start in selected:
-                sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+                found = []
+                for s in self._suggestions.get_suggestions(start):
+                    if hasattr(s, 'name'):
+                        found.append(s.name)
+                    else:
+                        found.append(s)
+                sugs.update(found)
+            # print(f"DEBUG: texteditor.py SourceEditor on_content_assist FIRST SUGGESTION suggestions = {sugs}\n")
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
-        sel = [s for s in selected] if selected else []
-        entry_word = sel[0].split('.')[-1].strip()
+        sel = [s for s in selected] if selected else ['']
+        entry_word = sel[0].split('.')[-1].strip() if '.' in sel[0] else sel[0]
         length_entered = len(entry_word)  # Because Libraries prefixed
-        sugs.extend(s.name for s in self._suggestions.get_suggestions(''))
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        # if sel[0] == '':
+        # The case when we call Ctl+Space in empty line o always add suggestions
+        # for start in sel:
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        if sel[0] == '':
+            found = []
+            for s in self._suggestions.get_suggestions(''):
+                if hasattr(s, 'name'):
+                    found.append(s.name)
+                else:
+                    found.append(s)
+            sugs.update(found)
+        if len(sel[0]) >= 2:  # Search again with and without variable prefixes
+            found = []
+            for start in sel:
+                if start[0] in "$&@%{[()]}":
+                    text = self.var_strip(start)
+                    for s in self._suggestions.get_suggestions(text):
+                        if hasattr(s, 'name'):
+                            found.append(s.name)
+                        else:
+                            found.append(s)
+                else:
+                    for v in ['${', '&{', '@{', '$', '[', '(']:
+                        text = f'{v}{start}'
+                        for s in self._suggestions.get_suggestions(text):
+                            if hasattr(s, 'name'):
+                                found.append(s.name)
+                            else:
+                                found.append(s)
+            sugs.update(found)
+            # print(f"DEBUG: texteditor.py SourceEditor on_content_assist VARIABLES SEARCH selection = {sel}\n"
+            #       f"sugs={sugs}")
         if len(sugs) > 0:
-            sugs = [s for s in sugs if s != '']
-        if sugs:
+            # sugs = [s for s in sugs if s != '']
+            if '' in sugs:
+                sugs.remove('')
+        suggestions=";".join(sorted(sugs))
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist BEFORE SHOW LIST suggestions = {suggestions}\n"
+        #       f" size={len(suggestions)} cache size={len(self._words_cache)}")
+        if len(suggestions) > 0:  # Consider using contentassist as in Grid Editor
             self.source_editor.AutoCompSetDropRestOfWord(False)
+            self.source_editor.AutoCompSetFillUps('=')
             self.source_editor.AutoCompSetIgnoreCase(True)
+            self.source_editor.AutoCompSetOrder(0)
             self.source_editor.AutoCompSetSeparator(ord(';'))
-            self.source_editor.AutoCompShow(length_entered, ";".join(sugs))
+            self.source_editor.AutoCompShow(length_entered, suggestions)
             self.autocomp_pos = self.source_editor.AutoCompPosStart()
             self._showing_list = True
             # DEBUG: self.set_editor_caret_position()
@@ -1225,20 +1314,27 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        if self._data._doc_language is not None and len(self._data._doc_language) > 0:
+        if hasattr(self._data, '_doc_language') and self._data._doc_language is not None and len(self._data._doc_language) > 0:
             self.language = self._data._doc_language
+        elif hasattr(self._data, '_language') and self._data._language is not None and len(self._data._language) > 0:
+            self.language = self._data._language
         else:
             self.language = ['en']
         # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
-            if isinstance(self._data.wrapper_data, ResourceFileController):
-                self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
-                self._suggestions = SuggestionSource(None, self._controller_for_context)
+            if hasattr(self._data, 'wrapper_data'):
+                if isinstance(self._data.wrapper_data, ResourceFileController):
+                    self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
+                else:
+                    self._controller_for_context = self._data.wrapper_data.tests[0]
+            elif isinstance(self._data, ResourceFileController):
+                self._controller_for_context = self._data
             else:
-                self._suggestions = SuggestionSource(None, self._data.wrapper_data.tests[0])
+                self._controller_for_context = self._data.tests[0]
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
         except IndexError:  # It is a new project, no content yet
             self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
-            self._suggestions = SuggestionSource(None, self._controller_for_context)
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
         if hasattr(self.plugin, 'datafile') and self.plugin.datafile:
             self.datafile = self.plugin.datafile
         # else:
@@ -1248,8 +1344,11 @@ class SourceEditor(wx.Panel):
             self._create_editor_text_control(text=self._stored_text, language=self.language)
         else:
             self.source_editor.set_language(self.language)
-            self.source_editor.set_text(self._data.content)
+            if hasattr(self._data, 'content'):  # Special case for unit test
+                self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
+        self._words_cache.clear()
+        self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 
     def selected(self, data):
         if not self.source_editor:
@@ -1388,7 +1487,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.WriteText(spaces)
 
     def reset(self):
-        if self._data and not self._data.wrapper_data.is_dirty:
+        if self._data and (hasattr(self._data, 'wrapper_data') and not self._data.wrapper_data.is_dirty):
             self.mark_file_dirty(False)
 
     def content_save(self, **args):
@@ -2471,12 +2570,13 @@ class RobotDataEditor(PythonSTC):
                 self.parent.on_content_assist(event)
             self.key_trigger = 0
         else:
+            # print(f"DEBUG: texteditor.py RobotDataEditor on_key_pressed calling try_autocomplete key={key}")
             self._try_autocomplete(key, event)
         event.Skip()
 
     def _try_autocomplete(self, key: int, event: wx.KeyEvent) -> None:
         if self.autocomplete and not event.ControlDown():
-            if 32 < key < 256 and self.key_trigger > -1:
+            if 32 < key < 309  and self.key_trigger > -1:
                 if self.key_trigger < 2:
                     self.key_trigger += 1
                 else:

@@ -307,7 +307,10 @@ class Plugin(object):
         """
         if not self.tree:
             return
-        return self.tree.get_selected_item()
+        if hasattr(self, 'model'):
+            return self.tree.get_selected_item() or self.model
+        else:
+            return self.tree.get_selected_item()
 
     def content_assist_values(self, value=''):
         """Returns content assist values for currently selected item."""

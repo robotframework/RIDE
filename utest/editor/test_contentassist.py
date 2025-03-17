@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import unittest
-from robotide.editor.contentassist import Suggestions
+from robotide.editor.contentassist import Suggestions, obtain_bdd_prefixes
 from robotide.namespace.suggesters import SuggestionSource, HistorySuggester
 
 class TestSuggestionSources(unittest.TestCase):
@@ -84,6 +84,21 @@ class TestSuggestions(unittest.TestCase):
         suggestions = Suggestions(mock_source)
         choices = suggestions.get_for('a')
         self.assertEqual(choices, ['aarnio', 'fo.aaatio', 'bA.AAATIO'])
+
+    def test_bdd_suggestions_en(self):
+        choices = obtain_bdd_prefixes('En')
+        self.assertEqual(choices.sort(), ['Given', 'When', 'Then', 'And', 'But'].sort())
+
+    def test_bdd_suggestions_pt(self):
+        choices = obtain_bdd_prefixes('Portuguese')
+        self.assertEqual(choices.sort(), ['Dado', 'Quando', 'Então', 'E', 'Mas'].sort())
+
+    def test_bdd_suggestions_fr(self):
+        choices = obtain_bdd_prefixes('Fr')
+        self.assertEqual(choices.sort(), ['Soit', 'Sachant', 'Sachant que', "Sachant qu'",
+                                          'Étant donné', 'Étant donné que', "Etant donné qu'",
+                                          'Quand', 'Lorsque', "Lorsqu'", 'Alors', 'Donc', 'Et',
+                                          'Et que', "Et qu'", 'Mais', 'Mais que', "Mais qu'"].sort())
 
     def _create_mock_source(self):
         mock_source = lambda:0

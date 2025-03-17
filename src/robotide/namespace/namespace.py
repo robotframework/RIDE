@@ -26,7 +26,7 @@ from .. import robotapi, utils
 from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
 from ..robotapi import VariableFileSetter
 from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, UserKeywordInfo,
-                             ArgumentInfo)
+                             ArgumentInfo, LibraryKeywordInfo, BlockKeywordInfo)
 from .cache import LibraryCache, ExpiringCache
 from .resourcefactory import ResourceFactory
 from .embeddedargs import EmbeddedArgsHandler
@@ -42,6 +42,7 @@ class Namespace(object):
         self._update_listeners = set()
         self._init_caches()
         self._set_pythonpath()
+        self._words_cache = set()
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
@@ -134,17 +135,30 @@ class Namespace(object):
         return self._lib_cache.get_default_keywords()
 
     def get_suggestions_for(self, controller, start):
+        if not controller:
+            return []
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
-        sugs = set()
+        sugs = set()  # self._words_cache or
+        # print(f"DEBUG: namespace.py Namespace get_suggestions_for ENTER start={start} {datafile=} {ctx=} {sugs=}")
+        while start and start[-1] in [']', '}', '=', ',']:
+            start = start[:-1]
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start) or not self._looks_like_variable(start):
             sugs.update(self._variable_suggestions(controller, start, ctx))
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
         else:
             sugs.update(self._variable_suggestions(controller, start, ctx))
+        # print(f"DEBUG: namespace.py Namespace get_suggestions_for BEFORE CONTENT start={start} {sugs=}")
+        if not self._looks_like_variable(start):  # Search in content
+            for v in ['${', '@{', '&{', '%{', '$']:
+                sugs.update(self._content_suggestions(f'{v}{utils.normalize(start)}'))
+        else:
+            sugs.update(self._content_suggestions(f'{utils.normalize(start, suffixless=True)}'))
+        # print(f"DEBUG: namespace.py Namespace get_suggestions_for FROM CONTENT start={start} {sugs=}")
         sugs_list = list(sugs)
         sugs_list.sort()
+        # print(f"DEBUG: namespace.py Namespace get_suggestions_for RETURN {sugs_list=}")
         return sugs_list
 
     def _get_suggestions_from_hooks(self, datafile, start):
@@ -162,8 +176,8 @@ class Namespace(object):
 
     @staticmethod
     def _looks_like_variable(start):
-        return len(start) == 1 and start[0] in ['$', '@', '&'] \
-            or (len(start) >= 2 and start[:2] in ['${', '@{', '&{']) \
+        return len(start) == 1 and start[0] in ['$', '@', '&', '%'] \
+            or (len(start) >= 2 and start[:2] in ['${', '@{', '&{', '%{']) \
             or len(start) >= 2 and start[0] == '$'
 
     def _variable_suggestions(self, controller, start, ctx):
@@ -171,6 +185,24 @@ class Namespace(object):
         variables = self._retriever.get_variables_from(
             controller.datafile, ctx)
         sugs = (v for v in variables if v.name_matches(start))
+        return sugs
+
+    def _content_suggestions(self, start):
+        sugs = set()
+        for v in self._words_cache:
+            if isinstance(v, (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, UserKeywordInfo,
+                              LibraryKeywordInfo, BlockKeywordInfo)):
+                if v.name.lower().startswith(start.lower()):
+                    sugs.add(v.name)
+            elif isinstance(v, (VariableInfo, ArgumentInfo)):
+                if v.name_matches(start):
+                    # print(f"DEBUG: namespace.py Namespace _content_suggestions SUGGESTION from VARIABLE {v.name=}")
+                    sugs.add(v.name)
+            elif (v.lower().startswith(start.lower()) or v.strip('$&@%{[()]}=').lower()
+                    .startswith(start.strip('$&@%{[()]}=').lower())):
+                # print(f"DEBUG: namespace.py Namespace _content_suggestions SUGGESTION from STRING {v=}"
+                #       f"\n v.lower().startswith(start.lower() ={v.lower().startswith(start.lower())}")
+                sugs.add(v)
         return sugs
 
     @staticmethod
@@ -237,6 +269,12 @@ class Namespace(object):
         #       f"in datafile={datafile.source}")
         kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
+
+    def update_words_cache(self, words_list:list, reset=False):
+        if reset:
+            self._words_cache.clear()
+            return
+        self._words_cache.update(set(words_list))
 
 
 class _RetrieverContextFactory(object):
@@ -388,8 +426,8 @@ class _VariableStash(object):
             vars_from_file = VariableFileSetter(store)
             resulting_vars = vars_from_file._import_if_needed(varfile_path, args)
         except (robotapi.DataError, Exception) as e:
-            print(f"namespace._VariableStash.set_from_file: unexpected DataError: variable_path {varfile_path} "
-                  f"args {args}")
+            # print(f"namespace._VariableStash.set_from_file: unexpected DataError: variable_path {varfile_path} "
+            #       f"args {args}")
             raise e
         for name, value in resulting_vars:
             self.set(name, value, varfile_path)

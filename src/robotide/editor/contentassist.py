@@ -19,6 +19,7 @@ from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 from os.path import relpath, dirname, isdir
 
+from .gridbase import GridEditor
 from .. import context, utils
 from ..context import IS_MAC, IS_WINDOWS, IS_WX_410_OR_HIGHER
 from ..namespace.suggesters import SuggestionSource
@@ -74,6 +75,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     @staticmethod
     def _get_auto_suggestion_config():
         from robotide.context import APP
+        if not APP:
+            return True
         settings = APP.settings['Grid']
         return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
 
@@ -357,7 +360,8 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
         """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
         instance """
 
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller), language=language,
+        self.suggestion_source = SuggestionSource(plugin, controller)
+        _ContentAssistTextCtrlBase.__init__(self, self.suggestion_source, language=language,
                                             parent=parent, size=wx.DefaultSize,
                                             style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
@@ -481,9 +485,9 @@ class Suggestions(object):
     @staticmethod
     def _get_duplicate_names(choices):
         results = set()
-        normalized_names = [utils.normalize(ch.name) for ch in choices]
+        normalized_names = [utils.normalize(ch.name if hasattr(ch, 'name') else ch) for ch in choices]
         for choice in choices:
-            normalized = utils.normalize(choice.name)
+            normalized = utils.normalize(choice.name if hasattr(choice, 'name') else choice)
             if normalized_names.count(normalized) > 1:
                 results.add(normalized)
         return results
@@ -493,17 +497,24 @@ class Suggestions(object):
                 choices]
 
     def _format(self, choice, prefix, duplicate_names):
-        return choice.name if self._matches_unique_shortname(
-            choice, prefix, duplicate_names) else choice.longname
+        if hasattr(choice, 'name'):
+            return choice.name if self._matches_unique_shortname(
+                choice, prefix, duplicate_names) else choice.longname
+        elif self._matches_unique_shortname(choice, prefix, duplicate_names):
+            return choice
 
     @staticmethod
     def _matches_unique_shortname(choice, prefix, duplicate_names):
         if isinstance(choice, VariableInfo):
             return True
-        if not utils.normalize(choice.name).startswith(
+        if hasattr(choice, 'name'):
+            name = choice.name
+        else:
+            name = choice
+        if not utils.normalize(name).startswith(
                 utils.normalize(prefix)):
             return False
-        if utils.normalize(choice.name) in duplicate_names:
+        if utils.normalize(name) in duplicate_names:
             return False
         return True
 
@@ -532,8 +543,11 @@ class ContentAssistPopup(object):
         self._choices = self._suggestions.get_for(value, row=row)
         if not self._choices:
             self._list.ClearAll()
-            self._parent.hide()
+            if not isinstance(self._parent, GridEditor):
+                self._parent.hide()
             return False
+        self._choices = list(set([c for c in self._choices if c is not None]))
+        # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
         self._list.populate(self._choices)
         return True
 
@@ -616,7 +630,7 @@ class ContentAssistPopup(object):
     def on_list_item_selected(self, event):
         self._selection = event.GetIndex()
         item = self._suggestions.get_item(event.GetText())
-        if item.details:
+        if hasattr(item, 'details') and item.details:
             self._details_popup.Show()
             self._details_popup.set_content(item.details, item.name)
         elif self._details_popup.IsShown():
