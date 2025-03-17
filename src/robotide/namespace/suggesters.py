@@ -39,9 +39,13 @@ class SuggestionSource(object):
                 try:
                     sugs.update(self._controller.get_local_namespace_for_row(row).get_suggestions(initial))
                 except AttributeError:
-                    sugs.update(self._controller.get_local_namespace.get_suggestions(initial))
+                    try:
+                      sugs.update(self._controller.get_local_namespace.get_suggestions(initial))
+                    except AttributeError:  # For example TestCaseFileController
+                        pass
                 # return list(sugs)
-            sugs.update(self._plugin.content_assist_values(initial))  # DEBUG: Remove old functionality when no more needed
+            if self._plugin:
+                sugs.update(self._plugin.content_assist_values(initial))  # DEBUG: Remove old functionality when no more needed
             print(f"DEBUG: suggesters.py SuggestionSource get_suggestions IN LOOP initial ={initial} len sugs={len(sugs)}")
         return list(sugs)
 
