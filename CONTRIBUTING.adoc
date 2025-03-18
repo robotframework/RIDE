@@ -124,7 +124,7 @@ Then you may change to the ``develop`` branch, which should be the base for feat
 . ``git pull origin develop``
 . ``git checkout -b a_new_branch_based_on_develop``
 . After changes, you add new files, ``git add a_new_file``
-. You add and commit the modified files, ``git commit -a -m "The short message with info about the change``
+. You add and commit the modified files, ``git commit -a -m "The short message with info about the change"``
 . You push the commit to your fork, ``git push origin a_new_branch_based_on_develop``
 . You may repeat the commit/push and when ready create a Pull Request to your ``develop`` branch, or
 . You checkout your ``develop``branch, and merge with ``git merge a_new_branch_based_on_develop``
