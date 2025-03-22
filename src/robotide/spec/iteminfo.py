@@ -143,12 +143,16 @@ class ArgumentInfo(VariableInfo):
         VariableInfo.__init__(self, name, value, self.SOURCE)
 
     def __eq__(self, other):
+        if isinstance(other, str):
+            return  self.longname.lower() == other.lower()
         return self.longname.lower() == other.longname.lower()
 
     def __hash__(self):
         return hash(repr(self))
 
     def __lt__(self, other):
+        if isinstance(other, str):
+            return  self.longname.lower() < other.lower()
         return self.longname.lower() < other.longname.lower()
 
 
