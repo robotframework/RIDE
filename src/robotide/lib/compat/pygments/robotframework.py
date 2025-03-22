@@ -557,7 +557,10 @@ class _Table:
     def __init__(self, prev_tokenizer=None, new_lang=None):
         if self.new_lang is None:
             if new_lang is None:
-                set_lang = shared_memory.ShareableList(name="language")
+                try:
+                    set_lang = shared_memory.ShareableList(name="language")
+                except  FileNotFoundError:
+                    set_lang = ['En']
                 self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
             else:
                 self.new_lang = new_lang

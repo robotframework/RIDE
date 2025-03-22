@@ -168,6 +168,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>When saving in Text Editor, the cursor remains at position, instead of jumping to Tree selection.</li>
 <li>Improved autocompletion lists, by using existing words in Test Suite file (still needs more improvements).</li>
 <li>Fixed not set text color on row labels in Grid Editor. Now the General <b>secondary foreground</b> is applied.</li>
 <li>Added on Text Editor, tab indentation markers and <b>tab markers</b> boolean setting with default <b>True</b>.</li>
@@ -233,7 +234,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 17/March/2025.</p>
+<p>RIDE {VERSION} was released on 22/March/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

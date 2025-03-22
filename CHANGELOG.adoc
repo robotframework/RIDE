@@ -14,6 +14,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Added on Text Editor, folding margin with markers style configurable with ``fold symbols`` in settings.cfg.
 
 === Changed
+- When saving in Text Editor, the cursor remains at position, instead of jumping to Tree selection.
 - Improved autocompletion lists, by using existing words in Test Suite file (still needs more improvements).
 - Create directories when needed in New Project dialog.
 - Improved the recognition of BDD/Gherkin prefixes when localized in autocomplete on Grid Editor.
