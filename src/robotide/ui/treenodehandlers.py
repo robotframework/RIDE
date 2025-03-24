@@ -104,9 +104,12 @@ class _ActionHandler:
         return self._node
 
     def show_popup(self):
+        """ DEBUG Next code selects item when right click, which is annoying when we want to expand or select tests
+                  but want to keep the Editor in the same file or position
         node = self._tree.controller.find_node_by_controller(self.controller)
         if node:
             wx.CallLater(500, self._tree.SelectItem, node)
+        """
         self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions, self._actions_nt), self.controller)
 
     @staticmethod
@@ -750,10 +753,9 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         # print(f"DEBUG: treenodehandlers.py UserKeywodHandler _create_rename_command controller.name={self.controller.name}"
         #       f", new_name={new_name} info={self.controller.info}")
-        return ctrlcommands.RenameKeywordOccurrences(
-            self.controller.name, new_name,
-            RenameProgressObserver(self._tree.GetParent()),
-            self.controller.info)
+        return ctrlcommands.RenameKeywordOccurrences(self.controller.name, new_name,
+                                                     RenameProgressObserver(self._tree.GetParent()),
+                                                     self.controller.info, language=self.controller.language)
 
     def on_find_usages(self, event):
         Usages(self.controller, self._tree.highlight).show()

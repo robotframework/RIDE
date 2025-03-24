@@ -16,6 +16,7 @@
 import builtins
 import json
 from json.decoder import JSONDecodeError
+from multiprocessing import shared_memory
 
 import wx
 from wx import grid
@@ -73,7 +74,6 @@ def requires_focus(function):
             function(self, *args)
 
     return decorated_function
-
 
 class KeywordEditor(GridEditor, Plugin):
     _no_cell = (-1, -1)
@@ -163,6 +163,17 @@ class KeywordEditor(GridEditor, Plugin):
         self._cell_selected = False
         self._colorizer = Colorizer(self, controller)
         self._controller = controller
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+            self._language = [set_lang[0]]
+            # print(f"DEBUG: settings.py SettingEditor __init__ SHAREDMEM language={self._language}")
+        except AttributeError:
+            try:
+                self._language = self._controller.language
+                # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
+            except AttributeError:
+                self._language = ['en']
+        self._language = self._language[0] if isinstance(self._language, list) else self._language
         self._configure_grid()
         self._updating_namespace = False
         self._controller.datafile_controller.register_for_namespace_updates(
@@ -247,7 +258,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _configure_grid(self):
         self._set_cells()
-        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
+        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller, self._language))
         self._set_fonts()
         wx.CallAfter(self.SetGridCursor, (0, 0))  # To make cells colorized as soon we select keywords or tests
         wx.CallAfter(self.highlight, '')
@@ -1150,7 +1161,7 @@ class KeywordEditor(GridEditor, Plugin):
         new_name = wx.GetTextFromUser(_('New name'), _(REN_KW), default_value=old_name)
         if new_name:
             self._execute(RenameKeywordOccurrences(
-                old_name, new_name, RenameProgressObserver(self.GetParent())))
+                old_name, new_name, RenameProgressObserver(self.GetParent()), language=self._language))
 
     # Add one new Dialog to edit pretty json String TODO: use better editor with more functions
     def on_json_editor(self, event=None):
@@ -1202,10 +1213,36 @@ class KeywordEditor(GridEditor, Plugin):
             return False
         return True
 
+    """
+    def words_cache(self, doc_size: int):
+        if doc_size != self.doc_size:
+            words_list = self.collect_words(SOME_CONTENT)
+            self._words_cache.update(words_list)
+            self.doc_size = doc_size
+        return sorted(self._words_cache)
+
+    @staticmethod
+    def collect_words(text: str):
+        if not text:
+            return ['']
+
+        def var_strip(txt:str):
+            return txt.strip('$&@%{[(')
+
+        words = set()
+        words_ = list(text.replace('\r\n', ' ').replace('\n', ' ').split(' '))
+        for w in words_:
+            wl = var_strip(w)
+            if wl and wl[0].isalpha():
+                words.add(w)
+
+        print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
+        return sorted(words)
+    """
 
 class ContentAssistCellEditor(GridCellEditor):
 
-    def __init__(self, plugin, controller):
+    def __init__(self, plugin, controller, language='En'):
         self.settings = plugin.global_settings['Grid']
         self.general_settings = plugin.global_settings['General']
         self.filter_newlines = self.settings.get("filter newlines", True)
@@ -1214,6 +1251,7 @@ class ContentAssistCellEditor(GridCellEditor):
         GridCellEditor.__init__(self)
         self._plugin = plugin
         self._controller = controller
+        self._language = language
         self._grid = None
         self._original_value = None
         self._value = None
@@ -1244,7 +1282,8 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.execute_sharp_uncomment()
 
     def Create(self, parent, idd, evthandler):
-        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)
+        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller, self._language)
+        # self._tc.suggestion_source.update_from_local(self._controller.datafile, self._language)
         self.SetControl(self._tc)
         if evthandler:
             self._tc.PushEventHandler(evthandler)
@@ -1316,7 +1355,7 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.SetInsertionPointEnd()
 
     def Clone(self):
-        return ContentAssistCellEditor(self._plugin, self._controller)
+        return ContentAssistCellEditor(self._plugin, self._controller, self._language)
 
 
 class ChooseUsageSearchStringDialog(wx.Dialog):

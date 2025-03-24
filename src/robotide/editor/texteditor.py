@@ -25,6 +25,7 @@ from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
+from .pythoneditor import PythonSTC
 from . import _EDIT_nt, get_menudata
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
@@ -87,7 +88,8 @@ def read_language(content):
 def obtain_language(existing, content):
     try:
         set_lang = shared_memory.ShareableList(name="language")
-    except AttributeError:  # Unittests fails here
+    except Exception as e: # AttributeError:  # Unittests fails here
+        print(f"DEBUG: texteditor.py obtain_language EXCEPTION: {e}")
         set_lang = []
     doc_lang = read_language(content)
     adoc_lang = []
@@ -383,6 +385,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._tab = None
         self._doc_language = None
         self._save_flag = 0
+        self.jump = True
         self.reformat = application.settings.get('reformat', False)
         self._register_shortcuts()
 
@@ -442,6 +445,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def _open(self):
+        # print(f"DEBUG: texteditor.py TextEditorPlugin _open ENTER curpos={self._editor._position}")
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._save_flag = 0
@@ -495,13 +499,16 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._save_flag = 2
         if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
             self._save_flag = 3
-            wx.CallAfter(self._editor.mark_file_dirty, False)
+            print(f"DEBUG: textedit.py TextEditorPlugin _check_message call undirty, {message}")
+            # wx.CallAfter(self._editor.mark_file_dirty, False)
+            self._editor.mark_file_dirty(False)
+            self.tree._data_undirty(message)
         # DEBUG: This is the unwanted chnge after saving but excluded in this block for performance
         # if self.is_focused() and self._save_flag == 3 and isinstance(message, RideDataChangedToDirty):
         #     self._save_flag = 4
         #     wx.CallAfter(self._editor.mark_file_dirty, False)
         if isinstance(message, RideBeforeSaving):
-            self._editor.is_saving = False
+            # self._editor.is_saving = False
             # Reset counter for Workaround for remarked dirty with Ctrl-S
             self._save_flag = 0
             self._apply_txt_changes_to_model()
@@ -510,7 +517,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         """ This block is now inside try/except to avoid errors from unit test """
         try:
             if self.is_focused() and isinstance(message, RideDataChangedToDirty):
-                # print("DEBUG: textedit OnDataChanged returning RideDataChangedToDirty")
+                # print(f"DEBUG: textedit OnDataChanged returning RideDataChangedToDirty {self._save_flag=}")
                 return
             if self._should_process_data_changed_message(message):
                 # print(f"DEBUG: textedit after _should_process_data_changed_message save_flag={self._save_flag}")
@@ -531,13 +538,18 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # and not isinstance(message, RideDataChangedToDirty))
 
     def on_tree_selection(self, message):
+        if not self.is_focused():
+            return
         # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER {message=} type={type(message.item)}")
         self._editor.store_position()
+        # self.jump = True
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.datafile_controller == message.item.datafile_controller == next_datafile_controller:
-                # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}")
+                # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}\n"
+                #      f"value of {self._save_flag=}")
                 self._editor.locate_tree_item(message.item)
+                self.jump = True
                 return
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 if self._editor.datafile_controller != next_datafile_controller:
@@ -545,7 +557,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.set_editor_caret_position()
                 return
             if next_datafile_controller:
+                self.jump = True
                 self._open_data_for_controller(next_datafile_controller)
+                # print(f"DEBUG: OnTreeSelection OTHER FILE item type={type(message.item)}\n"
+                #       f"value of {self._save_flag=}")
                 wx.CallAfter(self._editor.locate_tree_item, message.item)
             self._set_read_only(message)
             self._editor.set_editor_caret_position()
@@ -587,7 +602,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
                 print(e)
-            wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Text Edit, styles were not applied
+            # wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Text Edit, styles were not applied
+            self._editor.source_editor.on_style(None)
             self._editor.Refresh()
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
@@ -599,8 +615,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         event.Skip()
 
     def _apply_txt_changes_to_model(self):
-        self._editor.is_saving = False
-        # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}")
+        if not self.is_focused() and not self._editor.dirty:
+            return
+        # self._editor.is_saving = False
+        # self._editor.store_position()
+        # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}"
+        #       f" curpos={self._editor._position}")
         if not self._editor.content_save(lang=self._doc_language):
             return False
         self._editor.reset()
@@ -608,7 +628,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        return self.notebook.current_page_title == self.title
+        try:
+            return self.notebook.current_page_title == self.title
+        except AttributeError:
+            return self._editor.is_focused()
 
 
 class DummyController(WithStepsController):
@@ -937,9 +960,11 @@ class SourceEditor(wx.Panel):
         self._tab_open = self._title  # When starting standalone this was not being set
         self._controller_for_context = None
         self._suggestions = None
+        self.doc_size: int = 0  # Number of lines in document to be used in collecting words
+        self._words_cache = set()  # Actual cache of words to add to suggestions
         self._stored_text = None
         self._ctrl_action = None
-        self.is_saving = False  # To avoid double calls to save
+        # self.is_saving = False  # To avoid double calls to save
         self.old_information_popup = None
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
@@ -987,11 +1012,13 @@ class SourceEditor(wx.Panel):
 
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(5)
-        size = wx.Size(160, 32)
+        size = wx.Size(200, 32)
         self.search_field = TextField(self, '', size=size, process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
+        self.search_field.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.on_find)
+        self.search_field.SetHint(_('Search'))
         container_sizer.add_with_padding(self.search_field)
         button = ButtonWithHandler(self, _('Search'), fsize=self.general_font_size, handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
@@ -1062,7 +1089,7 @@ class SourceEditor(wx.Panel):
             return
         position = self._position
         self.source_editor.SetFocus()
-        # print(f"DEBUG: texteditor.py SourceEditor position={position}")
+        # print(f"DEBUG: texteditor.py SourceEditor set_editor_caret_position position={position}")
         if position:
             self.source_editor.SetCurrentPos(position)
             self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
@@ -1090,7 +1117,7 @@ class SourceEditor(wx.Panel):
     def on_find(self, event, forward=True):
         if self.source_editor:
             if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
-                text = self.source_editor.GetSelectedText()
+                text = self.source_editor.GetSelectedText() or event.GetString()
             else:
                 text = ''
             if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
@@ -1147,12 +1174,16 @@ class SourceEditor(wx.Panel):
 
     def locate_tree_item(self, item):
         """ item is object received from message """
+        if not self.plugin.jump:
+            self.plugin.jump = True
+            return
         from wx.stc import STC_FIND_REGEXP
         search_end = len(self.source_editor.utf8_text)
         section_start = 0
         name_to_locate = r'^'+item.name+r'.*$'
         position = self.source_editor.FindText(section_start, search_end, name_to_locate, STC_FIND_REGEXP)
-        # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}")
+        # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}\n"
+        #       f"curpos={self._position} {self.is_saving=}")
         if position[0] != -1:
             # DEBUG: Make colours configurable?
             self.source_editor.SetSelBackground(True, Colour('orange'))
@@ -1177,6 +1208,32 @@ class SourceEditor(wx.Panel):
             self.source_editor_parent.SetFocus()
             self.source_editor.Update()
 
+    def words_cache(self, doc_size: int):
+        if doc_size != self.doc_size:  # DEBUG The initial idea was to not update words list if no changes in doc
+            words_list = self.collect_words(self.source_editor.GetText())
+            self._words_cache.update(words_list)
+            self.doc_size = doc_size
+        return sorted(self._words_cache)
+
+    @staticmethod
+    def var_strip(txt:str):
+        for symb in '$&@%{[()]}':
+            txt = txt.strip(symb)
+        return txt
+
+    def collect_words(self, text: str):
+        if not text:
+            return ['']
+        words = set()
+        words_ = list(text.replace('\r\n', ' ').replace('\n', ' ').split(' '))
+        for w in words_:
+            wl = self.var_strip(w)
+            if wl and wl[0].isalpha():
+                words.add(w)
+
+        # print(f"DEBUG: texteditor.py SourceEditor collect_words returning {words=}")
+        return sorted(words)
+
     def on_content_assist(self, event):
         """
         Produces an Auto Complete Suggestions list, from Scintilla. Based on selected content or nearby text.
@@ -1187,29 +1244,87 @@ class SourceEditor(wx.Panel):
         if not (self.is_focused() and self.plugin.is_focused()):  # DEBUG was typing text when at Grid Editor
             return
         __ = event
+        """
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
             return
+        """
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
+        # print(f"DEBUG: texteditor.py SourceEditor SELECTION selected = {selected}  is type={type(selected)}")
         self.set_editor_caret_position()
-        sugs = []
+        # Next is for the unit tests when the did not used open to get data:
+        if not self._suggestions:
+            self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
+        self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
+        sugs = set()
         if selected:
+            selected = list(selected)
+            selected = ([selected[0], selected[-1].split(' ')[-1]] if selected[0] != selected[-1].split(' ')[-1]
+            else [selected[0]])
             for start in selected:
-                sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+                found = []
+                for s in self._suggestions.get_suggestions(start):
+                    if hasattr(s, 'name'):
+                        found.append(s.name)
+                    else:
+                        found.append(s)
+                sugs.update(found)
+            # print(f"DEBUG: texteditor.py SourceEditor on_content_assist FIRST SUGGESTION suggestions = {sugs}\n")
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
-        sel = [s for s in selected] if selected else []
-        entry_word = sel[0].split('.')[-1].strip()
+        sel = [s for s in selected] if selected else ['']
+        entry_word = sel[0].split('.')[-1].strip() if '.' in sel[0] else sel[0]
         length_entered = len(entry_word)  # Because Libraries prefixed
-        sugs.extend(s.name for s in self._suggestions.get_suggestions(''))
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        # if sel[0] == '':
+        # The case when we call Ctl+Space in empty line o always add suggestions
+        # for start in sel:
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist selection = {sel}")
+        if sel[0] == '':
+            found = []
+            for s in self._suggestions.get_suggestions(''):
+                if hasattr(s, 'name'):
+                    found.append(s.name)
+                else:
+                    found.append(s)
+            sugs.update(found)
+        if len(sel[0]) >= 2:  # Search again with and without variable prefixes
+            found = []
+            for start in sel:
+                if start[0] in "$&@%{[()]}":
+                    text = self.var_strip(start)
+                    for s in self._suggestions.get_suggestions(text):
+                        if hasattr(s, 'name'):
+                            found.append(s.name)
+                        else:
+                            found.append(s)
+                else:
+                    for v in ['${', '&{', '@{', '$', '[', '(']:
+                        text = f'{v}{start}'
+                        for s in self._suggestions.get_suggestions(text):
+                            if hasattr(s, 'name'):
+                                found.append(s.name)
+                            else:
+                                found.append(s)
+            sugs.update(found)
+            # print(f"DEBUG: texteditor.py SourceEditor on_content_assist VARIABLES SEARCH selection = {sel}\n"
+            #       f"sugs={sugs}")
         if len(sugs) > 0:
-            sugs = [s for s in sugs if s != '']
-        if sugs:
+            # sugs = [s for s in sugs if s != '']
+            if '' in sugs:
+                sugs.remove('')
+        suggestions=";".join(sorted(sugs))
+        # print(f"DEBUG: texteditor.py SourceEditor on_content_assist BEFORE SHOW LIST suggestions = {suggestions}\n"
+        #       f" size={len(suggestions)} cache size={len(self._words_cache)}")
+        if len(suggestions) > 0:  # Consider using contentassist as in Grid Editor
             self.source_editor.AutoCompSetDropRestOfWord(False)
+            self.source_editor.AutoCompSetFillUps('=')
             self.source_editor.AutoCompSetIgnoreCase(True)
+            self.source_editor.AutoCompSetOrder(0)
             self.source_editor.AutoCompSetSeparator(ord(';'))
-            self.source_editor.AutoCompShow(length_entered, ";".join(sugs))
+            self.source_editor.AutoCompShow(length_entered, suggestions)
             self.autocomp_pos = self.source_editor.AutoCompPosStart()
             self._showing_list = True
             # DEBUG: self.set_editor_caret_position()
@@ -1224,20 +1339,27 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        if self._data._doc_language is not None and len(self._data._doc_language) > 0:
+        if hasattr(self._data, '_doc_language') and self._data._doc_language is not None and len(self._data._doc_language) > 0:
             self.language = self._data._doc_language
+        elif hasattr(self._data, '_language') and self._data._language is not None and len(self._data._language) > 0:
+            self.language = self._data._language
         else:
             self.language = ['en']
-        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language} curpos={self._position}")
         try:
-            if isinstance(self._data.wrapper_data, ResourceFileController):
-                self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
-                self._suggestions = SuggestionSource(None, self._controller_for_context)
+            if hasattr(self._data, 'wrapper_data'):
+                if isinstance(self._data.wrapper_data, ResourceFileController):
+                    self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
+                else:
+                    self._controller_for_context = self._data.wrapper_data.tests[0]
+            elif isinstance(self._data, ResourceFileController):
+                self._controller_for_context = self._data
             else:
-                self._suggestions = SuggestionSource(None, self._data.wrapper_data.tests[0])
+                self._controller_for_context = self._data.tests[0]
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
         except IndexError:  # It is a new project, no content yet
             self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
-            self._suggestions = SuggestionSource(None, self._controller_for_context)
+            self._suggestions = SuggestionSource(self.plugin, self._controller_for_context)
         if hasattr(self.plugin, 'datafile') and self.plugin.datafile:
             self.datafile = self.plugin.datafile
         # else:
@@ -1247,8 +1369,11 @@ class SourceEditor(wx.Panel):
             self._create_editor_text_control(text=self._stored_text, language=self.language)
         else:
             self.source_editor.set_language(self.language)
-            self.source_editor.set_text(self._data.content)
+            if hasattr(self._data, 'content'):  # Special case for unit test
+                self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
+        self._words_cache.clear()
+        self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 
     def selected(self, data):
         if not self.source_editor:
@@ -1387,19 +1512,20 @@ class SourceEditor(wx.Panel):
         self.source_editor.WriteText(spaces)
 
     def reset(self):
-        if self._data and not self._data.wrapper_data.is_dirty:
+        if self._data and (hasattr(self._data, 'wrapper_data') and not self._data.wrapper_data.is_dirty):
             self.mark_file_dirty(False)
 
     def content_save(self, **args):
         self.store_position()
-        if self.dirty and not self.is_saving:
-            self.is_saving = True
+        # print(f"DEBUG: TextEditor.py SourceEditor content_save curpos={self._position}")
+        if self.dirty:
             # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
             #       f"self.language={self.language} data={self._data}"
             #       f" calling validate_and_update with lang={args['lang']}")
+            self.plugin.jump = False
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
                                                             lang=self.language):  # args['lang']
-                self.is_saving = False
+                self.plugin.jump = True
                 return False
         return True
 
@@ -1441,7 +1567,7 @@ class SourceEditor(wx.Panel):
     @staticmethod
     def on_insert(event):
         __ = event
-        print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
+        # print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
         # self.insert_row()
 
     @staticmethod
@@ -1523,7 +1649,7 @@ class SourceEditor(wx.Panel):
             self._stored_text = self.source_editor.GetText()
 
     def _create_editor_text_control(self, text=None, language=None):
-        self.source_editor = RobotDataEditor(self, language)
+        self.source_editor = RobotDataEditor(self, language=language)
         self.Sizer.add_expanding(self.source_editor)
         self.Sizer.Layout()
         if text is not None:
@@ -1614,7 +1740,7 @@ class SourceEditor(wx.Panel):
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
                 self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
                 self.mark_file_dirty(self.source_editor.GetModify())
                 return
@@ -1643,7 +1769,7 @@ class SourceEditor(wx.Panel):
                 self.auto_indent()
             else:
                 self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
             self.mark_file_dirty(self.source_editor.GetModify())
             return
@@ -1668,6 +1794,7 @@ class SourceEditor(wx.Panel):
             # This must be the last branch to activate actions before doc
             # DEBUG: coords = self._get_screen_coordinates()
             self.source_editor.show_kw_doc()
+        self.mark_file_dirty(self.source_editor.GetModify())
         event.Skip()
 
         # These commands are duplicated by global actions
@@ -2393,33 +2520,40 @@ class SourceEditor(wx.Panel):
                 self._data.mark_data_pristine()
 
 
-class RobotDataEditor(stc.StyledTextCtrl):
+class RobotDataEditor(PythonSTC):
     margin = 1
 
-    def __init__(self, parent, readonly=False, language=None):
-        stc.StyledTextCtrl.__init__(self, parent)
+    def __init__(self, parent, readonly=False, language=None, style=wx.BORDER_NONE):
+        # stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
         self.language = language
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
+        self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
+        self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
+        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols},
+                           style=style)
         self._information_popup = None
         self._old_details = None
         self.readonly = readonly
-        self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
+        # self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
         self.SetUseTabs(False)
         caret_colour = self._settings[PLUGIN_NAME].get('setting', 'black')
         self._background = self._settings[PLUGIN_NAME].get('background', 'white')
         caret_colour = self.get_visible_color(caret_colour)
-        self.SetCaretForeground(Colour(caret_colour))
         caret_style = self._settings[PLUGIN_NAME].get('caret style', 'block')
         caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
         self.SetCaretStyle(caret_style)
-        self.SetTabWidth(parent.tab_size)
-        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        margin_background = self._settings['General'].get_without_default('secondary background')
+        margin_foreground = self._settings['General'].get_without_default('secondary foreground')
+        self.SetUpEditor(tab_size=parent.tab_size, tab_markers=self.tab_markers,
+                         m_bg=margin_background, m_fg=margin_foreground, caret_fg=caret_colour)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
+        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        self.Bind(stc.EVT_STC_MARGINCLICK, self.on_margin_click)
         # DEBUG:
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         # Only set, after language: self.stylizer = RobotStylizer(self, self._settings, self.readonly)
@@ -2463,12 +2597,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 self.parent.on_content_assist(event)
             self.key_trigger = 0
         else:
+            # print(f"DEBUG: texteditor.py RobotDataEditor on_key_pressed calling try_autocomplete key={key}")
             self._try_autocomplete(key, event)
         event.Skip()
 
     def _try_autocomplete(self, key: int, event: wx.KeyEvent) -> None:
         if self.autocomplete and not event.ControlDown():
-            if 32 < key < 256 and self.key_trigger > -1:
+            if 32 < key < 309  and self.key_trigger > -1:
                 if self.key_trigger < 2:
                     self.key_trigger += 1
                 else:
@@ -2484,6 +2619,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_DEFAULT, "MM"))
         self.Update()
 
     def set_language(self, dlanguage):
@@ -2510,6 +2646,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def on_zoom(self, event):
         __ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_FOLDDISPLAYTEXT, "MM"))
         self._set_zoom()
 
     def _set_zoom(self):
@@ -2666,6 +2803,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self.BraceBadLight(brace_at_caret)
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
+        self.stylizer.stylize()
 
     def _show_keyword_details(self, value, coords=None):
         """
@@ -2695,6 +2833,104 @@ class RobotDataEditor(stc.StyledTextCtrl):
         elif color_diff1 < color_diff3:
             return Colour(colour)
         return Colour('black')
+
+    def SetUpEditor(self, tab_size=4, tab_markers=True, m_bg='', m_fg='', caret_fg: Colour = 'BLUE'):
+        """
+        This method carries out the work of setting up the Code editor.
+        It's seperate so as not to clutter up the init code.
+        """
+        import keyword
+
+        self.SetLexer(stc.STC_LEX_PYTHON)
+        self.SetKeyWords(0, " ".join(keyword.kwlist))
+
+        # Enable folding
+        self.SetProperty("fold", "1")
+
+        # Highlight tab/space mixing (shouldn't be any)
+        self.SetProperty("tab.timmy.whinge.level", "1")
+
+        # Set left and right margins
+        self.SetMargins(2, 2)
+
+        self.SetMarginBackground(1, m_bg)
+        # Set up the numbers in the margin for margin #1
+        self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
+        # Reasonable value for, say, 4-5 digits using a mono font (40 pix)
+        # self.SetMarginWidth(1, 40)
+
+        # Indentation and tab stuff
+        self.SetIndent(tab_size)                 # Proscribed indent size for wx
+        self.SetIndentationGuides(tab_markers)   # Show indent guides
+        self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than delete 1 space
+        self.SetTabIndents(True)          # Tab key indents
+        self.SetTabWidth(tab_size)               # Proscribed tab size for wx
+        self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
+        # White space
+        self.SetViewWhiteSpace(False)   # Don't view white space
+
+        # EOL: Since we are loading/saving ourselves, and the
+        # strings will always have \n's in them, set the STC to
+        # edit them that way.
+        self.SetEOLMode(wx.stc.STC_EOL_LF)
+        self.SetViewEOL(False)
+
+        # No right-edge mode indicator
+        self.SetEdgeMode(stc.STC_EDGE_NONE)
+
+        # Set up a margin to hold fold markers
+        self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
+        self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
+        self.SetMarginSensitive(2, True)
+        self.SetMarginBackground(2, m_bg)
+        self.SetFoldMarginColour(True, m_bg)
+        self.SetFoldMarginHiColour(True, m_bg)
+        self.SetMarginWidth(2, self.TextWidth(stc.STC_STYLE_FOLDDISPLAYTEXT, "MM"))
+
+        # Global default style
+        if wx.Platform == '__WXMSW__':
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New
+        elif wx.Platform == '__WXMAC__':
+            # DEBUG: if this looks fine on Linux too, remove the Mac-specific case
+            # and use this whenever OS != MSW.
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
+                              'fore:#000000,back:#FFFFFF,face:Monaco')
+        else:
+            # print("DEBUG: Setup on Linux")
+            defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
+            # Courier, Space Mono, Source Pro Mono,
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Hack,size:%d' % defsize)
+        """
+        self.StyleSetBackground(stc.STC_STYLE_DEFAULT, Colour(200, 222, 40))
+        self.StyleSetForeground(stc.STC_STYLE_DEFAULT, Colour(7, 0, 70))
+        """
+        # Clear styles and revert to default.
+        self.StyleClearAll()
+
+        # Following style specs only indicate differences from default.
+        # The rest remains unchanged.
+
+        # Line numbers in margin
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, f'fore:{m_fg},back:{m_bg}')
+        # Highlighted brace
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, 'fore:#00009D,back:#FFFF00')
+        # Unmatched brace
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, 'fore:#00009D,back:#FF0000')
+        # Indentation guide
+        if tab_markers:
+            self.StyleSetSpec(wx.stc.STC_STYLE_INDENTGUIDE, "fore:#CDCDCD")
+
+        # Caret color
+        self.SetCaretForeground(Colour(caret_fg))
+        # Selection background
+        # self.SetSelBackground(1, '#66CCFF')
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        """
+
+        self.SetSelBackground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
+        self.SetSelForeground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
 
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):

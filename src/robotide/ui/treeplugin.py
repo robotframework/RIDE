@@ -234,6 +234,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._execution_results = None
         self._resources = []
         self._right_click = False
+        self.dirty = False
         # DEBUG: This menu is not working because is being attached to main frame
         # self._menu = wx.Menu()
         # self._menu.Append(wx.ID_CLOSE, item="&Close", helpString="Closes panel")
@@ -707,10 +708,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         wx.CallAfter(self.SelectItem, parent)
 
     def _data_dirty(self, message):
-        self.controller.mark_controller_dirty(message.datafile)
+        # print("DEBUG: TreePlugin tree _data_dirty ENTER")
+        if not self.dirty:
+            self.dirty = True
+            self.controller.mark_controller_dirty(message.datafile)
 
     def _data_undirty(self, message):
         _ = message
+        # print("DEBUG: TreePlugin tree _data_undirty")
         self.unset_dirty()
 
     def unset_dirty(self):
@@ -719,6 +724,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             handler = self.controller.get_handler(node)
             if text.startswith('*') and not handler.controller.dirty:
                 self.SetItemText(node, text[1:])
+                self.dirty = False
 
     def select_node_by_data(self, controller):
         """Find and select the tree item associated with the given controller.

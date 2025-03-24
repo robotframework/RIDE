@@ -151,7 +151,7 @@ RELEASE_NOTES = f"""
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> previous version, which was 7.1.1 
- (currently is 7.2). However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
+ (currently is 7.2.2). However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.13.</li>
 <li>There are some changes, or known issues:<ul>
@@ -168,8 +168,19 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li><em>Partial fix</em> of no update of renaming resource prefixed keywords. Issue #1230 from 29 Jan 2013.</li>
-<li>Fixed no recognition of keywords with embedded arguments and full name. Issue #1106 from 12 Sep 2012.</li>
+<li>Better Search element in Text Editor which allows to be cleared.</li>
+<li>When saving in Text Editor, the cursor remains at position, instead of jumping to Tree selection.</li>
+<li>Improved autocompletion lists, by using existing words in Test Suite file (still needs more improvements).</li>
+<li>Fixed not set text color on row labels in Grid Editor. Now the General <b>secondary foreground</b> is applied.</li>
+<li>Added on Text Editor, tab indentation markers and <b>tab markers</b> boolean setting with default <b>True</b>.</li>
+<li>Added on Text Editor, folding margin with markers style configurable with <b>fold symbols</b> in settings.cfg.</li>
+<li>Create directories when needed in New Project dialog.</li>
+<li>Improved the recognition of BDD/Gherkin prefixes when localized in autocomplete on Grid Editor.</li>
+<li>Added syntax colorization for the <em>GROUP</em> marker. Improved colorization for multiple Gherkin words, for 
+example in the French language.</li>
+<li>Fixed multiple scroll bars in Grid Editor when editing Test Cases or Keywords. This caused bad navigation on cells.</li>
+<li>Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doing right-click actions in
+ Project Explorer.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
@@ -224,7 +235,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 28/January/2025.</p>
+<p>RIDE {VERSION} was released on 24/March/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

@@ -37,7 +37,10 @@ from robotide.ui.treeplugin import Tree
 from robotide.ui.notebook import NoteBook
 from robotide.editor.kweditor import KeywordEditor
 from robotide.editor.gridbase import GridEditor
-from robotide.namespace.namespace import Namespace
+from robotide.namespace.suggesters import SuggestionSource
+from robotide.editor.contentassist import (Suggestions, ContentAssistPopup, ContentAssistTextEditor,
+                                           ContentAssistTextCtrl, ExpandingContentAssistTextCtrl,
+                                           ContentAssistFileButton)
 
 import os
 import pytest
@@ -238,7 +241,9 @@ class KeywordEditorTest(unittest.TestCase):
         self._editor = self._grid
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
+        self.SHOWING = True
+        # wx.CallLater(1000, self.app.MainLoop)
 
     def _register(self, iclass, eclass):
         self._registered_editors[iclass] = eclass
@@ -318,7 +323,7 @@ class KeywordEditorTest(unittest.TestCase):
         # self.app.MainLoop()
 
 
-    """ Clipboard tests moved frpm test_grid.py to here """
+    """ Clipboard tests moved from test_grid.py to here """
     def test_copy_one_cell(self):
         print("")
         for row in range(3):
@@ -423,6 +428,70 @@ class KeywordEditorTest(unittest.TestCase):
         self._editor.cut()
         self._editor.undo()
         self._verify_grid_content(DATA)
+
+    def test_contentassist_dialog(self):
+        suggestions = SuggestionSource(None, self.app.project.controller)
+        dlg = ContentAssistPopup(self._grid, suggestions)
+        dlg.show(600, 400, 20)
+        result = dlg.content_assist_for('Log Many')
+        shown=dlg.is_shown()
+        print(f"DEBUG: test_z_kweditor.py: content_assist_for result={result} shown={shown}")
+        assert shown is True
+        dlg._move_x_where_room(800)
+        dlg._move_y_where_room(400, 20)
+        dlg.reset()
+        wx.CallLater(4000, dlg.hide)
+        # Uncomment next lines if you want to see the app
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
+
+    def test_contentassist_text_editor(self):
+        suggestions = SuggestionSource(None, self.app.project.controller)
+        dlg = ContentAssistTextEditor(self._grid, suggestions, (400, 400))
+        dlg._popup.show(600, 400, 20)
+        result = dlg._popup.content_assist_for('Log Many')
+        shown = dlg.is_shown()
+        print(f"DEBUG: test_z_kweditor.py: test_contentassist_text_editor result={result} shown={shown}")
+        # assert shown is True
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+    def test_contentassist_text_ctrl(self):
+        suggestions = SuggestionSource(None, self.app.project.controller)
+        dlg = ContentAssistTextCtrl(self._grid, suggestions, (400, 400))
+        dlg._popup.show(600, 400, 20)
+        result = dlg._popup.content_assist_for('Log Many')
+        shown = dlg.is_shown()
+        print(f"DEBUG: test_z_kweditor.py: test_contentassist_text_ctrl result={result} shown={shown}")
+        # assert shown is True
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+    def test_contentassist_expandotextctrl(self):
+        suggestions = SuggestionSource(None, self.app.project.controller)
+        dlg = ExpandingContentAssistTextCtrl(self._grid, self.plugin, self.app.project.controller)
+        dlg._popup.show(600, 400, 20)
+        result = dlg._popup.content_assist_for('Log Many')
+        shown = dlg.is_shown()
+        print(f"DEBUG: test_z_kweditor.py: test_contentassist_text_ctrl result={result} shown={shown}")
+        # assert shown is True
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+    def test_contentassist_file_button(self):
+        suggestions = SuggestionSource(None, self.app.project.controller)
+        dlg = ContentAssistFileButton(self._grid, suggestions, 'Browse', self.app.project.controller)
+        dlg._popup.show(600, 400, 20)
+        result = dlg._popup.content_assist_for('Log Many')
+        shown = dlg.is_shown()
+        print(f"DEBUG: test_z_kweditor.py: test_contentassist_text_editor result={result} shown={shown}")
+        # assert shown is True
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
 
 if __name__ == '__main__':

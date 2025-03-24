@@ -26,6 +26,16 @@ from ..publish.messages import (RideSelectResource, RideFileNameChanged, RideSav
 from ..utils import variablematcher
 
 
+BDD_ENGLISH = 'Given|When|Then|And|But'
+
+def obtain_bdd_prefixes(language):
+    from robotide.lib.compat.parsing.language import Language
+    lang = Language.from_name(language[0] if isinstance(language, list) else language)
+    bdd_prefixes = [f"{x}|" for x in lang.bdd_prefixes]
+    bdd_prefixes = "".join(bdd_prefixes).strip('|')
+    return bdd_prefixes
+
+
 class Occurrence(object):
 
     def __init__(self, item, value):
@@ -279,16 +289,22 @@ class NullObserver(object):
 
 
 class RenameKeywordOccurrences(_ReversibleCommand):
-    _gherkin_prefix = re.compile('^(Given|When|Then|And|But) ', re.IGNORECASE)
 
-    def __init__(self, original_name, new_name, observer, keyword_info=None):
+    def __init__(self, original_name, new_name, observer, keyword_info=None, language='En'):
+        self._language = language[0] if isinstance(language, list) else language
+        if self._language.lower() not in ['en', 'english']:
+            bdd_prefix = f"{obtain_bdd_prefixes(self._language)}|{BDD_ENGLISH}"
+        else:
+            bdd_prefix = BDD_ENGLISH
+        self._gherkin_prefix = re.compile(f'^({bdd_prefix}) ', re.IGNORECASE)
         self._original_name, self._new_name = self._check_gherkin(new_name, original_name)
         self._observer = observer
         self._keyword_info = keyword_info
         self._occurrences = None
         # print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences INIT\n"
-        #     f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
-        #     f"self._new_name={self._new_name} self._keyword_info={self._keyword_info} ")
+        #      f"{original_name=}, {new_name=}, self._original_name={self._original_name} "
+        #      f"self._new_name={self._new_name} self._keyword_info={self._keyword_info}"
+        #      f" self._gherkin_prefix={self._gherkin_prefix} ")
 
     def _check_gherkin(self, new_name, original_name):
         was_gherkin, keyword_name = self._get_gherkin(original_name)
@@ -1339,7 +1355,7 @@ class SharpUncommentRow(_RowChangingCommand):
 
 
 INDENTED_INNER = ['ELSE', 'ELSE IF', 'EXCEPT', 'FINALLY']
-INDENTED_START = ['FOR', 'IF', 'WHILE', 'TRY'] + INDENTED_INNER
+INDENTED_START = ['FOR', 'GROUP', 'IF', 'WHILE', 'TRY'] + INDENTED_INNER
 
 
 def is_indent_start(cell):

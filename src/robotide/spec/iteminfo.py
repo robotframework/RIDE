@@ -121,12 +121,16 @@ class VariableInfo(ItemInfo):
                 '</table>') % (self.name, self._original_source, str(value))
 
     def __eq__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() == other.lower()
         return self.name.lower() == other.name.lower()
 
     def __hash__(self):
         return hash(repr(self))
 
     def __lt__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() < other.lower()
         return self.name.lower() < other.name.lower()
 
 
@@ -139,12 +143,16 @@ class ArgumentInfo(VariableInfo):
         VariableInfo.__init__(self, name, value, self.SOURCE)
 
     def __eq__(self, other):
+        if isinstance(other, str):
+            return  self.longname.lower() == other.lower()
         return self.longname.lower() == other.longname.lower()
 
     def __hash__(self):
         return hash(repr(self))
 
     def __lt__(self, other):
+        if isinstance(other, str):
+            return  self.longname.lower() < other.lower()
         return self.longname.lower() < other.longname.lower()
 
 
@@ -195,12 +203,16 @@ class _KeywordInfo(ItemInfo):
         return item.name
 
     def __eq__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() == other.lower()
         return self.name.lower() == other.name.lower()
 
     def __hash__(self):
         return hash(repr(self))
 
     def __lt__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() < other.lower()
         return self.name.lower() < other.name.lower()
 
 
@@ -276,12 +288,15 @@ class LibraryKeywordInfo(_KeywordInfo):
 
     def __eq__(self, other):
         if isinstance(other, str):   # DEBUG
-            return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+            return self.name.lower() == other.lower()  # and self.__hash__ == other.__hash__
+        return self.name.lower() == other.name.lower()
 
     def __hash__(self):
         return hash(repr(self))  # self.name)  #
 
     def __lt__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() < other.lower()
         return self.name.lower() < other.name.lower()
 
     def _name(self, item):
@@ -327,12 +342,15 @@ class BlockKeywordInfo(_KeywordInfo):
 
     def __eq__(self, other):
         if isinstance(other, str):   # DEBUG
-            return self.name == other.name  # must match Capital case
+            return self.name == other
+        return self.name == other.name  # must match Capital case
 
     def __hash__(self):
         return hash(repr(self))  # self.name)  #
 
     def __lt__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name < other
         return self.name < other.name
 
     def _name(self, item):
@@ -409,6 +427,8 @@ class TestCaseUserKeywordInfo(UserKeywordInfo):
         return hash(self.longname)  # repr(self))
 
     def __lt__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() < other.lower()
         return self.name.lower() < other.name.lower()
 
 
@@ -430,6 +450,8 @@ class ResourceUserKeywordInfo(UserKeywordInfo):
         return hash(self.longname)  # repr(self))
 
     def __lt__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() < other.lower()
         return self.name.lower() < other.name.lower()
 
 

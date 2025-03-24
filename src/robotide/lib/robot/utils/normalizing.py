@@ -22,12 +22,16 @@ from .platform import PY3
 from .robottypes import is_dict_like, is_unicode
 
 
-def normalize(string, ignore=(), caseless=True, spaceless=True):
+def normalize(string, ignore=(), caseless=True, spaceless=True, suffixless=False):
     """Normalizes given string according to given spec.
 
     By default, string is turned to lower case and all whitespace is removed.
     Additional characters can be removed by giving them in ``ignore`` list.
+    :param
+      suffixless: the end char is removed if is a symbol
     """
+    if not string or string == '':
+        return ''
     empty = u'' if is_unicode(string) else b''
     if PY3 and isinstance(ignore, bytes):
         # Iterating bytes in Python3 yields integers.
@@ -42,6 +46,9 @@ def normalize(string, ignore=(), caseless=True, spaceless=True):
         for ign in ignore:
             if ign in string:
                 string = string.replace(ign, empty)
+    if suffixless:
+        while len(string) > 1 and string[-1] in "=}])":
+            string = string[:-1]
     return string
 
 

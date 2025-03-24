@@ -17,9 +17,9 @@ import wx
 from wx import Size
 
 
-class TextField(wx.TextCtrl):
+class TextField(wx.SearchCtrl):
 
     def __init__(self, parent, initial_value, process_enters=False, size=Size(200, 32)):
         flags = wx.TE_PROCESS_ENTER|wx.TE_LEFT if process_enters else wx.TE_LEFT
-        wx.TextCtrl.__init__(self, parent, size=size, style=flags|wx.TE_NOHIDESEL)
+        wx.SearchCtrl.__init__(self, parent, size=size, style=flags|wx.TE_NOHIDESEL)
         self.SetValue(initial_value)

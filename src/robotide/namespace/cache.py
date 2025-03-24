@@ -112,7 +112,7 @@ class LibraryCache(object):
                                 'ROBOT', 'BuiltIn', 'loop_variables', 'selector', ARG_VALUES)
         kws.append(obj1)
         obj2 = BlockKeywordInfo('END',
-                                'Ends `FOR` loops, `IF/ELSE`, `WHILE` and `TRY/EXCEPT` blocks. See `BuiltIn.FOR` docs'
+                                'Ends `FOR` loops, `GROUP`, `IF/ELSE`, `WHILE` and `TRY/EXCEPT` blocks. See `BuiltIn.FOR` docs'
                                 ' at\n https://robotframework.org/robotframework/latest/'
                                 'RobotFrameworkUserGuide.html#for-loops.')
         kws.append(obj2)
@@ -205,6 +205,18 @@ class LibraryCache(object):
         obj18 = BlockKeywordInfo('VAR', var_doc, 'ROBOT', 'BuiltIn',
                                  'name_of_variable', ARG_VALUES)
         kws.append(obj18)
+        group_note = "*NOTE:* This marker exists since version 7.2" + (f" and is an error to use because your "
+                                                                     f"version of Robot Framework is"
+                                                                     f" {str(robot_version, encoding='UTF-8')}"
+                                                                     if rbt_version < 720 else ".")
+        group_doc = ('The GROUP syntax allows grouping related keywords and control structures together. Must be closed'
+                     ' with `END`.\n\nArguments: (optional) name of the group.\n\n'
+                     f'\n\n{group_note}\n\n See `BuiltIn.GROUP` docs at\n https://robotframework.org/robotframework/latest/'
+                     f'RobotFrameworkUserGuide.html#group-syntax')
+
+        obj19 = BlockKeywordInfo('GROUP', group_doc, 'ROBOT', 'BuiltIn',
+                                 '*name_of_group')
+        kws.append(obj19)
         return kws
 
     def _get_default_libraries(self):

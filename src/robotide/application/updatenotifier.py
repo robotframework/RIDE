@@ -13,9 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import builtins
+import os
 import re
 import subprocess
 import sys
+import tempfile
 # Configure wx uversion to allow running test app in __main__
 
 
@@ -27,6 +29,7 @@ import psutil
 import requests
 import wx
 from wx import Colour
+from os import path
 
 from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
@@ -173,8 +176,28 @@ def do_upgrade(command, notebook):
 
 def start_upgraded(message):
     __ = message
+    import zipfile
+    import requests
+
+    def download_url(url, save_path, chunk_size=128):
+        r = requests.get(url, stream=True)
+        with open(save_path, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                fd.write(chunk)
+
+    backup_configobj = tempfile.NamedTemporaryFile(delete=False)
+    config_obj_dir = path.join(path.dirname(__file__), '../preferences')
+    # print(f"DEBUG: updatenotifier, Starting do_upgrade {config_obj_dir=} zip is {backup_configobj.name=}")
+    download_url('https://robotframework.transformidea.com/RIDE/packages/configobj.zip', backup_configobj.name)
+    with zipfile.ZipFile(backup_configobj, 'r') as zzip:
+        zzip.extractall(config_obj_dir)
+    # print(f"DEBUG: updatenotifier, {config_obj_dir=} extracted {backup_configobj.name}")
+    try:
+        os.remove(backup_configobj.name)
+    except  PermissionError:
+        pass
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
-    wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
+    wx.CallLater(1000, subprocess.Popen, command.split(' '), start_new_session=True)
     p = psutil.Process()
     result = _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{p.pid}){SPC}"
                                                f"\n{SPC}{_('Do you want to CLOSE RIDE now?')}\n{SPC}",

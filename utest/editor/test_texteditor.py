@@ -14,6 +14,7 @@
 
 import os
 import re
+import time
 
 import pytest
 import unittest
@@ -34,8 +35,6 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
 from utest.resources import FakeSettings, FakeEditor
-# from robotide.ui import treeplugin as st
-# from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER, RideSuiteAdded, RideNotebookTabChanging
 from robotide.ui.treeplugin import Tree
 from robotide.ui.notebook import NoteBook
@@ -89,6 +88,7 @@ class MyApp(wx.App):
     book = None
     panel = None
     tree = None
+    model = None
 
     def __init__(self, redirect=False, filename=None, usebestvisual=False, clearsigint=True):
         super().__init__(redirect, filename, usebestvisual, clearsigint)
@@ -156,14 +156,16 @@ class TestEditorCommands(unittest.TestCase):
                                                                 texteditor.DataValidationHandler(self.plugin, lang='en'))
         self.plugin.enable()
         self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.plugin._editor_component.open(self.app.project.data)
         self.notebook = self.app.book
         self.app.tree.set_editor(self.plugin._editor_component)
         self.app.tree.populate(self.app.project)
+        self.app.model = self.app.project.data
         self.source = self.app.tree.controller
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -614,14 +616,22 @@ class TestEditorCommands(unittest.TestCase):
         assert font_size == 10
         assert font_face in ["Sans", "Noto Sans", "Courier New"]
         assert zoom_factor == 0
-        # print(f"DEBUG: fulltext:\n{fulltext}")
+        print(f"DEBUG: fulltext:\n{fulltext}")
         stylizer.set_styles(True)
         stylizer.stylize()
 
         assert fulltext == spaces + 'Log' + spaces + 'This is ${unknown}\n'
+        """
+        # Test details
+        self.app.tree.select_node_by_data(self.app.model)
+        print(f"DEBUG: datafile={self.app.tree.get_selected_datafile()}")
+        self.plugin._editor_component.open(self.app.model)
+        self.plugin._editor_component.source_editor._show_keyword_details('Log')
+        self.plugin._editor_component.source_editor._show_keyword_details('Log Many', (400, 600))
+        """
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
 class TestLanguageFunctions(unittest.TestCase):
 
@@ -645,11 +655,14 @@ class TestLanguageFunctions(unittest.TestCase):
         self.notebook = self.app.book
         self.app.tree.set_editor(self.plugin._editor_component)
         self.app.tree.populate(self.app.project)
+        self.app.tree.select_node_by_data(self.app.project.data)
         self.source = self.app.tree.controller
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
+        self.SHOWING = True
+        wx.CallLater(1000, self.app.MainLoop)
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -678,26 +691,51 @@ class TestLanguageFunctions(unittest.TestCase):
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.readlines()
         content = "".join(content)
+        self.plugin._editor_component.open(self.app.project.data.datafile_controller)
         self.plugin._editor_component.source_editor.set_text(content)
+        # self.plugin._open_tree_selection_in_editor()
         # print(f"DEBUG: content:\n{content}")
 
         language = texteditor.read_language(content.encode())
         assert language is None
+
+        if self.SHOWING:
+            time.sleep(4)
 
         self.set_language('Klingon')
         fulltext = self.plugin._editor_component.source_editor.GetText()
         language = texteditor.read_language(fulltext.encode())
         assert language == "Klingon"
 
+        if self.SHOWING:
+            time.sleep(4)
+
         self.set_language('Chinese Simplified')
         fulltext = self.plugin._editor_component.source_editor.GetText()
         language = texteditor.read_language(fulltext.encode())
         assert language == "Chinese Simplified"
 
+        if self.SHOWING:
+            self.plugin._editor_component.source_editor.SetFocus()
+            self.plugin._editor_component.source_editor.SetCurrentPos(1547+len("Chinese Simplified"))
+            self.plugin._editor_component.store_position(True)
+            self.plugin.tree.select_node_by_data(self.app.project.data)
+            time.sleep(1)
+            # suggest = self.plugin.content_assist_values('Nothing to see')
+            # print(f"DEBUG: test_texteditor.py AFTER CHINESE CALL CONTENT_ASSIST"
+            #       f" pos={self.plugin._editor_component.source_editor.GetCurrentPos()}\n"
+            #       f"SUGGEST FROM PLUGIN={suggest}")
+            self.plugin._editor_component.on_content_assist(wx.wxEVT_ERASE_BACKGROUND)
+            self.plugin._editor_component.source_editor.Update()
+            time.sleep(4)
+
         self.set_language('English')
         fulltext = self.plugin._editor_component.source_editor.GetText()
         language = texteditor.read_language(fulltext.encode())
         assert language == "English"
+
+        if self.SHOWING:
+            time.sleep(4)
 
         # print(f"DEBUG: FINAL fulltext:\n{fulltext}\n"
         #       f"Language is: {language}")
@@ -706,7 +744,8 @@ class TestLanguageFunctions(unittest.TestCase):
         # print(f"DEBUG: fulltext:\n{fulltext}")
         # assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # if self.SHOWING:
+        #    wx.CallLater(15000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_get_rf_lang_code(self):
