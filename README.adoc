@@ -22,16 +22,16 @@ You can use the tag *robotframework-ide* to search and ask on https://stackoverf
 
 == **Welcome to the development version of RIDE - next major release will be version 2.2**
 
-If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.1.2[release/2.1.2]**
+If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.1.3[release/2.1.3]**
 
-See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.2.rst[release notes] for latest release version 2.1.2
+See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.3.rst[release notes] for latest release version 2.1.3
 
 **Version https://github.com/robotframework/RIDE/tree/release/2.0.8.1[2.0.8.1] was the last release supporting Python 3.6 and 3.7**
 
 **Version https://github.com/robotframework/RIDE/tree/release/1.7.4.2[1.7.4.2] was the last release supporting Python 2.7**
 
 
-**The current development version is based on 2.1.3, supports Python from 3.8 up to 3.13 (28th January 2025).**
+**The current development version is based on 2.1.3, supports Python from 3.8 up to 3.13 (24th March 2025).**
 
 Currently, the unit tests are tested on Python 3.10, 3.11 and 3.13 (3.13 is the recommended version).
 Likewise, the current version of wxPython, is 4.2.2, but RIDE is known to work with 4.0.7 and 4.1.1 versions.
