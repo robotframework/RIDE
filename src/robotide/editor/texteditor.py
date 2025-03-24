@@ -1012,11 +1012,13 @@ class SourceEditor(wx.Panel):
 
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(5)
-        size = wx.Size(160, 32)
+        size = wx.Size(200, 32)
         self.search_field = TextField(self, '', size=size, process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
+        self.search_field.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.on_find)
+        self.search_field.SetHint(_('Search'))
         container_sizer.add_with_padding(self.search_field)
         button = ButtonWithHandler(self, _('Search'), fsize=self.general_font_size, handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
@@ -1115,7 +1117,7 @@ class SourceEditor(wx.Panel):
     def on_find(self, event, forward=True):
         if self.source_editor:
             if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
-                text = self.source_editor.GetSelectedText()
+                text = self.source_editor.GetSelectedText() or event.GetString()
             else:
                 text = ''
             if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
@@ -1738,7 +1740,7 @@ class SourceEditor(wx.Panel):
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
                 self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
                 self.mark_file_dirty(self.source_editor.GetModify())
                 return
@@ -1767,7 +1769,7 @@ class SourceEditor(wx.Panel):
                 self.auto_indent()
             else:
                 self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
             self.mark_file_dirty(self.source_editor.GetModify())
             return
