@@ -291,7 +291,9 @@ class KeywordSearchDialog(RIDEDialog):
         return self._search_control.GetValue().lower()
 
     def _update_keyword_selection(self):
-        if self._keywords and self._last_selected_kw not in self._keywords:
+        if not self._keywords:
+            return
+        if self._last_selected_kw is None or self._last_selected_kw not in self._keywords:
             self._last_selected_kw = self._keywords[0]
         self._update_details()
 
