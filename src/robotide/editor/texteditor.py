@@ -88,7 +88,8 @@ def read_language(content):
 def obtain_language(existing, content):
     try:
         set_lang = shared_memory.ShareableList(name="language")
-    except AttributeError:  # Unittests fails here
+    except Exception as e: # AttributeError:  # Unittests fails here
+        print(f"DEBUG: texteditor.py obtain_language EXCEPTION: {e}")
         set_lang = []
     doc_lang = read_language(content)
     adoc_lang = []
@@ -384,6 +385,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._tab = None
         self._doc_language = None
         self._save_flag = 0
+        self.jump = True
         self.reformat = application.settings.get('reformat', False)
         self._register_shortcuts()
 
@@ -443,6 +445,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def _open(self):
+        # print(f"DEBUG: texteditor.py TextEditorPlugin _open ENTER curpos={self._editor._position}")
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._save_flag = 0
@@ -496,13 +499,16 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._save_flag = 2
         if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
             self._save_flag = 3
-            wx.CallAfter(self._editor.mark_file_dirty, False)
+            print(f"DEBUG: textedit.py TextEditorPlugin _check_message call undirty, {message}")
+            # wx.CallAfter(self._editor.mark_file_dirty, False)
+            self._editor.mark_file_dirty(False)
+            self.tree._data_undirty(message)
         # DEBUG: This is the unwanted chnge after saving but excluded in this block for performance
         # if self.is_focused() and self._save_flag == 3 and isinstance(message, RideDataChangedToDirty):
         #     self._save_flag = 4
         #     wx.CallAfter(self._editor.mark_file_dirty, False)
         if isinstance(message, RideBeforeSaving):
-            self._editor.is_saving = False
+            # self._editor.is_saving = False
             # Reset counter for Workaround for remarked dirty with Ctrl-S
             self._save_flag = 0
             self._apply_txt_changes_to_model()
@@ -511,7 +517,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         """ This block is now inside try/except to avoid errors from unit test """
         try:
             if self.is_focused() and isinstance(message, RideDataChangedToDirty):
-                # print("DEBUG: textedit OnDataChanged returning RideDataChangedToDirty")
+                # print(f"DEBUG: textedit OnDataChanged returning RideDataChangedToDirty {self._save_flag=}")
                 return
             if self._should_process_data_changed_message(message):
                 # print(f"DEBUG: textedit after _should_process_data_changed_message save_flag={self._save_flag}")
@@ -532,13 +538,18 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # and not isinstance(message, RideDataChangedToDirty))
 
     def on_tree_selection(self, message):
+        if not self.is_focused():
+            return
         # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER {message=} type={type(message.item)}")
         self._editor.store_position()
+        # self.jump = True
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.datafile_controller == message.item.datafile_controller == next_datafile_controller:
-                # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}")
+                # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}\n"
+                #      f"value of {self._save_flag=}")
                 self._editor.locate_tree_item(message.item)
+                self.jump = True
                 return
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 if self._editor.datafile_controller != next_datafile_controller:
@@ -546,7 +557,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.set_editor_caret_position()
                 return
             if next_datafile_controller:
+                self.jump = True
                 self._open_data_for_controller(next_datafile_controller)
+                # print(f"DEBUG: OnTreeSelection OTHER FILE item type={type(message.item)}\n"
+                #       f"value of {self._save_flag=}")
                 wx.CallAfter(self._editor.locate_tree_item, message.item)
             self._set_read_only(message)
             self._editor.set_editor_caret_position()
@@ -588,7 +602,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
                 print(e)
-            wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Text Edit, styles were not applied
+            # wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Text Edit, styles were not applied
+            self._editor.source_editor.on_style(None)
             self._editor.Refresh()
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
@@ -600,8 +615,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         event.Skip()
 
     def _apply_txt_changes_to_model(self):
-        self._editor.is_saving = False
-        # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}")
+        if not self.is_focused() and not self._editor.dirty:
+            return
+        # self._editor.is_saving = False
+        # self._editor.store_position()
+        # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}"
+        #       f" curpos={self._editor._position}")
         if not self._editor.content_save(lang=self._doc_language):
             return False
         self._editor.reset()
@@ -945,7 +964,7 @@ class SourceEditor(wx.Panel):
         self._words_cache = set()  # Actual cache of words to add to suggestions
         self._stored_text = None
         self._ctrl_action = None
-        self.is_saving = False  # To avoid double calls to save
+        # self.is_saving = False  # To avoid double calls to save
         self.old_information_popup = None
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
@@ -993,11 +1012,13 @@ class SourceEditor(wx.Panel):
 
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(5)
-        size = wx.Size(160, 32)
+        size = wx.Size(200, 32)
         self.search_field = TextField(self, '', size=size, process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
+        self.search_field.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.on_find)
+        self.search_field.SetHint(_('Search'))
         container_sizer.add_with_padding(self.search_field)
         button = ButtonWithHandler(self, _('Search'), fsize=self.general_font_size, handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
@@ -1068,7 +1089,7 @@ class SourceEditor(wx.Panel):
             return
         position = self._position
         self.source_editor.SetFocus()
-        # print(f"DEBUG: texteditor.py SourceEditor position={position}")
+        # print(f"DEBUG: texteditor.py SourceEditor set_editor_caret_position position={position}")
         if position:
             self.source_editor.SetCurrentPos(position)
             self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
@@ -1096,7 +1117,7 @@ class SourceEditor(wx.Panel):
     def on_find(self, event, forward=True):
         if self.source_editor:
             if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
-                text = self.source_editor.GetSelectedText()
+                text = self.source_editor.GetSelectedText() or event.GetString()
             else:
                 text = ''
             if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
@@ -1153,12 +1174,16 @@ class SourceEditor(wx.Panel):
 
     def locate_tree_item(self, item):
         """ item is object received from message """
+        if not self.plugin.jump:
+            self.plugin.jump = True
+            return
         from wx.stc import STC_FIND_REGEXP
         search_end = len(self.source_editor.utf8_text)
         section_start = 0
         name_to_locate = r'^'+item.name+r'.*$'
         position = self.source_editor.FindText(section_start, search_end, name_to_locate, STC_FIND_REGEXP)
-        # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}")
+        # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}\n"
+        #       f"curpos={self._position} {self.is_saving=}")
         if position[0] != -1:
             # DEBUG: Make colours configurable?
             self.source_editor.SetSelBackground(True, Colour('orange'))
@@ -1320,7 +1345,7 @@ class SourceEditor(wx.Panel):
             self.language = self._data._language
         else:
             self.language = ['en']
-        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language} curpos={self._position}")
         try:
             if hasattr(self._data, 'wrapper_data'):
                 if isinstance(self._data.wrapper_data, ResourceFileController):
@@ -1492,14 +1517,15 @@ class SourceEditor(wx.Panel):
 
     def content_save(self, **args):
         self.store_position()
-        if self.dirty and not self.is_saving:
-            self.is_saving = True
+        # print(f"DEBUG: TextEditor.py SourceEditor content_save curpos={self._position}")
+        if self.dirty:
             # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
             #       f"self.language={self.language} data={self._data}"
             #       f" calling validate_and_update with lang={args['lang']}")
+            self.plugin.jump = False
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
                                                             lang=self.language):  # args['lang']
-                self.is_saving = False
+                self.plugin.jump = True
                 return False
         return True
 
@@ -1541,7 +1567,7 @@ class SourceEditor(wx.Panel):
     @staticmethod
     def on_insert(event):
         __ = event
-        print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
+        # print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
         # self.insert_row()
 
     @staticmethod
@@ -1714,7 +1740,7 @@ class SourceEditor(wx.Panel):
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
                 self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
                 self.mark_file_dirty(self.source_editor.GetModify())
                 return
@@ -1743,7 +1769,7 @@ class SourceEditor(wx.Panel):
                 self.auto_indent()
             else:
                 self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
             self.mark_file_dirty(self.source_editor.GetModify())
             return
@@ -1768,6 +1794,7 @@ class SourceEditor(wx.Panel):
             # This must be the last branch to activate actions before doc
             # DEBUG: coords = self._get_screen_coordinates()
             self.source_editor.show_kw_doc()
+        self.mark_file_dirty(self.source_editor.GetModify())
         event.Skip()
 
         # These commands are duplicated by global actions
