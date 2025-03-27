@@ -32,7 +32,7 @@ from .review import ReviewDialog
 from .treeplugin import Tree
 from ..action import action_info_collection, action_factory, SeparatorInfo
 from ..action.shortcut import localize_shortcuts
-from ..context import get_about_ride, SHORTCUT_KEYS
+from ..context import get_about_ride, SHORTCUT_KEYS, IS_WINDOWS
 from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
 from ..preferences import PreferenceEditor
@@ -498,6 +498,8 @@ class RideFrame(wx.Frame):
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
+        if IS_WINDOWS:
+            self._application.changed_workspace = True
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
         set_lang = []
@@ -520,7 +522,12 @@ class RideFrame(wx.Frame):
         except UserWarning:
             return False
         self._populate_tree()
+        if IS_WINDOWS:
+            wx.CallLater(60000, self.clear_workspace_state)
         return True
+
+    def clear_workspace_state(self):
+        self._application.changed_workspace = False
 
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
