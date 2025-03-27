@@ -3,13 +3,15 @@
 and this project adheres to <a class="ulink" href="http://semver.org/spec/v2.0.0.html" target="_top">Semantic Versioning</a>.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_unreleased_ulink"></a>1. <a class="ulink" href="https://github.com/robotframework/RIDE" target="_top">Unreleased</a></h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added"></a>1.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
 when selecting in Tree shows the filename in StatusBar.
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>1.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_1_3_rst_2_1_3_ulink_2025_03_24"></a>2. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.3.rst" target="_top">2.1.3</a> - 2025-03-24</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_2"></a>2.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added syntax colorization for the ``GROUP`` marker.
 </li><li class="listitem">
 Added on Text Editor, tab indentation markers and ``tab markers`` boolean setting with default ``True``.
 </li><li class="listitem">
 Added on Text Editor, folding margin with markers style configurable with ``fold symbols`` in settings.cfg.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>2.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_2"></a>2.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Better Search element in Text Editor which allows to be cleared.
 </li><li class="listitem">
 When saving in Text Editor, the cursor remains at position, instead of jumping to Tree selection.
@@ -32,7 +34,7 @@ Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doi
 Partial fix of no update of renaming resource prefixed keywords. Issue #1230 from 29 Jan 2013.
 </li><li class="listitem">
 Fixed no recognition of keywords with embedded arguments and full name. Issue #1106 from 12 Sep 2012.
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_1_1_rst_2_1_1_ulink_2024_11_14"></a>4. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.1.rst" target="_top">2.1.1</a> - 2024-11-14</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_2"></a>4.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_1_1_rst_2_1_1_ulink_2024_11_14"></a>4. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.1.rst" target="_top">2.1.1</a> - 2024-11-14</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_3"></a>4.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Changed the workflow for the development versions of RIDE. Now, development versions are taken from the ``develop`` branch, and the ``master`` will stay with released version.
 </li><li class="listitem">
 Changed the way ``configobj`` code is imported. Now is a submodule obtained from <a class="ulink" href="https://github.com/DiffSK/configobj" target="_top">https://github.com/DiffSK/configobj</a>.
@@ -95,7 +97,7 @@ Force Tags settings, after Robot Framework 7.0
 - Added ``FOR`` scope markers (``IN``, ``IN RANGE``, ``IN ENUMERATE``, ``IN ZIP``) to auto-complete list
 - Added support to read environment variable ``ROBOT_VERSION`` to apply some conditions.
 - Added note on Test Timeout that **timeout message** is not supported since Robot v3.0.1
-- Added the note, 'Colors will be active after next RIDE restart.' to the Preferences of Test Runner.</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_3"></a>5.2. Changed</h3></div></div></div><pre class="literallayout">  (2.1 - 2024-10-13)
+- Added the note, 'Colors will be active after next RIDE restart.' to the Preferences of Test Runner.</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_4"></a>5.2. Changed</h3></div></div></div><pre class="literallayout">  (2.1 - 2024-10-13)
 - Changed the order of insert and delete rows in Grid Editor rows context menu.
   (2.1b1 - 2024-09-21)
 - Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable this feature you can config in `Tools -&gt; Preferences -&gt; Text Editor -&gt; Enable auto suggestions`.
@@ -183,7 +185,7 @@ Added Korean language support for UI, experimental.
 </li><li class="listitem">
 Added option ``caret style`` to change insert caret to <code class="literal">block</code> or <code class="literal">line</code> in Text Editor, by editing ``settings.cfg``.
 The color of the caret is the same as <code class="literal">setting</code> and will be adjusted for better contrast with the background.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_4"></a>6.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_5"></a>6.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable this feature you can config in <code class="literal">Tools -&gt; Preferences -&gt; Text Editor -&gt; Enable auto suggestions</code>.
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_5"></a>6.3. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed validation of multiple arguments with default values in Grid Editor.
@@ -251,7 +253,7 @@ Fixed removal of continuation marker in steps
 Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
 </li><li class="listitem">
 Fixed New User Keyword dialog not allowing empty Arguments field
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_5"></a>7.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_6"></a>7.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Improved release packaging of RIDE, by using entry_points in setuptools configuration.
 </li><li class="listitem">
 Parsing of clipboard content to separate by cells in Grid Editor. NOTE: Need to Apply Changes in Text Editor to be effective.
@@ -300,7 +302,7 @@ Validation of Grid Editor arguments types in keywords definitions. Now accepts `
 Position of cursor in Text Editor auto-suggestions when line contains multibyte characters
 </li><li class="listitem">
 Drag and drop of variables defined with comments between resource files
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_6"></a>8.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_7"></a>8.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Improved keywords documentation search, by adding current dir to search
 </li><li class="listitem">
 Improved Move up/down, ``Alt-UpArrow``/``Alt-DownArrow`` in Text Editor, to have proper indentation and selection
@@ -337,11 +339,11 @@ Fixed control commands (``FOR``, ``IF``, ``TRY``, etc) being colorized as valid 
 Fixed title of User Keyword in Grid Editor always showing ``Find Usages`` instead of the keyword name
 </li><li class="listitem">
 Fixed renaming keywords when they were arguments of ``Run Keywords`` in Setups and Teardowns
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_7"></a>9.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_8"></a>9.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Improve Text Editor auto-suggestions to keep libraries prefixes.
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_6_rst_2_0_6_ulink_2023_06_10"></a>10. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.6.rst" target="_top">2.0.6</a> - 2023-06-10</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_8"></a>10.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added boolean parameter ``filter newlines`` to Grid Editor with default ``True``, to hide or show newlines in cells
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_8"></a>10.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_9"></a>10.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Changed ``tasks.py`` to test ``utest/application/test_app_main.py`` isolated from the other tests
 </li><li class="listitem">
 Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT
@@ -355,11 +357,11 @@ Added support to read environment variable ``ROBOT_VERSION`` to apply some condi
 Added note on Test Timeout that <span class="strong"><strong>timeout message</strong></span> is not supported since Robot v3.0.1
 </li><li class="listitem">
 Added the note, <span class="emphasis"><em>Colors will be active after next RIDE restart.</em></span> to the Preferences of Test Runner.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_9"></a>11.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_10"></a>11.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Changed alias marker on library imports to consider variable ``ROBOT_VERSION``. If version is lower than 6.0, uses ``<span class="emphasis"><em>WITH NAME</em></span>``, otherwise will use ``<span class="emphasis"><em>AS</em></span>``
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed_9"></a>12. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed auto-indent on block commands in Text Editor
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_3_rst_2_0_3_ulink_2023_04_16"></a>13. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst" target="_top">2.0.3</a> - 2023-04-16</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_10"></a>13.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_3_rst_2_0_3_ulink_2023_04_16"></a>13. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst" target="_top">2.0.3</a> - 2023-04-16</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_11"></a>13.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Allow to do auto-suggestions of keywords in Grid Editor without a shortcut, if you want to enable or disable this feature you can config in <code class="literal">Tools-&gt; Preferences -&gt; Grid Editor -&gt; Enable auto suggestions</code>
 </li><li class="listitem">
 Made ``\\n`` visible when editing cells in Grid Editor (problematic in Windows)
@@ -436,7 +438,7 @@ Fixed missing newlines in sections separation
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
   (2.0b1 - 2020-07-26)
 - Python 2.7 support
-- wxPython/wxPhoenix version conditioning</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_11"></a>15.3. Changed</h3></div></div></div><pre class="literallayout">  (2.0b3 - 2023-01-15)
+- wxPython/wxPhoenix version conditioning</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_12"></a>15.3. Changed</h3></div></div></div><pre class="literallayout">  (2.0b3 - 2023-01-15)
 - Hiding items in Test Suites explorer with names starting with #
 - Disabled the Close button on the Test Suites explorer
   This was causing not being possible to restore it, unless editing the settings.cfg file.
@@ -547,7 +549,7 @@ Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ct
 Added move up and move down rows to Text Editor, by using ``Alt-Up`` and ``Alt-Down``
 </li><li class="listitem">
 Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_4"></a>16.2. Removed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_12"></a>16.3. Changed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_12"></a>16.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_4"></a>16.2. Removed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_13"></a>16.3. Changed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_12"></a>16.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b3_rst_2_0b3_ulink_2023_01_15"></a>17. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b3.rst" target="_top">2.0b3</a> - 2023-01-15</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_12"></a>17.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added swap row up, by using ``Ctrl-T``
@@ -557,7 +559,7 @@ Added commenting/uncommenting of content with ``\# ``, by using ``Ctrl-Shift-3``
 Added support for editing .robot and .resource files with content before sections
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_5"></a>17.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_13"></a>17.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_14"></a>17.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Hiding items in Test Suites explorer with names starting with #
 </li><li class="listitem">
 Disabled the Close button on the Test Suites explorer
@@ -644,7 +646,7 @@ Removed ``robotframeworklexer`` dependency and local copy
 Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 </li><li class="listitem">
 Removed moving to keyword/variable definition when doing Double-Click in grid cell
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_14"></a>18.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_15"></a>18.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Unit tests to use ``pytest`` and removed ``nose`` dependency. Support for Python 3.10 at unit test level.
 </li><li class="listitem">
 Prevent expanding Tests and change selection on Project tree (when right-clicking)
@@ -769,7 +771,7 @@ Added process memory limit on Messages Log
 Python 2.7 support
 </li><li class="listitem">
 wxPython/wxPhoenix version conditioning
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_15"></a>19.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_16"></a>19.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Improved filesystem changes detection, with a confirmation dialog to reload workspace
 </li><li class="listitem">
 Changed dependency on wx.Window on tree panel
@@ -847,7 +849,7 @@ Fixed Runner Log window Chinese and Latin encoding chars on Windows
 wxPython version locked up to 4.0.7.post2.
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_8"></a>20.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_16"></a>20.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_17"></a>20.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_16"></a>20.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None

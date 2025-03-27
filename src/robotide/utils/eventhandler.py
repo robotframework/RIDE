@@ -244,12 +244,12 @@ class _RideFSWatcherHandler:
 
         watched = []
         self._fs_watcher.GetWatchedPaths(watched)
-        print(f"DEBUG: eventhandler.py _is_mark_dirty_needed event={event.ToString()}\n GetWatchedPaths={watched}")
+        # print(f"DEBUG: eventhandler.py _is_mark_dirty_needed event={event.ToString()}\n GetWatchedPaths={watched}")
 
-        print(f"\nDEBUG: eventhandler _is_mark_dirty_needed new_path={new_path} previous_path={previous_path}"
-              f" change_type={change_type}=={event_name(change_type)}\n"
-              f"norm_previous_path={norm_previous_path} norm_previous_dir={norm_previous_dir}\n"
-              f" self._watched_path={self._watched_path} self._excluded_path={self._excluded_path}")
+        # print(f"\nDEBUG: eventhandler _is_mark_dirty_needed new_path={new_path} previous_path={previous_path}"
+        #       f" change_type={change_type}=={event_name(change_type)}\n"
+        #       f"norm_previous_path={norm_previous_path} norm_previous_dir={norm_previous_dir}\n"
+        #       f" self._watched_path={self._watched_path} self._excluded_path={self._excluded_path}")
 
         if change_type == wx.FSW_EVENT_MODIFY:
             if (not is_path_excluded(norm_new_dir) and not is_path_excluded(norm_previous_path)

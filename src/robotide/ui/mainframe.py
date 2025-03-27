@@ -291,13 +291,13 @@ class RideFrame(wx.Frame):
         if new_ui:  # Only when creating UI we add panes
             self.CreateStatusBar(number=2, name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
-            if self._status_bar:
-                self.SetStatusBarPane(0)
-                self._status_bar.SetFont(wx.Font(self.fontinfo))
-                self._status_bar.SetBackgroundColour(Colour(self.color_background))
-                self._status_bar.SetForegroundColour(Colour(self.color_foreground))
             # set main frame icon
             self.SetIcons(self._image_provider.PROGICONS)
+        if self._status_bar:
+            self.SetStatusBarPane(0)
+            self._status_bar.SetFont(wx.Font(self.fontinfo))
+            self._status_bar.SetBackgroundColour(Colour(self.color_background))
+            self._status_bar.SetForegroundColour(Colour(self.color_foreground))
         # change notebook theme
         self.set_notebook_theme()
         # tell the manager to "commit" all the changes just made

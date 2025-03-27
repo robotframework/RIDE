@@ -12,6 +12,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
 when selecting in Tree shows the filename in StatusBar.
 
+=== Changed
+- On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.3.rst[2.1.3] - 2025-03-24
 
 === Added

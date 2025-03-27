@@ -461,7 +461,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # print(f"DEBUG: texteditor _open language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
-            self.statusbar_message(f'Source: {self._editor.datafile_controller.source}', 4000)
+            wx.CallLater(2000, self.statusbar_message, f'{_("Source: ")}{self._editor.datafile_controller.source}', 2000)
 
     def _get_shared_doc_lang(self):
         try:
