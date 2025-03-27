@@ -386,6 +386,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._doc_language = None
         self._save_flag = 0
         self.jump = True
+        # self.status_bar = self.frame.FindWindowByName("StatusBar", self.frame)
+        # self.frame.SetStatusBarPane(1)
         self.reformat = application.settings.get('reformat', False)
         self._register_shortcuts()
 
@@ -459,6 +461,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # print(f"DEBUG: texteditor _open language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
+            self.statusbar_message(f'Source: {self._editor.datafile_controller.source}', 4000)
 
     def _get_shared_doc_lang(self):
         try:
@@ -1116,8 +1119,10 @@ class SourceEditor(wx.Panel):
 
     def on_find(self, event, forward=True):
         if self.source_editor:
-            if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
-                text = self.source_editor.GetSelectedText() or event.GetString()
+            if event.GetEventType() == wx.wxEVT_SEARCH:
+                text = event.GetString()
+            elif event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
+                text = self.source_editor.GetSelectedText()
             else:
                 text = ''
             if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
@@ -1372,6 +1377,7 @@ class SourceEditor(wx.Panel):
             if hasattr(self._data, 'content'):  # Special case for unit test
                 self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
+        wx.CallAfter(self.plugin.statusbar_message, f'{_("Source: ")}{self.datafile.source}', 4000)
         self._words_cache.clear()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 

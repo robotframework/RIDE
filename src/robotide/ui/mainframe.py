@@ -289,9 +289,10 @@ class RideFrame(wx.Frame):
 
         # self.main_menu.take_menu_bar_into_use()
         if new_ui:  # Only when creating UI we add panes
-            self.CreateStatusBar(name="StatusBar")
+            self.CreateStatusBar(number=2, name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
             if self._status_bar:
+                self.SetStatusBarPane(0)
                 self._status_bar.SetFont(wx.Font(self.fontinfo))
                 self._status_bar.SetBackgroundColour(Colour(self.color_background))
                 self._status_bar.SetForegroundColour(Colour(self.color_foreground))

@@ -168,6 +168,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
+when selecting in Tree shows the filename in StatusBar.</li>
 <li>Better Search element in Text Editor which allows to be cleared.</li>
 <li>When saving in Text Editor, the cursor remains at position, instead of jumping to Tree selection.</li>
 <li>Improved autocompletion lists, by using existing words in Test Suite file (still needs more improvements).</li>
@@ -235,7 +237,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 25/March/2025.</p>
+<p>RIDE {VERSION} was released on 27/March/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
