@@ -1377,7 +1377,7 @@ class SourceEditor(wx.Panel):
             if hasattr(self._data, 'content'):  # Special case for unit test
                 self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
-        wx.CallAfter(self.plugin.statusbar_message, f'{_("Source: ")}{self.datafile.source}', 4000)
+        wx.CallAfter(self.plugin.statusbar_message, f'{_("Source: ")}{self._data.source}', 4000)
         self._words_cache.clear()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 
