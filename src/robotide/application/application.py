@@ -80,6 +80,7 @@ class RIDE(wx.App):
     def __init__(self, path=None, updatecheck=True, settingspath=None):
         self._updatecheck = updatecheck
         self.workspace_path = path
+        self.changed_workspace = False
         self.settings_path = settingspath
         context.APP = self
         wx.App.__init__(self, redirect=False)
@@ -401,7 +402,7 @@ class RIDE(wx.App):
     def on_app_activate(self, event):
         if self.workspace_path is not None and RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
-                if RideFSWatcherHandler.is_workspace_dirty():
+                if not self.changed_workspace and RideFSWatcherHandler.is_workspace_dirty():
                     self.frame.show_confirm_reload_dlg(event)
                 RideFSWatcherHandler.stop_listening()
             else:

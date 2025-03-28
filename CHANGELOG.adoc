@@ -6,7 +6,14 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-// == https://github.com/robotframework/RIDE[Unreleased]
+== https://github.com/robotframework/RIDE[Unreleased]
+
+=== Added
+- Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
+when selecting in Tree shows the filename in StatusBar.
+
+=== Changed
+- On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.3.rst[2.1.3] - 2025-03-24
 

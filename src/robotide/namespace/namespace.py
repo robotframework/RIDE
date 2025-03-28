@@ -646,7 +646,10 @@ class _Keywords(object):
                     set_lang = shared_memory.ShareableList(new_lang, name="language")
                 except FileExistsError:  # Other instance created file
                     set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                except ValueError:
+                    self.new_lang = new_lang
             else:
                 self.new_lang = new_lang
         self.normalized_bdd_prefixes = utils.normalize_pipe_list(list(self.new_lang.bdd_prefixes), spaces=False)

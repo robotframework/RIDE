@@ -32,7 +32,7 @@ from .review import ReviewDialog
 from .treeplugin import Tree
 from ..action import action_info_collection, action_factory, SeparatorInfo
 from ..action.shortcut import localize_shortcuts
-from ..context import get_about_ride, SHORTCUT_KEYS
+from ..context import get_about_ride, SHORTCUT_KEYS, IS_WINDOWS
 from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
 from ..preferences import PreferenceEditor
@@ -289,14 +289,15 @@ class RideFrame(wx.Frame):
 
         # self.main_menu.take_menu_bar_into_use()
         if new_ui:  # Only when creating UI we add panes
-            self.CreateStatusBar(name="StatusBar")
+            self.CreateStatusBar(number=2, name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
-            if self._status_bar:
-                self._status_bar.SetFont(wx.Font(self.fontinfo))
-                self._status_bar.SetBackgroundColour(Colour(self.color_background))
-                self._status_bar.SetForegroundColour(Colour(self.color_foreground))
             # set main frame icon
             self.SetIcons(self._image_provider.PROGICONS)
+        if self._status_bar:
+            self.SetStatusBarPane(0)
+            self._status_bar.SetFont(wx.Font(self.fontinfo))
+            self._status_bar.SetBackgroundColour(Colour(self.color_background))
+            self._status_bar.SetForegroundColour(Colour(self.color_foreground))
         # change notebook theme
         self.set_notebook_theme()
         # tell the manager to "commit" all the changes just made
@@ -497,6 +498,8 @@ class RideFrame(wx.Frame):
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
+        if IS_WINDOWS:
+            self._application.changed_workspace = True
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
         set_lang = []
@@ -519,7 +522,12 @@ class RideFrame(wx.Frame):
         except UserWarning:
             return False
         self._populate_tree()
+        if IS_WINDOWS:
+            wx.CallLater(60000, self.clear_workspace_state)
         return True
+
+    def clear_workspace_state(self):
+        self._application.changed_workspace = False
 
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)

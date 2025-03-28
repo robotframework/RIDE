@@ -22,4 +22,4 @@ from .label import Label, HeaderLabel, HelpLabel
 from .list import VirtualList
 from .popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
 from .sizers import VerticalSizer, HorizontalSizer
-from .text import TextField
+from .text import TextField, SearchField

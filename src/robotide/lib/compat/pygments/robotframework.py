@@ -237,7 +237,10 @@ class Tokenizer:
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = ['En']
             else:
                 self.new_lang = new_lang
         self._index = 0
@@ -286,7 +289,10 @@ class Setting(Tokenizer):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    pass
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -356,7 +362,10 @@ class ImportSetting(Tokenizer):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -380,7 +389,10 @@ class TestCaseSetting(Setting):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -427,7 +439,10 @@ class KeywordSetting(TestCaseSetting):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -465,7 +480,10 @@ class KeywordCall(Tokenizer):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -496,7 +514,10 @@ class GherkinTokenizer(object):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -535,7 +556,10 @@ class ForLoop(Tokenizer):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -561,7 +585,10 @@ class _Table:
                     set_lang = shared_memory.ShareableList(name="language")
                 except  FileNotFoundError:
                     set_lang = ['En']
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -621,7 +648,10 @@ class SettingTable(_Table):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
@@ -666,7 +696,10 @@ class TestCaseTable(_Table):
         if self.new_lang is None:
             if new_lang is None:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
+                except ValueError:
+                    self.new_lang = None
             else:
                 self.new_lang = new_lang
         if self.new_lang is None:
