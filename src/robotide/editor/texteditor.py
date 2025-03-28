@@ -40,7 +40,7 @@ from ..publish.messages import (RideSaved, RideTreeSelection, RideNotebookTabCha
 from ..preferences.editors import read_fonts
 from ..publish import RideSettingsChanged, PUBLISHER
 from ..publish.messages import RideMessage
-from ..widgets import TextField, Label, HtmlDialog
+from ..widgets import SearchField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 from robotide.lib.compat.parsing.language import Language
@@ -1016,7 +1016,7 @@ class SourceEditor(wx.Panel):
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(5)
         size = wx.Size(200, 32)
-        self.search_field = TextField(self, '', size=size, process_enters=True)
+        self.search_field = SearchField(self, '', size=size, process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
@@ -1377,7 +1377,7 @@ class SourceEditor(wx.Panel):
             if hasattr(self._data, 'content'):  # Special case for unit test
                 self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
-        wx.CallAfter(self.plugin.statusbar_message, f'{_("Source: ")}{self._data.source}', 4000)
+        wx.CallAfter(self.plugin.statusbar_message, f'{_("Source: ")}{self._controller_for_context.source}', 4000)
         self._words_cache.clear()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 
