@@ -1020,10 +1020,10 @@ class SourceEditor(wx.Panel):
                                    handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
-        config_button = ButtonWithHandler(self, _('Settings'), fsize=self.general_font_size,
+        config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench.png', fsize=self.general_font_size,
                                    handler=lambda e: self.plugin.on_config_panel())
-        config_button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
-        config_button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        config_button.SetBackgroundColour(Colour(self.dlg.color_background))
+        config_button.SetForegroundColour(Colour(self.dlg.color_foreground))
         default_components.add_with_padding(button)
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
