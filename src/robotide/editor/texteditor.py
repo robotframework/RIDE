@@ -37,6 +37,7 @@ from ..namespace.suggesters import SuggestionSource
 from ..pluginapi import Plugin, action_info_collection, TreeAwarePluginMixin
 from ..publish.messages import (RideSaved, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty, RideBeforeSaving, RideSaving, RideDataDirtyCleared)
+from ..preferences import TextEditorPreferences, PreferenceEditor
 from ..preferences.editors import read_fonts
 from ..publish import RideSettingsChanged, PUBLISHER
 from ..publish.messages import RideMessage
@@ -389,6 +390,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # self.status_bar = self.frame.FindWindowByName("StatusBar", self.frame)
         # self.frame.SetStatusBarPane(1)
         self.reformat = application.settings.get('reformat', False)
+        self.settings = application.settings
+        self.application = application
         self._register_shortcuts()
 
     @property
@@ -635,6 +638,15 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return self.notebook.current_page_title == self.title
         except AttributeError:
             return self._editor.is_focused()
+
+    def on_config_panel(self):
+        # print("DEBUG: texteditor.py on_config_panel CALLING CONFIG_PANEL\n")
+        self.config_panel(self.frame)
+
+    def config_panel(self, parent):
+        dlg = PreferenceEditor(parent, _("RIDE - Preferences"),
+                               self.application.preferences, style='single', index=4)
+        dlg.Show()
 
 
 class DummyController(WithStepsController):
@@ -1008,9 +1020,14 @@ class SourceEditor(wx.Panel):
                                    handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        config_button = ButtonWithHandler(self, _('Settings'), fsize=self.general_font_size,
+                                   handler=lambda e: self.plugin.on_config_panel())
+        config_button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        config_button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         default_components.add_with_padding(button)
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
+        self.editor_toolbar.add_with_padding(config_button)
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
 
     def _create_search(self, container_sizer):
