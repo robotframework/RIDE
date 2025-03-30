@@ -298,6 +298,7 @@ class RideFrame(wx.Frame):
             self._status_bar.SetFont(wx.Font(self.fontinfo))
             self._status_bar.SetBackgroundColour(Colour(self.color_background))
             self._status_bar.SetForegroundColour(Colour(self.color_foreground))
+            self._status_bar.SetOwnForegroundColour(Colour(self.color_foreground))
         # change notebook theme
         self.set_notebook_theme()
         # tell the manager to "commit" all the changes just made

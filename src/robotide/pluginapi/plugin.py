@@ -466,9 +466,7 @@ class Plugin(object):
 
     def _delayed_clear(self, ttl):
         if ttl >= 100:
-            from time import sleep
-            sleep(ttl/1000)
-            self.statusbar.SetStatusText('', 1)
+            wx.CallLater(ttl, self.statusbar_clear)
 
     def statusbar_clear(self):
         """Clears the message at Plugin area of StatusBar"""
