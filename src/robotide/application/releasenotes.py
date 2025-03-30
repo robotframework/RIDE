@@ -155,10 +155,12 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.13.</li>
 <li>There are some changes, or known issues:<ul>
+<!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
 version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
+-->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings and changes.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
@@ -168,6 +170,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.</li>
+<li>Added Config Panel button to Plugins, working example in Text Editor.</li>
 <li>On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.</li>
 <li>Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
 when selecting in Tree shows the filename in StatusBar.</li>
@@ -225,7 +229,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 28/March/2025.</p>
+<p>RIDE {VERSION} was released on 30/March/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

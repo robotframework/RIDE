@@ -49,7 +49,7 @@ FONT_FACE = 'font face'
 
 class PreferenceEditor(wx.Dialog):
     """A dialog for showing the preference panels"""
-    def __init__(self, parent, title, preferences, style="auto"):
+    def __init__(self, parent, title, preferences, style="auto", index=0):
         wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(850, 700),
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         # set Left to Right direction (while we don't have localization)
@@ -116,7 +116,7 @@ class PreferenceEditor(wx.Dialog):
             sizer.Add(self._container, 1, wx.EXPAND)
             self.SetSizer(sizer)
 
-            panel = self._container.AddPanel(panels[0], self._settings)
+            panel = self._container.AddPanel(panels[index], self._settings)
             self._container.ShowPanel(panel)
 
     def on_close(self, evt):

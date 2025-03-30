@@ -13,22 +13,35 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
-from wx import Colour
+from wx import Colour, BitmapBundle
 
 
 class ButtonWithHandler(wx.Button):
 
-    def __init__(self, parent, label, mk_handler=None, handler=None, width=-1,
+    def __init__(self, parent, label, mk_handler=None, handler=None, width=-1, bitmap=None,
                  height=25, color_secondary_foreground='black', color_secondary_background='light grey', fsize=10):
         fsize = max(8, fsize)
+        bt_image = None
+        style = 0
+        name = label
+        if bitmap is not None and isinstance(bitmap, str):
+            img_path = os.path.join(os.path.dirname(__file__), bitmap)
+            bt_image = BitmapBundle.FromFiles(img_path)
+            label = 'config_panel'
+            width = height
+            style = wx.BU_EXACTFIT | wx.BU_NOTEXT | wx.BORDER_NONE
         if width == -1:
             width = len(label) * fsize
         size = wx.Size(width, height)
-        wx.Button.__init__(self, parent, label=label,
-                           size=size)
+        wx.Button.__init__(self, parent, label=label, size=size, style=style, name=name)
+        if bt_image is not None:
+            self.SetBitmap(bt_image)
+            self.SetBitmapLabel(bt_image)
+            self.SetToolTip(name)
         self.SetBackgroundColour(Colour(color_secondary_background))
-        # self.SetOwnBackgroundColour(Colour(color_secondary_background))
+        self.SetOwnBackgroundColour(Colour(color_secondary_background))
         self.SetForegroundColour(Colour(color_secondary_foreground))
         # self.SetOwnForegroundColour(Colour(color_secondary_foreground))
         if not handler or mk_handler:
