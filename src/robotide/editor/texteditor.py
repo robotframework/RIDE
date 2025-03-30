@@ -640,15 +640,16 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return self._editor.is_focused()
 
     def on_config_panel(self):
-        # print("DEBUG: texteditor.py on_config_panel CALLING CONFIG_PANEL\n")
-        self.config_panel(self.frame)
+        dlg = self.config_panel(self.frame)
+        dlg.Show(True)
 
     def config_panel(self, parent):
         __ = parent
         _parent = wx.GetTopLevelWindows()
         dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
                                self.application.preferences, style='single', index=4)
-        dlg.Show()
+        dlg.Show(False)
+        return dlg
 
 
 class DummyController(WithStepsController):
@@ -1025,6 +1026,7 @@ class SourceEditor(wx.Panel):
         config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench.png', fsize=self.general_font_size,
                                    handler=lambda e: self.plugin.on_config_panel())
         config_button.SetBackgroundColour(Colour(self.dlg.color_background))
+        config_button.SetOwnBackgroundColour(Colour(self.dlg.color_background))
         config_button.SetForegroundColour(Colour(self.dlg.color_foreground))
         default_components.add_with_padding(button)
         self._create_search(default_components)

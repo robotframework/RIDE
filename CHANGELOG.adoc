@@ -9,7 +9,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
-- Added Preferences or Control Panel button to Plugins, working example in Text Editor.
+- Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.
+- Added Config Panel button to Plugins, working example in Text Editor.
 - Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
 when selecting in Tree shows the filename in StatusBar.
 

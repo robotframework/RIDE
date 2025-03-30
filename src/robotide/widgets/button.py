@@ -41,7 +41,7 @@ class ButtonWithHandler(wx.Button):
             self.SetBitmapLabel(bt_image)
             self.SetToolTip(name)
         self.SetBackgroundColour(Colour(color_secondary_background))
-        # self.SetOwnBackgroundColour(Colour(color_secondary_background))
+        self.SetOwnBackgroundColour(Colour(color_secondary_background))
         self.SetForegroundColour(Colour(color_secondary_foreground))
         # self.SetOwnForegroundColour(Colour(color_secondary_foreground))
         if not handler or mk_handler:

@@ -77,23 +77,14 @@ class _PluginPanel(RIDEDialog):
     def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL | wx.SIZE_AUTO)
         panel.SetupScrolling()
-        sizer = wx.FlexGridSizer(0, 3, hgap=8, vgap=8)
-        sizer.AddGrowableCol(2, 1)
+        sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
+        sizer.AddGrowableCol(1, 1)
         sizer.Add(self._create_label(panel, _('Enabled')), 0, wx.BOTTOM, border=8)
-        sizer.Add(self._create_label(panel, _('Settings')), 0, wx.BOTTOM, border=8)
         sizer.Add(self._create_label(panel, _('Plugin')), 0, wx.BOTTOM | wx.EXPAND, border=8)
         for plugin in sorted(plugins, key=lambda p: p.name):
             sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
-                      flag=wx.ALIGN_CENTER_HORIZONTAL)
-            try:
-                sizer.Add(ButtonWithHandler(panel, _('Settings'), bitmap='wrench.png',
-                                            color_secondary_background=self.color_background,
-                                            handler=plugin.config_panel(plugin)),
-                          flag=wx.ALIGN_CENTER_HORIZONTAL)
-            except AttributeError:
-                blank = Label(panel)
-                sizer.Add(blank, 0, wx.EXPAND)
-            sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
+                      flag=wx.ALIGN_LEFT)
+            sizer.Add(_PluginRow(panel, plugin, self.color_background), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
 
@@ -149,10 +140,23 @@ class _PluginEnablationCheckBox(wx.CheckBox):
 
 class _PluginRow(wx.Panel):
 
-    def __init__(self, parent, plugin):
+    def __init__(self, parent, plugin, backgound_color):
         wx.Panel.__init__(self, parent)
+        sz_head = wx.FlexGridSizer(0, 3, hgap=4, vgap=4)
+        l_name = self._get_name(plugin)
+        sz_head.Add(l_name)
+        b_spacing = Label(self, label='  ')
+        sz_head.Add(b_spacing)
+        if hasattr(plugin, 'on_config_panel'):
+            try:
+                sz_head.Add(ButtonWithHandler(self, _('Settings'), bitmap='wrench.png',
+                                              color_secondary_background=backgound_color,
+                                              handler=lambda e: plugin.on_config_panel()),
+                            flag=wx.ALIGN_LEFT)
+            except AttributeError:
+                pass
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._get_name(plugin))
+        sizer.Add(sz_head)
         for name, value in plugin.metadata.items():
             sizer.Add(self._get_metadata(name, value))
         sizer.Add(self._get_description(plugin), 0, wx.EXPAND)
