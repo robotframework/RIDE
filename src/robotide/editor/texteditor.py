@@ -644,7 +644,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.config_panel(self.frame)
 
     def config_panel(self, parent):
-        dlg = PreferenceEditor(parent, _("RIDE - Preferences"),
+        __ = parent
+        _parent = wx.GetTopLevelWindows()
+        dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
                                self.application.preferences, style='single', index=4)
         dlg.Show()
 

@@ -29,7 +29,7 @@ class ButtonWithHandler(wx.Button):
         if bitmap is not None and isinstance(bitmap, str):
             img_path = os.path.join(os.path.dirname(__file__), bitmap)
             bt_image = BitmapBundle.FromFiles(img_path)
-            label = ''
+            label = 'config_panel'
             width = height
             style = wx.BU_EXACTFIT | wx.BU_NOTEXT | wx.BORDER_NONE
         if width == -1:

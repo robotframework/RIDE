@@ -21,7 +21,7 @@ from wx.lib.scrolledpanel import ScrolledPanel
 
 from ..context import LOG
 from ..publish import RideLogException
-from ..widgets import Label, RIDEDialog
+from ..widgets import Label, RIDEDialog, ButtonWithHandler
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -77,14 +77,22 @@ class _PluginPanel(RIDEDialog):
     def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL | wx.SIZE_AUTO)
         panel.SetupScrolling()
-        sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
-        sizer.AddGrowableCol(1, 1)
+        sizer = wx.FlexGridSizer(0, 3, hgap=8, vgap=8)
+        sizer.AddGrowableCol(2, 1)
         sizer.Add(self._create_label(panel, _('Enabled')), 0, wx.BOTTOM, border=8)
+        sizer.Add(self._create_label(panel, _('Settings')), 0, wx.BOTTOM, border=8)
         sizer.Add(self._create_label(panel, _('Plugin')), 0, wx.BOTTOM | wx.EXPAND, border=8)
         for plugin in sorted(plugins, key=lambda p: p.name):
-            sizer.Add(_PluginEnablationCheckBox(panel, plugin,
-                                                activation_callback),
+            sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
                       flag=wx.ALIGN_CENTER_HORIZONTAL)
+            try:
+                sizer.Add(ButtonWithHandler(panel, _('Settings'), bitmap='wrench.png',
+                                            color_secondary_background=self.color_background,
+                                            handler=plugin.config_panel(plugin)),
+                          flag=wx.ALIGN_CENTER_HORIZONTAL)
+            except AttributeError:
+                blank = Label(panel)
+                sizer.Add(blank, 0, wx.EXPAND)
             sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
@@ -148,9 +156,6 @@ class _PluginRow(wx.Panel):
         for name, value in plugin.metadata.items():
             sizer.Add(self._get_metadata(name, value))
         sizer.Add(self._get_description(plugin), 0, wx.EXPAND)
-        config = plugin.config_panel(self)
-        if config:
-            sizer.Add(config, 1, wx.EXPAND | wx.LEFT, border=16)
         self.SetSizer(sizer)
 
     def _get_name(self, plugin):
