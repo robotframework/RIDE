@@ -16,7 +16,6 @@
 import re
 
 from multiprocessing import shared_memory
-from robotide.lib.compat.parsing.language import get_headers_for
 from .aligners import FirstColumnAligner, ColumnAligner, NullAligner
 from .dataextractor import DataExtractor
 from .rowsplitter import RowSplitter
@@ -123,7 +122,13 @@ class TsvFormatter(_DataFileFormatter):
 
 
 def translate_header(header: str, language=None) -> str:
-    if not language:
+    can_translate = True
+    try:
+        from robotide.lib.compat.parsing.language import get_headers_for
+    except ImportError:
+        get_headers_for = lambda l, t, lowercase=False: t
+        can_translate = False
+    if not language or not can_translate:
         return header
     tr_header = list(get_headers_for(language, header, lowercase=False))
     if len(tr_header) > 1:

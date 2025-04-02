@@ -12,6 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .validator import ErrorReporter
+try:
+    from .validator import ErrorReporter
+except ImportError:
+    pass
 from .language import get_english_label, get_localized_setting
-from .languages import *
+try:
+    from .languages import *
+except ImportError:
+    pass

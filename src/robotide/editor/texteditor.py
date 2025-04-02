@@ -717,7 +717,73 @@ class DataValidationHandler(object):
     def set_editor(self, editor):
         self._editor = editor
 
+
     def validate_and_update(self, data, text, lang='en'):
+
+        try:
+            from robot.parsing.parser.parser import get_model  # RF > 4.0
+        except ImportError:
+            return self._old_validate_and_update(data, text)
+        return self._new_validate_and_update(data, text, lang)
+
+    """
+        Backwards compatible code v1.7.4.2
+    """
+
+    def _old_validate_and_update(self, data, text):
+        m_text = text.decode("utf-8")
+        if not self._old_sanity_check(data, m_text):
+            handled = self._old_handle_sanity_check_failure()
+            if not handled:
+                return False
+        self._editor.reset()
+        # print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
+        data.update_from(m_text)
+        # print("DEBUG: AFTER updating text")
+        self._editor.set_editor_caret_position()
+        # %s" % (self._editor.GetCurrentPos()))
+        return True
+
+    def _old_sanity_check(self, data, text):
+        formatted_text = data.format_text(text)
+        # print(f"DEBUG: texteditor old_sanity_check {formatted_text=}")
+        c = self._normalize(formatted_text)
+        e = self._normalize(text)
+        return len(c) == len(e)
+
+    @staticmethod
+    def _normalize(text):
+        for item in [' ', r'\t', r'\n', r'\r\n', '...', '*']:
+            if item in text:
+                # print("DEBUG: _normaliz item %s txt %s" % (item, text))
+                text = text.replace(item, '')
+        return text
+
+    def _old_handle_sanity_check_failure(self):
+        if self._last_answer == wx.ID_NO and \
+                time() - self._last_answer_time <= 0.2:
+            self._editor._mark_file_dirty()
+            return False
+        # TODO: use widgets.Dialog
+        id = wx.MessageDialog(self._editor,
+                              'ERROR: Data sanity check failed!\n'
+                              'Reset changes?',
+                              'Can not apply changes from Txt Editor',
+                              style=wx.YES | wx.NO).ShowModal()
+        self._last_answer = id
+        self._last_answer_time = time()
+        if id == wx.ID_YES:
+            self._editor._revert()
+            return True
+        else:
+            self._editor._mark_file_dirty()
+        return False
+
+    """
+        End Backwards compatible code v1.7.4.2
+    """
+
+    def _new_validate_and_update(self, data, text, lang='en'):
         from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
         # print(f"DEBUG: textedit.py validate_and_update ENTER"

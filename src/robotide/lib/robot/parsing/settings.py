@@ -15,7 +15,10 @@
 
 from multiprocessing import shared_memory
 from robotide.lib.robot.utils import is_string, unicode
-from robotide.lib.compat.parsing.language import get_localized_setting
+try:
+    from robotide.lib.compat.parsing.language import get_localized_setting
+except ImportError:
+    get_localized_setting = lambda l, item: item
 
 from .comments import Comment
 from ..version import ALIAS_MARKER

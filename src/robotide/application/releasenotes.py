@@ -170,6 +170,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.</li>
 <li>Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.</li>
 <li>Added Config Panel button to Plugins, working example in Text Editor.</li>
 <li>On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.</li>
@@ -229,7 +230,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 30/March/2025.</p>
+<p>RIDE {VERSION} was released on 02/April/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
