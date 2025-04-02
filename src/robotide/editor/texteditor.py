@@ -718,13 +718,13 @@ class DataValidationHandler(object):
         self._editor = editor
 
 
-    def validate_and_update(self, data, text):
+    def validate_and_update(self, data, text, lang='en'):
 
         try:
             from robot.parsing.parser.parser import get_model  # RF > 4.0
         except ImportError:
             return self._old_validate_and_update(data, text)
-        return self._new_validate_and_update(data, text)
+        return self._new_validate_and_update(data, text, lang)
 
     """
         Backwards compatible code v1.7.4.2
@@ -746,12 +746,13 @@ class DataValidationHandler(object):
 
     def _old_sanity_check(self, data, text):
         formatted_text = data.format_text(text)
+        # print(f"DEBUG: texteditor old_sanity_check {formatted_text=}")
         c = self._normalize(formatted_text)
         e = self._normalize(text)
         return len(c) == len(e)
 
     @staticmethod
-    def _normalize(self, text):
+    def _normalize(text):
         for item in [' ', r'\t', r'\n', r'\r\n', '...', '*']:
             if item in text:
                 # print("DEBUG: _normaliz item %s txt %s" % (item, text))

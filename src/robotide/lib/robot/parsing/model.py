@@ -473,8 +473,10 @@ class TestDataDirectory(_TestData):
         for table in self.tables:
             yield table
 
-
-from robotide.lib.compat.parsing.language import get_headers_for
+try:
+    from robotide.lib.compat.parsing.language import get_headers_for
+except ImportError:
+    get_headers_for = lambda l, t, lowercase=False: t
 
 
 class _Table(object):
