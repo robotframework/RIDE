@@ -134,6 +134,7 @@ class TestRunnerPlugin(Plugin):
                 "profile_name": "robot",
                 "show_console_log": True,
                 "show_message_log": True,
+                "active_status_bar": True,
                 "sash_position": 200,
                 "run_profiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
@@ -178,6 +179,7 @@ class TestRunnerPlugin(Plugin):
         self._initmemory = None
         self._limitmemory = None  # This will be +80%
         self._maxmemmsg = None
+        self.active_status_bar = self.__getattr__('active_status_bar')
         self.use_colors = self.__getattr__('use colors')
         self.fail_color = self.__getattr__('fail color')
         self.pass_color = self.__getattr__('pass color')
@@ -321,30 +323,40 @@ class TestRunnerPlugin(Plugin):
         self._append_to_console_log(_('[ SENDING STOP SIGNAL ]\n'),
                                     source='stderr')
         self._test_runner.send_stop_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING STOP SIGNAL ]\n'), 5000)
 
     def on_pause(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING PAUSE SIGNAL ]\n'))
         self._test_runner.send_pause_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING PAUSE SIGNAL ]\n'), 5000)
 
     def on_continue(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING CONTINUE SIGNAL ]\n'))
         self._test_runner.send_continue_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING CONTINUE SIGNAL ]\n'), 5000)
 
     def on_step_next(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING STEP NEXT SIGNAL ]\n'))
         self._test_runner.send_step_next_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING STEP NEXT SIGNAL ]\n'), 5000)
 
     def on_step_over(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING STEP OVER SIGNAL ]\n'))
         self._test_runner.send_step_over_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING STEP OVER SIGNAL ]\n'), 5000)
 
     def on_run(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
@@ -921,7 +933,8 @@ class TestRunnerPlugin(Plugin):
         panel = wx.Panel(parent)
         panel.SetBackgroundColour(self._mysettings.color_background)
         panel.SetForegroundColour(self._mysettings.color_foreground)
-        self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color)
+        self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color,
+                                         self.active_status_bar, caller=self)
         self._console_log_panel, self._console_log_ctrl = \
             self._create_collapsible_pane(panel, _('Console log'),
                                           self.show_console_log,
@@ -1092,11 +1105,15 @@ class TestRunnerPlugin(Plugin):
         __ = args
         wx.CallAfter(self._set_paused)
         self._log_message_queue.put(_('<<  PAUSED  >>'))
+        if self.active_status_bar:
+            self.statusbar_message(_('<<  PAUSED  >>'))
 
     def _handle_continue(self, args):
         __ = args
         wx.CallAfter(self._set_continue)
         self._log_message_queue.put(_('<< CONTINUE >>'))
+        if self.active_status_bar:
+            self.statusbar_message(_('<<  CONTINUE  >>'), 5000)
 
     def _set_running(self):
         self._run_action.disable()
@@ -1105,6 +1122,8 @@ class TestRunnerPlugin(Plugin):
         self.get_current_profile().disable_toolbar()
         self._running = True
         self._test_runner.test_execution_started()
+        if self.active_status_bar:
+            self.statusbar_clear()
 
     def _set_paused(self):
         self._run_action.disable()
@@ -1122,6 +1141,8 @@ class TestRunnerPlugin(Plugin):
         self._enable_runner_toolbar(True, False)
         self.get_current_profile().enable_toolbar()
         self._running = False
+        if self.active_status_bar:
+            self.statusbar_clear()
 
     def _enable_runner_toolbar(self, run, paused):
         stop = not run
@@ -1146,7 +1167,8 @@ class TestRunnerPlugin(Plugin):
 class ProgressBar(wx.Panel):
     """A progress bar for the test runner plugin"""
 
-    def __init__(self, parent, fail_color='#FF8E8E', pass_color="#9FCC9F", skip_color='yellow'):
+    def __init__(self, parent, fail_color='#FF8E8E', pass_color="#9FCC9F", skip_color='yellow',
+                 active_status_bar=False, caller=None):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._gauge = wx.Gauge(self, size=(100, 15), style=wx.GA_HORIZONTAL)
@@ -1158,6 +1180,8 @@ class ProgressBar(wx.Panel):
         self._gauge.Hide()
         self._default_colour = parent.GetBackgroundColour()
         self._foreground_colour = parent.GetForegroundColour()
+        self.active_status_bar = active_status_bar
+        self.caller = caller
         self.fail_color = fail_color
         self.pass_color = pass_color
         self.skip_color = skip_color
@@ -1227,7 +1251,8 @@ class ProgressBar(wx.Panel):
         elapsed = time.time() - self._start_time
         message = _("elapsed time: %s  pass: %s  skip: %s  fail: %s") % (
             self._seconds_to_string(elapsed), self._pass, self._skip, self._fail)
-        message += self._get_current_keyword_text()
+        current_keyword = self._get_current_keyword_text()
+        message += current_keyword
         if self._fail > 0:
             self.SetForegroundColour(self.get_visible_color(self.fail_color))
             self.SetBackgroundColour(self.fail_color)
@@ -1249,6 +1274,8 @@ class ProgressBar(wx.Panel):
             self._label.SetForegroundColour(self._foreground_colour)
             self._label.SetBackgroundColour(self._default_colour)
         self._label.SetLabel(message)
+        if self.active_status_bar and self.caller:
+            self.caller.statusbar_message(current_keyword)
         # not sure why this is required, but without it the background
         # colors don't look right on Windows
         self.Refresh()

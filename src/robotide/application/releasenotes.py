@@ -170,6 +170,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added current executing keyword and other statuses to TestRunner status bar.</li>
 <li>Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.</li>
 <li>Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.</li>
 <li>Added Config Panel button to Plugins, working example in Text Editor.</li>
