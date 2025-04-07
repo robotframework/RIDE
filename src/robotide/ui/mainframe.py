@@ -291,6 +291,7 @@ class RideFrame(wx.Frame):
         if new_ui:  # Only when creating UI we add panes
             self.CreateStatusBar(number=2, name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
+            self._status_bar.SetStatusWidths([-2, -3])
             # set main frame icon
             self.SetIcons(self._image_provider.PROGICONS)
         if self._status_bar:
