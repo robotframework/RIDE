@@ -77,9 +77,10 @@ from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.ui.notebook import NoteBook
-from robotide.widgets import Label, ImageProvider, RIDEDialog
+from robotide.widgets import Label, ImageProvider, ButtonWithHandler, RIDEDialog
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime
+from robotide.preferences import PreferenceEditor
 from robotide.preferences.editors import read_fonts
 from sys import getfilesystemencoding, platform
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
@@ -156,6 +157,7 @@ class TestRunnerPlugin(Plugin):
     title = 'Run'
 
     def __init__(self, application=None):
+        self.app = application
         self.title = _('Run')
         Plugin.__init__(self, application, initially_enabled=True,
                         default_settings=self.defaults)
@@ -747,8 +749,11 @@ class TestRunnerPlugin(Plugin):
     def _build_runner_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER)
+        toolbar.SetThemeEnabled(True)
         toolbar.SetBackgroundColour(self._mysettings.color_background)
         toolbar.SetForegroundColour(self._mysettings.color_foreground)
+        toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
+        toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         toolbar.AddTool(ID_RUN, _("Start"), ImageProvider().TOOLBAR_PLAY,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=_("Start robot"),
                         longHelp=_("Start running the robot test suite"))
@@ -775,6 +780,10 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddTool(ID_STEP_OVER, STEP_OVER, ImageProvider().TOOLBAR_NEXT,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=STEP_OVER,
                         longHelp=STEP_OVER)
+        for i in toolbar.GetChildren():
+            i.SetBackgroundColour(self._mysettings.color_secondary_background)
+            i.SetOwnBackgroundColour(self._mysettings.color_secondary_background)
+            i.SetForegroundColour(self._mysettings.color_secondary_foreground)
         toolbar.Realize()
         self._bind_runner_toolbar_events(toolbar)
         return toolbar
@@ -790,10 +799,18 @@ class TestRunnerPlugin(Plugin):
                 (wx.EVT_TOOL, self.on_step_over, ID_STEP_OVER)):
             toolbar.Bind(event, callback, id=idd)
 
+    @property
+    def general_font_size(self):
+        fsize = self.app.settings.get('General', None)['font size']
+        return fsize
+
     def _build_local_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER | wx.TB_DOCKABLE)
         # print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
+        toolbar.SetThemeEnabled(True)
+        toolbar.SetBackgroundColour(self._mysettings.color_background)
+        toolbar.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
         toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         profile_label = Label(toolbar, label=_("Execution Profile:  "))
@@ -829,12 +846,19 @@ class TestRunnerPlugin(Plugin):
                                    _(" Pause after failure  "), False,
                                    _("Automatically pause after failing keyword"))
         toolbar.AddControl(self.pause_on_failure_cb)
-
+        config_button = ButtonWithHandler(toolbar, _('Settings'), bitmap='wrench.png', fsize=self.general_font_size,
+                                   handler=lambda e: self.on_config_panel())
+        config_button.SetBackgroundColour(self._mysettings.color_background)
+        config_button.SetOwnBackgroundColour(self._mysettings.color_background)
+        config_button.SetForegroundColour(self._mysettings.color_foreground)
+        toolbar.AddStretchableSpace()
+        toolbar.AddControl(config_button)
         toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
         for i in toolbar.GetChildren():
             i.SetBackgroundColour(self._mysettings.color_background)
+            i.SetOwnBackgroundColour(self._mysettings.color_background)
             i.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.Realize()
         self._bind_local_toolbar_events(toolbar)
@@ -1162,6 +1186,18 @@ class TestRunnerPlugin(Plugin):
                       "Please, run the tests and try again"),
                       _("No logs directory"),
                       wx.ICON_INFORMATION | wx.OK)
+
+    def on_config_panel(self):
+        dlg = self.config_panel(self.frame)
+        dlg.Show(True)
+
+    def config_panel(self, parent):
+        __ = parent
+        _parent = wx.GetTopLevelWindows()
+        dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
+                               self.app.preferences, style='single', index=5)
+        dlg.Show(False)
+        return dlg
 
 
 class ProgressBar(wx.Panel):

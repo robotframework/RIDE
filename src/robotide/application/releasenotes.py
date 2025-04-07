@@ -173,7 +173,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 <li>Added current executing keyword and other statuses to TestRunner status bar.</li>
 <li>Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.</li>
 <li>Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.</li>
-<li>Added Config Panel button to Plugins, working example in Text Editor.</li>
+<li>Added Config Panel button to Plugins, working examples in Text Editor and Test Runner.</li>
 <li>On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.</li>
 <li>Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
 when selecting in Tree shows the filename in StatusBar.</li>
