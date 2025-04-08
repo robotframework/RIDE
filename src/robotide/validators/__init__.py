@@ -18,6 +18,7 @@ import os
 import wx
 
 from .. import robotapi, utils
+from ..widgets import RIDEDialog
 
 
 class _AbstractValidator(wx.Validator):
@@ -44,7 +45,10 @@ class _AbstractValidator(wx.Validator):
         return NotImplemented
 
     def _show_error(self, message, title="Validation Error"):
-        ret = wx.MessageBox(message, title, style=wx.ICON_ERROR)
+        # ret = wx.MessageBox(message, title, style=wx.ICON_ERROR)
+        # print(f"DEBUG: validators __init__.py AbstractValidator _show_error {message}")
+        message_box = RIDEDialog(title=title, message=message, style=wx.ICON_ERROR)
+        ret = message_box.execute()
         self._set_focus_to_text_control(self.Window)
         return ret
 

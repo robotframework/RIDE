@@ -144,9 +144,12 @@ class RIDEDialog(wx.Dialog):
         sizer.Fit(self)
 
     def execute(self):
-        retval = None
-        if self.ShowModal() == wx.ID_OK:
-            retval = self._execute()
+        retval = self.ShowModal()
+        if retval == wx.ID_OK:
+            try:
+                retval = self._execute()
+            except NotImplementedError:
+                pass
         self.Destroy()
         return retval
 

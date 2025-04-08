@@ -197,12 +197,16 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def _show_validation_error(message):
-        wx.MessageBox(message.message, _('Validation Error'), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_('Validation Error'), message=message.message, style=wx.ICON_ERROR)
+        message_box.Show()
 
     @staticmethod
     def _show_modification_prevented_error(message):
-        wx.MessageBox(_("\"%s\" is read only") % message.controller.datafile_controller.filename,
-                      _("Modification prevented"), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_("Modification prevented"),
+                                 message=_("\"%s\" is read only") % message.controller.datafile_controller.filename,
+                                 style=wx.ICON_ERROR)
+        # message_box.CenterOnParent()
+        message_box.Show()
 
     def _init_ui(self):
         """ DEBUG:
@@ -404,6 +408,10 @@ class RideFrame(wx.Frame):
             ret = wx.MessageBox(_("There are unsaved modifications.\n"
                                   "Do you want to save your changes before "
                                   "exiting?"), _("Warning"), wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
+            # message_box = RIDEDialog(title=_('Warning'), message=_("There are unsaved modifications.\n"
+            #                       "Do you want to save your changes before "
+            #                      "exiting?"), style=wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
+            # ret = message_box.execute()
             if ret == wx.CANCEL:
                 return False
             if ret == wx.YES:
