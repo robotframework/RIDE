@@ -291,7 +291,8 @@ class NewProjectDialog(_CreationDialog):
             else CreateNewFileProject
         self.language = self.selected_language()
         cmd(self._get_path(), self._is_task_type(), self.language).execute(self._controller)
-        del self.dlg
+        if self.dlg:
+            del self.dlg
 
 
 class NewResourceDialog(_WithImmutableParent, _CreationDialog):

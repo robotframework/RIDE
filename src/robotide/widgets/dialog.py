@@ -123,8 +123,8 @@ class RIDEDialog(wx.Dialog):
             sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER | wx.BOTTOM, 3)
             self.SetSizer(sizer)
             sizer.Fit(self)
+            self.Bind(wx.EVT_BUTTON, self.on_button)
         self.CenterOnParent()
-        self.Bind(wx.EVT_BUTTON, self.on_button)
 
     def _create_buttons_sizer(self, style=0):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -173,6 +173,7 @@ class RIDEDialog(wx.Dialog):
                 pass
         if retval:
             self.EndModal(retval)
+        event.Skip()
 
     def execute(self):
         retval = self.ShowModal()
