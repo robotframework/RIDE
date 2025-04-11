@@ -19,6 +19,9 @@ import wx
 
 from contextlib import contextmanager
 from pathlib import Path
+
+from pygments.styles.dracula import background
+
 from ..namespace import Namespace
 from ..controller import Project
 from ..spec import librarydatabase
@@ -329,7 +332,11 @@ class RIDE(wx.App):
         self.workspace_path = self.workspace_path or self._get_latest_path()
         if self.workspace_path:
             self._controller.update_default_dir(self.workspace_path)
-            observer = LoadProgressObserver(self.frame)
+            theme = self.settings.get_without_default('General')
+            background = theme['background']
+            foreground = theme['foreground']
+            print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}")
+            observer = LoadProgressObserver(self.frame, background=background, foreground=foreground)
             self._controller.load_data(self.workspace_path, observer)
 
     @staticmethod

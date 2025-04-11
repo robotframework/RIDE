@@ -213,6 +213,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._RESOURCES_NODE_LABEL = _('External Resources')
         # print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
         #       f"translated label={self._RESOURCES_NODE_LABEL}")
+        self.theme = settings.get_without_default('General')
+        self.background = self.theme['background']
+        self.foreground = self.theme['foreground']
         self._checkboxes_for_tests = False
         self._test_selection_controller = self._create_test_selection_controller()
         self.controller = TreeController(self, action_registerer, settings=settings,
@@ -1197,9 +1200,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                                 RideUserKeywordRenamed(datafile=controller.datafile, item=k,
                                                        old_name=keyword_name).publish()
                                 controller.mark_dirty()
-                                # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw DONE CHANGING: {k.name=}")
+                                print(f"DEBUG: treeplugin.py Tree _rename_resource_kw DONE CHANGING: {k.name=}"
+                                      f"background={self.background},  foreground={self.foreground}")
                                 # self.controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
-                                self.observer = RenameProgressObserver(self.GetParent())
+                                self.observer = RenameProgressObserver(self.GetParent(), background=self.background,
+                                                                       foreground=self.foreground)
                                 RenameKeywordOccurrences(keyword_name, new_keyword_name, self.observer)
                                 self.observer.finish()
                                 self.Collapse(res_node)

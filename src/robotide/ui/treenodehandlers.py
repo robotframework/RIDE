@@ -754,7 +754,9 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         # print(f"DEBUG: treenodehandlers.py UserKeywodHandler _create_rename_command controller.name={self.controller.name}"
         #       f", new_name={new_name} info={self.controller.info}")
         return ctrlcommands.RenameKeywordOccurrences(self.controller.name, new_name,
-                                                     RenameProgressObserver(self._tree.GetParent()),
+                                                     RenameProgressObserver(self._tree.GetParent(),
+                                                                     background=self._tree.background,
+                                                                     foreground=self._tree.foreground),
                                                      self.controller.info, language=self.controller.language)
 
     def on_find_usages(self, event):
@@ -841,7 +843,9 @@ class ResourceRootHandler(_ActionHandler):
         path = RobotFilePathDialog(
             self._tree.GetParent(), self.controller, self._settings).execute()
         if path:
-            self.controller.load_resource(path, LoadProgressObserver(self._tree.GetParent()))
+            self.controller.load_resource(path, LoadProgressObserver(self._tree.GetParent(),
+                                                                     background=self._tree.background,
+                                                                     foreground=self._tree.foreground))
 
 
 class ExcludedDirectoryHandler(TestDataDirectoryHandler):

@@ -530,7 +530,8 @@ class RideFrame(wx.Frame):
         else:
             set_lang[0] = 'en'
         try:
-            err = self.controller.load_datafile(path, LoadProgressObserver(self))
+            err = self.controller.load_datafile(path, LoadProgressObserver(self, background=self.color_background,
+                                                                           foreground=self.color_foreground))
             if isinstance(err, UserWarning):
                 # DEBUG: raise err  # Just leave message in Parser Log
                 return False

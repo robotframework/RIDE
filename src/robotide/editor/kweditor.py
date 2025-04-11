@@ -1161,7 +1161,8 @@ class KeywordEditor(GridEditor, Plugin):
         new_name = wx.GetTextFromUser(_('New name'), _(REN_KW), default_value=old_name)
         if new_name:
             self._execute(RenameKeywordOccurrences(
-                old_name, new_name, RenameProgressObserver(self.GetParent()), language=self._language))
+                old_name, new_name, RenameProgressObserver(self.GetParent(), background=self.color_background,
+                                                           foreground=self.color_foreground), language=self._language))
 
     # Add one new Dialog to edit pretty json String TODO: use better editor with more functions
     def on_json_editor(self, event=None):
