@@ -1213,8 +1213,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                                 self.SelectItem(node)
                             else:
                                 from ..widgets import RIDEDialog
-                                # wx.MessageBox(f"Invalid keyword name: {new_keyword_name}",
-                                #               "Failed Keyword Name Validation")
                                 message_box = RIDEDialog(title=_('Validation Error'),
                                                          message=_("Invalid keyword name: ") % f"{new_keyword_name}",
                                                          style=wx.ICON_ERROR | wx.OK)
