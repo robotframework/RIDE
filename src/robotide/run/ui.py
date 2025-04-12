@@ -17,7 +17,7 @@ import builtins
 import wx
 
 from .process import Process
-from ..widgets import Label, Font, VerticalSizer, HorizontalSizer
+from ..widgets import Font, VerticalSizer, HorizontalSizer, RIDEDialog
 from ..log import LogOutput
 from ..publish import RideRunnerStopped
 
@@ -63,7 +63,8 @@ class Runner(wx.EvtHandler):
         # print(f"DEBUG: runanything.py Runner run process object={self._process}"
         #      f"\nCommand: {self._config.command}")
         if self._process is None:
-            wx.MessageBox(f"FAILED TO RUN {self._config.command}", style=wx.ICON_ERROR)
+            message_box = RIDEDialog(message=f"FAILED TO RUN {self._config.command}", style=wx.ICON_ERROR)
+            message_box.ShowModal()
             return
         try:
             self._process.start()
@@ -71,7 +72,8 @@ class Runner(wx.EvtHandler):
             self._pid = self._process.pid
             return self._pid
         except Exception as err:
-            wx.MessageBox(str(err), style=wx.ICON_ERROR)
+            message_box = RIDEDialog(message=str(err), style=wx.ICON_ERROR)
+            message_box.ShowModal()
             return -1
 
     def on_timer(self, event=None):
@@ -85,7 +87,8 @@ class Runner(wx.EvtHandler):
         try:
             self._process.stop()
         except Exception as err:
-            wx.MessageBox(str(err), style=wx.ICON_ERROR)
+            message_box = RIDEDialog(message=str(err), style=wx.ICON_ERROR)
+            message_box.ShowModal()
 
 
 class _OutputWindow(wx.Panel):  # wx.ScrolledWindow):
