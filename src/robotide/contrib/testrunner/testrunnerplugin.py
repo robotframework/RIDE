@@ -460,22 +460,21 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _ask_user_to_save_before_running():
-        ret = wx.MessageBox(_("""There are unsaved modifications.
-        Do you want to save all changes and run the tests?"""),
-                            _("Unsaved Modifications"),
-                            wx.ICON_QUESTION | wx.YES_NO)
-        return ret == wx.YES
+        message_box = RIDEDialog(title=_("Unsaved Modifications"),
+                                 message=_("""There are unsaved modifications.
+        Do you want to save all changes and run the tests?"""), style=wx.ICON_QUESTION | wx.YES_NO)
+        ret = message_box.ShowModal()
+        return ret == wx.ID_YES
 
     def _tests_selected(self):
         return len(self._selected_tests) != 0
 
     @staticmethod
     def _ask_user_to_run_anyway():
-        ret = wx.MessageBox(_('No tests selected. \n'
-                            'Continue anyway?'),
-                            _('No tests selected'),
-                            wx.ICON_QUESTION | wx.YES_NO)
-        return ret == wx.YES
+        message_box = RIDEDialog(title=_('No tests selected'), message=_('No tests selected. \nContinue anyway?'),
+                                 style=wx.ICON_QUESTION | wx.YES_NO)
+        ret = message_box.ShowModal()
+        return ret == wx.ID_YES
 
     def _initialize_ui_for_running(self):
         self._show_notebook_tab()
@@ -1182,10 +1181,10 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _notify_user_no_logs_directory():
-        wx.MessageBox(_("There isn't logs directory. \n"
-                      "Please, run the tests and try again"),
-                      _("No logs directory"),
-                      wx.ICON_INFORMATION | wx.OK)
+        message_box = RIDEDialog(title=_("No logs directory"), message=_("There isn't logs directory. \n"
+                                                                         "Please, run the tests and try again"),
+                                 style=wx.OK | wx.ICON_INFORMATION)
+        message_box.ShowModal()
 
     def on_config_panel(self):
         dlg = self.config_panel(self.frame)
