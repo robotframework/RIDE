@@ -22,6 +22,7 @@ from .. import context
 from ..action import ActionInfo
 from ..pluginapi import Plugin
 from ..publish import PUBLISHER, RideExecuteSpecXmlImport
+from ..widgets import RIDEDialog
 from .xmlreaders import get_name_from_xml
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
@@ -74,8 +75,12 @@ class SpecImporterPlugin(Plugin):
         name = get_name_from_xml(path)
         if name:
             shutil.copy(path, os.path.join(context.LIBRARY_XML_DIRECTORY, name+'.xml'))
-            wx.MessageBox(_('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.') % (name, path),
-                          _('Info'), wx.OK | wx.ICON_INFORMATION)
+            message_box = RIDEDialog(title=_('Info'),
+                                     message=_('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.')
+                                             % (name, path), style=wx.OK | wx.ICON_INFORMATION)
+            message_box.ShowModal()
         else:
-            wx.MessageBox(_('Could not import library from file "%s"') % path, _('Import failed'),
-                          wx.OK | wx.ICON_ERROR)
+            message_box = RIDEDialog(title=_('Import failed'),
+                                     message=_('Could not import library from file "%s"')
+                                             % path, style=wx.OK | wx.ICON_ERROR)
+            message_box.ShowModal()

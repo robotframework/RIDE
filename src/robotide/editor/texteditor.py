@@ -793,7 +793,6 @@ class DataValidationHandler(object):
             try:
                 self._doc_language = obtain_language(lang, text)
             except ValueError:
-                # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
                 self._doc_language = 'en'
             # print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}")
         else:
@@ -896,10 +895,10 @@ class DataValidationHandler(object):
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self.source_editor._mark_file_dirty(True)
             return False
-        # DEBUG: use widgets.Dialog
-        dlg = wx.MessageDialog(self._editor, f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
-                                             f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
-                               _("Can not apply changes from Text Editor"), style=wx.YES | wx.NO)
+        dlg = RIDEDialog(title=_("Can not apply changes from Text Editor"),
+                         message=f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
+                                 f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
+                         style=wx.ICON_ERROR | wx.YES_NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
         self._last_answer = did
@@ -2722,7 +2721,6 @@ class RobotDataEditor(PythonSTC):
             try:
                 self.language = obtain_language(dlanguage, content)
             except ValueError:
-                # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
                 self.language = 'English'
         else:
             self.language = 'English'

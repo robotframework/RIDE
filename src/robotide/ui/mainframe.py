@@ -197,12 +197,16 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def _show_validation_error(message):
-        wx.MessageBox(message.message, _('Validation Error'), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_('Validation Error'), message=message.message, style=wx.ICON_ERROR|wx.OK)
+        message_box.ShowModal()
 
     @staticmethod
     def _show_modification_prevented_error(message):
-        wx.MessageBox(_("\"%s\" is read only") % message.controller.datafile_controller.filename,
-                      _("Modification prevented"), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_("Modification prevented"),
+                                 message=_("\"%s\" is read only") % message.controller.datafile_controller.filename,
+                                 style=wx.ICON_ERROR|wx.OK)
+        # message_box.CenterOnParent()
+        message_box.ShowModal()
 
     def _init_ui(self):
         """ DEBUG:
@@ -401,12 +405,13 @@ class RideFrame(wx.Frame):
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
-            ret = wx.MessageBox(_("There are unsaved modifications.\n"
+            message_box = RIDEDialog(title=_('Warning'), message=_("There are unsaved modifications.\n"
                                   "Do you want to save your changes before "
-                                  "exiting?"), _("Warning"), wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
-            if ret == wx.CANCEL:
+                                  "exiting?"), style=wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
+            ret = message_box.execute()
+            if ret in (wx.CANCEL, wx.ID_CANCEL):
                 return False
-            if ret == wx.YES:
+            if ret in (wx.YES, wx.ID_YES, wx.OK, wx.ID_OK):
                 self.save()
         return True
 
@@ -490,9 +495,10 @@ class RideFrame(wx.Frame):
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
-            ret = wx.MessageBox(_("There are unsaved modifications.\n"
-                                  "Do you want to proceed without saving?"), _("Warning"), wx.ICON_WARNING | wx.YES_NO)
-            return ret == wx.YES
+            message_box = RIDEDialog(title=_("Warning"), message=_("There are unsaved modifications.\n"
+                                  "Do you want to proceed without saving?"), style=wx.ICON_WARNING | wx.YES_NO)
+            ret = message_box.ShowModal()
+            return ret == wx.ID_YES
         return True
 
     def open_suite(self, path):
@@ -517,7 +523,8 @@ class RideFrame(wx.Frame):
         else:
             set_lang[0] = 'en'
         try:
-            err = self.controller.load_datafile(path, LoadProgressObserver(self))
+            err = self.controller.load_datafile(path, LoadProgressObserver(self, background=self.color_background,
+                                                                           foreground=self.color_foreground))
             if isinstance(err, UserWarning):
                 # DEBUG: raise err  # Just leave message in Parser Log
                 return False
@@ -696,9 +703,10 @@ class RideFrame(wx.Frame):
         if self.controller.is_dirty():
             msg += [_('Answering <Yes> will discard unsaved changes.'),
                     _('Answering <No> will ignore the changes on disk.')]
-        ret = wx.MessageBox('\n'.join(msg), _('Files Changed On Disk'),
-                            style=wx.YES_NO | wx.ICON_WARNING)
-        confirmed = ret == wx.YES
+        message_box = RIDEDialog(title=_('Files Changed On Disk'), message='\n'.join(msg),
+                                 style=wx.ICON_WARNING | wx.YES_NO)
+        ret = message_box.ShowModal()
+        confirmed = ret == wx.ID_YES
         if confirmed:
             # workspace_path should update after open directory/suite
             # There are two scenarios:

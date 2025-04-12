@@ -18,6 +18,10 @@ import os
 import wx
 
 from .. import robotapi, utils
+from ..widgets import RIDEDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class _AbstractValidator(wx.Validator):
@@ -44,7 +48,8 @@ class _AbstractValidator(wx.Validator):
         return NotImplemented
 
     def _show_error(self, message, title="Validation Error"):
-        ret = wx.MessageBox(message, title, style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=title, message=message, style=wx.ICON_ERROR)
+        ret = message_box.execute()
         self._set_focus_to_text_control(self.Window)
         return ret
 

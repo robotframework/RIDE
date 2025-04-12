@@ -46,16 +46,23 @@ class ProgressObserver(object):
 
 class LoadProgressObserver(ProgressObserver):
 
-    def __init__(self, frame):
+    def __init__(self, frame, background=None, foreground=None):
         ProgressObserver.__init__(self, frame, 'RIDE', 'Loading the test data')
+        if background and foreground:
+            self._progressbar.SetBackgroundColour(background)
+            self._progressbar.SetForegroundColour(foreground)
 
 
 class RenameProgressObserver(ProgressObserver):
 
-    def __init__(self, frame):
+    def __init__(self, frame, background=None, foreground=None):
         ProgressObserver.__init__(self, frame, 'RIDE', 'Renaming')
-        self._notification_occured = 0
+        # self._notification_occured = 0.1
+        if background and foreground:
+            self._progressbar.SetBackgroundColour(background)
+            self._progressbar.SetForegroundColour(foreground)
 
+    """
     def notify(self):
         if time.time() - self._notification_occured > 0.1:
             try:
@@ -63,3 +70,4 @@ class RenameProgressObserver(ProgressObserver):
             except RuntimeError:
                 pass
             self._notification_occured = time.time()
+    """

@@ -13,12 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import webbrowser
 
 import wx
 from wx import html, Colour
 
 from . import sizers, ButtonWithHandler
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class HtmlWindow(html.HtmlWindow):
@@ -89,7 +93,8 @@ class RIDEDialog(wx.Dialog):
 
     def __init__(self, title='', parent=None, size=None, style=None, message=None):
         size = size or (-1, -1)
-        style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
+        style = style | wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER if style else (wx.DEFAULT_DIALOG_STYLE |
+                                                                                  wx.RESIZE_BORDER )
         wx.Dialog.__init__(self, parent=parent, title=title, size=size, style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -110,17 +115,32 @@ class RIDEDialog(wx.Dialog):
         if self.message:
             sizer = wx.BoxSizer(wx.VERTICAL)
             content = wx.StaticText(self, -1, self.message)
-            button = wx.Button(self, wx.ID_OK, '', style=style)
             content.SetBackgroundColour(Colour(self.color_background))
             content.SetForegroundColour(Colour(self.color_foreground))
-            button.SetBackgroundColour(Colour(self.color_secondary_background))
-            button.SetForegroundColour(Colour(self.color_secondary_foreground))
             sizer.Add(content, 0, wx.ALL | wx.EXPAND, 3)
             sizer.Add(wx.StaticText(self, -1, "\n\n"), 0, wx.ALL, 3)
-            sizer.Add(button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 5)
+            btn_sizer = self._create_buttons_sizer(style)
+            sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER | wx.BOTTOM, 3)
             self.SetSizer(sizer)
             sizer.Fit(self)
+            self.Bind(wx.EVT_BUTTON, self.on_button)
         self.CenterOnParent()
+
+    def _create_buttons_sizer(self, style=0):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        btn_flag = False
+        for btn, bid, label in zip([wx.NO, wx.CANCEL, wx.YES, wx.OK], [wx.ID_NO, wx.ID_CANCEL, wx.ID_YES, wx.ID_OK],
+                              [_('No'), _('Cancel'), _('Yes'), _('OK')]):
+            if btn == style & btn:
+                # print(f"DEBUG: dialog.py RIDEDialog _create_buttons_sizer ID={btn} label={label}")
+                button = wx.Button(self, id=bid, label=label)
+                button.SetBackgroundColour(Colour(self.color_secondary_background))
+                button.SetForegroundColour(Colour(self.color_secondary_foreground))
+                sizer.Add(button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 5)
+                btn_flag = True
+        if not btn_flag:
+            return self._create_buttons_sizer(wx.OK)
+        return sizer
 
     def _create_buttons(self, sizer):
         buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
@@ -143,10 +163,26 @@ class RIDEDialog(wx.Dialog):
             sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
         sizer.Fit(self)
 
+    def on_button(self, event):
+        retval = event.GetId()
+        # print(f"DEBUG: dialog.py RIDEDialog on_button ={retval}")
+        if retval in (wx.ID_OK, wx.ID_YES):
+            try:
+                retval = self._execute()
+            except NotImplementedError:
+                pass
+        if retval:
+            self.EndModal(retval)
+        event.Skip()
+
     def execute(self):
-        retval = None
-        if self.ShowModal() == wx.ID_OK:
-            retval = self._execute()
+        retval = self.ShowModal()
+        # print(f"DEBUG: dialog.py RIDEDialog execute RETURN MODAL retval={retval}")
+        if retval in (wx.ID_OK, wx.ID_YES):
+            try:
+                retval = self._execute()
+            except NotImplementedError:
+                pass
         self.Destroy()
         return retval
 
