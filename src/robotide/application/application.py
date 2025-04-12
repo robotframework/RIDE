@@ -335,7 +335,7 @@ class RIDE(wx.App):
             theme = self.settings.get_without_default('General')
             background = theme['background']
             foreground = theme['foreground']
-            print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}")
+            # print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}")
             observer = LoadProgressObserver(self.frame, background=background, foreground=foreground)
             self._controller.load_data(self.workspace_path, observer)
 

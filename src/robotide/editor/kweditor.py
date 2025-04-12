@@ -1072,7 +1072,8 @@ class KeywordEditor(GridEditor, Plugin):
         try:
             self._execute(add_keyword_from_cells(cells))
         except ValueError as err:
-            wx.MessageBox(str(err))
+            message_box = RIDEDialog(title=_('Validation Error'), message=str(err), style=wx.ICON_ERROR|wx.OK)
+            message_box.ShowModal()
 
     def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell
@@ -1172,10 +1173,16 @@ class KeywordEditor(GridEditor, Plugin):
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
         ok_btn = wx.Button(dialog, wx.ID_OK, _("Save"))
+        ok_btn.SetBackgroundColour(self.color_secondary_background)
+        ok_btn.SetForegroundColour(self.color_secondary_foreground)
         cnl_btn = wx.Button(dialog, wx.ID_CANCEL, _("Cancel"))
+        cnl_btn.SetBackgroundColour(self.color_secondary_background)
+        cnl_btn.SetForegroundColour(self.color_secondary_foreground)
         rich_text = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native control, this is reversed, and this is"
                                                    " a different font.", size=(400, 475),
                                 style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        rich_text.SetBackgroundColour(self.settings['background unknown'])
+        rich_text.SetForegroundColour(self.settings['text empty'])
         dialog.Sizer.Add(rich_text, flag=wx.GROW, proportion=1)
         dialog.Sizer.Add(ok_btn, flag=wx.ALL)
         dialog.Sizer.Add(cnl_btn, flag=wx.ALL)
@@ -1198,8 +1205,9 @@ class KeywordEditor(GridEditor, Plugin):
                 try:
                     json.loads(content)  # Yes, we need the error
                 except JSONDecodeError as e:
-                    res = wx.MessageDialog(dialog, f"{_('Error in JSON:')} {e}\n\n{_('Save anyway?')}",
-                                           _("Validation Error!"), wx.YES_NO)
+                    res = RIDEDialog(title=_('Validation Error!'),
+                                             message=f"{_('Error in JSON:')} {e}\n\n{_('Save anyway?')}",
+                                             style=wx.ICON_ERROR | wx.YES_NO)
                     res.InheritAttributes()
                     response = res.ShowModal()
                     if response == wx.ID_YES:

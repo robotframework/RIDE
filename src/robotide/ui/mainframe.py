@@ -405,9 +405,6 @@ class RideFrame(wx.Frame):
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
-            # ret = wx.MessageBox(_("There are unsaved modifications.\n"
-            #                       "Do you want to save your changes before "
-            #                       "exiting?"), _("Warning"), wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
             message_box = RIDEDialog(title=_('Warning'), message=_("There are unsaved modifications.\n"
                                   "Do you want to save your changes before "
                                   "exiting?"), style=wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
@@ -498,10 +495,6 @@ class RideFrame(wx.Frame):
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
-            """
-            ret = wx.MessageBox(_("There are unsaved modifications.\n"
-                                  "Do you want to proceed without saving?"), _("Warning"), wx.ICON_WARNING | wx.YES_NO)
-            """
             message_box = RIDEDialog(title=_("Warning"), message=_("There are unsaved modifications.\n"
                                   "Do you want to proceed without saving?"), style=wx.ICON_WARNING | wx.YES_NO)
             ret = message_box.ShowModal()
@@ -710,10 +703,6 @@ class RideFrame(wx.Frame):
         if self.controller.is_dirty():
             msg += [_('Answering <Yes> will discard unsaved changes.'),
                     _('Answering <No> will ignore the changes on disk.')]
-        """    
-        ret = wx.MessageBox('\n'.join(msg), _('Files Changed On Disk'),
-                            style=wx.YES_NO | wx.ICON_WARNING)
-        """
         message_box = RIDEDialog(title=_('Files Changed On Disk'), message='\n'.join(msg),
                                  style=wx.ICON_WARNING | wx.YES_NO)
         ret = message_box.ShowModal()

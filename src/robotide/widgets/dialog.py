@@ -132,7 +132,7 @@ class RIDEDialog(wx.Dialog):
         for btn, bid, label in zip([wx.NO, wx.CANCEL, wx.YES, wx.OK], [wx.ID_NO, wx.ID_CANCEL, wx.ID_YES, wx.ID_OK],
                               [_('No'), _('Cancel'), _('Yes'), _('OK')]):
             if btn == style & btn:
-                print(f"DEBUG: dialog.py RIDEDialog _create_buttons_sizer ID={btn} label={label}")
+                # print(f"DEBUG: dialog.py RIDEDialog _create_buttons_sizer ID={btn} label={label}")
                 button = wx.Button(self, id=bid, label=label)
                 button.SetBackgroundColour(Colour(self.color_secondary_background))
                 button.SetForegroundColour(Colour(self.color_secondary_foreground))
@@ -165,7 +165,7 @@ class RIDEDialog(wx.Dialog):
 
     def on_button(self, event):
         retval = event.GetId()
-        print(f"DEBUG: dialog.py RIDEDialog on_button ={retval}")
+        # print(f"DEBUG: dialog.py RIDEDialog on_button ={retval}")
         if retval in (wx.ID_OK, wx.ID_YES):
             try:
                 retval = self._execute()

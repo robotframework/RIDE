@@ -20,6 +20,9 @@ import wx
 from .. import robotapi, utils
 from ..widgets import RIDEDialog
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class _AbstractValidator(wx.Validator):
     """Implements methods to keep wxPython happy and some helper methods."""

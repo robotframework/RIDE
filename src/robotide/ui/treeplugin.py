@@ -1200,8 +1200,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                                 RideUserKeywordRenamed(datafile=controller.datafile, item=k,
                                                        old_name=keyword_name).publish()
                                 controller.mark_dirty()
-                                print(f"DEBUG: treeplugin.py Tree _rename_resource_kw DONE CHANGING: {k.name=}"
-                                      f"background={self.background},  foreground={self.foreground}")
+                                # print(f"DEBUG: treeplugin.py Tree _rename_resource_kw DONE CHANGING: {k.name=}"
+                                #       f"background={self.background},  foreground={self.foreground}")
                                 # self.controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
                                 self.observer = RenameProgressObserver(self.GetParent(), background=self.background,
                                                                        foreground=self.foreground)
@@ -1212,8 +1212,13 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                                 self.Refresh()
                                 self.SelectItem(node)
                             else:
-                                wx.MessageBox(f"Invalid keyword name: {new_keyword_name}",
-                                              "Failed Keyword Name Validation")
+                                from ..widgets import RIDEDialog
+                                # wx.MessageBox(f"Invalid keyword name: {new_keyword_name}",
+                                #               "Failed Keyword Name Validation")
+                                message_box = RIDEDialog(title=_('Validation Error'),
+                                                         message=_("Invalid keyword name: ") % f"{new_keyword_name}",
+                                                         style=wx.ICON_ERROR | wx.OK)
+                                message_box.ShowModal()
                                 return
 
     def _variable_moved_up(self, message):
