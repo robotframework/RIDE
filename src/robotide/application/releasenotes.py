@@ -170,6 +170,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added Settings Editor button to Preferences dialog, to edit settings.cfg.</li>
+<li>Created backup of settings.cfg to allow recovering some settings when broken upgrades.</li>
 <li>Changed some informative dialogs and JSON Editor to use the customized colors.</li>
 <li>Added current executing keyword and other statuses to TestRunner status bar.</li>
 <li>Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.</li>
@@ -232,7 +234,9 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 12/April/2025.</p>
+<p>RIDE {VERSION} was released on 13/April/2025.</p>
+<br/>
+<h3>Happy International Kiss Day!</h3>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

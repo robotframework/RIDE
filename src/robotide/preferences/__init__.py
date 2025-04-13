@@ -50,7 +50,6 @@ class Preferences(object):
         self._preference_panels = []
         self._add_builtin_preferences()
         self.settings_path = self.settings._default_path
-        print(f"DEBUG: preferences/__init__.py Preferences settings_path={self.settings_path}")
 
     @property
     def preference_panels(self):

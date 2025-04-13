@@ -376,12 +376,12 @@ class RideSettings(Settings):
                 digest += ord(c)
             new_user_path = self.user_path.replace("settings.cfg", f"settings_{digest}.cfg")
             new_user_path = initialize_settings(self.user_path, new_user_path)
-            self.user_path = new_user_path
             Settings.__init__(self, new_user_path)
             self._settings_dir = os.path.dirname(new_user_path)
             self.set('install root', os.path.dirname(os.path.dirname(__file__)))
             self.set('executable', EXECUTABLE)
-            self.set('last_settings_path', self.user_path)
+            self.set('last_settings_path', new_user_path)
+            self.user_path = new_user_path
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""

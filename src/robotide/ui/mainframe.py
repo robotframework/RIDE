@@ -337,9 +337,12 @@ class RideFrame(wx.Frame):
         return self.tree.get_selected_datafile_controller()
 
     def on_close(self, event):
+        from ..preferences import RideSettings
         if self._allowed_to_exit():
             try:
                 perspective = self.aui_mgr.SavePerspective()
+                # Next restore of settings is because we may have edited from Preferences
+                self._application.settings = RideSettings(self._application.settings_path)
                 self._application.settings.set('AUI Perspective', perspective)
                 # deinitialize the frame manager
                 self.aui_mgr.UnInit()
