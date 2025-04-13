@@ -36,6 +36,7 @@ from wx import Colour
 from wx.lib.scrolledpanel import ScrolledPanel
 
 from .settings import RideSettings
+from ..widgets import ButtonWithHandler, HorizontalSizer
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -198,16 +199,28 @@ class PanelContainer(wx.Panel):
     Each page has a title area, and an area for a preferences panel
     """
     def __init__(self, *args, **kwargs):
+        from ..editor import customsourceeditor
         super(PanelContainer, self).__init__(*args, **kwargs)
 
         self._current_panel = None
         self._settings = RideSettings()
         self.settings = self._settings['General']
         self.title = wx.StaticText(self, label="Your message here")
+        print(f"DEBUG: preferences/editor.py PanelContainer settings_path={self._settings.user_path}")
+        hsizer = HorizontalSizer()
+        config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench_orange.png',
+                                          fsize=self.settings[FONT_SIZE],
+                                          handler=lambda e: customsourceeditor.main(self._settings.user_path))
+        config_button.SetBackgroundColour(self.settings['background'])
+        config_button.SetOwnBackgroundColour(self.settings['background'])
+        config_button.SetForegroundColour(self.settings['foreground'])
+        hsizer.Add(self.title, 0, wx.TOP | wx.LEFT | wx.EXPAND, 10)
+        hsizer.add_expanding(config_button, 1, 10)
         self.panels_container = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         self.panels_container.SetupScrolling()
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.title, 0, wx.TOP | wx.LEFT | wx.EXPAND, 4)
+        sizer.Add(hsizer)
+        # sizer.Add(self.title, 0, wx.TOP | wx.LEFT | wx.EXPAND, 4)
         sizer.Add(wx.StaticLine(self), 0, wx.EXPAND | wx.TOP | wx.BOTTOM, 4)
         sizer.Add(self.panels_container, 1, wx.EXPAND)
         self.SetSizer(sizer)

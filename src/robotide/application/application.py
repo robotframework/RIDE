@@ -20,8 +20,6 @@ import wx
 from contextlib import contextmanager
 from pathlib import Path
 
-from pygments.styles.dracula import background
-
 from ..namespace import Namespace
 from ..controller import Project
 from ..spec import librarydatabase
