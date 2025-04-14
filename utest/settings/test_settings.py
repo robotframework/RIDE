@@ -310,6 +310,7 @@ class TestInitializeSettings(TestSettingsHelper):
         self._remove_path(self.user_settings_path)
         self._remove_path((self.user_settings_path+'_old_broken'))
         self._remove_path(os.path.join(self.settings_dir, 'new_settings.cfg'))
+        self._remove_path(os.path.join(self.settings_dir, 'new_settings.cfg._backup'))
         self._remove_path(os.path.join(self.settings_dir, 'my_settings.cfg'))
         os.removedirs(self.settings_dir)
 

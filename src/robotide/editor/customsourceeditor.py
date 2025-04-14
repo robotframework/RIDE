@@ -537,6 +537,7 @@ def main(filepath, frame=None):
     CodeEditorPanel(frame, None, filepath)
     image_provider = ImageProvider()
     frame.SetTitle(filepath)
+    frame.SetSize((800, 600))
     frame.SetIcon(wx.Icon(image_provider.RIDE_ICON))
     frame.CenterOnScreen()
     frame.Show(True)
