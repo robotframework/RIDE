@@ -9,6 +9,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added Settings Editor button to Preferences dialog, to edit settings.cfg.
+- Created backup of settings.cfg to allow recovering some settings when broken upgrades.
 - Added current executing keyword and other statuses to TestRunner status bar.
 - Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.
 - Added Config Panel button to Plugins, working examples in Text Editor and Test Runner.

@@ -24,6 +24,7 @@ import wx
 import wx.stc as stc
 from robotide.editor.pythoneditor import PythonSTC
 from wx import Colour
+from ..widgets import ImageProvider
 
 # ---------------------------------------------------------------------------
 # This is how you pre-establish a file filter so that the dialog
@@ -534,6 +535,11 @@ def main(filepath, frame=None):
     if frame is None:
         frame = wx.Frame(None)
     CodeEditorPanel(frame, None, filepath)
+    image_provider = ImageProvider()
+    frame.SetTitle(filepath)
+    frame.SetSize((800, 600))
+    frame.SetIcon(wx.Icon(image_provider.RIDE_ICON))
+    frame.CenterOnScreen()
     frame.Show(True)
     app.MainLoop()
 # ----------------------------------------------------------------------------
