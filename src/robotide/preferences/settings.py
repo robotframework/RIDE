@@ -50,7 +50,11 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     if not os.path.exists(source_path):
         raise(FileNotFoundError(source_path))
     else:
-        shutil.copyfile(source_path, source_path + '._backup')
+        try:
+            shutil.copyfile(source_path, source_path + '._backup')
+        except (IOError, FileExistsError, PermissionError, OSError):
+            backup_file = os.path.join(SETTINGS_DIRECTORY, os.path.basename(source_path))
+            shutil.copyfile(source_path, backup_file + '._backup')
     if not dest_file_name:
         dest_file_name = os.path.basename(source_path)
     settings_path = os.path.join(settings_dir, dest_file_name)

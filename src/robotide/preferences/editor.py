@@ -210,7 +210,7 @@ class PanelContainer(wx.Panel):
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench_orange.png',
                                           fsize=self.settings[FONT_SIZE],
-                                          handler=lambda e: self.on_edit_settings())
+                                          handler=lambda e: self.on_edit_settings(self._settings.user_path))
         config_button.SetBackgroundColour(self.settings['background'])
         config_button.SetOwnBackgroundColour(self.settings['background'])
         config_button.SetForegroundColour(self.settings['foreground'])
@@ -270,11 +270,14 @@ class PanelContainer(wx.Panel):
         """Set the title of the panel"""
         self.title.SetLabel(title)
 
-    def on_edit_settings(self):
+    def on_edit_settings(self, path):
         """Starts Text Editor for settings file and closes all if changed"""
         from ..editor import customsourceeditor
         from ..context import SETTINGS_DIRECTORY
         main_settings_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
-        customsourceeditor.main(main_settings_path)
+        if path != main_settings_path:
+            customsourceeditor.main(path)
+        else:
+            customsourceeditor.main(main_settings_path)
         # DEBUG close parent test
         # self.parent.Close()
