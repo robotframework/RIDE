@@ -153,7 +153,7 @@ RELEASE_NOTES = f"""
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.2.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.13.</li>
+<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.a7 with wxPython 4.2.3).</li>
 <li>There are some changes, or known issues:<ul>
 <!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
@@ -165,6 +165,8 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors. The option to not reformat the file is not working.</li>
+<li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
+ to Text Editor and back to Grid Editor, to restore normal behavior.</li>
 </ul>
 </li>
 </ul>
@@ -234,7 +236,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 15/April/2025.</p>
+<p>RIDE {VERSION} was released on 21/April/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
