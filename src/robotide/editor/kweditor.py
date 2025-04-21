@@ -192,6 +192,10 @@ class KeywordEditor(GridEditor, Plugin):
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
+        if hasattr(self, 'SetupScrolling'):
+            self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
+            self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
+            print("DEBUG: GridBase init at SELF SetupScrolling\n")
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -465,9 +469,6 @@ class KeywordEditor(GridEditor, Plugin):
         else:
             self.SelectCol(event.Col, addToSelected=False)
             self.SetGridCursor(0, event.Col)
-
-    def on_move_cursor_down(self, event=None):
-        self._move_cursor_down(event)
 
     def on_insert_rows(self, event):
         self._execute(add_rows(self.selection.rows()))
@@ -842,6 +843,16 @@ class KeywordEditor(GridEditor, Plugin):
             return False  # event must not be skipped in this case
         elif keycode == wx.WXK_F2:
             self.open_cell_editor()
+        elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            # This block exists to ty to make cells visible
+            # on arrow_down because the mouse scroll does not work
+            # unfortunatelly IsVisible it always True.
+            delta = 1 if keycode == wx.WXK_DOWN else -1
+            cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
+            cursor = (cursor[0] + delta if cursor[0] + delta >= 0 else 0, cursor[1])
+            # print(f"DEBUG: call MakeCellVisible cursor={cursor}")
+            self.MakeCellVisible(cursor)
+            # print(f"DEBUG: IsCellVisible cursor={self.IsVisible(cursor)}")
         return True
 
     def _call_alt_function(self, event, keycode: int):
