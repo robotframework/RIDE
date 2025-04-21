@@ -239,6 +239,7 @@ class CodeEditorPanel(wx.Panel):
     def __init__(self, parent, main_frame, filepath=None):
         self.log = sys.stdout  # From FileDialog
         self.path = filepath
+        self.parent = parent
         wx.Panel.__init__(self, parent, size=(1, 1))
         self.mainFrame = main_frame
         self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2})
@@ -384,6 +385,7 @@ class CodeEditorPanel(wx.Panel):
             self.path = filepath
             # self.log.write('%s\n' % source)
             self.LoadSource(source)  # Just the last file
+            self.parent.SetTitle(filepath)
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
         # self.log.write("CWD: %s\n" % os.getcwd())
