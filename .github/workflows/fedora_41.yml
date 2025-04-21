@@ -87,10 +87,12 @@ jobs:
         export DISPLAY=:0
         export GITHUB_ACTIONS=True
         git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
         invoke test-ci
     - name: Install and run
       run: |
         git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
         pip install .
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
         sleep 10
