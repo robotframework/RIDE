@@ -76,11 +76,11 @@ jobs:
         submodules: false
     - name: Setup environment
       run: |
-        sudo dnf install -y xorg-x11-server-Xvfb
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
         pip install https://robotframework.transformidea.com/RIDE/packages/Linux/Fedora_41/wxpython-4.2.4a15946+920a2bde-cp314-cp314-linux_x86_64.whl
         pip install -r requirements-dev.txt
+        sudo dnf install -y xorg-x11-server-Xvfb
     - name: Run tests
       run: |
         Xvfb &
