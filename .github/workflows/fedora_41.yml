@@ -90,11 +90,12 @@ jobs:
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
         invoke test-ci
+        zip -r coverage_report.zip .coverage-reports/htmlcov
     - name: Upload Coverage Report
     - uses: actions/upload-artifact@v4
       with:
-	path: .coverage-reports/htmlcov
-	include-hidden-files: true
+        name: coverage-report
+	path: coverage_report.zip
     - name: Install and run
       run: |
         git submodule update --init --recursive
