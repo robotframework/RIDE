@@ -128,7 +128,6 @@ jobs:
     - name: Upload Coverage Report
     - uses: actions/upload-artifact@v4
       with:
-        name: my-coverage-report
 	path: .coverage-reports/htmlcov/
 	include-hidden-files: true
     - name: Install and run
