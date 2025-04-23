@@ -69,7 +69,7 @@ jobs:
     - name: Configure container environment
       run: |
         sudo dnf update -y
-        sudo dnf install -y git
+        sudo dnf install -y git zip
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - uses: actions/checkout@v3.3.0
       with:
