@@ -80,6 +80,7 @@ jobs:
         # sudo dnf downgrade -y mesa* --refresh
         git submodule update --init --recursive
         pip install -r requirements-dev.txt
+        pip install robotframework
     - name: Run tests
       run: |
         Xvfb &
@@ -116,6 +117,7 @@ jobs:
         git submodule update --init --recursive
         pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
         pip install -r requirements-dev.txt
+        pip install robotframework
         pip install --force -U setuptools==69.5.1
     - name: Run tests
       run: |

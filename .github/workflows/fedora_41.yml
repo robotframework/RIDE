@@ -80,6 +80,7 @@ jobs:
         source /home/wxpy/venvs/Py314/bin/activate
         pip install https://robotframework.transformidea.com/RIDE/packages/Linux/Fedora_41/wxpython-4.2.4a15946+920a2bde-cp314-cp314-linux_x86_64.whl
         pip install -r requirements-dev.txt
+        pip install robotframework
         sudo dnf install -y xorg-x11-server-Xvfb psmisc
     - name: Run tests
       run: |
@@ -89,6 +90,10 @@ jobs:
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
         invoke test-ci
+    - uses: actions/upload-artifact@v4
+      with:
+        name: my-cov-report
+	path: .coverage-reports/htmlcov/
     - name: Install and run
       run: |
         git submodule update --init --recursive
