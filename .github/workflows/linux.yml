@@ -130,7 +130,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-	path: coverage_report.zip
+        path: coverage_report.zip
     - name: Install and run
       run: |
         git submodule update --init --recursive
