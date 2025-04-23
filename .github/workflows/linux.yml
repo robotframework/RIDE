@@ -125,6 +125,12 @@ jobs:
         export DISPLAY=:0
         git submodule update --init --recursive
         invoke test-ci
+    - name: Upload Coverage Report
+    - uses: actions/upload-artifact@v4
+      with:
+        name: my-coverage-report
+	path: .coverage-reports/htmlcov/
+	include-hidden-files: true
     - name: Install and run
       run: |
         git submodule update --init --recursive
