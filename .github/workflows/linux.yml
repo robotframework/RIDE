@@ -126,7 +126,6 @@ jobs:
         git submodule update --init --recursive
         invoke test-ci
         zip -r coverage_report.zip .coverage-reports/htmlcov
-    - name: Upload Coverage Report
     - uses: actions/upload-artifact@v4
       with:
         name: coverage-report
