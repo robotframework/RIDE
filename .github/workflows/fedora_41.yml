@@ -58,72 +58,37 @@ on:
       - 'tox.ini'
 
 jobs:
-  fedora:
-    name: Fedora py313
+  fedora_py314:
+    name: Fedora py314
     runs-on: ubuntu-22.04
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
-      image: fedora:41
-      options: --privileged
+      image: helioguilherme/fedora:fedora-41
+      options: --privileged -u root
     steps:
     - name: Configure container environment
       run: |
         sudo dnf update -y
-        sudo dnf install -y git
+        sudo dnf install -y git zip
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - uses: actions/checkout@v3.3.0
       with:
         submodules: false
     - name: Setup environment
       run: |
-        sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
-        # sudo dnf downgrade -y mesa* --refresh
         git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
+        pip install https://robotframework.transformidea.com/RIDE/packages/Linux/Fedora_41/wxpython-4.2.4a15946+920a2bde-cp314-cp314-linux_x86_64.whl
         pip install -r requirements-dev.txt
         pip install robotframework
+        sudo dnf install -y xorg-x11-server-Xvfb psmisc
     - name: Run tests
       run: |
         Xvfb &
         export DISPLAY=:0
         export GITHUB_ACTIONS=True
         git submodule update --init --recursive
-        invoke test-ci
-    - name: Install and run
-      run: |
-        git submodule update --init --recursive
-        pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
-        sleep 10
-        killall xvfb-run
-      
-  debian:
-    name: Debian
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-    if: ${{ !contains(github.ref, '/fedora/') }}
-    steps:
-    - uses: actions/checkout@v3.3.0
-      with:
-        submodules: false
-    - name: Fetch tags
-      run: |
-        git fetch --prune --depth=1 --recurse-submodules
-        git submodule update --init --recursive
-    - name: Setup environment
-      run: |
-        sudo apt update -y
-        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
-        git submodule update --init --recursive
-        pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
-        pip install -r requirements-dev.txt
-        pip install robotframework
-        pip install --force -U setuptools==69.5.1
-    - name: Run tests
-      run: |
-        Xvfb &
-        export DISPLAY=:0
-        git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
         invoke test-ci
         zip -r coverage_report.zip .coverage-reports/htmlcov
     - uses: actions/upload-artifact@v4
@@ -133,7 +98,9 @@ jobs:
     - name: Install and run
       run: |
         git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
         pip install .
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
         sleep 10
         killall xvfb-run
+ 
