@@ -69,7 +69,7 @@ jobs:
     - name: Configure container environment
       run: |
         sudo dnf update -y
-        sudo dnf install -y git zip
+        sudo dnf install -y git
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - uses: actions/checkout@v3.3.0
       with:
@@ -90,11 +90,10 @@ jobs:
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
         invoke test-ci
-        zip -r coverage_report.zip .coverage-reports/htmlcov
     - uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: coverage_report.zip
+        path: .coverage-reports/htmlcov
     - name: Install and run
       run: |
         git submodule update --init --recursive
