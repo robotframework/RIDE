@@ -40,9 +40,9 @@ from robotide.namespace.namespace import Namespace
 
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import wx
 import shutil
 import sys

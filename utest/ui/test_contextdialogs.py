@@ -16,9 +16,9 @@ import unittest
 import os
 import pytest
 
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:  # Avoid failing unit tests in system without X11
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:  # Avoid failing unit tests in system without X11
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
 import wx
 from wx.lib.agw.aui import AuiManager
 

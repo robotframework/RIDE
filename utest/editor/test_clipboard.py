@@ -15,34 +15,34 @@
 
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import unittest
 
 from robotide.context import IS_WINDOWS
 from robotide.editor.clipboard import _GridClipboard
 from utest.resources import UIUnitTestBase
 
+NEWLINE = '\n' if IS_WINDOWS else '\n'
 
-if not IS_WINDOWS:
-    class TestGridClipBoard(UIUnitTestBase):
 
-        def test_with_string_content(self):
-            self._test_clipboard('Hello, world!', 'Hello, world!')
+class TestGridClipBoard(UIUnitTestBase):
 
-        def test_with_list_content(self):
-            self._test_clipboard([['Hello', 'world!']], 'Hello\tworld!')
+    def test_with_string_content(self):
+        self._test_clipboard('Hello, world!', 'Hello, world!')
 
-        def test_with_multiple_rows(self):
-            self._test_clipboard([['Hello', 'world!'], ['Another', 'row']],
-                                 'Hello\tworld!\nAnother\trow')
+    def test_with_list_content(self):
+        self._test_clipboard([['Hello', 'world!']], 'Hello\tworld!')
 
-        def _test_clipboard(self, content, expected=''):
-            clipb = _GridClipboard()
-            clipb.set_contents(content)
-            assert (clipb._get_contents() ==
-                          expected.replace('\n', os.linesep))
+    def test_with_multiple_rows(self):
+        self._test_clipboard([['Hello', 'world!'], ['Another', 'row']],
+                             'Hello\tworld!\nAnother\trow')
+
+    def _test_clipboard(self, content, expected=''):
+        clipb = _GridClipboard()
+        clipb.set_contents(content)
+        assert (clipb._get_contents() == expected)  # expected.replace('\n', os.linesep))
 
 
 if __name__ == '__main__':
