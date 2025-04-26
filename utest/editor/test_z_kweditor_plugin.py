@@ -44,9 +44,9 @@ from robotide.editor.contentassist import (Suggestions, ContentAssistPopup, Cont
 
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY: # Avoid failing unit tests in system without X11
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY: # Avoid failing unit tests in system without X11
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
 import wx
 import shutil
 import sys
@@ -60,6 +60,7 @@ from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorPlugin, EditorCreator
 from robotide.editor.kweditor import KeywordEditor
 from robotide.editor.editors import TestCaseFileEditor, WelcomePage
+from robotide.editor.popupwindow import HtmlPopupWindow
 from robotide.editor.macroeditors import TestCaseEditor
 from robotide.preferences import RideSettings
 from robotide.namespace import Namespace
@@ -113,6 +114,12 @@ class _FakeScrolledPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
     def SetupScrolling(self):
         pass
+
+    def GetScrollPixelsPerUnit(self):
+        return  (20, 20)
+
+    def GetViewStart(self):
+        return (10, 10)
 
 
 class MainFrame(wx.Frame, _FakeScrolledPanel):
@@ -444,6 +451,36 @@ class KeywordEditorTest(unittest.TestCase):
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
+
+    def test_htmlpopupwindow_dialog_simple(self):
+        dlg = HtmlPopupWindow(self.frame, (400, 200), False, True)
+        dlg.set_content("Example without title")
+        dlg.show_at((1000, 200))
+        shown=dlg.IsShown()
+        print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_simple shown={shown}")
+        assert shown is True
+        wx.CallLater(4000, dlg.hide)
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+    def test_htmlpopupwindow_dialog_title(self):
+        dlg = HtmlPopupWindow(self._panel, (400, 200), True, True)
+        dlg.set_content("Example with title", "This is the Title")
+        dlg.show_at((1000, 100))
+        shown=dlg.IsShown()
+        assert shown is True
+        pw_size = dlg.pw_size
+        pw_pos = dlg.screen_position
+        print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_title pw_size={pw_size} scree_pos={pw_pos}")
+        event=wx.KeyEvent()
+        dlg._detach(event)
+        title = dlg._detached_title
+        print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_title title={title}")
+        wx.CallLater(4000, dlg.hide)
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
     def test_contentassist_text_editor(self):
         suggestions = SuggestionSource(None, self.app.project.controller)

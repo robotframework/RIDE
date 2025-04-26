@@ -21,8 +21,8 @@ from robotide.run.runanything import RunConfig
 from robotide.run.ui import Runner
 from utest.resources import UIUnitTestBase
 DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)  # Avoid failing unit tests without X11
+# if not DISPLAY:
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)  # Avoid failing unit tests without X11
 
 
 SCRIPT = os.path.join(os.path.dirname(__file__),
@@ -60,7 +60,7 @@ class TestRunAnything(UIUnitTestBase):
         self.runner = self._create_runner('python %s count_args a b c' % SCRIPT)
         self._wait_until_finished()
         assert self.runner.finished
-        assert self.runner.outstr == '3\n'
+        assert self.runner.outstr == f'3{os.linesep}'
 
     @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS')=='true', reason="Fails at Fedora workflow")
     def test_stopping(self):
@@ -82,7 +82,7 @@ class TestRunAnything(UIUnitTestBase):
         self.runner = self._create_runner('python %s stderr' % SCRIPT)
         self._wait_until_finished()
         assert self.runner.finished
-        assert self.runner.outstr == 'This is stderr\n'
+        assert self.runner.outstr == f'This is stderr{os.linesep}'
 
     @staticmethod
     def _create_runner(cmd):

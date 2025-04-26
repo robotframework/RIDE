@@ -16,9 +16,9 @@
 import unittest
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 
 from robotide.robotapi import TestCase, TestCaseFile
 from robotide.controller.ctrlcommands import ChangeTag

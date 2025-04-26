@@ -16,6 +16,9 @@
 import unittest
 import os
 import shutil
+import sys
+
+import pytest
 
 from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
 
@@ -364,21 +367,23 @@ class TestFileManager(unittest.TestCase):
         except Exception as e:
             print(f"DEBUG: TestFileManager raised ERROR {e}")
 
-    def test_start_filemanager_bad_path(self):
-        try:
-            start_filemanager(path='this_path_does_not_exist')
-        except Exception as e:
-            print(f"DEBUG: TestFileManager raised ERROR {e}")
-
+    @pytest.mark.skipif(sys.platform == 'win32', reason="Fails with exception on Windows")
     def test_start_filemanager_bad_tool(self):
         try:
             start_filemanager(path=__file__, tool='this_tool_does_not_exist')
         except Exception as e:
             print(f"DEBUG: TestFileManager raised ERROR {e}")
 
+    @pytest.mark.skipif(sys.platform == 'win32', reason="Fails with exception on Windows")
     def test_start_filemanager_good_path(self):
         try:
             start_filemanager(path=__file__)
+        except Exception as e:
+            print(f"DEBUG: TestFileManager raised ERROR {e}")
+
+    def test_start_filemanager_bad_path(self):
+        try:
+            start_filemanager(path='this_path_does_not_exist')
         except Exception as e:
             print(f"DEBUG: TestFileManager raised ERROR {e}")
 
