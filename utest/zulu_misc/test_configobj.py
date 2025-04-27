@@ -1288,7 +1288,8 @@ class TestEdgeCasesWhenWritingOut(object):
         assert collector.getvalue() == b'a = "b # something", "c # something"\n'
 
     def test_detecting_line_endings_from_existing_files(self):
-        for expected_line_ending in ('\r\n', '\n'):
+        newlines = ('\r\n', '\n') if os.linesep != '\r\n' else ('\r\n',)
+        for expected_line_ending in newlines:
             with open('temp', 'w') as h:
                 h.write(expected_line_ending)
             c = ConfigObj('temp')

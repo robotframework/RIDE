@@ -18,6 +18,7 @@ import pathlib
 import unittest
 from robotide.controller.tags import DefaultTag
 from robotide.controller.ctrlcommands import *
+from robotide.editor.formatters import ListToStringFormatter
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -552,6 +553,11 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._verify_number_of_test_changes(0)
         self._exec(uncomment_rows([10001]))
         self._verify_number_of_test_changes(0)
+
+    def test_formatter(self):
+        data = self._steps[self._data_row(FOR_LOOP_HEADER)]
+        formatted = ListToStringFormatter(data).value
+        assert formatted == "FOR | ${i} | IN | 1 | 2 | 3"
 
 
 _TEST_WITH_TWO_FOR_LOOPS = ['Test With Two For Loops',
