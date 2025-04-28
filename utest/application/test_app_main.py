@@ -220,6 +220,7 @@ class TestMain(unittest.TestCase):
             m.setattr(MessageDialog, 'ShowModal', my_show)
             robotide._show_old_wxpython_warning_if_needed()
 
+    @pytest.mark.skipif(sys.platform != 'win32', reason="Test only for Windows")
     def test_replace_std_for_win(self):
         import robotide
         import sys
@@ -229,6 +230,10 @@ class TestMain(unittest.TestCase):
             m.setattr(sys, 'stderr', None)
             m.setattr(sys, 'stdout', None)
             robotide._replace_std_for_win()
+            sys.stdout.write('content')
+            sys.stdout.writelines(['content', 'line two'])
+            sys.stdout.flush()
+            sys.stdout.close()
 
 
 class TestMisc(unittest.TestCase):
@@ -240,7 +245,6 @@ class TestMisc(unittest.TestCase):
         self.frame = self.main_app.frame
         self.main_app.SetExitOnFrameDelete(True)
 
-
     def tearDown(self):
         builtins.__import__ = real_import
         self.main_app.Destroy()
@@ -249,6 +253,16 @@ class TestMisc(unittest.TestCase):
     def test_get_code(self):
         code = self.main_app._get_language_code()
         assert code in (175, wx.LANGUAGE_ENGLISH_WORLD, wx.LANGUAGE_PORTUGUESE)
+
+    @pytest.mark.skipif(sys.platform != 'win32', reason="Test only for Windows")
+    def test_nullstream(self):
+        import sys
+        from robotide import _replace_std_for_win
+        _replace_std_for_win()
+        sys.stdout.write('content')
+        sys.stdout.writelines(['content', 'line two'])
+        sys.stdout.flush()
+        sys.stdout.close()
 
 
 if __name__ == '__main__':
