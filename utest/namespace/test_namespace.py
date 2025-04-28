@@ -7,6 +7,7 @@ from robotide.robotapi import (
     TestCaseFile, Resource, VariableTable, TestDataDirectory)
 from robotide.context import IS_WINDOWS
 from robotide.namespace.namespace import _VariableStash
+from robotide.controller.basecontroller import WithNamespace
 from robotide.controller.filecontrollers import data_controller
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
 from robotide.spec.librarymanager import LibraryManager
@@ -109,6 +110,12 @@ class _DataFileTest(unittest.TestCase):
 
 
 class TestKeywordSuggestions(_DataFileTest):
+
+    def test_get_cached_lib_names(self):
+        project = WithNamespace()
+        project._set_namespace(self.ns)
+        lib_names = project.get_all_cached_library_names()
+        assert lib_names == []
 
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'

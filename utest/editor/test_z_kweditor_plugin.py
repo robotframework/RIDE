@@ -530,6 +530,11 @@ class KeywordEditorTest(unittest.TestCase):
         wx.CallLater(5000, self.app.ExitMainLoop)
         self.app.MainLoop()
 
+    def test_get_resources(self):
+        res = self.creator._only_resource_files(self.frame.tree)
+        print(f"DEBUG: test_edit_creator.py EditorCreatorTest test_get_resources res={res}")
+
+
 
 if __name__ == '__main__':
     unittest.main()

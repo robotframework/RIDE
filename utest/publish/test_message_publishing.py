@@ -19,6 +19,7 @@ from unittest.mock import patch
 from robotide.publish.messages import (RideMessage, RideLogMessage,
                                        RideLogException)
 from robotide.publish.publisher import PUBLISHER
+from robotide.publish import get_html_message
 
 
 class RideTestMessage(RideMessage):
@@ -52,6 +53,10 @@ class RideNoneTopicTestMessage(RideTestMessage):
 
 
 class TestMessage(unittest.TestCase):
+
+    def test_no_robot_message(self):
+        message = get_html_message('no_robot')
+        assert 'Robot Framework installation not found!' in message
 
     def test_topic(self):
         assert RideMessage.topic() == 'ride'
