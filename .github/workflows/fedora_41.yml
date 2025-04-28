@@ -93,7 +93,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: .coverage-reports/htmlcov
+        path: .coverage-reports/
     - name: Install and run
       run: |
         git submodule update --init --recursive
