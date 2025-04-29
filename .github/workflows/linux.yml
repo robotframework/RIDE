@@ -129,7 +129,8 @@ jobs:
       with:
         name: coverage-report
         path: |
-          .coverage.*
+          .coverage.1
+          .coverage.2
           .coverage-reports/coverage.xml
           .coverage-reports/htmlcov
     - name: Install and run
