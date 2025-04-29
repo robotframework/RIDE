@@ -13,7 +13,7 @@ omit =
     ./utest/*
     # robot library
     ./src/robotide/lib/robot/*
-    ./src/robotide/preferences/configobj/*
+    # ./src/robotide/preferences/configobj/*
     */.venv/*
 
 [report]
