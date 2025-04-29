@@ -414,13 +414,13 @@ def test_ci(ctx, test_filter=''):
         a.communicate(b'')
         b = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.2", "-m", "pytest", "--ignore=utest/application/test_app_main.py", "--cov-config=.coveragerc", "-k test_", "-v", TEST_DIR])
         b.communicate(b'')
-        c = subprocess.Popen(["coverage", "combine"])
+        c = subprocess.Popen(["coverage", "combine"])  #, "--keep"
         c.communicate(b'')
         r = subprocess.Popen(["coverage", "report"])
         r.communicate(b'')
         x = subprocess.Popen(["coverage", "xml"])
         x.communicate(b'')
-        h = subprocess.Popen(["coverage", "html"])
+        h = subprocess.Popen(["coverage", "html", "--contexts=.*", "--show-contexts"])
         h.communicate(b'')
     finally:
         """ Nothing to do """
