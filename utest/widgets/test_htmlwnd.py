@@ -14,6 +14,7 @@
 
 import unittest
 import wx
+from pytest import MonkeyPatch
 
 from robotide.widgets.htmlwnd import HtmlWindow
 from utest.resources import FakeSettings
@@ -40,6 +41,35 @@ class TestHtmlWindows(_BaseSuiteTest):
         dialog = HtmlWindow(self.frame, text='<h2>Initial content</h2>')
         wx.CallLater(2000, dialog.close)
         dialog.Show()
+
+    def test_adding_data_named_color(self):
+
+        with MonkeyPatch().context() as ctx:
+            import robotide
+            from robotide.preferences.settings import RideSettings
+
+            class SideEffect(RideSettings):
+
+                def __init__(self):
+                    _settings = RideSettings()
+                    _settings['General'] = {'background help': 'green'}
+
+                def get(self, name, default):
+                    __ = name
+                    __ = default
+                    return 'green'
+
+            with MonkeyPatch().context() as m:
+                m.setattr(robotide.preferences.settings, 'RideSettings', SideEffect)
+                from time import sleep
+                dialog = HtmlWindow(self.frame)
+                dialog.Show()
+                sleep(2)
+                dialog.set_content('<h2>Added content</h2>')
+                sleep(4)
+                wx.CallLater(4800, dialog.clear)
+                dialog.set_content('<h2 align="center">New and centered content</h2>')
+                wx.CallLater(4900, dialog.close)
 
     def test_adding_data(self):
         from time import sleep
