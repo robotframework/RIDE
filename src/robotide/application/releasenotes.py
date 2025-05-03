@@ -159,7 +159,7 @@ RELEASE_NOTES = f"""
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
-version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
+version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 -->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings and changes.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
@@ -172,6 +172,7 @@ version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed white blocks on Tree due to failed animation when test execution is too rapid, causing crash on Windows.</li>
 <li>Added Settings Editor button to Preferences dialog, to edit settings.cfg.</li>
 <li>Created backup of settings.cfg to allow recovering some settings when broken upgrades.</li>
 <li>Changed some informative dialogs and JSON Editor to use the customized colors.</li>
@@ -185,7 +186,7 @@ when selecting in Tree shows the filename in StatusBar.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
-<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.2, which we recommend.
+<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.3, which we recommend.
 </strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
@@ -236,7 +237,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 21/April/2025.</p>
+<p>RIDE {VERSION} was released on 03/May/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

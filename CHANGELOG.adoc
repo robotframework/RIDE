@@ -38,6 +38,7 @@ when selecting in Tree shows the filename in StatusBar.
 - Improved colorization for multiple Gherkin words, for example in the French language.
 
 === Fixed
+- Fixed white blocks on Tree due to failed animation when test execution is too rapid, causing crash on Windows.
 - Fixed not set text color on row labels in Grid Editor. Now the General ``secondary foreground`` is applied.
 - Fixed multiple scroll bars in Grid Editor when editing Test Cases or Keywords. This caused bad navigation on cells.
 - Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.

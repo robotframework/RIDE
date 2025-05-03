@@ -17,7 +17,7 @@ import builtins
 import os
 
 import wx
-from wx import Colour
+from wx import Colour, Point
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
 from wx.lib.agw.customtreectrl import GenericTreeItem
@@ -425,14 +425,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                 img = os.path.join(_BASE, 'robot-pause.gif')
             ani = Animation(img)
             obj = self
-            rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
-            self._animctrl = AnimationCtrl(obj, -1, ani, rect)
-            """
-            self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
-            """
-            self._animctrl.SetBackgroundColour('white')
-            self.SetItemWindow(node, self._animctrl, False)
-            self._animctrl.Play()
+            rect = Point(node.GetX()+20, node.GetY())  # Overlaps robot icon
+            try:
+                self._animctrl = AnimationCtrl(obj, -1, ani, rect)
+                self._animctrl.SetBackgroundColour('white')
+                self.SetItemWindow(node, self._animctrl, False)
+                self._animctrl.Play()
+            except AttributeError:  # In fast executions the element self._animctrl.Play() does not exists
+                pass
         # Make visible the running or paused test
         parent = node.GetParent()
         self.EnsureVisible(parent)  # DEBUG add animation to parent if suite setup/teardown started
