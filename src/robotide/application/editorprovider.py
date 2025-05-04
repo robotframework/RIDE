@@ -50,7 +50,7 @@ class _EditorList(object):
             self._editors.insert(0, editor)
 
     def set_default(self, editor):
-        if self._editors.index(editor) != -1:
+        if self._editors.index(editor) != len(self._editors) - 1:
             self._editors.remove(editor)
             self._editors.append(editor)
 

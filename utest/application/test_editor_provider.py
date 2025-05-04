@@ -63,8 +63,14 @@ class TestEditorProvide(unittest.TestCase):
 
     def test_set_default_last_does_nothing(self):
         self.p.register_editor(TestObject, TestEditor)
+        self.p.register_editor(TestObject, TestEditor2, default=False)
         self.p._editors[TestObject].set_default(TestEditor)
         assert self.p._editors[TestObject].get() == TestEditor
+        self.p.unregister_editor(TestObject, TestEditor)
+        editors = self.p.get_editors(TestObject)
+        # print(f"DEBUG: test_editor_provider.py test_set_default_last_does_nothing size editors={len(editors)}")
+        self.p._editors[TestObject].set_default(TestEditor2)
+        assert self.p._editors[TestObject].get() == TestEditor2
 
     def test_activating(self):
         self.p.register_editor(TestObject, TestEditor2, default=False)
