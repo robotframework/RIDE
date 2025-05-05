@@ -51,12 +51,14 @@ class TestHtmlWindows(_BaseSuiteTest):
             class SideEffect(RideSettings):
 
                 def __init__(self):
-                    _settings = RideSettings()
-                    _settings['General'] = {'background help': 'green'}
+                    _settings = RideSettings.__init__(self)
+                    _settings['General'].set('background help', 'green')
+                    print("DEBUG: test_htmlwnd.py sideeffect __init__")
 
                 def get(self, name, default):
                     __ = name
                     __ = default
+                    print(f"DEBUG: test_htmlwnd.py sideeffect get={'green'}")
                     return 'green'
 
             with MonkeyPatch().context() as m:
