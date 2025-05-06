@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import os.path
 import sys
 import unittest
 import pytest
@@ -246,7 +247,8 @@ class TestMisc(unittest.TestCase):
         self.main_app.SetExitOnFrameDelete(True)
 
     def tearDown(self):
-        builtins.__import__ = real_import
+        # builtins.__import__ = real_import
+        self.main_app.ExitMainLoop()
         self.main_app.Destroy()
         self.main_app = None
 
@@ -263,6 +265,26 @@ class TestMisc(unittest.TestCase):
         sys.stdout.writelines(['content', 'line two'])
         sys.stdout.flush()
         sys.stdout.close()
+
+
+class TestFSWatcher(unittest.TestCase):
+
+    def test_obj_fs_watcher(self):  # Renamed to run in last
+        from robotide.utils.eventhandler import RideFSWatcherHandler, normalize_windows_path, IS_WINDOWS
+        fs_watcher = RideFSWatcherHandler
+        check_path = ('.\\A\\Windows\\Path', './a/windows/path') if IS_WINDOWS else ('./A/Linux/Path', './A/Linux/Path')
+        assert check_path[1] == normalize_windows_path(check_path[0])
+        fs_watcher.create_fs_watcher(__file__)
+        fs_watcher.create_fs_watcher(__file__)
+        fs_watcher.start_listening(__file__)
+        fs_watcher.start_listening(os.path.dirname(__file__))
+        assert fs_watcher.is_watcher_created()
+        assert not fs_watcher.is_workspace_dirty()
+        assert os.path.dirname(__file__) == fs_watcher.get_workspace_new_path()
+        # print(f"DEBUG: test_fs_watcher get_workspace_new_path = {fs_watcher.get_workspace_new_path()}")
+        fs_watcher.exclude_listening(__file__)
+        fs_watcher.exclude_listening(os.path.dirname(__file__))
+        fs_watcher.stop_listening()
 
 
 if __name__ == '__main__':
