@@ -50,7 +50,7 @@ import pytest
 import wx
 import shutil
 import sys
-from mockito import mock
+from wx import Size
 
 from robotide.robotapi import Variable
 from robotide.controller import data_controller
@@ -110,7 +110,7 @@ nb_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | aui.AUI_NB_
 class _FakeScrolledPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
     def __init__(self, parent):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, None)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent)
 
     def SetupScrolling(self):
         pass
@@ -126,8 +126,8 @@ class MainFrame(wx.Frame, _FakeScrolledPanel):
     notebook = None
 
     def __init__(self):
-        wx.Frame.__init__(self, parent=None, title='Grid Editor Test App')
-        _FakeScrolledPanel.__init__(self, None)
+        frame = wx.Frame.__init__(self, parent=None, title='Grid Editor Test App', size=Size(600, 400))
+        _FakeScrolledPanel.__init__(self, frame)
         self.CreateStatusBar()
 
 
@@ -156,6 +156,32 @@ class MyApp(wx.App):
         self.global_settings.add_section("Grid")
         self.settings.global_settings = self.global_settings
         self.settings.add_section("Grid")
+        self.settings['Grid'].set('background unknown', '#E8B636')
+        self.settings['Grid'].set('font size', 10)
+        self.settings['Grid'].set('font face', '')
+        self.settings['Grid'].set('zoom factor', 0)
+        self.settings['Grid'].set('fixed font', False)
+        self.settings['Grid'].set('col size', 150)
+        self.settings['Grid'].set('max col size', 450)
+        self.settings['Grid'].set('auto size cols', False)
+        self.settings['Grid'].set('text user keyword', 'blue')
+        self.settings['Grid'].set('text library keyword', '#0080C0')
+        self.settings['Grid'].set('text variable', 'forest green')
+        self.settings['Grid'].set('text unknown variable', 'purple')
+        self.settings['Grid'].set('text commented', 'firebrick')
+        self.settings['Grid'].set('text string', 'black')
+        self.settings['Grid'].set('text empty', 'black')
+        self.settings['Grid'].set('background assign', '#CADEF7')
+        self.settings['Grid'].set('background keyword', '#CADEF7')
+        self.settings['Grid'].set('background mandatory', '#D3D3D3')
+        self.settings['Grid'].set('background optional', '#F9D7BA')
+        self.settings['Grid'].set('background must be empty', '#C0C0C0')
+        self.settings['Grid'].set('background error', '#FF9385')
+        self.settings['Grid'].set('background highlight', '#FFFF77')
+        self.settings['Grid'].set('word wrap', True)
+        self.settings['Grid'].set('enable auto suggestions', True)
+        self.settings['Grid'].set('filter newlines', False)
+        self.highlight = lambda x, expand: x if expand else x
         self.namespace = Namespace(self.global_settings)
         self.notebook = NoteBook(self.frame, self, nb_style)
         self._mgr = aui.AuiManager()
@@ -186,6 +212,8 @@ class MyApp(wx.App):
                           aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
                           LeftDockable())
         # self.plugin = kweditor.KeywordEditor(self, self._datafile_controller(), self.tree)
+        self.plugin = EditorPlugin(self)
+        self.plugin.title = 'Editor'
         # mb.register("File|Open")
         mb.take_menu_bar_into_use()
         self._mgr.Update()
@@ -197,6 +225,7 @@ class MyApp(wx.App):
     def OnExit(self):  # Overrides wx method
         if hasattr(self, 'file_settings'):
             os.remove(self.file_settings)
+        self.ExitMainLoop()
 
 
 class KeywordEditorTest(unittest.TestCase):
@@ -220,14 +249,18 @@ class KeywordEditorTest(unittest.TestCase):
                                                                 texteditor.DataValidationHandler(self.plugin))
         """
         self.frame.notebook = self.app.notebook
-        self.plugin = EditorPlugin(self.app)
-        self.plugin.title = 'Editor'
-        # self._grid = KeywordEditor(self.plugin, self.app.project.controller, self.frame.tree)
+        # self.plugin = EditorPlugin(self.app)
+        # self.plugin.title = 'Editor'
+        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        # self.controller = self.app.project.find_controller_by_longname("My Test", "My Test")
+        self.controllers = self.app.project.all_testcases()
+        self._grid = KeywordEditor(self.app, next(self.controllers), self.frame.tree)
         #self.plugin._editor_component = kweditor.ContentAssistCellEditor(self.app.plugin, self.app.project.controller)
         self._test = self._datafile_controller()  # testcase_controller()
-        self._panel = wx.Panel(self.app.frame)
+        self._panel = self._grid.GetGridWindow()
+        # self._panel = wx.Panel(self.app.frame)
         sizer = wx.BoxSizer()
-        self._grid = GridEditor(self._panel, 10, 6)
+        # self._grid = GridEditor(self._panel, 10, 6)
         self._grid.SetSizer(sizer=sizer)
         # self.plugin._editor_component = kweditor.ContentAssistCellEditor(self._grid, self.app.project.controller)
         # self.editor = TestCaseEditor(self.app, self._grid, self._test, self.app.tree)
@@ -237,7 +270,7 @@ class KeywordEditorTest(unittest.TestCase):
         # self.editor = self.plugin.get_editor(TestCase)
         # Moved to test
         # self.plugin.enable()
-        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        # self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
         # self.app.tree.set_editor(self.plugin._editor_component)
         self.app.tree.populate(self.app.project)
 
@@ -264,7 +297,7 @@ class KeywordEditorTest(unittest.TestCase):
     def _datafile_plugin(self, parent):
         # return FakePlugin(self._registered_editors, self._datafile_controller())
         print(f"DEBUG: _datafile_plugin parent={parent}")
-        return TestCaseEditor(self.plugin, self._grid, self._datafile_controller(), self.frame.tree)
+        return TestCaseEditor(self.app, self._grid, self._datafile_controller(), self.frame.tree)
 
     def _variable_plugin(self):
         return FakePlugin(self._registered_editors,
@@ -279,7 +312,7 @@ class KeywordEditorTest(unittest.TestCase):
         return data_controller(new_test_case_file(datafilereader.TESTCASEFILE_WITH_EVERYTHING), None)
 
     def tearDown(self):
-        self.plugin.unsubscribe_all()
+        self.app.plugin.unsubscribe_all()
         PUBLISHER.unsubscribe_all()
         self.app.project.close()
         # wx.CallAfter(self.app.ExitMainLoop)
@@ -311,15 +344,15 @@ class KeywordEditorTest(unittest.TestCase):
     """
 
     def test_show(self):
-        show = self.creator.editor_for(self.plugin, self._panel, self.frame.tree)
+        show = self.creator.editor_for(self.app.plugin, self._panel, self.frame.tree)
         print(f"DEBUG: Editor is {show}")
         assert show is not None
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
     def test_on_comment_cells(self):
-        self.creator.editor_for(self.plugin, self._panel, self.frame.tree)
+        self.creator.editor_for(self.app.plugin, self._panel, self.frame.tree)
         self._grid.SelectBlock(2, 2, 2, 2)
         data = self._grid.get_selected_content()
         print(f"DEBUG: Data Cell is {data}")
@@ -508,7 +541,7 @@ class KeywordEditorTest(unittest.TestCase):
 
     def test_contentassist_expandotextctrl(self):
         suggestions = SuggestionSource(None, self.app.project.controller)
-        dlg = ExpandingContentAssistTextCtrl(self._grid, self.plugin, self.app.project.controller)
+        dlg = ExpandingContentAssistTextCtrl(self._grid, self.app.plugin, self.app.project.controller)
         dlg._popup.show(600, 400, 20)
         result = dlg._popup.content_assist_for('Log Many')
         shown = dlg.is_shown()
@@ -533,7 +566,6 @@ class KeywordEditorTest(unittest.TestCase):
     def test_get_resources(self):
         res = self.creator._only_resource_files(self.frame.tree)
         print(f"DEBUG: test_edit_creator.py EditorCreatorTest test_get_resources res={res}")
-
 
 
 if __name__ == '__main__':
