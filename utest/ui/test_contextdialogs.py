@@ -134,7 +134,7 @@ class TestAboutDialog(_BaseDialogTest):
 
     def test_show_about_dialog(self):
         self.about_dialog.show_dialog()
-        
+
 
 class TestTRCredits(unittest.TestCase):
 

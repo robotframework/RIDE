@@ -218,8 +218,8 @@ class MyApp(wx.App):
 
 
 def EditorWithData():
-    myapp = wx.App(None)
-    grid = GridEditor(MyApp(), 5, 5)
+    myapp = MyApp()
+    grid = GridEditor(myapp.frame, 5, 5)
     for ridx, rdata in enumerate(DATA):
         for cidx, cdata in enumerate(rdata):
             grid.write_cell(ridx, cidx, cdata, update_history=False)
