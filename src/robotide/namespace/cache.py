@@ -189,7 +189,7 @@ class LibraryCache(object):
         try:
             rbt_version = int(str(robot_version, encoding='UTF-8').replace('.', ''))
             rbt_version = rbt_version if rbt_version > 99 else rbt_version * 10
-        except ValueError:
+        except (ValueError, TypeError):
             rbt_version = 701
         var_note = "*NOTE:* This marker exists since version 7.0" + (f" and is an error to use because your "
                                                                      f"version of Robot Framework is"

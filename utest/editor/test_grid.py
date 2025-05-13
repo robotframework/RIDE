@@ -58,6 +58,7 @@ from utest.resources import FakeSettings, FakeEditor
 # from robotide.ui import treeplugin as st
 # from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER, RideSuiteAdded, RideNotebookTabChanging
+from robotide.application import RIDE
 from robotide.ui.treeplugin import Tree
 from robotide.ui.notebook import NoteBook
 from robotide.editor.kweditor import KeywordEditor
@@ -132,21 +133,22 @@ class MainFrame(wx.Frame, _FakeScrolledPanel):
         _FakeScrolledPanel.__init__(self, frame)
         self.CreateStatusBar()
 
-class MyApp(wx.App):
+class MyApp(RIDE):
     frame = None
     namespace = None
     project = None
     settings = None
-    # notebook = None
+    notebook = None
     panel = None
-    plugin = None
     tree = None
+    model = None
 
-    def __init__(self, redirect=False, filename=None, usebestvisual=False, clearsigint=True):
-        super().__init__(redirect, filename, usebestvisual, clearsigint)
+    def __init__(self, path=None, updatecheck=True, settingspath=None):
+        # redirect=False, filename=None, usebestvisual=False, clearsigint=True):
         self.actions = None
         self.toolbar = None
         self._mgr = None
+        RIDE.__init__(self, path, updatecheck, settingspath)
 
     def OnInit(self):  # Overrides wx method
         self.frame = MainFrame()

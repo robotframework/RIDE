@@ -82,7 +82,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def __init__(self, parent, controller, tree):
         self.settings = parent.plugin.global_settings['Grid']
-        print(f"DEBUG: kweditor.py KeywordEditor controller={controller}")
+        # print(f"DEBUG: kweditor.py KeywordEditor controller={controller}")
         self.zoom = self.settings.get(ZOOM_FACTOR, 0)
         self.general_settings = parent.plugin.global_settings['General']
         self.color_background = self.general_settings['background']
