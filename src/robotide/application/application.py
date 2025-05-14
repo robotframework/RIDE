@@ -15,6 +15,8 @@
 
 import builtins
 import os
+import subprocess
+
 import wx
 
 from contextlib import contextmanager
@@ -342,14 +344,23 @@ class RIDE(wx.App):
         output = run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         robot_found = b"ModuleNotFoundError" not in output and output
+        system_encoding = get_system_encoding()
+        if not robot_found:
+            rf_info = subprocess.run(['robot', '--version'], capture_output=True)
+            print(f"DEBUG: application-py RIDE _find_robot_installation command VERSION={rf_info.stdout}")
+            if b"Robot Framework" in rf_info.stdout:
+                rf_version = rf_info.stdout.replace(b"Robot Framework", b"").strip(b" ").split(b" ")[0]
+                publish.RideLogMessage(_("Found Robot Framework version %s from %s.") % (
+                    str(rf_version, system_encoding), "PATH")).publish()
+                return rf_version
         if robot_found:
-            system_encoding = get_system_encoding()
             rf_file, rf_version = output.strip().split(b", ")
             publish.RideLogMessage(_("Found Robot Framework version %s from %s.") % (
                 str(rf_version, system_encoding), str(os.path.dirname(rf_file), system_encoding))).publish()
             return rf_version
         else:
             publish.RideLogMessage(publish.get_html_message('no_robot'), notify_user=True).publish()
+            return None
 
     def _get_latest_path(self):
         recent = self._get_recentfiles_plugin()

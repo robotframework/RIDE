@@ -184,7 +184,9 @@ class LibraryCache(object):
         from robotide.context import APP
         try:
             robot_version = APP.robot_version
-        except AttributeError:
+        except (AttributeError, TypeError):
+            robot_version = b'7.0.1'
+        if not robot_version:
             robot_version = b'7.0.1'
         try:
             rbt_version = int(str(robot_version, encoding='UTF-8').replace('.', ''))
