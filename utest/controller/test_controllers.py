@@ -508,8 +508,13 @@ class VariablesControllerTest(unittest.TestCase):
         ordered = deepcopy(names)
         ordered = sorted(ordered, key=operator.attrgetter('name'))
         diff = self.ctrl._index_difference(names, ordered)
-        print(f"DEBUG: test_controllers.py VariablesControllerTest test_index_difference diff={diff}")
+        # print(f"DEBUG: test_controllers.py VariablesControllerTest test_index_difference diff={diff}")
         assert diff == [1, 2, 0]
+        self.ctrl[0].set_value('${newone}', 'one')
+        names = [n for n in self.ctrl]
+        diff = self.ctrl._index_difference(names, ordered)
+        # print(f"DEBUG: test_controllers.py VariablesControllerTest test_index_difference FINAL diff={diff}")
+        assert diff == [2, 0]
 
     def test_validate_name(self):
         first = self.ctrl.validate_dict_variable_name('%{boo}') #  validate_name

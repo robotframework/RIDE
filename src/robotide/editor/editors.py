@@ -60,7 +60,7 @@ class EditorPanel(wx.lib.scrolledpanel.ScrolledPanel):
         = show_content_assist = lambda self: None
 
     def __init__(self, plugin, parent, controller, tree):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, style=wx.HSCROLL|wx.VSCROLL|wx.ALWAYS_SHOW_SB)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
@@ -312,6 +312,7 @@ class _FileEditor(_RobotTableEditor):
 
     def __init__(self, *args):
         _RobotTableEditor.__init__(self, *args)
+        # DEBUG
         self.SetupScrolling()
         self.plugin.subscribe(
             self._update_source_and_name, RideFileNameChanged)

@@ -24,7 +24,7 @@ from ..preferences.settings import RideSettings
 _settings = RideSettings()
 general_settings = _settings['General']
 BACKGROUND_HELP = 'background help'
-HTML_BACKGROUND = general_settings[BACKGROUND_HELP]
+HTML_BACKGROUND = general_settings.get(BACKGROUND_HELP, '#A5F173')
 
 
 class HtmlWindow(html.HtmlWindow):
@@ -36,8 +36,8 @@ class HtmlWindow(html.HtmlWindow):
         self.SetBackgroundColour(Colour(200, 222, 40))
         if text:
             self.set_content(text)
-        self.SetHTMLBackgroundColour(Colour(general_settings[BACKGROUND_HELP]))
-        self.SetForegroundColour(Colour(general_settings['foreground help']))
+        self.SetHTMLBackgroundColour(Colour(general_settings.get(BACKGROUND_HELP, '#A5F173')))
+        self.SetForegroundColour(Colour(general_settings.get('foreground help', '#080240')))
         self.font = self.GetFont()
         self.font.SetFaceName(general_settings['font face'])
         self.font.SetPointSize(general_settings['font size'])
@@ -46,8 +46,17 @@ class HtmlWindow(html.HtmlWindow):
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
 
     def set_content(self, content):
-        color = ''.join(hex(item)[2:] for item in general_settings['background help'])
-        _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        background = general_settings.get(BACKGROUND_HELP, '#A5F173')
+        h = background.lstrip('#')
+        if h.upper() == background.upper():
+            from wx import ColourDatabase
+            cdb = ColourDatabase()
+            bkng = cdb.Find(h.upper())
+            bkg = (bkng[0], bkng[1], bkng[2])
+        else:
+            bkg = tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+        background = '#%02X%02X%02X' % bkg
+        _content = '<body bgcolor=%s>%s</body>' % (background, content)
         self.SetPage(_content)
 
     def on_key_down(self, event):

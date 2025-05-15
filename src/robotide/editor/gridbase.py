@@ -33,7 +33,7 @@ class GridEditor(grid.Grid):
     _popup_items_nt = []
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
-        grid.Grid.__init__(self, parent)
+        grid.Grid.__init__(self, parent.frame if isinstance(parent, wx.App) else parent)
         try:
             self.settings = parent.plugin.global_settings['Grid']
             self.general_settings = parent.plugin.global_settings['General']
