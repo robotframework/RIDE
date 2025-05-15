@@ -470,6 +470,9 @@ class KeywordEditor(GridEditor, Plugin):
             self.SelectCol(event.Col, addToSelected=False)
             self.SetGridCursor(0, event.Col)
 
+    def on_move_cursor_down(self, event=None):
+        self._move_cursor_down(event)
+
     def on_insert_rows(self, event):
         self._execute(add_rows(self.selection.rows()))
         self.ClearSelection()
