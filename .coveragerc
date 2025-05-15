@@ -15,8 +15,9 @@ omit =
     ./src/robotide/lib/robot/*
     # ./src/robotide/preferences/configobj/*
     */.venv/*
-    __main__.py
-    preview.py
+    ./src/robotide/__main__.py
+    ./src/robotide/postinstall/__main__.py
+    ./src/robotide/ui/preview.py
 
 [report]
 skip_empty = True

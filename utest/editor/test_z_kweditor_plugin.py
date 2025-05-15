@@ -99,6 +99,7 @@ app.namespace = mock(Namespace)
 app.settings = FakeSettings()
 app.register_editor()
 """
+generic_app = wx.App()
 
 DATA = [['kw1', '', ''],
         ['kw2', 'arg1', ''],
@@ -254,10 +255,10 @@ class KeywordEditorTest(unittest.TestCase):
                 self._grid.kweditor.write_cell(ridx, cidx, cdata, update_history=False)
 
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
         self.SHOWING = True
         self.frame.Center()
-        # wx.CallLater(1000, self.app.MainLoop)
+        wx.CallLater(1000, self.app.MainLoop)
 
     def _register(self, iclass, eclass):
         self._registered_editors[iclass] = eclass
@@ -302,7 +303,7 @@ class KeywordEditorTest(unittest.TestCase):
         focused = self.plugin.is_focused()
         assert focused is True
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
     """
 
     """
@@ -323,7 +324,7 @@ class KeywordEditorTest(unittest.TestCase):
         show = self._grid.kweditor.has_focus()
         assert show  # is not None
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_on_comment_cells(self):
@@ -335,7 +336,7 @@ class KeywordEditorTest(unittest.TestCase):
         self._grid.kweditor.on_comment_cells(None)  # THIS IS NOT WORKING
         data = self._grid.kweditor.get_selected_content()
         print(f"DEBUG: After Sharp Comment Data Cell is {data}")
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
 
@@ -352,20 +353,20 @@ class KeywordEditorTest(unittest.TestCase):
         self._copy_block_and_verify((0, 0, 0, 0), [['kw1']])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     @pytest.mark.skip()
     def test_copy_row(self):
         self._copy_block_and_verify((1, 0, 1, 1), [[val for val in DATA[1] if val]])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     @pytest.mark.skip()
     def test_copy_block(self):
         self._copy_block_and_verify((0, 0, 2, 2), DATA)
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def _copy_block_and_verify(self, block, exp_content):
@@ -380,19 +381,19 @@ class KeywordEditorTest(unittest.TestCase):
                                    [['', '', '']] + DATA[1:])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_cut_row(self):
         self._cut_block_and_verify((2, 0, 2, 2), [DATA[2]], DATA[:2])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_cut_block(self):
         self._cut_block_and_verify((0, 0, 2, 2), DATA, [])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def _cut_block_and_verify(self, block, exp_clipboard, exp_grid):
         self._cut_block(block)
@@ -415,7 +416,7 @@ class KeywordEditorTest(unittest.TestCase):
         self._verify_grid_content(DATA)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_multiple_levels_of_undo(self):
         self._cut_block((0, 0, 0, 0))
@@ -429,7 +430,7 @@ class KeywordEditorTest(unittest.TestCase):
         self._verify_grid_content(DATA)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def _cut_block(self, block):
         self._grid.kweditor.SelectBlock(*block)
@@ -442,26 +443,26 @@ class KeywordEditorTest(unittest.TestCase):
                                    [DATA[0] + ['kw2']] + DATA[1:] + [['kw2']])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_paste_row(self):
         self._copy_and_paste_block((2, 0, 2, 2), (3, 1, 3, 1), DATA + [[''] + DATA[2]])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_paste_block(self):
         self._copy_and_paste_block((0, 0, 2, 2), (4, 0, 4, 0), DATA + [['']] + DATA)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
-    @pytest.mark.skip()
+    # @pytest.mark.skip()
     def test_paste_over(self):
         self._copy_and_paste_block((1, 0, 1, 1), (0, 0, 0, 0), [DATA[1]] + DATA[1:])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def _copy_and_paste_block(self, sourceblock, targetblock, exp_content):
         self._grid.kweditor.SelectBlock(*sourceblock)
@@ -486,12 +487,12 @@ class KeywordEditorTest(unittest.TestCase):
         self._verify_grid_content(DATA)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
-    @pytest.mark.skip()
+    # @pytest.mark.skip()
     def test_contentassist_dialog(self):
         suggestions = SuggestionSource(None, self.app.project.controller)
-        dlg = ContentAssistPopup(self._grid, suggestions)
+        dlg = ContentAssistPopup(self._grid.kweditor, suggestions)
         dlg.show(600, 400, 20)
         result = dlg.content_assist_for('Log Many')
         shown=dlg.is_shown()
@@ -503,7 +504,7 @@ class KeywordEditorTest(unittest.TestCase):
         wx.CallLater(4000, dlg.hide)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_htmlpopupwindow_dialog_simple(self):
         dlg = HtmlPopupWindow(self.frame, (400, 200), False, True)
@@ -515,7 +516,7 @@ class KeywordEditorTest(unittest.TestCase):
         wx.CallLater(4000, dlg.hide)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_htmlpopupwindow_dialog_title(self):
         dlg = HtmlPopupWindow(self.panel, (400, 200), True, True)
@@ -533,11 +534,11 @@ class KeywordEditorTest(unittest.TestCase):
         wx.CallLater(4000, dlg.hide)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_contentassist_text_editor(self):
         suggestions = SuggestionSource(None, self.app.project.controller)
-        dlg = ContentAssistTextEditor(self._grid, suggestions, (400, 400))
+        dlg = ContentAssistTextEditor(self._grid.kweditor, suggestions, (400, 400))
         dlg._popup.show(600, 400, 20)
         result = dlg._popup.content_assist_for('Log Many')
         shown = dlg.is_shown()
@@ -545,11 +546,11 @@ class KeywordEditorTest(unittest.TestCase):
         # assert shown is True
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_contentassist_text_ctrl(self):
         suggestions = SuggestionSource(None, self.app.project.controller)
-        dlg = ContentAssistTextCtrl(self._grid, suggestions, (400, 400))
+        dlg = ContentAssistTextCtrl(self._grid.kweditor, suggestions, (400, 400))
         dlg._popup.show(600, 400, 20)
         result = dlg._popup.content_assist_for('Log Many')
         shown = dlg.is_shown()
@@ -557,12 +558,12 @@ class KeywordEditorTest(unittest.TestCase):
         # assert shown is True
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
-    @pytest.mark.skip()
+    # @pytest.mark.skip()
     def test_contentassist_expandotextctrl(self):
-        suggestions = SuggestionSource(None, self.app.project.controller)
-        dlg = ExpandingContentAssistTextCtrl(self._grid, self.plugin, self.app.project.controller)
+        # suggestions = SuggestionSource(None, self.app.project.controller)
+        dlg = ExpandingContentAssistTextCtrl(self._grid.kweditor, self.plugin, self.app.project.controller)
         dlg._popup.show(600, 400, 20)
         result = dlg._popup.content_assist_for('Log Many')
         shown = dlg.is_shown()
@@ -570,11 +571,11 @@ class KeywordEditorTest(unittest.TestCase):
         # assert shown is True
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_contentassist_file_button(self):
         suggestions = SuggestionSource(None, self.app.project.controller)
-        dlg = ContentAssistFileButton(self._grid, suggestions, 'Browse', self.app.project.controller)
+        dlg = ContentAssistFileButton(self._grid.kweditor, suggestions, 'Browse', self.app.project.controller)
         dlg._popup.show(600, 400, 20)
         result = dlg._popup.content_assist_for('Log Many')
         shown = dlg.is_shown()
@@ -582,49 +583,34 @@ class KeywordEditorTest(unittest.TestCase):
         # assert shown is True
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_get_resources(self):
         res = self.creator._only_resource_files(self.app.tree)
         print(f"DEBUG: test_edit_creator.py EditorCreatorTest test_get_resources res={res}")
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
-    @pytest.mark.skip()
-    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    # @pytest.mark.skip()
+    # @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_miscellanous(self):
-        spaces = ' ' * self.plugin._editor_component.tab_size
-        content = [spaces + 'Log' + spaces + 'This is ${unknown}\n']
-        pos = len(spaces + 'Log')
-        self.plugin._editor_component.source_editor.set_text(''.join(content))
-        self.plugin._editor_component.source_editor.SetAnchor(pos)
-        self.plugin._editor_component.source_editor.SetSelection(pos - len('Log'), pos)
-        stylizer = self.plugin._editor_component.source_editor.stylizer
-        fulltext = self.plugin._editor_component.source_editor.GetText()
-        font_size = stylizer._font_size()
-        font_face = stylizer._font_face()
-        zoom_factor = stylizer._zoom_factor()
+        from robotide.editor.kweditor import requires_focus
+        focused = requires_focus(self._grid.kweditor._resize_grid)
+        assert focused
+        self._grid.kweditor._resize_grid()
+        self.settings['Grid'].set('auto size cols', True)
+        self._grid.kweditor._resize_grid()
+        self.settings['Grid'].set('col size', 100)
+        self._grid.kweditor._resize_grid()
+        self.settings['Grid'].set('auto size cols', False)
+        self._grid.kweditor._resize_grid()
+        self.settings['Grid'].set('word wrap', False)
+        self._grid.kweditor._resize_grid()
 
-        assert font_size == 10
-        assert font_face in ["Sans", "Noto Sans", "Courier New"]
-        assert zoom_factor == 0
-        print(f"DEBUG: fulltext:\n{fulltext}")
-        stylizer.set_styles(True)
-        stylizer.stylize()
-
-        assert fulltext == spaces + 'Log' + spaces + 'This is ${unknown}\n'
-        """
-        # Test details
-        self.app.tree.select_node_by_data(self.app.model)
-        print(f"DEBUG: datafile={self.app.tree.get_selected_datafile()}")
-        self.plugin._editor_component.open(self.app.model)
-        self.plugin._editor_component.source_editor._show_keyword_details('Log')
-        self.plugin._editor_component.source_editor._show_keyword_details('Log Many', (400, 600))
-        """
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 if __name__ == '__main__':
     unittest.main()
