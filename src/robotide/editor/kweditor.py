@@ -82,7 +82,6 @@ class KeywordEditor(GridEditor, Plugin):
 
     def __init__(self, parent, controller, tree):
         self.settings = parent.plugin.global_settings['Grid']
-        # print(f"DEBUG: kweditor.py KeywordEditor controller={controller}")
         self.zoom = self.settings.get(ZOOM_FACTOR, 0)
         self.general_settings = parent.plugin.global_settings['General']
         self.color_background = self.general_settings['background']
@@ -470,6 +469,9 @@ class KeywordEditor(GridEditor, Plugin):
         else:
             self.SelectCol(event.Col, addToSelected=False)
             self.SetGridCursor(0, event.Col)
+
+    def on_move_cursor_down(self, event=None):
+        self._move_cursor_down(event)
 
     def on_insert_rows(self, event):
         self._execute(add_rows(self.selection.rows()))
