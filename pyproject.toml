@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "RIDE :: Robot Framework Test Data Editor"
 license = "Apache-2.0"
 license-files = { paths = ["LICENSE.txt"] }
-requires-python = ">=3.8, <3.13"
+requires-python = ">=3.8, <3.15"
 authors = [
     { name = "Robot Framework Developers", email = "robotframework@gmail.com" },
 ]
@@ -31,6 +31,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
@@ -44,6 +46,9 @@ dependencies = [
 [project.urls]
 Download = "https://pypi.python.org/pypi/robotframework-ride"
 Homepage = "https://github.com/robotframework/RIDE/"
+
+[tool.uv]
+# python-preference = "only-system"
 
 [tool.hatch.version]
 path = "src/robotide/version.py"
@@ -68,12 +73,12 @@ dependencies = [
 ]
 
 [[tool.hatch.envs.test.matrix]]
-python = ["3.12"]
-version = ["2.1b1"]
+python = ["3.13"]
+version = ["2.1.4"]
 
 [tool.poetry]
 name = "robotframework-ride"
-version = "2.1b1"
+version = "2.1.4"
 description = "RIDE :: Robot Framework Test Data Editor"
 authors = ["Robot Framework Developers <robotframework@gmail.com>"]
 license = "Apache-2.0 license"
@@ -82,7 +87,7 @@ packages = [{include = "robotide"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-wxPython = "^4.0.1"
+wxPython = "^4.1.1"
 pywin32 = { version = "*", markers = "sys_platform == 'win32'" }
 pygments = "*"
 robotframework = "*"
