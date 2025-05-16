@@ -341,10 +341,12 @@ class PybotProfile(BaseProfile):
             try:
                 output = output.decode(os_encoding)
             except UnicodeDecodeError:
-                wx.MessageBox(f"An UnicodeDecodeError occurred when processing the Arguments."
+                message_box = RIDEDialog(title="UnicodeDecodeError",
+                                         message=f"An UnicodeDecodeError occurred when processing the Arguments."
                               f" The encoding used was '{os_encoding}'. You may try to define the environment variable"
                               f" RIDE_ENCODING with a proper value. Other possibility, is to replace 'pythonw.exe' by "
-                              f"'python.exe' in the Desktop Shortcut.", "UnicodeDecodeError")
+                              f"'python.exe' in the Desktop Shortcut.", style=wx.OK | wx.ICON_ERROR)
+                message_box.ShowModal()
             output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').\
                 replace('\\""', '\"').strip()
             # print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")

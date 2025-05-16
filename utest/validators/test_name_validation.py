@@ -14,15 +14,30 @@
 #  limitations under the License.
 
 import unittest
+import pytest
 
 from robotide.robotapi import VariableTable, KeywordTable, TestCaseTable
 from robotide.controller.macrocontrollers import (
     UserKeywordController, TestCaseController)
 from robotide.controller.tablecontrollers import (
-    VariableTableController, KeywordTableController, TestCaseTableController)
+    VariableTableController, KeywordTableController, TestCaseTableController, _MacroTable)
 from robotide.validators import (
     ScalarVariableNameValidator, ListVariableNameValidator,
     UserKeywordNameValidator, TestCaseNameValidator)
+
+
+from ..controller.controller_creator import _FakeProject
+
+
+class _FakeParent(_FakeProject):
+    def __init__(self):
+        self.parent = None
+        self.dirty = False
+        self.datafile = None
+        self._setting_table = self
+
+    def mark_dirty(self):
+        self.dirty = True
 
 
 class _NameValidationTest(object):
@@ -117,6 +132,25 @@ class TestCaseNameValidationTest(_MacroNameValidationTest, unittest.TestCase):
     table_ctrl_class = TestCaseTableController
     ctrl_class = TestCaseController
     validator_class = TestCaseNameValidator
+
+
+class MacroNameValidationTest(unittest.TestCase):
+
+    def setUp(self):
+        self.parent = _FakeParent()
+        self.table = TestCaseTableController(self.parent, None)
+        self.keyword_table = KeywordTableController(self.parent, KeywordTable(self.parent))
+
+    def test_validate_name(self):
+        validation = self.keyword_table.validate_name("New Line \nName\n")
+        # print(f"DEBUG: test_name_validation.py MacroNameValidationTest test_validate_name validation
+        # ={validation.error_message}")
+        assert "name contains newlines" in validation.error_message
+
+    def test_items_macrotable(self):
+        with pytest.raises(NotImplementedError):
+            items = _MacroTable(self.table, self.table).items
+            print(f"DEBUG: test_name_validation.py MacroNameValidationTest test_items_macrotable items={items}")
 
 
 if __name__ == '__main__':

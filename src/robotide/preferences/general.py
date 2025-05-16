@@ -86,6 +86,7 @@ class GeneralPreferences(PreferencesPanel):
         # don't have the time to do that right now, so this will have
         # to suffice.
 
+        # print(f"DEBUG: preferences/general.py GeneralPeferences settings_path={self._settings._default_path}")
         ui_language = self._select_ui_language()
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()

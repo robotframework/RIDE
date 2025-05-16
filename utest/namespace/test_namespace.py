@@ -7,6 +7,7 @@ from robotide.robotapi import (
     TestCaseFile, Resource, VariableTable, TestDataDirectory)
 from robotide.context import IS_WINDOWS
 from robotide.namespace.namespace import _VariableStash
+from robotide.controller.basecontroller import WithNamespace
 from robotide.controller.filecontrollers import data_controller
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
 from robotide.spec.librarymanager import LibraryManager
@@ -110,6 +111,12 @@ class _DataFileTest(unittest.TestCase):
 
 class TestKeywordSuggestions(_DataFileTest):
 
+    def test_get_cached_lib_names(self):
+        project = WithNamespace()
+        project._set_namespace(self.ns)
+        lib_names = project.get_all_cached_library_names()
+        assert lib_names == []
+
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
         # print("DEBUG: %s kw %s\n" % (start, self.kw.__doc__))
@@ -176,9 +183,9 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_library_from_resourcefile_variable(self):
         import os
         import pytest
-        DISPLAY = os.getenv('DISPLAY')
-        if not DISPLAY:
-            pytest.skip("Skipped because of missing DISPLAY")  # Avoid failing unit tests in system without X11
+        # DISPLAY = os.getenv('DISPLAY')
+        # if not DISPLAY:
+        #     pytest.skip("Skipped because of missing DISPLAY")  # Avoid failing unit tests in system without X11
         sugs = self.ns.get_suggestions_for(self.kw, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
 
@@ -311,7 +318,7 @@ class TestKeywordSuggestions(_DataFileTest):
         assert myflag
         # assert_true(any(True for s in sugs if s.source.decode('utf-8') == ArgumentInfo.SOURCE))
 
-    @unittest.skipIf(sys.platform.startswith("win"), "Fails on Windows")
+    # @unittest.skipIf(sys.platform.startswith("win"), "Fails on Windows")
     def test_keyword_arguments_are_suggested_first(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
         print(f"DEBUG: test_namespace.py test_keyword_arguments_are_suggested_first sugs={sugs}")
@@ -321,9 +328,9 @@ class TestKeywordSuggestions(_DataFileTest):
         import os
         import pytest
         import wx
-        DISPLAY = os.getenv('DISPLAY')
-        if not DISPLAY:
-            pytest.skip("Skipped because of missing DISPLAY")  # Avoid failing unit tests in system without X11
+        # DISPLAY = os.getenv('DISPLAY')
+        # if not DISPLAY:
+        #     pytest.skip("Skipped because of missing DISPLAY")  # Avoid failing unit tests in system without X11
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
         print(f"DEBUG: test_suggestions_for_datafile  suggestions for Dialogs {sugs}")
         self._assert_import_kws(sugs, 'Dialogs')

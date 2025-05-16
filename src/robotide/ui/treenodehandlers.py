@@ -23,7 +23,7 @@ from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, S
 from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, RideSettingsChanged, PUBLISHER
 from ..ui.progress import LoadProgressObserver
 from ..usages.UsageRunner import Usages, ResourceFileUsages
-from ..widgets import PopupMenuItems
+from ..widgets import RIDEDialog, PopupMenuItems
 from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
                           RobotFilePathDialog)
 from .progress import RenameProgressObserver
@@ -231,7 +231,8 @@ class _CanBeRenamed(object):
 
     @staticmethod
     def _show_validation_error(err_msg):
-        wx.MessageBox(err_msg, _('Validation Error'), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_('Validation Error'), message=err_msg, style=wx.ICON_ERROR | wx.OK)
+        message_box.ShowModal()
 
 
 class DirectoryHandler(_ActionHandler):
@@ -431,8 +432,9 @@ class TestDataDirectoryHandler(TestDataHandler):
             # Next is to restart the file monitoring
             RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
-            wx.MessageBox(_('Directory contains unsaved data!\n'
-                          'You must save data before excluding.'))
+            message_box = RIDEDialog(message=_('Directory contains unsaved data!\n'
+                          'You must save data before excluding.'), style=wx.ICON_WARNING | wx.OK)
+            message_box.ShowModal()
 
 
 class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
@@ -517,8 +519,9 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
             # Next is to restart the file monitoring
             RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
-            wx.MessageBox(_('File contains unsaved data!\n'
-                          'You must save data before excluding.'))
+            message_box = RIDEDialog(message=_('File contains unsaved data!\n'
+                          'You must save data before excluding.'), style=wx.ICON_WARNING | wx.OK)
+            message_box.ShowModal()
 
     def on_remove_read_only(self, event):
         __ = event
@@ -619,8 +622,9 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
             # Next is to restart the file monitoring
             RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
-            wx.MessageBox(_('File contains unsaved data!\n'
-                          'You must save data before excluding.'))
+            message_box = RIDEDialog(message=_('File contains unsaved data!\n'
+                                               'You must save data before excluding.'), style=wx.ICON_WARNING | wx.OK)
+            message_box.ShowModal()
 
     def on_remove_read_only(self, event):
         __ = event
@@ -645,8 +649,10 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         dlg.Destroy()
 
     def on_delete(self, event):
-        if wx.MessageBox(_('Delete test case file'), caption=_('Confirm'),
-                         style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+        message_box = RIDEDialog(title=_('Confirm'), message=_('Delete test case file'),
+                                 style=wx.YES_NO | wx.ICON_QUESTION)
+        ret = message_box.ShowModal()
+        if ret == wx.YES:
             self.controller.execute(ctrlcommands.DeleteFile())
 
     def on_safe_delete(self, event):
@@ -754,7 +760,9 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         # print(f"DEBUG: treenodehandlers.py UserKeywodHandler _create_rename_command controller.name={self.controller.name}"
         #       f", new_name={new_name} info={self.controller.info}")
         return ctrlcommands.RenameKeywordOccurrences(self.controller.name, new_name,
-                                                     RenameProgressObserver(self._tree.GetParent()),
+                                                     RenameProgressObserver(self._tree.GetParent(),
+                                                                     background=self._tree.background,
+                                                                     foreground=self._tree.foreground),
                                                      self.controller.info, language=self.controller.language)
 
     def on_find_usages(self, event):
@@ -841,7 +849,9 @@ class ResourceRootHandler(_ActionHandler):
         path = RobotFilePathDialog(
             self._tree.GetParent(), self.controller, self._settings).execute()
         if path:
-            self.controller.load_resource(path, LoadProgressObserver(self._tree.GetParent()))
+            self.controller.load_resource(path, LoadProgressObserver(self._tree.GetParent(),
+                                                                     background=self._tree.background,
+                                                                     foreground=self._tree.foreground))
 
 
 class ExcludedDirectoryHandler(TestDataDirectoryHandler):

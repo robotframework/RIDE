@@ -15,9 +15,9 @@
 
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import wx
 from wx.lib.agw.aui import AuiManager
 import unittest
@@ -32,7 +32,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer, ToolBar
-from utest.resources import FakeSettings
+from utest.resources import FakeSettings, FakeEditor
 from robotide.ui import treeplugin as st
 from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
@@ -43,7 +43,7 @@ from robotide.ui.treeplugin import Tree
 th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeSuiteHandler = th.FakeTestCaseHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
-st.Editor = lambda *args: _FakeEditor()
+st.Editor = lambda *args: FakeEditor()
 Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
 Tree._select = lambda self, node: self.SelectItem(node)\
@@ -79,10 +79,11 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self.app = wx.App()
         self.frame = wx.Frame(None)
         self._model = self._create_model()
+        self._settings = FakeSettings()
         self._tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
                                                        MenuBar(self.frame),
                                                        ToolBar(self.frame),
-                                                       ShortcutRegistry(self.frame)))
+                                                       ShortcutRegistry(self.frame)), self._settings)
         images = TreeImageList()
         self._tree._images = images
         self._tree.SetImageList(images)

@@ -3,14 +3,14 @@
 #---------------------------------#
 
 # version format
-version: 2.0.{build}
+version: 2.1.{build}
 
 # branches to build
 branches:
   # whitelist
   only:
     - master
-    - devops
+    - develop
 
   # blacklist
   except:
@@ -44,7 +44,7 @@ init:
 shallow_clone: false                 # default is "false"
 
 # set clone depth
-clone_depth: 5                      # clone entire repository history if not defined
+clone_depth: 1                      # clone entire repository history if not defined
 
 # this is how to allow failing jobs in the matrix
 # matrix:
@@ -70,6 +70,7 @@ build: off
 install:
   - C:\Python311-x64\python -m pip install -r requirements-dev.txt
   - C:\Python311-x64\python -m pip install -r requirements.txt
+  - C:\Python311-x64\python -m pip install robotframework
   - C:\Python311-x64\python -m pip install .
 
 #---------------------------------#
@@ -80,3 +81,9 @@ install:
 test_script:
   - set PATH=C:\Python311-x64;C:\Python311-x64\Scripts;%PATH%
   - C:\Python311-x64\python -m invoke test-ci
+  - 7z -r a coverage_report.7z %APPVEYOR_BUILD_FOLDER%\.coverage.* %APPVEYOR_BUILD_FOLDER%\.coverage-reports
+
+artifacts:
+  - path: coverage_report.7z
+    name: coverage_report
+

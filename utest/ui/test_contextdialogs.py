@@ -16,9 +16,9 @@ import unittest
 import os
 import pytest
 
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:  # Avoid failing unit tests in system without X11
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:  # Avoid failing unit tests in system without X11
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
 import wx
 from wx.lib.agw.aui import AuiManager
 
@@ -66,9 +66,9 @@ class _AboutDialog(AboutDialog):
 
     def ShowDialog(self):
         self._execute()
-        wx.CallLater(1000, self.Destroy)
+        wx.CallLater(1000, self.Close)
         self.ShowModal()
-        self.Destroy()
+        # self.Destroy()
 
 
 class _BaseDialogTest(unittest.TestCase):
@@ -80,7 +80,7 @@ class _BaseDialogTest(unittest.TestCase):
         self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
                                                             MenuBar(self.frame), ToolBar(self.frame),
                                                             ShortcutRegistry(self.frame)), settings)
-        self.frame.Show()
+        # self.frame.Show()
         self.model = self._create_model()
         self.about_dialog = _AboutDialog(self.frame, self.model)
         # self.about_dialog.show_dialog()

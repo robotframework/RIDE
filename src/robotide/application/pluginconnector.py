@@ -46,6 +46,10 @@ class PluginConnector(_PluginConnector):
         self.conn_plugin = plugin
         self._settings = application.settings['Plugins'].add_section(plugin.name)
         self.config_panel = plugin.config_panel
+        try:
+            self.on_config_panel = plugin.on_config_panel
+        except AttributeError:
+            pass
         self.metadata = plugin.metadata
 
     def enable_on_startup(self):

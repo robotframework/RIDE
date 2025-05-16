@@ -17,6 +17,9 @@ import re
 import os
 import sys
 import unittest
+from copy import deepcopy
+
+import pytest
 from mockito import mock
 from robotide.robotapi import ALIAS_MARKER
 
@@ -30,6 +33,7 @@ from robotide.controller.settingcontrollers import (
 from robotide.controller.tablecontrollers import (
     VariableTableController, MetadataListController, ImportSettingsController,
     WithListOperations)
+from robotide.controller.settingcontrollers import MetadataController
 from robotide.publish.messages import (
     RideImportSetting, RideImportSettingRemoved, RideImportSettingAdded,
     RideImportSettingChanged, RideItemSettingsChanged)
@@ -497,6 +501,38 @@ class VariablesControllerTest(unittest.TestCase):
         self._assert_var_in_ctrl(1, '@{listvar}', ['a', 'b', 'c'])
         assert self.ctrl.dirty
 
+    def test_index_difference(self):
+        import operator
+        self.ctrl.add_variable('${blaa}', 'value')
+        names = [n for n in self.ctrl]  # [n for n in self.ctrl]
+        ordered = deepcopy(names)
+        ordered = sorted(ordered, key=operator.attrgetter('name'))
+        diff = self.ctrl._index_difference(names, ordered)
+        # print(f"DEBUG: test_controllers.py VariablesControllerTest test_index_difference diff={diff}")
+        assert diff == [1, 2, 0]
+        self.ctrl[0].set_value('${newone}', 'one')
+        names = [n for n in self.ctrl]
+        diff = self.ctrl._index_difference(names, ordered)
+        # print(f"DEBUG: test_controllers.py VariablesControllerTest test_index_difference FINAL diff={diff}")
+        assert diff == [2, 0]
+
+    def test_validate_name(self):
+        first = self.ctrl.validate_dict_variable_name('%{boo}') #  validate_name
+        # print(f"DEBUG: test_controllers.py VariablesControllerTest test_validate_name first={first.error_message}")
+        assert first.error_message == "Dictionary variable name must be in format &{name}"
+        self._add_var('&{foo}', 'boo')
+        second = self.ctrl.validate_dict_variable_name('&{foo}')  # validate_name
+        # print(f"DEBUG: test_controllers.py VariablesControllerTest test_validate_name first={second.error_message}")
+        assert second.error_message == "Variable with this name already exists."
+
+    def test_delete_var(self):
+        self._add_var('${boo}', 'boo')
+        existing = [x.name for x in self.ctrl]
+        assert existing == ['${foo}', '@{bar}', '${boo}']
+        self.ctrl.delete(-1)
+        existing = [x.name for x in self.ctrl]
+        assert existing == ['${foo}', '@{bar}']
+
     def _assert_var_in_ctrl(self, index, name, value):
         assert self.ctrl[index].name == name
         assert self.ctrl[index].value == value
@@ -525,6 +561,14 @@ class MetadataListControllerTest(unittest.TestCase):
     def test_serialization(self):
         assert (self._get_metadata(0).as_list() == ['Metadata', 'Meta name', 'Some value'])
 
+    def test_iter_metadatalist(self):
+        for item in self.ctrl:
+            assert isinstance(item, MetadataController)
+
+    def test_add_metadata(self):
+        self.ctrl.add_metadata('test_metadata', 'this is the value', 'this is the comment')
+        self._assert_meta_in_model(-1, 'test_metadata', 'this is the value')
+
     def _assert_meta_in_ctrl(self, index, name, value):
         assert self.ctrl[index].name == name
         assert self.ctrl[index].value == value
@@ -549,6 +593,13 @@ class FakeListController(WithListOperations):
 
     def mark_dirty(self):
         self.dirty = True
+
+    @property
+    def original_items(self):
+        return WithListOperations()._items
+
+    def original_mark_dirty(self):
+        WithListOperations.mark_dirty(self)
 
 
 class WithListOperationsTest(unittest.TestCase):
@@ -581,6 +632,16 @@ class WithListOperationsTest(unittest.TestCase):
     def test_delete(self):
         self._list_operations.delete(0)
         self._assert_item_in(0, 'bar')
+
+    def test_original_items(self):
+        with pytest.raises(NotImplementedError):
+            items = self._list_operations.original_items
+            print(f"DEBUG: test_controllers WithListOperationsTests test_original_items items={items}")
+
+    def test_original_mark_dirty(self):
+        with pytest.raises(NotImplementedError):
+            self._list_operations.original_mark_dirty()
+            print("DEBUG: test_controllers WithListOperationsTests test_original_mark_dirty")
 
     def _assert_item_in(self, index, name):
         assert self._list_operations._items[index] == name

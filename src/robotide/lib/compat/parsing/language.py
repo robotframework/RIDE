@@ -22,7 +22,8 @@ except ImportError as e:
     try:
         # Using local copy of https://github.com/robotframework/robotframework/blob/v7.0.1/src/robot/conf/languages.py
         from .languages import Language
-    except ImportError:
+    except ImportError as e:
+        sys.stderr.write(f"RIDE: Trying to import robot's languages module returned error: {repr(e)}\n")
         Language = None
 from robot.errors import DataError
 from robotide.lib.robot.utils import Utf8Reader
@@ -236,11 +237,12 @@ def get_english_label(lang, label):
         try:
             mlang = Language.from_name(lang[0].replace('_', '-'))  # Only care for a single language
         except ValueError:
-            print(f"DEBUG: language.py get_english_label Exception at language={lang}")
+            # print(f"DEBUG: language.py get_english_label Exception at language={lang}")
+            pass
     else:
         mlang = Language.from_name(lang.replace('_', '-'))
     if not mlang:
-        print(f"DEBUG: language.py get_english_label lang={lang} not found")
+        # print(f"DEBUG: language.py get_english_label lang={lang} not found")
         return None
     setting_names = list(mlang.settings.keys())
     try:

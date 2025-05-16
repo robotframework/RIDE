@@ -16,9 +16,9 @@
 import unittest
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+# DISPLAY = os.getenv('DISPLAY')
+# if not DISPLAY:
+#     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import wx
 from wx.lib.agw.aui import AuiManager
 from functools import total_ordering
@@ -185,9 +185,9 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
     def ShowDialog(self):
         # self._search_for_tags()
         self._execute()
-        wx.CallLater(1000, self.Destroy)
+        wx.CallLater(1000, self.Close)
         self.ShowModal()
-        self.Destroy()
+        # self.Destroy()
 
     def _clear_search_results(self):
         self._results = {}
@@ -215,7 +215,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
             MenuBar(self.frame), ToolBar(self.frame),
             ShortcutRegistry(self.frame)), settings)
-        self.frame.Show()
+        # self.frame.Show()
         self._tags_list = utils.NormalizedDict()
         self._tags_list = {"tag-11": [1, 2], "tag-02": [3],
                            "tag-12": [4, 8, 12], "tag-2": [5, 6, 7],
@@ -228,11 +228,12 @@ class _BaseSuiteTreeTest(unittest.TestCase):
                            "a-01-a03": [1], "b-1-a01": [2], "b-01-a01": [15]}
         self.model = self._create_model()
         self._tagsdialog = _ViewAllTagsDialog(self.frame, self.model)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        # wx.CallAfter(self.app.ExitMainLoop)
+        # wx.CallAfter(
+        self.app.ExitMainLoop()
         # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
         self.app.Destroy()

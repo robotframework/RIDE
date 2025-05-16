@@ -20,7 +20,36 @@ from pathlib import Path
 from typing import cast, Iterable, Iterator, Union
 
 from robot.errors import DataError
-from robot.utils import classproperty, is_list_like, Importer, normalize
+from robot.utils import is_list_like, Importer, normalize
+try:
+    from robot.utils import classproperty
+except ImportError:  # This is when using RF older than 6.0
+
+    class classproperty(property):
+        """Property that works with classes in addition to instances.
+
+        Only supports getters. Setters and deleters cannot work with classes due
+        to how the descriptor protocol works, and they are thus explicitly disabled.
+        Metaclasses must be used if they are needed.
+        """
+
+        def __init__(self, fget, fset=None, fdel=None, doc=None):
+            if fset:
+                self.setter(fset)
+            if fdel:
+                self.deleter(fset)
+            super().__init__(fget)
+            if doc:
+                self.__doc__ = doc
+
+        def __get__(self, instance, owner):
+            return self.fget(owner)
+
+        def setter(self, fset):
+            raise TypeError('Setters are not supported.')
+
+        def deleter(self, fset):
+            raise TypeError('Deleters are not supported.')
 
 
 LanguageLike = Union['Language', str, Path]

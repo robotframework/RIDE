@@ -98,7 +98,10 @@ class _DataLoader(_DataLoaderThread):
 
     def _run(self):
         if not self.language:
-            self.language = lang.check_file_language(self._path)
+            try:
+                self.language = lang.check_file_language(self._path)
+            except Exception:
+                self.language = 'en'
         return test_data(source=self._path, settings=self._settings, language=self.language)
 
 
@@ -115,7 +118,10 @@ class _InitFileLoader(_DataLoaderThread):
                                             language=self.language)
         result.initfile = self._path
         if not self.language:
-            self.language = lang.check_file_language(self._path)
+            try:
+                self.language = lang.check_file_language(self._path)
+            except Exception:
+                self.language = 'en'
         robotapi.FromFilePopulator(result, lang=self.language).populate(self._path)
         return result
 

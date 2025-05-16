@@ -3,6 +3,7 @@
 source = src/
 branch = True
 relative_files = True
+dynamic_context = test_function
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
@@ -12,13 +13,18 @@ omit =
     ./utest/*
     # robot library
     ./src/robotide/lib/robot/*
+    # ./src/robotide/preferences/configobj/*
     */.venv/*
+    ./src/robotide/__main__.py
+    ./src/robotide/postinstall/__main__.py
+    ./src/robotide/ui/preview.py
 
 [report]
 skip_empty = True
 exclude_lines =
     if __name__ == '__main__':
- 
+    if __name__ == '__main__' and 'robotide' not in sys.modules:
+
 [xml]
 output = .coverage-reports/coverage.xml
 

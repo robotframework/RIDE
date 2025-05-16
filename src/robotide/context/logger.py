@@ -79,7 +79,8 @@ class Logger(object):
     def _show_message(self, msg, level):
         try:
             icon = level == 'ERROR' and wx.ICON_ERROR or wx.ICON_WARNING
-            wx.MessageBox(msg, level, icon)
+            message_box = RIDEDialog(title=level, message=msg, style=icon)
+            message_box.ShowModal()
         except wx.PyNoAppError:
             sys.stderr.write('%s: %s\n' % (level, msg))
 

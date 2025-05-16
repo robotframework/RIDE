@@ -15,7 +15,6 @@
 
 import itertools
 from multiprocessing import shared_memory
-from robotide.lib.compat.parsing.language import get_settings_for
 
 
 class RowSplitter(object):
@@ -65,6 +64,13 @@ class RowSplitter(object):
         return len(list(itertools.takewhile(lambda x: x in ignore, row)))
 
     def _is_doc_row(self, row, table_type):
+        can_translate = True
+        try:
+            from robotide.lib.compat.parsing.language import get_settings_for
+        except ImportError:
+            can_translate = False
+        if not can_translate:
+            get_settings_for = lambda l, t: ['Documentation']
         if table_type == self.setting_table:
             # print(f"DEBUG: writer.rowsplitter.py RowSplitter _is_doc_row in setting {self._language=}"
             #       f"\n row={row}")

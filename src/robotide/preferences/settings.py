@@ -49,6 +49,12 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     m_error = None
     if not os.path.exists(source_path):
         raise(FileNotFoundError(source_path))
+    else:
+        try:
+            shutil.copyfile(source_path, source_path + '._backup')
+        except (IOError, FileExistsError, PermissionError, OSError):
+            backup_file = os.path.join(SETTINGS_DIRECTORY, os.path.basename(source_path))
+            shutil.copyfile(source_path, backup_file + '._backup')
     if not dest_file_name:
         dest_file_name = os.path.basename(source_path)
     settings_path = os.path.join(settings_dir, dest_file_name)
@@ -60,12 +66,12 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
             SettingsMigrator(source_path, settings_path).migrate()
             # print(f"DEBUG: settings After migration {source_path} with {settings_path}")
         except ConfigObjError as parsing_error:
-            print("WARNING! corrupted configuration file replaced with defaults")
+            print("WARNING! corrupted configuration file replaced with defaults\n"
+                  f"A backup of the settings is at: {source_path + '._backup'}")
             print(parsing_error)
             m_error = parsing_error
             shutil.copyfile(settings_path, settings_path + '_old_broken')
-            print("(backed up corrupted configuration file at: %s)" %
-                  (settings_path + '_old_broken'))
+            print(f"(backed up corrupted configuration file at: {settings_path + '_old_broken'}")
             shutil.copyfile(source_path, settings_path)
             # print("DEBUG: source %s corrupted settings %s\n" % (source_path, settings_path))
         finally:  # DEBUG Try to merge some settings
@@ -362,9 +368,9 @@ class RideSettings(Settings):
             elif path.endswith('.cfg') and os.path.exists(path):
                 self._default_path = path
         # print(f"DEBUG: settings.py RideSettings SETTINGS {self._default_path=}")
-        user_path = initialize_settings(self._default_path)
-        Settings.__init__(self, user_path)
-        self._settings_dir = os.path.dirname(user_path)
+        self.user_path = initialize_settings(self._default_path)
+        Settings.__init__(self, self.user_path)
+        self._settings_dir = os.path.dirname(self.user_path)
         # print(f"DEBUG: RideSettings, self._settings_dir={self._settings_dir}")
         self.get('install root', os.path.dirname(os.path.dirname(__file__)))
         self.executable = self.get('executable', EXECUTABLE)
@@ -372,12 +378,14 @@ class RideSettings(Settings):
             digest = 0
             for c in EXECUTABLE:
                 digest += ord(c)
-            new_user_path = user_path.replace("settings.cfg", f"settings_{digest}.cfg")
-            new_user_path = initialize_settings(user_path, new_user_path)
+            new_user_path = self.user_path.replace("settings.cfg", f"settings_{digest}.cfg")
+            new_user_path = initialize_settings(self.user_path, new_user_path)
             Settings.__init__(self, new_user_path)
             self._settings_dir = os.path.dirname(new_user_path)
             self.set('install root', os.path.dirname(os.path.dirname(__file__)))
-            self.executable = self.set('executable', EXECUTABLE)
+            self.set('executable', EXECUTABLE)
+            self.set('last_settings_path', new_user_path)
+            self.user_path = new_user_path
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""

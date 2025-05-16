@@ -273,8 +273,10 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
         tags_to_delete = self._tags[tag_name.lower()]
-        if wx.MessageBox(_("Delete a tag '%s' ?") % tag_name, caption=_('Confirm'),
-                style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+        message_box = RIDEDialog(title=_('Confirm'), message=_("Delete a tag '%s' ?") % tag_name,
+                                 style=wx.YES_NO | wx.ICON_QUESTION)
+        ret = message_box.ShowModal()
+        if ret == wx.ID_YES:
             for tag in tags_to_delete:
                 tag.controller.execute(ChangeTag(tag, ''))
             self._execute()

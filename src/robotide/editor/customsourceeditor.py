@@ -24,6 +24,7 @@ import wx
 import wx.stc as stc
 from robotide.editor.pythoneditor import PythonSTC
 from wx import Colour
+from ..widgets import ImageProvider
 
 # ---------------------------------------------------------------------------
 # This is how you pre-establish a file filter so that the dialog
@@ -238,6 +239,7 @@ class CodeEditorPanel(wx.Panel):
     def __init__(self, parent, main_frame, filepath=None):
         self.log = sys.stdout  # From FileDialog
         self.path = filepath
+        self.parent = parent
         wx.Panel.__init__(self, parent, size=(1, 1))
         self.mainFrame = main_frame
         self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2})
@@ -383,6 +385,7 @@ class CodeEditorPanel(wx.Panel):
             self.path = filepath
             # self.log.write('%s\n' % source)
             self.LoadSource(source)  # Just the last file
+            self.parent.SetTitle(filepath)
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
         # self.log.write("CWD: %s\n" % os.getcwd())
@@ -534,6 +537,11 @@ def main(filepath, frame=None):
     if frame is None:
         frame = wx.Frame(None)
     CodeEditorPanel(frame, None, filepath)
+    image_provider = ImageProvider()
+    frame.SetTitle(filepath)
+    frame.SetSize((800, 600))
+    frame.SetIcon(wx.Icon(image_provider.RIDE_ICON))
+    frame.CenterOnScreen()
     frame.Show(True)
     app.MainLoop()
 # ----------------------------------------------------------------------------

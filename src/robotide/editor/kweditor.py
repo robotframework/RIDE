@@ -192,6 +192,10 @@ class KeywordEditor(GridEditor, Plugin):
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
+        if hasattr(self, 'SetupScrolling'):
+            self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
+            self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
+            print("DEBUG: GridBase init at SELF SetupScrolling\n")
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -842,6 +846,16 @@ class KeywordEditor(GridEditor, Plugin):
             return False  # event must not be skipped in this case
         elif keycode == wx.WXK_F2:
             self.open_cell_editor()
+        elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            # This block exists to ty to make cells visible
+            # on arrow_down because the mouse scroll does not work
+            # unfortunatelly IsVisible it always True.
+            delta = 1 if keycode == wx.WXK_DOWN else -1
+            cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
+            cursor = (cursor[0] + delta if cursor[0] + delta >= 0 else 0, cursor[1])
+            # print(f"DEBUG: call MakeCellVisible cursor={cursor}")
+            self.MakeCellVisible(cursor)
+            # print(f"DEBUG: IsCellVisible cursor={self.IsVisible(cursor)}")
         return True
 
     def _call_alt_function(self, event, keycode: int):
@@ -1072,7 +1086,8 @@ class KeywordEditor(GridEditor, Plugin):
         try:
             self._execute(add_keyword_from_cells(cells))
         except ValueError as err:
-            wx.MessageBox(str(err))
+            message_box = RIDEDialog(title=_('Validation Error'), message=str(err), style=wx.ICON_ERROR|wx.OK)
+            message_box.ShowModal()
 
     def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell
@@ -1161,7 +1176,8 @@ class KeywordEditor(GridEditor, Plugin):
         new_name = wx.GetTextFromUser(_('New name'), _(REN_KW), default_value=old_name)
         if new_name:
             self._execute(RenameKeywordOccurrences(
-                old_name, new_name, RenameProgressObserver(self.GetParent()), language=self._language))
+                old_name, new_name, RenameProgressObserver(self.GetParent(), background=self.color_background,
+                                                           foreground=self.color_foreground), language=self._language))
 
     # Add one new Dialog to edit pretty json String TODO: use better editor with more functions
     def on_json_editor(self, event=None):
@@ -1171,10 +1187,16 @@ class KeywordEditor(GridEditor, Plugin):
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
         ok_btn = wx.Button(dialog, wx.ID_OK, _("Save"))
+        ok_btn.SetBackgroundColour(self.color_secondary_background)
+        ok_btn.SetForegroundColour(self.color_secondary_foreground)
         cnl_btn = wx.Button(dialog, wx.ID_CANCEL, _("Cancel"))
+        cnl_btn.SetBackgroundColour(self.color_secondary_background)
+        cnl_btn.SetForegroundColour(self.color_secondary_foreground)
         rich_text = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native control, this is reversed, and this is"
                                                    " a different font.", size=(400, 475),
                                 style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        rich_text.SetBackgroundColour(self.settings['background unknown'])
+        rich_text.SetForegroundColour(self.settings['text empty'])
         dialog.Sizer.Add(rich_text, flag=wx.GROW, proportion=1)
         dialog.Sizer.Add(ok_btn, flag=wx.ALL)
         dialog.Sizer.Add(cnl_btn, flag=wx.ALL)
@@ -1197,8 +1219,9 @@ class KeywordEditor(GridEditor, Plugin):
                 try:
                     json.loads(content)  # Yes, we need the error
                 except JSONDecodeError as e:
-                    res = wx.MessageDialog(dialog, f"{_('Error in JSON:')} {e}\n\n{_('Save anyway?')}",
-                                           _("Validation Error!"), wx.YES_NO)
+                    res = RIDEDialog(title=_('Validation Error!'),
+                                             message=f"{_('Error in JSON:')} {e}\n\n{_('Save anyway?')}",
+                                             style=wx.ICON_ERROR | wx.YES_NO)
                     res.InheritAttributes()
                     response = res.ShowModal()
                     if response == wx.ID_YES:

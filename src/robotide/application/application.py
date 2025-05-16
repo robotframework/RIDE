@@ -15,10 +15,13 @@
 
 import builtins
 import os
+import subprocess
+
 import wx
 
 from contextlib import contextmanager
 from pathlib import Path
+
 from ..namespace import Namespace
 from ..controller import Project
 from ..spec import librarydatabase
@@ -80,6 +83,7 @@ class RIDE(wx.App):
     def __init__(self, path=None, updatecheck=True, settingspath=None):
         self._updatecheck = updatecheck
         self.workspace_path = path
+        self.changed_workspace = False
         self.settings_path = settingspath
         context.APP = self
         wx.App.__init__(self, redirect=False)
@@ -328,7 +332,11 @@ class RIDE(wx.App):
         self.workspace_path = self.workspace_path or self._get_latest_path()
         if self.workspace_path:
             self._controller.update_default_dir(self.workspace_path)
-            observer = LoadProgressObserver(self.frame)
+            theme = self.settings.get_without_default('General')
+            background = theme['background']
+            foreground = theme['foreground']
+            # print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}")
+            observer = LoadProgressObserver(self.frame, background=background, foreground=foreground)
             self._controller.load_data(self.workspace_path, observer)
 
     @staticmethod
@@ -336,14 +344,23 @@ class RIDE(wx.App):
         output = run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         robot_found = b"ModuleNotFoundError" not in output and output
+        system_encoding = get_system_encoding()
+        if not robot_found:
+            rf_info = subprocess.run(['robot', '--version'], capture_output=True)
+            print(f"DEBUG: application-py RIDE _find_robot_installation command VERSION={rf_info.stdout}")
+            if b"Robot Framework" in rf_info.stdout:
+                rf_version = rf_info.stdout.replace(b"Robot Framework", b"").strip(b" ").split(b" ")[0]
+                publish.RideLogMessage(_("Found Robot Framework version %s from %s.") % (
+                    str(rf_version, system_encoding), "PATH")).publish()
+                return rf_version
         if robot_found:
-            system_encoding = get_system_encoding()
             rf_file, rf_version = output.strip().split(b", ")
             publish.RideLogMessage(_("Found Robot Framework version %s from %s.") % (
                 str(rf_version, system_encoding), str(os.path.dirname(rf_file), system_encoding))).publish()
             return rf_version
         else:
             publish.RideLogMessage(publish.get_html_message('no_robot'), notify_user=True).publish()
+            return None
 
     def _get_latest_path(self):
         recent = self._get_recentfiles_plugin()
@@ -401,7 +418,7 @@ class RIDE(wx.App):
     def on_app_activate(self, event):
         if self.workspace_path is not None and RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
-                if RideFSWatcherHandler.is_workspace_dirty():
+                if not self.changed_workspace and RideFSWatcherHandler.is_workspace_dirty():
                     self.frame.show_confirm_reload_dlg(event)
                 RideFSWatcherHandler.stop_listening()
             else:

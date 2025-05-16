@@ -77,9 +77,10 @@ from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.ui.notebook import NoteBook
-from robotide.widgets import Label, ImageProvider, RIDEDialog
+from robotide.widgets import Label, ImageProvider, ButtonWithHandler, RIDEDialog
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime
+from robotide.preferences import PreferenceEditor
 from robotide.preferences.editors import read_fonts
 from sys import getfilesystemencoding, platform
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
@@ -134,6 +135,7 @@ class TestRunnerPlugin(Plugin):
                 "profile_name": "robot",
                 "show_console_log": True,
                 "show_message_log": True,
+                "active_status_bar": True,
                 "sash_position": 200,
                 "run_profiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
@@ -155,6 +157,7 @@ class TestRunnerPlugin(Plugin):
     title = 'Run'
 
     def __init__(self, application=None):
+        self.app = application
         self.title = _('Run')
         Plugin.__init__(self, application, initially_enabled=True,
                         default_settings=self.defaults)
@@ -178,6 +181,7 @@ class TestRunnerPlugin(Plugin):
         self._initmemory = None
         self._limitmemory = None  # This will be +80%
         self._maxmemmsg = None
+        self.active_status_bar = self.__getattr__('active_status_bar')
         self.use_colors = self.__getattr__('use colors')
         self.fail_color = self.__getattr__('fail color')
         self.pass_color = self.__getattr__('pass color')
@@ -321,30 +325,40 @@ class TestRunnerPlugin(Plugin):
         self._append_to_console_log(_('[ SENDING STOP SIGNAL ]\n'),
                                     source='stderr')
         self._test_runner.send_stop_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING STOP SIGNAL ]\n'), 5000)
 
     def on_pause(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING PAUSE SIGNAL ]\n'))
         self._test_runner.send_pause_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING PAUSE SIGNAL ]\n'), 5000)
 
     def on_continue(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING CONTINUE SIGNAL ]\n'))
         self._test_runner.send_continue_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING CONTINUE SIGNAL ]\n'), 5000)
 
     def on_step_next(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING STEP NEXT SIGNAL ]\n'))
         self._test_runner.send_step_next_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING STEP NEXT SIGNAL ]\n'), 5000)
 
     def on_step_over(self, event):
         __ = event
         self._reset_memory_calc()
         self._append_to_console_log(_('[ SENDING STEP OVER SIGNAL ]\n'))
         self._test_runner.send_step_over_signal()
+        if self.active_status_bar:
+            self.statusbar_message(_('[ SENDING STEP OVER SIGNAL ]\n'), 5000)
 
     def on_run(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
@@ -446,22 +460,21 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _ask_user_to_save_before_running():
-        ret = wx.MessageBox(_("""There are unsaved modifications.
-        Do you want to save all changes and run the tests?"""),
-                            _("Unsaved Modifications"),
-                            wx.ICON_QUESTION | wx.YES_NO)
-        return ret == wx.YES
+        message_box = RIDEDialog(title=_("Unsaved Modifications"),
+                                 message=_("""There are unsaved modifications.
+        Do you want to save all changes and run the tests?"""), style=wx.ICON_QUESTION | wx.YES_NO)
+        ret = message_box.ShowModal()
+        return ret == wx.ID_YES
 
     def _tests_selected(self):
         return len(self._selected_tests) != 0
 
     @staticmethod
     def _ask_user_to_run_anyway():
-        ret = wx.MessageBox(_('No tests selected. \n'
-                            'Continue anyway?'),
-                            _('No tests selected'),
-                            wx.ICON_QUESTION | wx.YES_NO)
-        return ret == wx.YES
+        message_box = RIDEDialog(title=_('No tests selected'), message=_('No tests selected. \nContinue anyway?'),
+                                 style=wx.ICON_QUESTION | wx.YES_NO)
+        ret = message_box.ShowModal()
+        return ret == wx.ID_YES
 
     def _initialize_ui_for_running(self):
         self._show_notebook_tab()
@@ -735,8 +748,11 @@ class TestRunnerPlugin(Plugin):
     def _build_runner_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER)
+        toolbar.SetThemeEnabled(True)
         toolbar.SetBackgroundColour(self._mysettings.color_background)
         toolbar.SetForegroundColour(self._mysettings.color_foreground)
+        toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
+        toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         toolbar.AddTool(ID_RUN, _("Start"), ImageProvider().TOOLBAR_PLAY,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=_("Start robot"),
                         longHelp=_("Start running the robot test suite"))
@@ -763,6 +779,10 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddTool(ID_STEP_OVER, STEP_OVER, ImageProvider().TOOLBAR_NEXT,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=STEP_OVER,
                         longHelp=STEP_OVER)
+        for i in toolbar.GetChildren():
+            i.SetBackgroundColour(self._mysettings.color_secondary_background)
+            i.SetOwnBackgroundColour(self._mysettings.color_secondary_background)
+            i.SetForegroundColour(self._mysettings.color_secondary_foreground)
         toolbar.Realize()
         self._bind_runner_toolbar_events(toolbar)
         return toolbar
@@ -778,10 +798,18 @@ class TestRunnerPlugin(Plugin):
                 (wx.EVT_TOOL, self.on_step_over, ID_STEP_OVER)):
             toolbar.Bind(event, callback, id=idd)
 
+    @property
+    def general_font_size(self):
+        fsize = self.app.settings.get('General', None)['font size']
+        return fsize
+
     def _build_local_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER | wx.TB_DOCKABLE)
         # print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
+        toolbar.SetThemeEnabled(True)
+        toolbar.SetBackgroundColour(self._mysettings.color_background)
+        toolbar.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
         toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         profile_label = Label(toolbar, label=_("Execution Profile:  "))
@@ -817,12 +845,19 @@ class TestRunnerPlugin(Plugin):
                                    _(" Pause after failure  "), False,
                                    _("Automatically pause after failing keyword"))
         toolbar.AddControl(self.pause_on_failure_cb)
-
+        config_button = ButtonWithHandler(toolbar, _('Settings'), bitmap='wrench.png', fsize=self.general_font_size,
+                                   handler=lambda e: self.on_config_panel())
+        config_button.SetBackgroundColour(self._mysettings.color_background)
+        config_button.SetOwnBackgroundColour(self._mysettings.color_background)
+        config_button.SetForegroundColour(self._mysettings.color_foreground)
+        toolbar.AddStretchableSpace()
+        toolbar.AddControl(config_button)
         toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
         for i in toolbar.GetChildren():
             i.SetBackgroundColour(self._mysettings.color_background)
+            i.SetOwnBackgroundColour(self._mysettings.color_background)
             i.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.Realize()
         self._bind_local_toolbar_events(toolbar)
@@ -921,7 +956,8 @@ class TestRunnerPlugin(Plugin):
         panel = wx.Panel(parent)
         panel.SetBackgroundColour(self._mysettings.color_background)
         panel.SetForegroundColour(self._mysettings.color_foreground)
-        self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color)
+        self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color,
+                                         self.active_status_bar, caller=self)
         self._console_log_panel, self._console_log_ctrl = \
             self._create_collapsible_pane(panel, _('Console log'),
                                           self.show_console_log,
@@ -1092,11 +1128,15 @@ class TestRunnerPlugin(Plugin):
         __ = args
         wx.CallAfter(self._set_paused)
         self._log_message_queue.put(_('<<  PAUSED  >>'))
+        if self.active_status_bar:
+            self.statusbar_message(_('<<  PAUSED  >>'))
 
     def _handle_continue(self, args):
         __ = args
         wx.CallAfter(self._set_continue)
         self._log_message_queue.put(_('<< CONTINUE >>'))
+        if self.active_status_bar:
+            self.statusbar_message(_('<<  CONTINUE  >>'), 5000)
 
     def _set_running(self):
         self._run_action.disable()
@@ -1105,6 +1145,8 @@ class TestRunnerPlugin(Plugin):
         self.get_current_profile().disable_toolbar()
         self._running = True
         self._test_runner.test_execution_started()
+        if self.active_status_bar:
+            self.statusbar_clear()
 
     def _set_paused(self):
         self._run_action.disable()
@@ -1122,6 +1164,8 @@ class TestRunnerPlugin(Plugin):
         self._enable_runner_toolbar(True, False)
         self.get_current_profile().enable_toolbar()
         self._running = False
+        if self.active_status_bar:
+            self.statusbar_clear()
 
     def _enable_runner_toolbar(self, run, paused):
         stop = not run
@@ -1137,16 +1181,29 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _notify_user_no_logs_directory():
-        wx.MessageBox(_("There isn't logs directory. \n"
-                      "Please, run the tests and try again"),
-                      _("No logs directory"),
-                      wx.ICON_INFORMATION | wx.OK)
+        message_box = RIDEDialog(title=_("No logs directory"), message=_("There isn't logs directory. \n"
+                                                                         "Please, run the tests and try again"),
+                                 style=wx.OK | wx.ICON_INFORMATION)
+        message_box.ShowModal()
+
+    def on_config_panel(self):
+        dlg = self.config_panel(self.frame)
+        dlg.Show(True)
+
+    def config_panel(self, parent):
+        __ = parent
+        _parent = wx.GetTopLevelWindows()
+        dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
+                               self.app.preferences, style='single', index=5)
+        dlg.Show(False)
+        return dlg
 
 
 class ProgressBar(wx.Panel):
     """A progress bar for the test runner plugin"""
 
-    def __init__(self, parent, fail_color='#FF8E8E', pass_color="#9FCC9F", skip_color='yellow'):
+    def __init__(self, parent, fail_color='#FF8E8E', pass_color="#9FCC9F", skip_color='yellow',
+                 active_status_bar=False, caller=None):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._gauge = wx.Gauge(self, size=(100, 15), style=wx.GA_HORIZONTAL)
@@ -1158,6 +1215,8 @@ class ProgressBar(wx.Panel):
         self._gauge.Hide()
         self._default_colour = parent.GetBackgroundColour()
         self._foreground_colour = parent.GetForegroundColour()
+        self.active_status_bar = active_status_bar
+        self.caller = caller
         self.fail_color = fail_color
         self.pass_color = pass_color
         self.skip_color = skip_color
@@ -1227,7 +1286,8 @@ class ProgressBar(wx.Panel):
         elapsed = time.time() - self._start_time
         message = _("elapsed time: %s  pass: %s  skip: %s  fail: %s") % (
             self._seconds_to_string(elapsed), self._pass, self._skip, self._fail)
-        message += self._get_current_keyword_text()
+        current_keyword = self._get_current_keyword_text()
+        message += current_keyword
         if self._fail > 0:
             self.SetForegroundColour(self.get_visible_color(self.fail_color))
             self.SetBackgroundColour(self.fail_color)
@@ -1249,6 +1309,8 @@ class ProgressBar(wx.Panel):
             self._label.SetForegroundColour(self._foreground_colour)
             self._label.SetBackgroundColour(self._default_colour)
         self._label.SetLabel(message)
+        if self.active_status_bar and self.caller:
+            self.caller.statusbar_message(current_keyword)
         # not sure why this is required, but without it the background
         # colors don't look right on Windows
         self.Refresh()

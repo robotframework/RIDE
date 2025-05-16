@@ -89,7 +89,7 @@ ui language = 'English'
 class FakeSettings(Settings):
     def __init__(self, settings=None):
         self.fake_cfg = os.path.join(os.path.dirname(__file__), 'fake.cfg')
-
+        self._default_path = self.fake_cfg
         # make sure fake cfg is clean
         with open(self.fake_cfg, 'wb') as f:
             f.write(_FAKE_CFG_CONTENT)

@@ -32,7 +32,7 @@ from .review import ReviewDialog
 from .treeplugin import Tree
 from ..action import action_info_collection, action_factory, SeparatorInfo
 from ..action.shortcut import localize_shortcuts
-from ..context import get_about_ride, SHORTCUT_KEYS
+from ..context import get_about_ride, SHORTCUT_KEYS, IS_WINDOWS
 from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
 from ..preferences import PreferenceEditor
@@ -197,12 +197,16 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def _show_validation_error(message):
-        wx.MessageBox(message.message, _('Validation Error'), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_('Validation Error'), message=message.message, style=wx.ICON_ERROR|wx.OK)
+        message_box.ShowModal()
 
     @staticmethod
     def _show_modification_prevented_error(message):
-        wx.MessageBox(_("\"%s\" is read only") % message.controller.datafile_controller.filename,
-                      _("Modification prevented"), style=wx.ICON_ERROR)
+        message_box = RIDEDialog(title=_("Modification prevented"),
+                                 message=_("\"%s\" is read only") % message.controller.datafile_controller.filename,
+                                 style=wx.ICON_ERROR|wx.OK)
+        # message_box.CenterOnParent()
+        message_box.ShowModal()
 
     def _init_ui(self):
         """ DEBUG:
@@ -289,14 +293,17 @@ class RideFrame(wx.Frame):
 
         # self.main_menu.take_menu_bar_into_use()
         if new_ui:  # Only when creating UI we add panes
-            self.CreateStatusBar(name="StatusBar")
+            self.CreateStatusBar(number=2, name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
-            if self._status_bar:
-                self._status_bar.SetFont(wx.Font(self.fontinfo))
-                self._status_bar.SetBackgroundColour(Colour(self.color_background))
-                self._status_bar.SetForegroundColour(Colour(self.color_foreground))
+            self._status_bar.SetStatusWidths([-2, -3])
             # set main frame icon
             self.SetIcons(self._image_provider.PROGICONS)
+        if self._status_bar:
+            self.SetStatusBarPane(0)
+            self._status_bar.SetFont(wx.Font(self.fontinfo))
+            self._status_bar.SetBackgroundColour(Colour(self.color_background))
+            self._status_bar.SetForegroundColour(Colour(self.color_foreground))
+            self._status_bar.SetOwnForegroundColour(Colour(self.color_foreground))
         # change notebook theme
         self.set_notebook_theme()
         # tell the manager to "commit" all the changes just made
@@ -330,9 +337,12 @@ class RideFrame(wx.Frame):
         return self.tree.get_selected_datafile_controller()
 
     def on_close(self, event):
+        from ..preferences import RideSettings
         if self._allowed_to_exit():
             try:
                 perspective = self.aui_mgr.SavePerspective()
+                # Next restore of settings is because we may have edited from Preferences
+                self._application.settings = RideSettings(self._application.settings_path)
                 self._application.settings.set('AUI Perspective', perspective)
                 # deinitialize the frame manager
                 self.aui_mgr.UnInit()
@@ -398,12 +408,13 @@ class RideFrame(wx.Frame):
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
-            ret = wx.MessageBox(_("There are unsaved modifications.\n"
+            message_box = RIDEDialog(title=_('Warning'), message=_("There are unsaved modifications.\n"
                                   "Do you want to save your changes before "
-                                  "exiting?"), _("Warning"), wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
-            if ret == wx.CANCEL:
+                                  "exiting?"), style=wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
+            ret = message_box.execute()
+            if ret in (wx.CANCEL, wx.ID_CANCEL):
                 return False
-            if ret == wx.YES:
+            if ret in (wx.YES, wx.ID_YES, wx.OK, wx.ID_OK):
                 self.save()
         return True
 
@@ -487,9 +498,10 @@ class RideFrame(wx.Frame):
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
-            ret = wx.MessageBox(_("There are unsaved modifications.\n"
-                                  "Do you want to proceed without saving?"), _("Warning"), wx.ICON_WARNING | wx.YES_NO)
-            return ret == wx.YES
+            message_box = RIDEDialog(title=_("Warning"), message=_("There are unsaved modifications.\n"
+                                  "Do you want to proceed without saving?"), style=wx.ICON_WARNING | wx.YES_NO)
+            ret = message_box.ShowModal()
+            return ret == wx.ID_YES
         return True
 
     def open_suite(self, path):
@@ -497,6 +509,8 @@ class RideFrame(wx.Frame):
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
+        if IS_WINDOWS:
+            self._application.changed_workspace = True
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
         set_lang = []
@@ -512,14 +526,20 @@ class RideFrame(wx.Frame):
         else:
             set_lang[0] = 'en'
         try:
-            err = self.controller.load_datafile(path, LoadProgressObserver(self))
+            err = self.controller.load_datafile(path, LoadProgressObserver(self, background=self.color_background,
+                                                                           foreground=self.color_foreground))
             if isinstance(err, UserWarning):
                 # DEBUG: raise err  # Just leave message in Parser Log
                 return False
         except UserWarning:
             return False
         self._populate_tree()
+        if IS_WINDOWS:
+            wx.CallLater(60000, self.clear_workspace_state)
         return True
+
+    def clear_workspace_state(self):
+        self._application.changed_workspace = False
 
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
@@ -686,9 +706,10 @@ class RideFrame(wx.Frame):
         if self.controller.is_dirty():
             msg += [_('Answering <Yes> will discard unsaved changes.'),
                     _('Answering <No> will ignore the changes on disk.')]
-        ret = wx.MessageBox('\n'.join(msg), _('Files Changed On Disk'),
-                            style=wx.YES_NO | wx.ICON_WARNING)
-        confirmed = ret == wx.YES
+        message_box = RIDEDialog(title=_('Files Changed On Disk'), message='\n'.join(msg),
+                                 style=wx.ICON_WARNING | wx.YES_NO)
+        ret = message_box.ShowModal()
+        confirmed = ret == wx.ID_YES
         if confirmed:
             # workspace_path should update after open directory/suite
             # There are two scenarios:

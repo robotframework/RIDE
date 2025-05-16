@@ -150,41 +150,43 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> previous version, which was 7.1.1 
- (currently is 7.2.2). However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.2.2. However, 
+ internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.13.</li>
+<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.a7 with wxPython 4.2.3).</li>
 <li>There are some changes, or known issues:<ul>
+<!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
-version 4.2.1 and 4.2.2, which we now <em>recommend</em>.</li>
+version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
+-->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings and changes.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors. The option to not reformat the file is not working.</li>
+<li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
+ to Text Editor and back to Grid Editor, to restore normal behavior.</li>
 </ul>
 </li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Better Search element in Text Editor which allows to be cleared.</li>
-<li>When saving in Text Editor, the cursor remains at position, instead of jumping to Tree selection.</li>
-<li>Improved autocompletion lists, by using existing words in Test Suite file (still needs more improvements).</li>
-<li>Fixed not set text color on row labels in Grid Editor. Now the General <b>secondary foreground</b> is applied.</li>
-<li>Added on Text Editor, tab indentation markers and <b>tab markers</b> boolean setting with default <b>True</b>.</li>
-<li>Added on Text Editor, folding margin with markers style configurable with <b>fold symbols</b> in settings.cfg.</li>
-<li>Create directories when needed in New Project dialog.</li>
-<li>Improved the recognition of BDD/Gherkin prefixes when localized in autocomplete on Grid Editor.</li>
-<li>Added syntax colorization for the <em>GROUP</em> marker. Improved colorization for multiple Gherkin words, for 
-example in the French language.</li>
-<li>Fixed multiple scroll bars in Grid Editor when editing Test Cases or Keywords. This caused bad navigation on cells.</li>
-<li>Regression fix from v2.1b1 - Fix wrong item selection, like Test Suite, when doing right-click actions in
- Project Explorer.</li>
+<li>Fixed white blocks on Tree due to failed animation when test execution is too rapid, causing crash on Windows.</li>
+<li>Added Settings Editor button to Preferences dialog, to edit settings.cfg.</li>
+<li>Created backup of settings.cfg to allow recovering some settings when broken upgrades.</li>
+<li>Changed some informative dialogs and JSON Editor to use the customized colors.</li>
+<li>Added current executing keyword and other statuses to TestRunner status bar.</li>
+<li>Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.</li>
+<li>Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.</li>
+<li>Added Config Panel button to Plugins, working examples in Text Editor and Test Runner.</li>
+<li>On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.</li>
+<li>Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
+when selecting in Tree shows the filename in StatusBar.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
-<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.2, which we recommend.
+<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.3, which we recommend.
 </strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
@@ -235,7 +237,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 24/March/2025.</p>
+<p>RIDE {VERSION} was released on 15/May/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

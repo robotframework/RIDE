@@ -52,6 +52,8 @@ class Plugin(object):
     filemgr = property(lambda self: self.__frame.filemgr, doc='Provides access to the files and folders explorer')
     menubar = property(lambda self: self.__frame.GetMenuBar(), doc='Provides access to the application menubar')
     toolbar = property(lambda self: self.__frame.GetToolBar(), doc='Provides access to the application toolbar')
+    statusbar = property(lambda self: self.__frame.FindWindowByName("StatusBar", self.__frame),
+                         doc='Provides access to the application statusbar')
     notebook = property(lambda self: self.__frame.notebook, doc='Provides access to the tabbed notebook')
     model = property(lambda self: self.__app.model, doc='Provides access to the data model')
     frame = property(lambda self: self.__frame, doc='Reference to the RIDE main frame')
@@ -448,3 +450,24 @@ class Plugin(object):
         if not self.tree:
             return
         self.tree.highlight(data, text)
+
+    def statusbar_message(self, text, ttl=0):
+        """Set a text message at Plugin area of StatusBar
+           :Parameters:
+              text
+                Message to show in StatusBar
+              ttl
+               Time to live in milliseconds, default = 0, means does not expire
+        """
+        if text is None:
+            text = ''
+        self.statusbar.SetStatusText(text, 1)
+        wx.CallAfter(self._delayed_clear, ttl)
+
+    def _delayed_clear(self, ttl):
+        if ttl >= 100:
+            wx.CallLater(ttl, self.statusbar_clear)
+
+    def statusbar_clear(self):
+        """Clears the message at Plugin area of StatusBar"""
+        self.statusbar.SetStatusText('', 1)

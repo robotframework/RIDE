@@ -63,7 +63,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def test_resourcefactory_ignores_imported_resource_from_ignore_subdirectory(self):
         self.r = self._create_factory(os.path.split(os.path.dirname(__file__))[0])
-        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
+        self.assertIsNone(self.r.get_resource_from_import(self._import, self._context))
 
     def test_resourcefactory_finds_imported_resource_when_subdirectory_ignored(self):
         self.r = self._create_factory(os.path.join(os.path.dirname(__file__), 'something'))
@@ -77,7 +77,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
     def test_resourcefactory_ignores_imported_resource_when_relative_import(self):
         self.r = self._create_factory(os.path.abspath('.'))
         imp = ImportSetting(None, os.path.join('.', 'foo'))
-        self.assertEqual(None, self.r.get_resource_from_import(imp, self._context))
+        self.assertIsNone(self.r.get_resource_from_import(imp, self._context))
 
     def test_resourcefactory_finds_imported_resource_from_python_path(self):
         self.r = _ResourceFactory(FakeSettings())
@@ -87,7 +87,14 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
     def test_resourcefactory_ignores_imported_resource_from_python_path(self):
         self.r = self._create_factory(os.path.dirname(__file__))
         self.r.from_path = os.path.dirname(__file__)
-        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
+        self.assertIsNone(self.r.get_resource_from_import(self._import, self._context))
+
+    def test_resourcefactory_with_separator(self):
+        self.r = self._create_factory(os.path.dirname(__file__))
+        self.r.from_path = os.path.dirname(__file__)
+        dir_name = self.r._with_separator(self.r.from_path)
+        last_char = dir_name[-1]
+        assert last_char == os.path.sep
 
     if IS_WINDOWS:
 
@@ -102,7 +109,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def _ignore_import(self, exclude_directory):
         self.r = self._create_factory(exclude_directory)
-        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
+        self.assertIsNone(self.r.get_resource_from_import(self._import, self._context))
 
     def _create_factory(self, excluded_dir):
         settings = FakeSettings()
@@ -120,7 +127,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def _is_resolved(self, factory, imp=None):
         imp = imp or self._import
-        self.assertNotEqual(None, factory.get_resource_from_import(imp, self._context))
+        self.assertIsNotNone(factory.get_resource_from_import(imp, self._context))
 
 
 if __name__ == '__main__':

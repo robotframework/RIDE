@@ -37,10 +37,11 @@ from ..namespace.suggesters import SuggestionSource
 from ..pluginapi import Plugin, action_info_collection, TreeAwarePluginMixin
 from ..publish.messages import (RideSaved, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty, RideBeforeSaving, RideSaving, RideDataDirtyCleared)
+from ..preferences import TextEditorPreferences, PreferenceEditor
 from ..preferences.editors import read_fonts
 from ..publish import RideSettingsChanged, PUBLISHER
 from ..publish.messages import RideMessage
-from ..widgets import TextField, Label, HtmlDialog
+from ..widgets import SearchField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 from robotide.lib.compat.parsing.language import Language
@@ -386,7 +387,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._doc_language = None
         self._save_flag = 0
         self.jump = True
+        # self.status_bar = self.frame.FindWindowByName("StatusBar", self.frame)
+        # self.frame.SetStatusBarPane(1)
         self.reformat = application.settings.get('reformat', False)
+        self.settings = application.settings
+        self.application = application
         self._register_shortcuts()
 
     @property
@@ -459,6 +464,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # print(f"DEBUG: texteditor _open language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
+            wx.CallLater(2000, self.statusbar_message, f'{_("Source: ")}{self._editor.datafile_controller.source}', 2000)
 
     def _get_shared_doc_lang(self):
         try:
@@ -633,6 +639,18 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         except AttributeError:
             return self._editor.is_focused()
 
+    def on_config_panel(self):
+        dlg = self.config_panel(self.frame)
+        dlg.Show(True)
+
+    def config_panel(self, parent):
+        __ = parent
+        _parent = wx.GetTopLevelWindows()
+        dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
+                               self.application.preferences, style='single', index=4)
+        dlg.Show(False)
+        return dlg
+
 
 class DummyController(WithStepsController):
     _populator = robotapi.UserKeywordPopulator
@@ -699,7 +717,73 @@ class DataValidationHandler(object):
     def set_editor(self, editor):
         self._editor = editor
 
+
     def validate_and_update(self, data, text, lang='en'):
+
+        try:
+            from robot.parsing.parser.parser import get_model  # RF > 4.0
+        except ImportError:
+            return self._old_validate_and_update(data, text)
+        return self._new_validate_and_update(data, text, lang)
+
+    """
+        Backwards compatible code v1.7.4.2
+    """
+
+    def _old_validate_and_update(self, data, text):
+        m_text = text.decode("utf-8")
+        if not self._old_sanity_check(data, m_text):
+            handled = self._old_handle_sanity_check_failure()
+            if not handled:
+                return False
+        self._editor.reset()
+        # print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
+        data.update_from(m_text)
+        # print("DEBUG: AFTER updating text")
+        self._editor.set_editor_caret_position()
+        # %s" % (self._editor.GetCurrentPos()))
+        return True
+
+    def _old_sanity_check(self, data, text):
+        formatted_text = data.format_text(text)
+        # print(f"DEBUG: texteditor old_sanity_check {formatted_text=}")
+        c = self._normalize(formatted_text)
+        e = self._normalize(text)
+        return len(c) == len(e)
+
+    @staticmethod
+    def _normalize(text):
+        for item in [' ', r'\t', r'\n', r'\r\n', '...', '*']:
+            if item in text:
+                # print("DEBUG: _normaliz item %s txt %s" % (item, text))
+                text = text.replace(item, '')
+        return text
+
+    def _old_handle_sanity_check_failure(self):
+        if self._last_answer == wx.ID_NO and \
+                time() - self._last_answer_time <= 0.2:
+            self._editor._mark_file_dirty()
+            return False
+        # TODO: use widgets.Dialog
+        id = wx.MessageDialog(self._editor,
+                              'ERROR: Data sanity check failed!\n'
+                              'Reset changes?',
+                              'Can not apply changes from Txt Editor',
+                              style=wx.YES | wx.NO).ShowModal()
+        self._last_answer = id
+        self._last_answer_time = time()
+        if id == wx.ID_YES:
+            self._editor._revert()
+            return True
+        else:
+            self._editor._mark_file_dirty()
+        return False
+
+    """
+        End Backwards compatible code v1.7.4.2
+    """
+
+    def _new_validate_and_update(self, data, text, lang='en'):
         from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
         # print(f"DEBUG: textedit.py validate_and_update ENTER"
@@ -709,7 +793,6 @@ class DataValidationHandler(object):
             try:
                 self._doc_language = obtain_language(lang, text)
             except ValueError:
-                # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
                 self._doc_language = 'en'
             # print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}")
         else:
@@ -812,10 +895,10 @@ class DataValidationHandler(object):
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self.source_editor._mark_file_dirty(True)
             return False
-        # DEBUG: use widgets.Dialog
-        dlg = wx.MessageDialog(self._editor, f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
-                                             f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
-                               _("Can not apply changes from Text Editor"), style=wx.YES | wx.NO)
+        dlg = RIDEDialog(title=_("Can not apply changes from Text Editor"),
+                         message=f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
+                                 f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
+                         style=wx.ICON_ERROR | wx.YES_NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
         self._last_answer = did
@@ -1005,15 +1088,21 @@ class SourceEditor(wx.Panel):
                                    handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench.png', fsize=self.general_font_size,
+                                   handler=lambda e: self.plugin.on_config_panel())
+        config_button.SetBackgroundColour(Colour(self.dlg.color_background))
+        config_button.SetOwnBackgroundColour(Colour(self.dlg.color_background))
+        config_button.SetForegroundColour(Colour(self.dlg.color_foreground))
         default_components.add_with_padding(button)
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
+        self.editor_toolbar.add_with_padding(config_button)
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
 
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(5)
         size = wx.Size(200, 32)
-        self.search_field = TextField(self, '', size=size, process_enters=True)
+        self.search_field = SearchField(self, '', size=size, process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
@@ -1116,8 +1205,10 @@ class SourceEditor(wx.Panel):
 
     def on_find(self, event, forward=True):
         if self.source_editor:
-            if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
-                text = self.source_editor.GetSelectedText() or event.GetString()
+            if event.GetEventType() == wx.wxEVT_SEARCH:
+                text = event.GetString()
+            elif event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
+                text = self.source_editor.GetSelectedText()
             else:
                 text = ''
             if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
@@ -1372,6 +1463,7 @@ class SourceEditor(wx.Panel):
             if hasattr(self._data, 'content'):  # Special case for unit test
                 self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
+        wx.CallAfter(self.plugin.statusbar_message, f'{_("Source: ")}{self._controller_for_context.source}', 4000)
         self._words_cache.clear()
         self._suggestions.update_from_local(self.words_cache(self.source_editor.GetLineCount()), self.language)
 
@@ -2629,7 +2721,6 @@ class RobotDataEditor(PythonSTC):
             try:
                 self.language = obtain_language(dlanguage, content)
             except ValueError:
-                # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
                 self.language = 'English'
         else:
             self.language = 'English'

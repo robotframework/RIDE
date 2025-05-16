@@ -292,7 +292,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def __init__(self, original_name, new_name, observer, keyword_info=None, language='En'):
         self._language = language[0] if isinstance(language, list) else language
-        if self._language.lower() not in ['en', 'english']:
+        if self._language and self._language.lower() not in ['en', 'english']:
             bdd_prefix = f"{obtain_bdd_prefixes(self._language)}|{BDD_ENGLISH}"
         else:
             bdd_prefix = BDD_ENGLISH

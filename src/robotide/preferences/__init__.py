@@ -49,6 +49,7 @@ class Preferences(object):
         self.settings = settings
         self._preference_panels = []
         self._add_builtin_preferences()
+        self.settings_path = self.settings._default_path
 
     @property
     def preference_panels(self):
