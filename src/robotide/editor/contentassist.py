@@ -12,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from operator import index
 
 import wx
 from wx import Colour
@@ -274,10 +275,26 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.hide()
 
     def fill_suggestion(self):
+        initial_value = self.GetValue()
+        popup_value = self._popup.get_value()
+        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion initial_value={initial_value} \n"
+        #       f"popup_value={popup_value}")
+        if popup_value.lower() in initial_value.lower():
+            initial_value = initial_value.replace(initial_value, '')
+        parts = initial_value.split()
+        for p in parts:
+            if popup_value.lower().startswith(p.strip('}])').lower()):
+                idx = initial_value.index(p)
+                initial_value = initial_value[:idx]
+                # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion FOUND p={p} "
+                #       f"new initial_value={initial_value}")
+                break
         if self.gherkin_prefix:
-            value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
+            initial_value = initial_value.replace(self.gherkin_prefix,'')  # Should be left replace
+            value = self.gherkin_prefix + initial_value + popup_value  # or self.GetValue()
         else:
-            value = self._popup.get_value() or self.GetValue()
+            value = initial_value + popup_value  # or self.GetValue()
+        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):

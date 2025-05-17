@@ -206,7 +206,7 @@ class MyApp(RIDE):
         return True
 
     def _datafile_controller(self):
-        return data_controller(new_test_case_file(datafilereader.TESTCASEFILE_WITH_EVERYTHING), self.project)
+        return data_controller(new_test_case_file(datafilereader.SIMPLE_PROJECT), self.project)
 
     def OnExit(self):  # Overrides wx method
         if hasattr(self, 'file_settings'):
@@ -228,7 +228,7 @@ class KeywordEditorTest(unittest.TestCase):
                                               ShortcutRegistry(self.frame))
         self.frame.tree = Tree(self.frame, self.frame.actions, self.settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
-        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.app.project.load_datafile(datafilereader.SIMPLE_PROJECT, MessageRecordingLoadObserver())
         self.app.model = self.app.project.data
         self.panel = self.app.panel
         self.namespace = self.app.project.namespace
@@ -283,7 +283,7 @@ class KeywordEditorTest(unittest.TestCase):
         return FakePlugin(self._registered_editors, None)
 
     def _datafile_controller(self):
-        return data_controller(new_test_case_file(datafilereader.TESTCASEFILE_WITH_EVERYTHING), self.app.project)
+        return data_controller(new_test_case_file(datafilereader.SIMPLE_PROJECT), self.app.project)
 
     def tearDown(self):
         self.shared_mem.shm.close()
