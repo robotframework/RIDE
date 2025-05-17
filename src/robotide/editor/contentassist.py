@@ -263,38 +263,39 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         event.Skip()
         if not self._popup.is_shown():
             return
-        if self.gherkin_prefix:
-            value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
-        else:
-            value = self._popup.get_value() or self.GetValue()
+        value = self._get_popup_suggestion()
         if set_value and value:
             self.SetValue(value)
             self.SetInsertionPoint(len(value))  # DEBUG was self.Value
         else:
+            # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase on_focus_lost CALL CLEAR {value}")
             self.Clear()
         self.hide()
 
-    def fill_suggestion(self):
+    def _get_popup_suggestion(self, in_value=None):
         initial_value = self.GetValue()
-        popup_value = self._popup.get_value()
-        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion initial_value={initial_value} \n"
-        #       f"popup_value={popup_value}")
-        if popup_value.lower() in initial_value.lower():
+        if not in_value:
+            popup_value = self._popup.get_value()
+        else:
+            popup_value = in_value
+        if popup_value and popup_value.lower() in initial_value.lower():
             initial_value = initial_value.replace(initial_value, '')
         parts = initial_value.split()
         for p in parts:
-            if popup_value.lower().startswith(p.strip('}])').lower()):
+            if popup_value and popup_value.lower().startswith(p.strip('}])').lower()):
                 idx = initial_value.index(p)
                 initial_value = initial_value[:idx]
-                # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion FOUND p={p} "
-                #       f"new initial_value={initial_value}")
                 break
         if self.gherkin_prefix:
-            initial_value = initial_value.replace(self.gherkin_prefix,'')  # Should be left replace
+            initial_value = initial_value.replace(self.gherkin_prefix, '')  # Should be left replace
             value = self.gherkin_prefix + initial_value + popup_value  # or self.GetValue()
         else:
             value = initial_value + popup_value  # or self.GetValue()
-        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
+        return value
+
+    def fill_suggestion(self, value=None):
+        value = self._get_popup_suggestion(value)
+        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):
@@ -621,15 +622,14 @@ class ContentAssistPopup(object):
             pos = self._selection + 14 if count - self._selection > 14 else count - 1
         elif key_code == wx.WXK_PAGEUP:
             pos = self._selection - 14 if self._selection > 14 else 0
-        self._select_and_scroll(pos)
+        return self._select_and_scroll(pos)
 
     def _select_and_scroll(self, selection):
         self._selection = selection
         self._list.Select(self._selection)
         self._list.EnsureVisible(self._selection)
         value = self.get_value()
-        if value:
-            self._parent.SetValue(value)
+        return value
 
     def dismiss(self):
         if not self._list.HasFocus():

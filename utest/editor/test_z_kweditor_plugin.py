@@ -248,16 +248,16 @@ class KeywordEditorTest(unittest.TestCase):
         self._registered_editors = {}
         self.creator = EditorCreator(self._register)
         self.creator.register_editors()
-
+        """
         for ridx, rdata in enumerate(DATA):
             for cidx, cdata in enumerate(rdata):
                 self._grid.kweditor.write_cell(ridx, cidx, cdata, update_history=False)
-
+        """
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
         self.SHOWING = True
         self.frame.Center()
-        wx.CallLater(1000, self.app.MainLoop)
+        # wx.CallLater(1000, self.app.MainLoop)
 
     def _register(self, iclass, eclass):
         self._registered_editors[iclass] = eclass
@@ -294,6 +294,11 @@ class KeywordEditorTest(unittest.TestCase):
         if os.path.exists(DATADIR):
             shutil.rmtree(DATADIR, ignore_errors=True)
 
+    def setup_data(self):
+        for ridx, rdata in enumerate(DATA):
+            for cidx, cdata in enumerate(rdata):
+                self._grid.kweditor.write_cell(ridx, cidx, cdata, update_history=False)
+
     """
     def test_enable(self):
         self.plugin.enable()
@@ -315,6 +320,8 @@ class KeywordEditorTest(unittest.TestCase):
     """
 
     def test_show(self):
+        self.setup_data()
+        self.frame.Show()
         # show = self.frame.Children
         # print(f"DEBUG: test_show is children={[n.Name for n in show]}")
         # tabs = self._grid.kweditor.GetParent().GetName()
@@ -323,10 +330,12 @@ class KeywordEditorTest(unittest.TestCase):
         show = self._grid.kweditor.has_focus()
         assert show  # is not None
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_on_comment_cells(self):
+        self.setup_data()
+        self.frame.Show()
         # self.creator.editor_for(self.app.plugin, self._panel, self.frame.tree)
         self._grid.kweditor.SelectBlock(2, 2, 2, 2)
         sel = self._grid.kweditor.selection
@@ -342,6 +351,8 @@ class KeywordEditorTest(unittest.TestCase):
     """ Clipboard tests moved from test_grid.py to here """
     @pytest.mark.skip()
     def test_copy_one_cell(self):
+        self.setup_data()
+        self.frame.Show()
         print("")
         for row in range(3):
             text = f"{row}: "
@@ -363,6 +374,8 @@ class KeywordEditorTest(unittest.TestCase):
 
     @pytest.mark.skip()
     def test_copy_block(self):
+        self.setup_data()
+        self.frame.Show()
         self._copy_block_and_verify((0, 0, 2, 2), DATA)
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
@@ -376,6 +389,8 @@ class KeywordEditorTest(unittest.TestCase):
         self._verify_grid_content(DATA)
 
     def test_cut_one_cell(self):
+        self.setup_data()
+        self.frame.Show()
         self._cut_block_and_verify((0, 0, 0, 0), [['kw1']],
                                    [['', '', '']] + DATA[1:])
         # Uncomment next lines if you want to see the app
@@ -383,15 +398,19 @@ class KeywordEditorTest(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_cut_row(self):
+        self.setup_data()
+        self.frame.Show()
         self._cut_block_and_verify((2, 0, 2, 2), [DATA[2]], DATA[:2])
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_cut_block(self):
+        self.setup_data()
+        self.frame.Show()
         self._cut_block_and_verify((0, 0, 2, 2), DATA, [])
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def _cut_block_and_verify(self, block, exp_clipboard, exp_grid):
@@ -401,6 +420,8 @@ class KeywordEditorTest(unittest.TestCase):
         self._verify_grid_content(exp_grid)
 
     def test_undo_with_cut(self):
+        self.setup_data()
+        self.frame.Show()
         self._cut_block((0, 0, 0, 0))
         self._grid.kweditor.undo()
         self._verify_grid_content(DATA)
@@ -418,6 +439,8 @@ class KeywordEditorTest(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_multiple_levels_of_undo(self):
+        self.setup_data()
+        self.frame.Show()
         self._cut_block((0, 0, 0, 0))
         self._cut_block((2, 0, 2, 2))
         # We have problems here. We need undo for each cell removed
@@ -436,6 +459,8 @@ class KeywordEditorTest(unittest.TestCase):
         self._grid.kweditor.cut()
 
     def test_paste_one_cell(self):
+        self.setup_data()
+        self.frame.Show()
         self._copy_and_paste_block((1, 0, 1, 0), (3, 0, 3, 0), DATA + [['kw2']])
         # These tests are not independent
         self._copy_and_paste_block((1, 0, 1, 0), (0, 3, 0, 3),
@@ -445,12 +470,16 @@ class KeywordEditorTest(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_paste_row(self):
+        self.setup_data()
+        self.frame.Show()
         self._copy_and_paste_block((2, 0, 2, 2), (3, 1, 3, 1), DATA + [[''] + DATA[2]])
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_paste_block(self):
+        self.setup_data()
+        self.frame.Show()
         self._copy_and_paste_block((0, 0, 2, 2), (4, 0, 4, 0), DATA + [['']] + DATA)
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
@@ -458,6 +487,8 @@ class KeywordEditorTest(unittest.TestCase):
 
     # @pytest.mark.skip()
     def test_paste_over(self):
+        self.setup_data()
+        self.frame.Show()
         self._copy_and_paste_block((1, 0, 1, 1), (0, 0, 0, 0), [DATA[1]] + DATA[1:])
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
@@ -480,6 +511,8 @@ class KeywordEditorTest(unittest.TestCase):
                     assert value == ''
 
     def test_simple_undo(self):
+        self.setup_data()
+        self.frame.Show()
         self._grid.kweditor.SelectBlock(*(0, 0, 0, 0))
         self._grid.kweditor.cut()
         self._grid.kweditor.undo()
@@ -490,7 +523,8 @@ class KeywordEditorTest(unittest.TestCase):
 
     # @pytest.mark.skip()
     def test_contentassist_dialog(self):
-        suggestions = SuggestionSource(None, self.app.project.controller)
+        suggestions = SuggestionSource(None, self.test_case)
+        suggestions.update_from_local(['No Operation', 'Log Many', 'Log', '${CURDIR}'], 'en')
         dlg = ContentAssistPopup(self._grid.kweditor, suggestions)
         dlg.show(600, 400, 20)
         result = dlg.content_assist_for('Log Many')
@@ -500,6 +534,10 @@ class KeywordEditorTest(unittest.TestCase):
         dlg._move_x_where_room(800)
         dlg._move_y_where_room(400, 20)
         # dlg.reset()
+        value = dlg.content_assist_value('${CUR')
+        dlg.select_and_scroll(wx.WXK_DOWN)
+        dlg.dismiss()
+        dlg.hide()
         # wx.CallLater(4000, dlg.hide)
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
