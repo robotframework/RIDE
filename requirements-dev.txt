@@ -1,4 +1,5 @@
 setuptools>=70.0.0
+build
 mockito
 invoke
 urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
