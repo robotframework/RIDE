@@ -33,6 +33,9 @@ class SuggestionSource(object):
         # If we have a space separated value, try first the value and then the last word
         key = start.split(' ')[-1]
         keys = [start, key] if start != key else [start]
+        for var in ['$', '${', '@{', '&{']:
+            if not key.startswith(var):
+                keys.append(f"{var}{key}")
         sugs = set()
         for initial in keys:
             if self._controller:

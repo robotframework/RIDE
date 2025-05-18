@@ -1,0 +1,109 @@
+name: Linux
+on:
+  push:
+    branches-ignore:
+      - '**/sources/**'
+      - '**/windows/**'
+      - '**/macos/**'
+    paths-ignore:
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+  pull_request:
+    paths-ignore:
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+
+jobs:
+  fedora:
+    name: Fedora py313
+    runs-on: ubuntu-22.04
+    container:
+      image: fedora:41
+      options: --privileged
+    steps:
+    - name: Configure container environment
+      run: |
+        sudo dnf update -y
+        sudo dnf install -y git
+        git config --global --add safe.directory ${GITHUB_WORKSPACE}
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: false
+    - name: Setup environment
+      run: |
+        sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
+        # sudo dnf downgrade -y mesa* --refresh
+        git submodule update --init --recursive
+        pip install -r requirements-dev.txt
+        pip install robotframework
+    - name: Run tests
+      run: |
+        Xvfb &
+        export DISPLAY=:0
+        export GITHUB_ACTIONS=True
+        git submodule update --init --recursive
+        invoke test-ci
+    - uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        include-hidden-files: true
+        path: |
+          .coverage.1
+          .coverage.2
+          .coverage-reports/coverage.xml
+          .coverage-reports/htmlcov
+    - name: Create Package
+      run: |
+        git submodule update --init --recursive
+        pip install -r requirements-dev.txt
+        python -m build
+    - uses: actions/upload-artifact@v4
+      with:
+        name: package
+        include-hidden-files: true
+        path: |
+          dist/*

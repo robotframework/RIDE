@@ -39,17 +39,13 @@ wxPython
 Version 2.8.12.1 of wxPython__ was the last for the 2 series.
 Together with version 3.0.2, they are called the wxPython Classic.
 
-The current recommended version of wxPython is 4.0.7.post2 and was called wxPhoenix.
-RIDE is not fully compatible with newest wxPython 4.1.
-
-RIDE on Python 2.7 still runs with any version of those Classic or wxPhoenix.
-On Python 3.6+, only wxPhoenix is supported (and in the future we will only
-support those).
+The current recommended version of wxPython is 4.2.3, the project was called wxPhoenix.
 
 **VERSION 1.7.4.2 IS THE LAST RELEASE SUPPORTING PYTHON 2.7 AND WXPYTHON <3.0.3**
 
-**wxPython will be updated to current version 4.0.7.post2**
+**Version 2.0.8.1 was the last release supporting Python 3.6 and 3.7**
 
+<!--
 For testing purposes, users can select which version to use, by creating the
 file ``wx.pth`` containing the directory name of the wxPython to use. That 
 directory must contain the two wxPython directories (moved into)::
@@ -69,6 +65,7 @@ Example::
     # wx-4.0.4
     # wx-4.0.6
     # wx-4.0.7
+-->
 
 
 It is highly recommended, if you want to program with wxPython to download and
@@ -95,6 +92,11 @@ Unit tests
 Unit tests are in `utest` directory. They can be executed with::
 
   invoke test
+
+or, to have coverage report:
+
+  invoke test-ci
+
 
 There is also a shell script (requiring customization for your environment).
 It allows to run the test files stopping when errors are found.
@@ -169,10 +171,9 @@ Creating distributions
 
       invoke clean
 
-3. Create and validate source distribution in zip format and universal (i.e.
-   Python 2 and 3 compatible) `wheel <http://pythonwheels.com>`_::
+3. Create and validate source distribution and `wheel <http://pythonwheels.com>`_::
 
-      python setup.py sdist --formats zip bdist_wheel --universal
+      python -m build
       ls -l dist
       twine check dist/*
 
@@ -190,7 +191,7 @@ Creating distributions
       pip install --pre --upgrade robotframework-ride
 
 
-* Announce on usergroup, robot homepage, forum, slack, and twitter
+* Announce on usergroup, robot homepage, forum, slack, and LinkedIn
 
 
 Settings migration
