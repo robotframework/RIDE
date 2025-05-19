@@ -171,7 +171,9 @@ def devel(ctx, args=''):
     _ = ctx
     _set_development_path()
     from robotide import main
-    main(*args.split(','))
+    main(*args)
+    # from robotide import __main__
+    # __main__(*args) 
 
 
 @task

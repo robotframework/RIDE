@@ -15,13 +15,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
-
-if __name__ == '__main__' and 'robotide' not in sys.modules:
-    from pathlib import Path
-    robotide_dir = Path(__file__).absolute().parent  # zipsafe
-    sys.path = [str(robotide_dir.parent)] + [p for p in sys.path if Path(p) != robotide_dir]
-
 from robotide import main
 
-main(*sys.argv[1:])
+main()
