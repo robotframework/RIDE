@@ -33,7 +33,7 @@ jobs:
         run: |
              git submodule update --init --recursive
              pip install -r requirements-dev.txt
-             pip install --force -U setuptools==69.5.1
+             pip install --force -U setuptools==78.1.1
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE

@@ -92,7 +92,7 @@ jobs:
       run: |
         git submodule update --init --recursive
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10
         killall xvfb-run
       
@@ -118,7 +118,7 @@ jobs:
         pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
         pip install -r requirements-dev.txt
         pip install robotframework
-        pip install --force -U setuptools==69.5.1
+        pip install --force -U setuptools==78.1.1
     - name: Run tests
       run: |
         Xvfb &
@@ -138,6 +138,6 @@ jobs:
       run: |
         git submodule update --init --recursive
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10
         killall xvfb-run

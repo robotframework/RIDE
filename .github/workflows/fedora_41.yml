@@ -104,7 +104,7 @@ jobs:
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10
         killall xvfb-run
  
