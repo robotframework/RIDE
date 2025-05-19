@@ -18,6 +18,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 when selecting in Tree shows the filename in StatusBar.
 
 === Changed
+- Changed arguments parser to allow ``--version`` and ``--help`` functional in Windows
 - Improved auto-complete in Grid Editor, to allow several matches
 - Changed some informative dialogs and JSON Editor to use the customized colors.
 - Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.
