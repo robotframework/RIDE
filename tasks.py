@@ -170,8 +170,10 @@ def devel(ctx, args=''):
     """Start development version of RIDE."""
     _ = ctx
     _set_development_path()
-    from robotide import main
-    main(*args.split(','))
+    # from robotide import mainrun
+    # mainrun(*args)
+    from robotide import __main__
+    __main__(*args) 
 
 
 @task
