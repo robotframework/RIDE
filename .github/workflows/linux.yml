@@ -60,7 +60,7 @@ on:
 jobs:
   fedora:
     name: Fedora py313
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
       image: fedora:41
@@ -98,7 +98,7 @@ jobs:
       
   debian:
     name: Debian
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     if: ${{ !contains(github.ref, '/fedora/') }}
@@ -113,9 +113,8 @@ jobs:
     - name: Setup environment
       run: |
         sudo apt update -y
-        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
+        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4 wxpython-tools
         git submodule update --init --recursive
-        pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
         pip install -r requirements-dev.txt
         pip install robotframework
     - name: Run tests
