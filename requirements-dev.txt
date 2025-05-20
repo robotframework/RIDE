@@ -1,4 +1,4 @@
-setuptools>=70.0.0
+setuptools>=78.1.1
 build
 mockito
 invoke
@@ -12,6 +12,7 @@ pytest
 coverage
 pytest-cov
 pytest-order
+packaging >= 24.2
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
 # Include also normal project requirements.
