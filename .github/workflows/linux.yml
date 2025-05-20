@@ -137,7 +137,7 @@ jobs:
       run: |
         git submodule update --init --recursive
         pip install -r requirements-dev.txt
-        pip install robotfamework
+        pip install robotframework
         pip install .
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10

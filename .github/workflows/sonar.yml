@@ -33,14 +33,14 @@ jobs:
         run: |
              git submodule update --init --recursive
              pip install -r requirements-dev.txt
-             pip install robotfamework
+             pip install robotframework
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
         run: |
              git submodule update --init --recursive
              pip install -r requirements-dev.txt
-             pip install robotfamework
+             pip install robotframework
              pip install .
       - name: Run RIDE unit-tests
         run: |
