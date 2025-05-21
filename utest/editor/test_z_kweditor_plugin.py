@@ -212,6 +212,7 @@ class MyApp(RIDE):
         if hasattr(self, 'file_settings'):
             os.remove(self.file_settings)
         self.ExitMainLoop()
+        return 0
 
 
 class KeywordEditorTest(unittest.TestCase):
@@ -254,7 +255,7 @@ class KeywordEditorTest(unittest.TestCase):
                 self._grid.kweditor.write_cell(ridx, cidx, cdata, update_history=False)
         """
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
         self.SHOWING = True
         self.frame.Center()
         # wx.CallLater(1000, self.app.MainLoop)
@@ -320,18 +321,19 @@ class KeywordEditorTest(unittest.TestCase):
     """
 
     def test_show(self):
-        self.setup_data()
+        # self.setup_data()
         self.frame.Show()
-        # show = self.frame.Children
-        # print(f"DEBUG: test_show is children={[n.Name for n in show]}")
-        # tabs = self._grid.kweditor.GetParent().GetName()
-        # print(f"DEBUG: test_show Parent Name={tabs}")
+        self.app.tree.select_controller_node(self.test_case)
+        show = self.frame.Children
+        print(f"DEBUG: test_show is children={[n.Name for n in show]}")
+        tabs = self._grid.kweditor.GetParent().GetName()
+        print(f"DEBUG: test_show Parent Name={tabs}")
         self._grid.kweditor.SetFocus()
         show = self._grid.kweditor.has_focus()
         assert show  # is not None
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        self.app.MainLoop()
 
     def test_on_comment_cells(self):
         self.setup_data()
