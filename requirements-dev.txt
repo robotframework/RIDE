@@ -11,6 +11,7 @@ pylint
 pytest
 coverage
 pytest-cov
+pytest-html
 pytest-order
 packaging >= 24.2
 # To make a relase you need asciidoc3 (a2x3)
