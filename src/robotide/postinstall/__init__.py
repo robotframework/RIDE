@@ -122,6 +122,8 @@ class MessageDialog(RIDEDialog):
         if no_default:
             flags |= wx.NO_DEFAULT
         buttons = self.CreateStdDialogButtonSizer(flags)
+        if not no_default:
+            buttons.SetAffirmativeButton(buttons.GetItemById(wx.OK))
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         for item in self.GetChildren():
@@ -223,7 +225,7 @@ def _create_desktop_shortcut_linux(frame=None):
                 roboticon = join("FIXME: find correct path to: .../site-packages/", "robotide", "widgets", ROBOT_ICO)
         with open(link, "w+") as shortcut:
             shortcut.write(f"#!/usr/bin/env xdg-open\n[Desktop Entry]\n"
-                           f"Exec={sys.executable} -m robotide.__init__\n"
+                           f"Exec={sys.executable} -m robotide\n"
                            f"Comment=A Robot Framework IDE\nGenericName=RIDE\n"
                            f"Icon={roboticon}\n"
                            f"Name=RIDE\nStartupNotify=true\nTerminal=false\n"
@@ -248,7 +250,7 @@ def _create_desktop_shortcut_mac(frame=None):
         app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
         with open(app_script, 'w+') as shortcut:
             shortcut.write("#!/bin/sh\nPAL=$PATH\nfor i in `cat /etc/paths`\n    do\n        PAL=\"$PAL:$i\"\n"
-                           "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide.__init__ $* 2>"
+                           "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide $* 2>"
                            " /dev/null &\n".format(sys.executable))
         if exists(ride_app_pc_path):
             shutil.rmtree(ride_app_pc_path, True)
@@ -290,7 +292,7 @@ def _create_desktop_shortcut_windows(frame=None):
         shortcut = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,
                                               pythoncom.CLSCTX_INPROC_SERVER,
                                               shell.IID_IShellLink)
-        command_args = " -c \"from robotide import main; main()\""
+        command_args = " -m robotide "
         shortcut.SetPath(sys.executable.replace('python.exe', 'pythonw.exe'))
         shortcut.SetArguments(command_args)
         shortcut.SetDescription("Robot Framework testdata editor")

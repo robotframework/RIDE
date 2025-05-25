@@ -46,6 +46,26 @@ class TestWxImport(unittest.TestCase):
                 import robotide
                 print(dir(robotide))
 
+    @pytest.mark.order(2)
+    def test_postinstall_wx(self):  # This test passed in PyCharm but not when run in command line
+        with MonkeyPatch().context() as m:
+            with pytest.raises((ImportError, SystemExit)):  # (ImportError, ModuleNotFoundError, SystemExit)):
+                sys.modules.pop('wx.Color', None)
+                builtins.__import__ = myimport
+                import robotide.postinstall
+                from wx import Colour
+                print(dir(robotide.postinstall), dir(Colour))
+
+    @pytest.mark.order(3)
+    def test_fail_verify(self):
+        with MonkeyPatch().context() as m:
+            with pytest.raises(SystemExit):
+                sys.modules.pop('wx.version', None)
+                builtins.__import__ = myimport
+                from robotide.postinstall import verify_install
+                result = verify_install()
+                assert not result
+
 
 builtins.__import__ = real_import
 
