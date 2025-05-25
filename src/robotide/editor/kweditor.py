@@ -15,6 +15,7 @@
 
 import builtins
 import json
+from typing import Iterable
 from json.decoder import JSONDecodeError
 from multiprocessing import shared_memory
 
@@ -194,7 +195,7 @@ class KeywordEditor(GridEditor, Plugin):
         self.col_label_element = None
         if hasattr(self, 'SetupScrolling'):
             self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
-            self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
+            # self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
             print("DEBUG: GridBase init at SELF SetupScrolling\n")
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
@@ -698,7 +699,7 @@ class KeywordEditor(GridEditor, Plugin):
                     data = self._get_main_data(data)
                 self._execute(command_class(self.selection.topleft, data))
 
-    def _get_main_data(self, data: []) -> []:
+    def _get_main_data(self, data: Iterable) -> list:
         main_data = []
         for ldata in data:
             new_data = []

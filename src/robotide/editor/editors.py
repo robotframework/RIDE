@@ -60,7 +60,7 @@ class EditorPanel(wx.lib.scrolledpanel.ScrolledPanel):
         = show_content_assist = lambda self: None
 
     def __init__(self, plugin, parent, controller, tree):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, style=wx.HSCROLL|wx.VSCROLL|wx.ALWAYS_SHOW_SB)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, style=wx.HSCROLL|wx.VSCROLL)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
