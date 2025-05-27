@@ -172,6 +172,7 @@ version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Improved vertical scroll in Grid Editor, by having main scroll bars out of cells.</li> 
 <li>Fixed Create Desktop Shortcut by pointing executable to <b>python -m robotide</b>.</li>
 <li>Changed arguments parser to allow <b>--version</b> and <b>--help</b> functional in Windows.</li>
 <li>Improved auto-complete in Grid Editor, to allow several matches.</li>
@@ -240,7 +241,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 25/May/2025.</p>
+<p>RIDE {VERSION} was released on 28/May/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
