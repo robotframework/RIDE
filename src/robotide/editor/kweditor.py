@@ -92,7 +92,8 @@ class KeywordEditor(GridEditor, Plugin):
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
         GridEditor.__init__(self, parent, len(controller.steps) + 5, max((controller.max_columns + 1), 5),
-                            parent.plugin.grid_popup_creator)
+                                         parent.plugin.grid_popup_creator)
+        self._grid = self.GetGridWindow()
         self._popup_items = ([
                              _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
                              _(INS_ROWS), _(DEL_ROWS), '---',
@@ -193,10 +194,10 @@ class KeywordEditor(GridEditor, Plugin):
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
-        if hasattr(self, 'SetupScrolling'):
-            self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
-            # self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
-            print("DEBUG: GridBase init at SELF SetupScrolling\n")
+        # if hasattr(self, 'SetupScrolling'):
+        #     self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
+        #     # self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
+        #     print("DEBUG: KwEditor init at SELF SetupScrolling\n")
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
