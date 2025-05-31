@@ -97,7 +97,7 @@ Resource          ${RES_PATH}/more_resources/${R"""
         # print(f"DEBUG test_customsourceeditor.py GetSelection from Line 30={result}")
         assert result == (1268, 1287)
         # Uncomment next lines if you want to see the app
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 
 class TestCodeEditorPanel(unittest.TestCase):
@@ -150,6 +150,131 @@ class TestCodeEditorPanel(unittest.TestCase):
         print(f"DEBUG test_customsourceeditor.py modified={modified}")
         # assert not modified
         assert not self.editorpanel.btnSave.IsEnabled()
+        # Uncomment next lines if you want to see the app
+        # self.app.MainLoop()
+
+
+class KeyEvent:
+
+    def __init__(self, keycode, control=False, shift=False):
+        self.keycode = keycode
+        self.control = control
+        self.shift = shift
+
+    def GetKeyCode(self):
+        return self.keycode
+
+    def ControlDown(self):
+        return self.control
+
+    def ShiftDown(self):
+        return self.shift
+
+    def Skip(self):
+        return True
+
+
+class FoldEvent:
+
+    def __init__(self, control=False, shift=False):
+        self.control = control
+        self.shift = shift
+
+    def GetModificationType(self):
+        return 0
+
+    def GetMargin(self):
+        return 2
+
+    def GetShift(self):
+        return self.shift
+
+    def GetControl(self):
+        return self.control
+
+    def GetPosition(self):
+        return 805
+
+
+class TestPythonCodeEditor(unittest.TestCase):
+
+    def setUp(self):
+        self.app = wx.App()
+        self.frame = wx.Frame(None)
+        # Uncomment next line (and MainLoop in tests) if you want to see the app
+        # self.frame.Show()
+
+    def tearDown(self):
+        self.app.ExitMainLoop()
+        self.app.Destroy()
+        self.app = None
+
+    def test_call_python_editor(self):
+        self.frame.SetSize(wx.Rect((900, 800)))
+        wx.CallLater(8000, self.frame.Destroy)
+        wx.CallLater(10000, self.app.ExitMainLoop)
+        # self.panel = wx.Panel(self.frame, size=wx.Size(800, 600))
+        # self.panel.Center()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.read()
+        for style in range(4):
+            self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': style})
+        self.editor.SetSize(wx.Size(800, 600))
+        self.editor.SetValue(content)
+        self.editor.SetEditable(True)
+        self.editor.Fit()
+        self.editor.Clear()
+        modified = self.editor.IsModified()
+        # print(f"DEBUG test_customsourceeditor.py modified={self.editor.IsModified()}")
+        assert modified
+        self.editor.SetValue(content)
+        self.editor.SetEditable(False)
+        self.editor.Fit()
+        self.editor.on_update_ui(None)
+        self.frame.Show()
+        self.frame.Center()
+        self.editor.SetInsertionPoint(600)
+        self.editor.ShowPosition(800)
+        # Uncomment next lines if you want to see the app
+        # self.app.MainLoop()
+
+    def test_other_calls_python_editor(self):
+        self.frame.SetSize(wx.Rect((900, 800)))
+        wx.CallLater(10000, self.app.ExitMainLoop)
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.read()
+        self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': 2})
+        self.editor.SetSize(wx.Size(800, 600))
+        self.editor.SetValue(content)
+        self.editor.SetEditable(True)
+        self.editor.Fit()
+        self.frame.Show()
+        self.frame.Center()
+        self.editor.SetInsertionPoint(600)
+        self.editor.ShowPosition(600)
+        for key in "exit()"[:]:
+            self.editor.on_key_pressed(KeyEvent(ord(key)))
+            # print(f"DEBUG test_customsourceeditor.py on_key_pressed={key} ord(k)={ord(key)}")
+            self.editor.on_update_ui(None)
+        self.editor.SetInsertionPoint(650)
+        self.editor.ShowPosition(650)
+        self.editor.on_key_pressed(KeyEvent(ord(' '), True, True))
+        self.editor.SetInsertionPoint(700)
+        self.editor.ShowPosition(700)
+        for key in "zzzz["[:]:
+            self.editor.on_key_pressed(KeyEvent(ord(key)))
+            self.editor.on_update_ui(None)
+        self.editor.on_key_pressed(KeyEvent(ord(' '), True, False))
+        self.editor.on_margin_click(FoldEvent())
+        self.editor.SetInsertionPoint(800)
+        self.editor.ShowPosition(800)
+        self.editor.on_key_pressed(KeyEvent(ord('+')))
+        self.editor.on_margin_click(FoldEvent(True, True))
+        self.editor.FoldAll()
+        self.editor.Expand(800, False, False, 1)
+        self.editor.Expand(800, True, False, 2, 1)
+        self.editor.Expand(800, False, True, 0, 1)
+        self.editor.Expand(800, True, True, 2, 1)
         # Uncomment next lines if you want to see the app
         self.app.MainLoop()
 
