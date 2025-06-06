@@ -150,7 +150,7 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.2.2. However, 
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.a7 with wxPython 4.2.3).</li>
@@ -172,6 +172,8 @@ version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added keyboard shortcuts <b>Ctrl-Shift-Up</b> and <b>Ctrl-Shift-Down</b> as alternatives to <b>Alt-Up</b> and
+ <b>Alt-Down</b> to move rows in Grid and Text Editors.</li>
 <li>Improved vertical scroll in Grid Editor, by having main scroll bars out of cells.</li> 
 <li>Fixed Create Desktop Shortcut by pointing executable to <b>python -m robotide</b>.</li>
 <li>Changed arguments parser to allow <b>--version</b> and <b>--help</b> functional in Windows.</li>
@@ -241,7 +243,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 28/May/2025.</p>
+<p>RIDE {VERSION} was released on 06/June/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

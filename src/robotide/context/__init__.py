@@ -258,11 +258,11 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Uncomment row(s)</td>
     </tr>
     <tr>
-        <td>Alt-Up</td>
+        <td>Alt-Up or Ctrl-Shift-Up</td>
         <td>Move row(s) up</td>
     </tr>
     <tr>
-        <td>Alt-Down</td>
+        <td>Alt-Down or Ctrl-Shift-Down</td>
         <td>Move row(s) down</td>
     </tr>
     <tr>
@@ -419,11 +419,11 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Make dictionary variable body</td>
     </tr>
     <tr>
-        <td>Alt-Up</td>
+        <td>Alt-Up or Ctrl-Shift-Up</td>
         <td>Move row(s) up</td>
     </tr>
     <tr>
-        <td>Alt-Down</td>
+        <td>Alt-Down or Ctrl-Shift-Down</td>
         <td>Move row(s) down</td>
     </tr>
     <tr>
