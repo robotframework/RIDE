@@ -794,6 +794,11 @@ class KeywordEditor(GridEditor, Plugin):
             self.on_json_editor(event)
         elif keycode == ord('D'):
             self.on_delete_cells()
+        elif keycode in (wx.WXK_UP, wx.WXK_DOWN):
+            if keycode == wx.WXK_UP:
+                self.on_move_rows_up(event)
+            else:
+                self.on_move_rows_down(event)
         """
         elif keycode == ord('3'):
             self._open_cell_editor_and_execute_sharp_comment()
@@ -869,6 +874,11 @@ class KeywordEditor(GridEditor, Plugin):
             else:
                 self._move_cursor_down(event)
             return False  # event must not be skipped in this case
+        elif keycode in (wx.WXK_UP, wx.WXK_DOWN):
+            if keycode == wx.WXK_UP:
+                self.on_move_rows_up(event)
+            else:
+                self.on_move_rows_down(event)
         return True
 
     def on_key_down(self, event):

@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added keyboard shortcuts ``Ctrl-Shift-Up`` and ``Ctrl-Shift-Down`` as alternatives to ``Alt-Up`` and ``Alt-Down`` to move rows in Grid and Text Editors.
 - Added Settings Editor button to Preferences dialog, to edit settings.cfg.
 - Created backup of settings.cfg to allow recovering some settings when broken upgrades.
 - Added current executing keyword and other statuses to TestRunner status bar.
