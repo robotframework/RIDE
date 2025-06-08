@@ -25,7 +25,9 @@ def get_core_plugins():
     from ..parserlog import ParserLogPlugin
     from ..searchtests.searchtests import TestSearchPlugin
     from ..spec.specimporter import SpecImporterPlugin
+    from ..spec.libraryfinder import LibraryFinderPlugin
     from ..postinstall.desktopshortcut import ShortcutPlugin
 
-    return [LogPlugin, RunAnything, RecentFilesPlugin, SpecImporterPlugin, EditorPlugin, TextEditorPlugin,
-            KeywordSearch, TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin, FileExplorerPlugin]
+    return [LogPlugin, RunAnything, RecentFilesPlugin, SpecImporterPlugin, LibraryFinderPlugin, EditorPlugin,
+            TextEditorPlugin, KeywordSearch, TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin,
+            FileExplorerPlugin]

@@ -32,7 +32,7 @@ from .. import utils
 from ..controller import ctrlcommands
 from ..publish import PUBLISHER
 from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
-                                RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
+                                RideVariableAdded, RideVariableUpdated, RideVariableRemoved, RideExecuteLibraryInstall)
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
 
@@ -626,15 +626,33 @@ class ImportSettingListEditor(_AbstractListEditor):
         menu = self._menu
         menu_nt = self._menu_nt
         item = self._controller[self._selection]
-        if item.has_error() and item.type == 'Library':
-            menu = menu[:] + [_('Import Library Spec XML')]
-            menu_nt = menu_nt[:] + ['Import Library Spec XML']
+        if item.type == 'Library':
+            if item.has_error():
+                print(f"DEBUG: settingeditor.py ImportSettingListEditor _create_item_menu ERR item.name={item.name}")
+                menu = menu[:] + [_('Import Library Spec XML'), _('Install Library')]
+                menu_nt = menu_nt[:] + ['Import Library Spec XML', 'Install Library']
+            else:
+                print(f"DEBUG: settingeditor.py ImportSettingListEditor _create_item_menu DOC item.name={item.name}")
+                menu = menu[:] + [_('Open Library Documentation')]
+                menu_nt = menu_nt[:] + ['Open Library Documentation']
         return menu, menu_nt
 
     @staticmethod
     def on_import_library_spec_xml(event):
         __ = event
         RideExecuteSpecXmlImport().publish()
+
+    def on_open_library_documentation(self, event):
+        item = self._controller[self._selection]
+        print(f"DEBUG: settingeditor.py ImportSettingListEditor on_open_library_documentation event={event}"
+              f"\nOpen {item.name} Documentation")
+        wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
+
+    def on_install_library(self, event):
+        item = self._controller[self._selection]
+        print(f"DEBUG: settingeditor.py ImportSettingListEditor on_install_library event={event}"
+              f"\nOpen {item.name} Installer")
+        RideExecuteLibraryInstall(item=item.name).publish()
 
     def on_edit(self, event):
         setting = self._get_setting()

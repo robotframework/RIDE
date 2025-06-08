@@ -1,0 +1,89 @@
+#  Copyright 2025-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+import builtins
+import os
+import shutil
+import wx
+from hgext.histedit import message
+
+from .. import context
+from ..action import ActionInfo
+from ..pluginapi import Plugin
+from ..publish import PUBLISHER, RideExecuteLibraryInstall
+from ..widgets import RIDEDialog
+from .xmlreaders import get_name_from_xml
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+
+class LibraryFinderPlugin(Plugin):
+
+    HEADER = _('Library Finder')
+
+    def enable(self):
+        self.register_action(ActionInfo(_('Tools'), self.HEADER,
+                                        self.execute_library_install, position=84))
+        PUBLISHER.subscribe(self._ps_on_execute_library_install, RideExecuteLibraryInstall)
+
+    def disable(self):
+        self.unsubscribe_all()
+        self.unregister_actions()
+
+    def _ps_on_execute_library_install(self, message):
+        self.execute_library_install(message)
+
+    def execute_library_install(self, message):
+        print(f"DEBUG: libraryfinder.py LibrayFinderPlugin execute_library_install message={message}")
+        """
+        path = self._get_path_to_library_spec()
+        if self._is_valid_path(path):
+            self._store_spec(path)
+            self._execute_namespace_update()
+        """
+
+    def _is_valid_path(self, path):
+        return path and os.path.isfile(path)
+
+    def _execute_namespace_update(self):
+        self.model.update_namespace()
+
+    def _get_path_to_library_spec(self):
+        wildcard = (_('Library Spec XML|*.xml|All Files|*.*'))
+        dlg = wx.FileDialog(self.frame,
+                            message=_('Import Library Spec XML'),
+                            wildcard=wildcard,
+                            defaultDir=self.model.default_dir)  # DEBUG
+        # , style=wx.OPEN)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+        else:
+            path = None
+        dlg.Destroy()
+        return path
+
+    def _store_spec(self, path):
+        name = get_name_from_xml(path)
+        if name:
+            shutil.copy(path, os.path.join(context.LIBRARY_XML_DIRECTORY, name+'.xml'))
+            message_box = RIDEDialog(title=_('Info'),
+                                     message=_('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.')
+                                             % (name, path), style=wx.OK | wx.ICON_INFORMATION)
+            message_box.ShowModal()
+        else:
+            message_box = RIDEDialog(title=_('Import failed'),
+                                     message=_('Could not import library from file "%s"')
+                                             % path, style=wx.OK | wx.ICON_ERROR)
+            message_box.ShowModal()
