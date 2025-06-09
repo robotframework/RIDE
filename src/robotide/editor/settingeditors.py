@@ -31,8 +31,9 @@ from .. import context
 from .. import utils
 from ..controller import ctrlcommands
 from ..publish import PUBLISHER
-from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
-                                RideVariableAdded, RideVariableUpdated, RideVariableRemoved, RideExecuteLibraryInstall)
+from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport,
+                                RideOpenLibraryDocumentation, RideSaving, RideVariableAdded,
+                                RideVariableUpdated, RideVariableRemoved, RideExecuteLibraryInstall)
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
 
@@ -627,7 +628,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         menu_nt = self._menu_nt
         item = self._controller[self._selection]
         if item.type == 'Library':
-            if item.has_error():
+            if item.has_error() and item.name != "Remote":
                 print(f"DEBUG: settingeditor.py ImportSettingListEditor _create_item_menu ERR item.name={item.name}")
                 menu = menu[:] + [_('Import Library Spec XML'), _('Install Library')]
                 menu_nt = menu_nt[:] + ['Import Library Spec XML', 'Install Library']
@@ -646,7 +647,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         item = self._controller[self._selection]
         print(f"DEBUG: settingeditor.py ImportSettingListEditor on_open_library_documentation event={event}"
               f"\nOpen {item.name} Documentation")
-        wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
+        RideOpenLibraryDocumentation(item=item.name).publish()
 
     def on_install_library(self, event):
         item = self._controller[self._selection]
