@@ -215,6 +215,39 @@ class LibraryDialog(_Dialog):
         pass
 
 
+
+class LibraryFinderDialog(_Dialog):
+
+    _history_suggester = HistorySuggester()
+
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Library'):
+        __ = title
+        if title:
+            self._title = title
+        else:
+            self._title = _('Library')
+        self._title_nt = title_nt
+        _Dialog.__init__(self, controller, item=item, plugin=plugin, title=self._title)
+
+    def _get_editors(self, item):
+        name = item and item.name or ''
+        doc_url = item and item.doc_url or ''
+        command = item and item.command or ['']
+        self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
+        return [FileNameEditor(self, name, _('Import Name'), self._controller, suggestion_source=self._suggester),
+                ValueEditor(self, doc_url, _('Keywords Documentation URL')),
+                ListValueEditor(self, command, _('Command'), settings=self.plugin.global_settings)]
+
+    def get_value(self):
+        values = _Dialog.get_value(self)
+        self._history_suggester.store(values[0])
+        return values
+
+    def _execute(self):
+        """ Just ignore it """
+        pass
+
+
 class VariablesDialog(LibraryDialog):
     _title_nt = 'Variables'
 
