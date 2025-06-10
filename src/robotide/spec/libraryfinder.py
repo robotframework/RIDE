@@ -34,6 +34,11 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 
 class LibraryFinderPlugin(Plugin):
+    __doc__ = _("""Install missing libraries and open documentation.
+
+    You can edit settings.cfg to add URL for documentation and command to install. You can right-click and Open
+     Documentation or Install Library.
+    """)
 
     HEADER = _('Library Finder...')
     LIBDOC = _('Open Library Documentation...')
@@ -55,95 +60,83 @@ class LibraryFinderPlugin(Plugin):
         self.open_library_documentation(message)
 
     def open_library_documentation(self, message):
-        print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation message={message}")
+        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation message={message}")
         library_name = None
         if isinstance(message, RideOpenLibraryDocumentation):
             library_name = message.item
-            print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation"
-                  f" library_name={library_name}")
             doc_url = self.find_documentation_url(library_name)
             if doc_url:
                 # Call doc_url execution
-                print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation OPEN DOC:"
-                      f" doc_url={doc_url}")
                 wx.LaunchDefaultBrowser(doc_url)
                 return
         # Call input dialog for doc_url
-        print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation ASK for doc_url:"
-              f" message={message}")
-        original_column = self.global_settings['list variable columns']
-        self.save_setting('list variable columns', 1)
-        value = self.on_library_form(None) if not library_name else library_name
-        self.save_setting('list variable columns', original_column)
+        value = self.on_library_form(name=None if not library_name else library_name)
         if value:
-            print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation ASK for doc_url:"
-                  f" value={value}")
+            # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation ASK for doc_url:"
+            #       f" value={value}")
             doc_url = value[1] or None
             if not doc_url:
-                dlg = wx.TextEntryDialog(self.frame, message=f"Enter the URL for the keywords documentation of {value[0]}", caption="URL for Keywords Documentation")
+                dlg = wx.TextEntryDialog(self.frame, message=f"Enter the URL for the keywords documentation of"
+                                                             f" {value[0]}", caption="URL for Library Documentation")
                 if dlg.ShowModal() == wx.ID_OK:
                     doc_url = dlg.GetValue()
                 dlg.Destroy()
-            if doc_url:  # TODO: Set value in list of known Libraries
+            if doc_url:
                 wx.LaunchDefaultBrowser(doc_url)
+                plugin_section = self.global_settings['Plugins'][self.name]
+                plugin_section.add_section(value[0])
                 self.global_settings['Plugins'][self.name][value[0]]['documentation'] = doc_url
-                self.global_settings['Plugins'][self.name][value[0]]['command'] = value[2]
+                if value[2]:
+                    self.global_settings['Plugins'][self.name][value[0]]['command'] = [value[2]]
 
-
-    def on_library_form(self, event):
-        __ = event
+    def on_library_form(self, name):
         value = None
-        dlg = LibraryFinderDialog(self.get_selected_item(), item=None, plugin=self, title=_('Library'))
+        item = RunnerCommand(name=name, command='', documentation='')
+        dlg = LibraryFinderDialog(self.get_selected_item(), item=item, plugin=self, title=_('Library'))
         if dlg.ShowModal() == wx.ID_OK:
             value = dlg.get_value()
         dlg.Destroy()
         return value
 
     def execute_library_install(self, message):
-        print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install message={message}")
+        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install message={message}")
         library_name = None
         if isinstance(message, RideExecuteLibraryInstall):
             library_name = message.item
-        if not library_name:
-            original_column = self.global_settings['list variable columns']
-            self.save_setting('list variable columns', 1)
-            value = self.on_library_form(None)
-            self.save_setting('list variable columns', original_column)
-            if value:
-                print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install ASK for command:"
-                      f" value={value}")
-                library_name = value[0] or None
-                command = value[2] or None
-                if not command:
-                    dlg = wx.TextEntryDialog(self.frame, message=f"Enter command to install {value[0]}",
-                                             value="%executable -m pip install -U ",
-                                             caption="Command to Install Library")
-                    if dlg.ShowModal() == wx.ID_OK:
-                        command = dlg.GetValue()
-                    dlg.Destroy()
-                if command:
+        value = self.on_library_form(name=library_name)
+        if value:
+            library_name = value[0] or None
+            command = value[2] or None
+            if not command:
+                dlg = wx.TextEntryDialog(self.frame, message=f"Enter command to install {value[0]}",
+                                         value="%executable -m pip install -U ",
+                                         caption="Command to Install Library")
+                if dlg.ShowModal() == wx.ID_OK:
+                    command = dlg.GetValue()
+                dlg.Destroy()
+            if command:
+                plugin_section = self.global_settings['Plugins'][self.name]
+                plugin_section.add_section(value[0])
+                if value[1]:
                     self.global_settings['Plugins'][self.name][value[0]]['documentation'] = value[1]
-                    self.global_settings['Plugins'][self.name][value[0]]['command'] = command
+                self.global_settings['Plugins'][self.name][value[0]]['command'] = [command]
 
-        print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install"
-              f" library_name={library_name}")
         command = self.find_install_command(library_name)
         if command:
             # Call command execution
-            print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install CALL install:"
-                  f" command={command}")
+            # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install CALL install:"
+            #       f" command={command}")
+            self.statusbar_message(f"Library Installer: Starting installing {library_name}", 5)
             result = self.run_install(library_name, command)
             if result:
-                print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install SUCCESS REFRESHING")
+                # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install SUCCESS REFRESHING")
                 self._execute_namespace_update()
                 self.notebook.Refresh()
+                self.statusbar_message(f"Library Installer: Success installing {library_name}", 5)
                 return
             else:
-                print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install FAILED TO INSTALL")
-        # Call input dialog for install command
-        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install ASK for command to  install:"
-        #       f" message={message}")
-        # self._execute_namespace_update()
+                # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install FAILED TO INSTALL")
+                self.statusbar_message(f"Library Installer: Failed to install {library_name}", 5)
 
     def find_install_command(self, name):
         try:
@@ -151,9 +144,8 @@ class LibraryFinderPlugin(Plugin):
         except Exception:
             plug = None
         if plug:
-            print(f"DEBUG: libraryfinder.py LibrayFinderPlugin find_install_command FOUND name={name} plug={plug}")
+            # print(f"DEBUG: libraryfinder.py LibrayFinderPlugin find_install_command FOUND name={name} plug={plug}")
             try:
-                print(f"DEBUG: libraryfinder.py LibrayFinderPlugin find_install_command COMMAND plug={plug['command']}")
                 return self.parse_command(plug['command'])
             except Exception:
                 pass
@@ -164,22 +156,20 @@ class LibraryFinderPlugin(Plugin):
             executable = self.global_settings['executable']
         except Exception:
             executable = sys.executable
-        print(f"DEBUG: libraryfinder.py LibrayFinderPlugin parse_command executable={executable}")
+        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin parse_command executable={executable}")
         parsed = []
         for cmd in command:
             parsed.append(cmd.replace('%executable', executable))
         return parsed
 
     def run_install(self, library_name, command):
-        # print("DEBUG: Here will be the installation step.") # DEBUG 'pip list'
         from ..run import ui
         result = -1
         for cmd in command:
             config = RunnerCommand(f'Installing {library_name}', cmd, f'Run command: {cmd}')
-            # PUBLISHER.subscribe(completed_install, RideRunnerStopped)
             result = ui.Runner(config, self.notebook).run()
         if result == -1:
-            print("DEBUG: libraryfinder.py LibrayFinderPlugin run_install FAILED")
+            # print("DEBUG: libraryfinder.py LibraryFinderPlugin run_install FAILED")
             return False
         return True
 
@@ -190,7 +180,6 @@ class LibraryFinderPlugin(Plugin):
             plug = None
         if plug:
             try:
-                print(f"DEBUG: libraryfinder.py LibraryFinderPlugin find_install_command DOC plug={plug['documentation']}")
                 return plug['documentation']
             except Exception:
                 pass
@@ -206,50 +195,14 @@ class LibraryFinderPlugin(Plugin):
         # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin find_install_command DOC lib_names={std_lib_names}")
         return False
 
-    def _is_valid_path(self, path):
-        return path and os.path.isfile(path)
-
     def _execute_namespace_update(self):
         self.model.update_namespace()
-
-    def _get_path_to_library_spec(self):
-        wildcard = (_('Library Spec XML|*.xml|All Files|*.*'))
-        dlg = wx.FileDialog(self.frame,
-                            message=_('Import Library Spec XML'),
-                            wildcard=wildcard,
-                            defaultDir=self.model.default_dir)  # DEBUG
-        # , style=wx.OPEN)
-        if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.GetPath()
-        else:
-            path = None
-        dlg.Destroy()
-        return path
-
-    def _store_spec(self, path):
-        name = get_name_from_xml(path)
-        if name:
-            shutil.copy(path, os.path.join(context.LIBRARY_XML_DIRECTORY, name+'.xml'))
-            message_box = RIDEDialog(title=_('Info'),
-                                     message=_('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.')
-                                             % (name, path), style=wx.OK | wx.ICON_INFORMATION)
-            message_box.ShowModal()
-        else:
-            message_box = RIDEDialog(title=_('Import failed'),
-                                     message=_('Could not import library from file "%s"')
-                                             % path, style=wx.OK | wx.ICON_ERROR)
-            message_box.ShowModal()
-
-
-def completed_install():
-    print("DEBUG: libraryfinder.py LibrayFinderPlugin completed_install ENTER")
-    wx.CallAfter(wx.App.Get().GetTopWindow().Refresh)
-    PUBLISHER.unsubscribe(completed_install, RideRunnerStopped)
 
 
 @dataclass
 class RunnerCommand:
-    def __init__(self, name, command, documentation):
+    def __init__(self, name, command, documentation, comment=None):
         self.name = name
         self.command = command
         self.documentation = documentation
+        self.comment = comment if comment else ['']
