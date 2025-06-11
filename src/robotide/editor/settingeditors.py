@@ -628,14 +628,11 @@ class ImportSettingListEditor(_AbstractListEditor):
         menu_nt = self._menu_nt
         item = self._controller[self._selection]
         if item.type == 'Library':
+            menu = menu[:] + [_('Open Library Documentation')]
+            menu_nt = menu_nt[:] + ['Open Library Documentation']
             if item.has_error() and item.name != "Remote":
-                print(f"DEBUG: settingeditor.py ImportSettingListEditor _create_item_menu ERR item.name={item.name}")
                 menu = menu[:] + [_('Import Library Spec XML'), _('Install Library')]
                 menu_nt = menu_nt[:] + ['Import Library Spec XML', 'Install Library']
-            else:
-                print(f"DEBUG: settingeditor.py ImportSettingListEditor _create_item_menu DOC item.name={item.name}")
-                menu = menu[:] + [_('Open Library Documentation')]
-                menu_nt = menu_nt[:] + ['Open Library Documentation']
         return menu, menu_nt
 
     @staticmethod
@@ -645,14 +642,10 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def on_open_library_documentation(self, event):
         item = self._controller[self._selection]
-        print(f"DEBUG: settingeditor.py ImportSettingListEditor on_open_library_documentation event={event}"
-              f"\nOpen {item.name} Documentation")
         RideOpenLibraryDocumentation(item=item.name).publish()
 
     def on_install_library(self, event):
         item = self._controller[self._selection]
-        print(f"DEBUG: settingeditor.py ImportSettingListEditor on_install_library event={event}"
-              f"\nOpen {item.name} Installer")
         RideExecuteLibraryInstall(item=item.name).publish()
 
     def on_edit(self, event):

@@ -13,21 +13,16 @@
 #  limitations under the License.
 
 import builtins
-import os
-import shutil
 import sys
 
 import wx
 from dataclasses import dataclass
 
-from .. import context
 from ..action import ActionInfo
 from ..editor.editordialogs import LibraryFinderDialog
-from ..namespace.cache import LibraryCache
 from ..pluginapi import Plugin
 from ..publish import PUBLISHER, RideExecuteLibraryInstall, RideRunnerStopped, RideOpenLibraryDocumentation
 from ..widgets import RIDEDialog
-from .xmlreaders import get_name_from_xml
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -36,8 +31,10 @@ builtins.__dict__['_'] = wx.GetTranslation
 class LibraryFinderPlugin(Plugin):
     __doc__ = _("""Install missing libraries and open documentation.
 
-    You can edit settings.cfg to add URL for documentation and command to install. You can right-click and Open
-     Documentation or Install Library.
+    You can edit settings.cfg to add URL for documentation and command to install.
+    You can right-click on a Library name, and Open Documentation or Install Library.
+    From Tools->Library Finder... or Help->Open Library Documentation... you will have
+    a dialog to fill the command to install or the URL for the documentation.
     """)
 
     HEADER = _('Library Finder...')
@@ -78,9 +75,12 @@ class LibraryFinderPlugin(Plugin):
             if not doc_url:
                 dlg = wx.TextEntryDialog(self.frame, message=f"Enter the URL for the keywords documentation of"
                                                              f" {value[0]}", caption="URL for Library Documentation")
-                if dlg.ShowModal() == wx.ID_OK:
+                result = dlg.ShowModal()
+                if result == wx.ID_OK:
                     doc_url = dlg.GetValue()
                 dlg.Destroy()
+                if result != wx.ID_OK:
+                    return
             if doc_url:
                 wx.LaunchDefaultBrowser(doc_url)
                 plugin_section = self.global_settings['Plugins'][self.name]
@@ -93,9 +93,12 @@ class LibraryFinderPlugin(Plugin):
         value = None
         item = RunnerCommand(name=name, command='', documentation='')
         dlg = LibraryFinderDialog(self.get_selected_item(), item=item, plugin=self, title=_('Library'))
-        if dlg.ShowModal() == wx.ID_OK:
+        result = dlg.ShowModal()
+        if result == wx.ID_OK:
             value = dlg.get_value()
         dlg.Destroy()
+        if result != wx.ID_OK:
+            return False
         return value
 
     def execute_library_install(self, message):
@@ -111,9 +114,12 @@ class LibraryFinderPlugin(Plugin):
                 dlg = wx.TextEntryDialog(self.frame, message=f"Enter command to install {value[0]}",
                                          value="%executable -m pip install -U ",
                                          caption="Command to Install Library")
-                if dlg.ShowModal() == wx.ID_OK:
+                result = dlg.ShowModal()
+                if result == wx.ID_OK:
                     command = dlg.GetValue()
                 dlg.Destroy()
+                if result != wx.ID_OK:
+                    return False
             if command:
                 plugin_section = self.global_settings['Plugins'][self.name]
                 plugin_section.add_section(value[0])
@@ -126,17 +132,17 @@ class LibraryFinderPlugin(Plugin):
             # Call command execution
             # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install CALL install:"
             #       f" command={command}")
-            self.statusbar_message(f"Library Installer: Starting installing {library_name}", 5)
+            self.statusbar_message(f"Library Installer: Starting installing {library_name}", 5000)
             result = self.run_install(library_name, command)
             if result:
                 # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install SUCCESS REFRESHING")
                 self._execute_namespace_update()
                 self.notebook.Refresh()
-                self.statusbar_message(f"Library Installer: Success installing {library_name}", 5)
+                self.statusbar_message(f"Library Installer: Success installing {library_name}", 5000)
                 return
             else:
                 # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install FAILED TO INSTALL")
-                self.statusbar_message(f"Library Installer: Failed to install {library_name}", 5)
+                self.statusbar_message(f"Library Installer: Failed to install {library_name}", 5000)
 
     def find_install_command(self, name):
         try:

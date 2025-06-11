@@ -234,9 +234,9 @@ class LibraryFinderDialog(_Dialog):
         name = item and item.name or ''
         doc_url = item and item.documentation or ''
         command = item and item.command or ''
-        self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
+        self._suggester = LibrariesSuggester(self._controller, self._library_suggester)
         return [FileNameEditor(self, name, _('Import Name'), self._controller,
-                               suggestion_source=self._library_suggester),
+                               suggestion_source=self._suggester),
                 ValueEditor(self, doc_url, _('Library Documentation URL')),
                 ValueEditor(self, command, _('Command'))]
 

@@ -73,10 +73,13 @@ class LibraryManager(Thread):
     def _handle_fetch_keywords_message(self, message):
         _, library_name, library_args, callback = message
         keywords = self._fetch_keywords(library_name, library_args)
-        self._update_database_and_call_callback_if_needed(
-            (library_name, library_args), keywords, callback)
+        self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
 
     def _fetch_keywords(self, library_name, library_args):
+        if library_name in ("DataDriver", "Remote"):  # Known libraries without keywords
+            msg = 'Library "%s" does not contain keywords' % library_name
+            RideLogMessage(message=msg, level='INFO').publish()
+            return []
         try:
             doc_paths = os.getenv('RIDE_DOC_PATH')
             collection = []
@@ -103,8 +106,7 @@ class LibraryManager(Thread):
             kws = self._spec_initializer.init_from_spec(library_name)
             if not kws:
                 msg = 'Importing test library "%s" failed' % library_name
-                RideLogException(
-                    message=msg, exception=err, level='WARN').publish()
+                RideLogException(message=msg, exception=err, level='WARN').publish()
             return kws
 
     def _handle_insert_keywords_message(self, message):
