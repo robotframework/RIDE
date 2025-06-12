@@ -220,7 +220,7 @@ class LibraryFinderDialog(_Dialog):
 
     _history_suggester = HistorySuggester()
 
-    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Library'):
+    def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Library Finder'):
         __ = title
         if title:
             self._title = title

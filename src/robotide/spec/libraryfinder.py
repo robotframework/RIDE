@@ -92,7 +92,7 @@ class LibraryFinderPlugin(Plugin):
     def on_library_form(self, name):
         value = None
         item = RunnerCommand(name=name, command='', documentation='')
-        dlg = LibraryFinderDialog(self.get_selected_item(), item=item, plugin=self, title=_('Library'))
+        dlg = LibraryFinderDialog(self.get_selected_item(), item=item, plugin=self, title=_('Library Finder'))
         result = dlg.ShowModal()
         if result == wx.ID_OK:
             value = dlg.get_value()
