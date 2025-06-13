@@ -237,13 +237,14 @@ def reset_shortcut():
     if exists(link):
         os.remove(link)
 
+@pytest.mark.skipif(sys.platform != 'linux', reason="Test only for Linux")
 class CreateShortcut(unittest.TestCase):
 
     # def setUp(self):
     #     reset_shortcut()
 
     def tearDown(self):
-        reset_shortcut()
+      reset_shortcut()
 
     def test_call_create_shortcut_no_frame(self):
         from robotide.postinstall import caller
