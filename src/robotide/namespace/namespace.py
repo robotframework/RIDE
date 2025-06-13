@@ -46,7 +46,7 @@ class Namespace(object):
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
-        print(f"DEBUG: namespace.py Namespace _init_caches {self.settings}")
+        # print(f"DEBUG: namespace.py Namespace _init_caches {self.settings}")
         self._lib_cache = LibraryCache(
             self.settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self.settings)

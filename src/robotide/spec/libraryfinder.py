@@ -57,7 +57,6 @@ class LibraryFinderPlugin(Plugin):
         self.open_library_documentation(message)
 
     def open_library_documentation(self, message):
-        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation message={message}")
         library_name = None
         if isinstance(message, RideOpenLibraryDocumentation):
             library_name = message.item
@@ -68,13 +67,13 @@ class LibraryFinderPlugin(Plugin):
                 return
         # Call input dialog for doc_url
         value = self.on_library_form(name=None if not library_name else library_name)
-        if value:
-            # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin open_library_documentation ASK for doc_url:"
-            #       f" value={value}")
+        if isinstance(value, list):
             doc_url = value[1] or None
             if not doc_url:
-                dlg = wx.TextEntryDialog(self.frame, message=f"Enter the URL for the keywords documentation of"
-                                                             f" {value[0]}", caption="URL for Library Documentation")
+                doc_url = self.find_documentation_url(value[0])
+                dlg = wx.TextEntryDialog(self.frame,
+                                         message=f"Enter the URL for the keywords documentation of {value[0]}",
+                                         value=doc_url, caption="URL for Library Documentation")
                 result = dlg.ShowModal()
                 if result == wx.ID_OK:
                     doc_url = dlg.GetValue()
@@ -87,32 +86,44 @@ class LibraryFinderPlugin(Plugin):
                 plugin_section.add_section(value[0])
                 self.global_settings['Plugins'][self.name][value[0]]['documentation'] = doc_url
                 if value[2]:
-                    self.global_settings['Plugins'][self.name][value[0]]['command'] = [value[2]]
+                    command = value[2]
+                    if isinstance(command, str):
+                        lst_command = command.split('|')
+                    else:
+                        lst_command = command
+                    self.global_settings['Plugins'][self.name][value[0]]['command'] = lst_command
 
     def on_library_form(self, name):
         value = None
-        item = RunnerCommand(name=name, command='', documentation='')
+        doc_url = command = ''
+        if name:
+            doc_url = self.find_documentation_url(name)
+            command = self.find_install_command(name)
+        item = RunnerCommand(name=name, command=command, documentation=doc_url)
         dlg = LibraryFinderDialog(self.get_selected_item(), item=item, plugin=self, title=_('Library Finder'))
         result = dlg.ShowModal()
+        wx.CallAfter(dlg.Destroy)
         if result == wx.ID_OK:
-            value = dlg.get_value()
-        dlg.Destroy()
-        if result != wx.ID_OK:
-            return False
-        return value
+            return dlg.get_value()
+        else:
+            return -1
 
     def execute_library_install(self, message):
-        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install message={message}")
         library_name = None
         if isinstance(message, RideExecuteLibraryInstall):
             library_name = message.item
         value = self.on_library_form(name=library_name)
-        if value:
+        if value == -1:
+            return None
+        if isinstance(value, list):
             library_name = value[0] or None
             command = value[2] or None
-            if not command:
+            if library_name and not command:
+                command = self.find_install_command(library_name)
+                if command:
+                    command = " | ".join(command).strip(" |")
                 dlg = wx.TextEntryDialog(self.frame, message=f"Enter command to install {value[0]}",
-                                         value="%executable -m pip install -U ",
+                                         value=command or "%executable -m pip install -U ",
                                          caption="Command to Install Library")
                 result = dlg.ShowModal()
                 if result == wx.ID_OK:
@@ -120,29 +131,29 @@ class LibraryFinderPlugin(Plugin):
                 dlg.Destroy()
                 if result != wx.ID_OK:
                     return False
-            if command:
+            if isinstance(command, str):
+                lst_command = command.split('|')
+            else:
+                lst_command = command
+            if lst_command:
                 plugin_section = self.global_settings['Plugins'][self.name]
                 plugin_section.add_section(value[0])
                 if value[1]:
                     self.global_settings['Plugins'][self.name][value[0]]['documentation'] = value[1]
-                self.global_settings['Plugins'][self.name][value[0]]['command'] = [command]
+                self.global_settings['Plugins'][self.name][value[0]]['command'] = lst_command
 
         command = self.find_install_command(library_name)
         if command:
             # Call command execution
-            # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install CALL install:"
-            #       f" command={command}")
             self.statusbar_message(f"Library Installer: Starting installing {library_name}", 5000)
-            result = self.run_install(library_name, command)
+            result = self.run_install(library_name, self.parse_command(command))
             if result:
-                # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install SUCCESS REFRESHING")
                 self._execute_namespace_update()
                 self.notebook.Refresh()
                 self.statusbar_message(f"Library Installer: Success installing {library_name}", 5000)
-                return
             else:
-                # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin execute_library_install FAILED TO INSTALL")
                 self.statusbar_message(f"Library Installer: Failed to install {library_name}", 5000)
+        return None
 
     def find_install_command(self, name):
         try:
@@ -150,19 +161,17 @@ class LibraryFinderPlugin(Plugin):
         except Exception:
             plug = None
         if plug:
-            # print(f"DEBUG: libraryfinder.py LibrayFinderPlugin find_install_command FOUND name={name} plug={plug}")
             try:
-                return self.parse_command(plug['command'])
+                return plug['command']
             except Exception:
                 pass
-        return False
+        return []
 
     def parse_command(self, command: list) -> list:
         try:
             executable = self.global_settings['executable']
         except Exception:
             executable = sys.executable
-        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin parse_command executable={executable}")
         parsed = []
         for cmd in command:
             parsed.append(cmd.replace('%executable', executable))
@@ -171,11 +180,10 @@ class LibraryFinderPlugin(Plugin):
     def run_install(self, library_name, command):
         from ..run import ui
         result = -1
-        for cmd in command:
+        for cmd in command:  # TODO: Run commands sequentially, or wait for completion in order
             config = RunnerCommand(f'Installing {library_name}', cmd, f'Run command: {cmd}')
             result = ui.Runner(config, self.notebook).run()
         if result == -1:
-            # print("DEBUG: libraryfinder.py LibraryFinderPlugin run_install FAILED")
             return False
         return True
 
@@ -191,15 +199,12 @@ class LibraryFinderPlugin(Plugin):
                 pass
         # Standard Library?
         from robot.libraries import STDLIBS
-        # std_lib_names = wx.App.Get().namespace._lib_cache._default_libraries
-        # lib_names = wx.App.Get().namespace.get_all_cached_library_names()
         std_lib_names = [ x for x in STDLIBS]
         if name in std_lib_names:
             if name == "Remote":
                 return "https://github.com/robotframework/RemoteInterface"
             return f"https://robotframework.org/robotframework/latest/libraries/{name}.html"
-        # print(f"DEBUG: libraryfinder.py LibraryFinderPlugin find_install_command DOC lib_names={std_lib_names}")
-        return False
+        return ''
 
     def _execute_namespace_update(self):
         self.model.update_namespace()
@@ -207,8 +212,7 @@ class LibraryFinderPlugin(Plugin):
 
 @dataclass
 class RunnerCommand:
-    def __init__(self, name, command, documentation, comment=None):
+    def __init__(self, name, command, documentation):
         self.name = name
         self.command = command
         self.documentation = documentation
-        self.comment = comment if comment else ['']
