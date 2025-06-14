@@ -21,8 +21,7 @@ from dataclasses import dataclass
 from ..action import ActionInfo
 from ..editor.editordialogs import LibraryFinderDialog
 from ..pluginapi import Plugin
-from ..publish import PUBLISHER, RideExecuteLibraryInstall, RideRunnerStopped, RideOpenLibraryDocumentation
-from ..widgets import RIDEDialog
+from ..publish import PUBLISHER, RideExecuteLibraryInstall, RideOpenLibraryDocumentation
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -41,8 +40,10 @@ class LibraryFinderPlugin(Plugin):
     LIBDOC = _('Open Library Documentation...')
 
     def enable(self):
-        self.register_action(ActionInfo(_('Tools'), self.HEADER, self.execute_library_install))
-        self.register_action(ActionInfo(_('Help'), self.LIBDOC, self.open_library_documentation))
+        self.register_action(ActionInfo(_('Tools'), self.HEADER, self.execute_library_install,
+                                        doc=_('Prepare Info to Install Libraries')))
+        self.register_action(ActionInfo(_('Help'), self.LIBDOC, self.open_library_documentation,
+                                        doc=_('Prepare Info to Open Documentation of Libraries')))
         PUBLISHER.subscribe(self._ps_on_execute_library_install, RideExecuteLibraryInstall)
         PUBLISHER.subscribe(self._ps_on_open_library_documentation, RideOpenLibraryDocumentation)
 
@@ -64,7 +65,7 @@ class LibraryFinderPlugin(Plugin):
             if doc_url:
                 # Call doc_url execution
                 wx.LaunchDefaultBrowser(doc_url)
-                return
+                return None
         # Call input dialog for doc_url
         value = self.on_library_form(name=None if not library_name else library_name)
         if isinstance(value, list):
@@ -79,9 +80,11 @@ class LibraryFinderPlugin(Plugin):
                     doc_url = dlg.GetValue()
                 dlg.Destroy()
                 if result != wx.ID_OK:
-                    return
+                    return None
             if doc_url:
                 wx.LaunchDefaultBrowser(doc_url)
+                if self._is_std_library(value[0]):
+                    return None
                 plugin_section = self.global_settings['Plugins'][self.name]
                 plugin_section.add_section(value[0])
                 self.global_settings['Plugins'][self.name][value[0]]['documentation'] = doc_url
@@ -92,6 +95,7 @@ class LibraryFinderPlugin(Plugin):
                     else:
                         lst_command = command
                     self.global_settings['Plugins'][self.name][value[0]]['command'] = lst_command
+        return None
 
     def on_library_form(self, name):
         value = None
@@ -118,8 +122,11 @@ class LibraryFinderPlugin(Plugin):
         if isinstance(value, list):
             library_name = value[0] or None
             command = value[2] or None
-            if library_name and not command:
-                command = self.find_install_command(library_name)
+            if library_name:
+                if self._is_std_library(library_name):
+                    return None
+                if not command:
+                    command = self.find_install_command(library_name)
                 if command:
                     command = " | ".join(command).strip(" |")
                 dlg = wx.TextEntryDialog(self.frame, message=f"Enter command to install {value[0]}",
@@ -197,14 +204,18 @@ class LibraryFinderPlugin(Plugin):
                 return plug['documentation']
             except Exception:
                 pass
-        # Standard Library?
-        from robot.libraries import STDLIBS
-        std_lib_names = [ x for x in STDLIBS]
-        if name in std_lib_names:
+        if self._is_std_library(name):
             if name == "Remote":
                 return "https://github.com/robotframework/RemoteInterface"
             return f"https://robotframework.org/robotframework/latest/libraries/{name}.html"
         return ''
+
+    @staticmethod
+    def _is_std_library(name: str) -> bool:
+        # Standard Library?
+        from robot.libraries import STDLIBS
+        std_lib_names = [x for x in STDLIBS]
+        return name in std_lib_names
 
     def _execute_namespace_update(self):
         self.model.update_namespace()

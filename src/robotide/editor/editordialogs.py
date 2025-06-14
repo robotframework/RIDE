@@ -239,9 +239,9 @@ class LibraryFinderDialog(_Dialog):
         else:
             str_command = command
         self._suggester = LibrariesSuggester(self._controller, self._library_suggester)
-        return [FileNameEditor(self, name, _('Import Name'), self._controller,
+        return [FileNameEditor(self, name, _('Name'), self._controller,
                                suggestion_source=self._suggester),
-                ValueEditor(self, doc_url, _('Library Documentation URL')),
+                ValueEditor(self, doc_url, _('Documentation')),
                 ValueEditor(self, str_command, _('Command'))]
 
     def _add_comment_editor(self, item):
