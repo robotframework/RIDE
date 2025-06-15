@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-06-06 00:59+0100\n"
+"POT-Creation-Date: 2025-06-16 00:40+0100\n"
 "PO-Revision-Date: 2024-10-13 00:56\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
@@ -24,6 +24,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:45
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
 msgid "Help"
@@ -228,10 +229,10 @@ msgid "Select Logs Directory"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:501
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:492
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:496
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:637
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:535
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:539
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:680
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
 msgid "Arguments"
 msgstr ""
 
@@ -291,6 +292,7 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:85
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:53
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:41
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:43
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:53
@@ -560,8 +562,8 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:109
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:645
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:110
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:657
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr ""
@@ -744,172 +746,186 @@ msgid ""
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:51
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
-msgid "Give path and optional arguments of the variable file to import."
+msgid "Give library name, library documentation URL and command to install."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
+msgid ""
+"In the command, you can use `%%executable` as a placeholder to be replaced "
+"by the actual path"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
-msgid "Give path to the resource file to import."
+msgid " to Python executable."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
-msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
-msgid "Give the documentation."
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
-msgid "New resources must be created separately."
+msgid "Give path and optional arguments of the variable file to import."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:57
-msgid "Simple formatting like *bold* and _italic_ can be used."
+msgid "Give path to the resource file to import."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:58
-msgid "Additionally, URLs are converted to clickable links."
+msgid "Existing resources will be automatically loaded to the resource tree."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
-msgid "These tags are set to all test cases in this test suite."
+msgid "Give the documentation."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
+msgid "New resources must be created separately."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:60
+msgid "Simple formatting like *bold* and _italic_ can be used."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:61
+msgid "Additionally, URLs are converted to clickable links."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:62
+msgid "These tags are set to all test cases in this test suite."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:64
 msgid ""
 "These tags are set to all test cases in this test suite unless test cases "
 "have their own tags."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
 msgid ""
 "These tags are applied to all test cases in this test suite. This field "
 "exists since Robot Framework 6.0 and will replace Force and Default Tags "
 "after version 7.0."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:67
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
 msgid ""
 "These tags are set to this test case in addition to Force Tags and they "
 "override possible Default Tags."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:73
 msgid ""
 "This keyword is executed before executing any of the test cases or lower "
 "level suites."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:72
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
 msgid ""
 "This keyword is executed after all test cases and lower level suites have "
 "been executed."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:74
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
 msgid ""
 "This keyword is executed before every test case in this suite unless test "
 "cases override it."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:76
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
 msgid ""
 "This keyword is executed after every test case in this suite unless test "
 "cases override it."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:78
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
 msgid ""
 "This keyword is executed before other keywords in this test case or keyword."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:80
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:84
 msgid ""
 "This keyword is executed after other keywords in this test case or keyword "
 "even if the test or keyword fails."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:85
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
 msgid ""
 "The test cases will contain only data to use as arguments to that keyword."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:87
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
 msgid ""
 "The test itself will contain only data to use as arguments to that keyword."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
 msgid ""
 "Specify the return value. Use a pipe character to separate multiple values."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:96
 msgid ""
 "Maximum time test cases in this suite are allowed to execute before aborting "
 "them forcefully."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:94
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:95
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:98
 msgid ""
 "Maximum time this test/keyword is allowed to execute before aborting it "
 "forcefully."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:96
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:99
 msgid ""
 "With test cases this setting overrides Test Timeout set on the suite level."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:97
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:98
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:101
 msgid "Give a name for the new test case."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:99
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:102
 msgid "Give a name and arguments for the new user keyword."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:100
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:103
 msgid "Give a name for the new user keyword."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:81
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:725
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:737
 msgid "Comment"
 msgstr ""
 
@@ -921,10 +937,11 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:159
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:179
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:205
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:557
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:580
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:605
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:635
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:242
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:600
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:623
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:648
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:678
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:92
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:94
@@ -936,9 +953,9 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:140
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:160
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:180
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:558
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:725
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:601
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:737
 msgid "Value"
 msgstr ""
 
@@ -951,8 +968,9 @@ msgid "Dictionary Variable"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:196
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:652
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:227
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:664
 msgid "Library"
 msgstr ""
 
@@ -961,76 +979,82 @@ msgid "Alias"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:206
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:232
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:275
 msgid "Args"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:225
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:667
-msgid "Variables"
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:231
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:249
-msgid "Path"
-msgstr ""
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:244
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:659
-msgid "Resource"
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:262
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:305
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:350
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:245
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
+msgid "Command"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:268
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:679
+msgid "Variables"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:274
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:292
+msgid "Path"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:287
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
+msgid "Resource"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:393
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:378
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:421
 msgid "Suite Setup is run before any tests"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:437
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:480
 msgid "Setup"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:451
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:494
 msgid "Teardown"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:465
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:508
 msgid "Template"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:525
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:568
 msgid "Test Timeout"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:539
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:582
 msgid "Timeout"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:552
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:725
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:595
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:737
 msgid "Metadata"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:614
 msgid "New Test Case"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:596
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:639
 msgid "Copy User Keyword"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:625
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:668
 msgid "New User Keyword"
 msgstr ""
 
@@ -1235,50 +1259,58 @@ msgstr ""
 msgid "Move Down\tCtrl-Down"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:101
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:102
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
 msgid "Variable"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:486
 msgid "Add Dict"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:486
 msgid "Add List"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:486
 msgid "Add Scalar"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
 msgid "Import"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
 msgid "Name / Path"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
 msgid "Import Failed Help"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:587
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:588
 msgid "Add Import"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:630
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:631
+msgid "Open Library Documentation"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
+msgid "Install Library"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:34
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:673
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:685
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -1302,11 +1334,11 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:673
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:685
 msgid "Import failure handling"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:726
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:738
 msgid "Add Metadata"
 msgstr ""
 
@@ -1843,10 +1875,6 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
-msgid "Command"
-msgstr ""
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
 msgid ""
 "A plugin for executing commands on the system.\n"
@@ -1937,6 +1965,41 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:31
+msgid ""
+"Install missing libraries and open documentation.\n"
+"\n"
+"    You can edit settings.cfg to add URL for documentation and command to "
+"install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install "
+"Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you "
+"will have\n"
+"    a dialog to fill the command to install or the URL for the "
+"documentation.\n"
+"    "
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:39
+msgid "Library Finder..."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:40
+msgid "Open Library Documentation..."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:44
+msgid "Prepare Info to Install Libraries"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:46
+msgid "Prepare Info to Open Documentation of Libraries"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:106
+msgid "Library Finder"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:61
