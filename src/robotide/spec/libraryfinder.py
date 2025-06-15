@@ -98,7 +98,6 @@ class LibraryFinderPlugin(Plugin):
         return None
 
     def on_library_form(self, name):
-        value = None
         doc_url = command = ''
         if name:
             doc_url = self.find_documentation_url(name)
@@ -121,13 +120,16 @@ class LibraryFinderPlugin(Plugin):
             return None
         if isinstance(value, list):
             library_name = value[0] or None
-            command = value[2] or None
+            try:
+                command = value[2]
+            except IndexError:
+                command = None
             if library_name:
                 if self._is_std_library(library_name):
                     return None
                 if not command:
                     command = self.find_install_command(library_name)
-                if command:
+                if command and isinstance(command, list):
                     command = " | ".join(command).strip(" |")
                 dlg = wx.TextEntryDialog(self.frame, message=f"Enter command to install {value[0]}",
                                          value=command or "%executable -m pip install -U ",
@@ -138,16 +140,18 @@ class LibraryFinderPlugin(Plugin):
                 dlg.Destroy()
                 if result != wx.ID_OK:
                     return False
+            else:
+                return False
             if isinstance(command, str):
                 lst_command = command.split('|')
             else:
                 lst_command = command
             if lst_command:
                 plugin_section = self.global_settings['Plugins'][self.name]
-                plugin_section.add_section(value[0])
+                plugin_section.add_section(library_name)
                 if value[1]:
-                    self.global_settings['Plugins'][self.name][value[0]]['documentation'] = value[1]
-                self.global_settings['Plugins'][self.name][value[0]]['command'] = lst_command
+                    self.global_settings['Plugins'][self.name][library_name]['documentation'] = value[1]
+                self.global_settings['Plugins'][self.name][library_name]['command'] = lst_command
 
         command = self.find_install_command(library_name)
         if command:
@@ -163,6 +167,8 @@ class LibraryFinderPlugin(Plugin):
         return None
 
     def find_install_command(self, name):
+        if not name:
+            return []
         try:
             plug = self.global_settings['Plugins'][self.name][name]
         except Exception:
@@ -185,6 +191,8 @@ class LibraryFinderPlugin(Plugin):
         return parsed
 
     def run_install(self, library_name, command):
+        if not library_name or not command:
+            return False
         from ..run import ui
         result = -1
         for cmd in command:  # TODO: Run commands sequentially, or wait for completion in order
