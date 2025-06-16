@@ -24,7 +24,7 @@ from robotide.controller.ctrlcommands import AddKeyword, RemoveMacro, Undo,\
     AddTestCase, add_keyword_from_cells, RenameTest
 from robotide.publish import PUBLISHER
 
-from controller.base_command_test import testcase_controller
+from controller.base_command_test import _testcase_controller
 
 
 class _TestMacroCommands(object):
@@ -141,7 +141,7 @@ class TestMacroCommandsInTestCaseContext(_TestMacroCommands,
 
     def setUp(self):
         _TestMacroCommands.setUp(self)
-        self._ctrl = testcase_controller()
+        self._ctrl = _testcase_controller()
 
     def _bdd_name(self, prefix, name):
         return name
@@ -161,7 +161,7 @@ class TestMacroCommandsInDataFileContext(_TestMacroCommands,
 class TestCaseRenameCommandTest(unittest.TestCase):
 
     def setUp(self):
-        self.ctrl = testcase_controller()
+        self.ctrl = _testcase_controller()
         PUBLISHER.subscribe(self._test_renamed, RideItemNameChanged)
 
     def tearDown(self):

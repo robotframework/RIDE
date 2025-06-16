@@ -9,6 +9,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added Tools->Library Finder... to install libraries and Help->Open Library Documentation... . They share the same dialog, and definitions are recorded in ``settings.cfg``.
+- Added context menu to install libraries and to open documentation in Grid Editor Import section. Same as above description.
 - Added keyboard shortcuts ``Ctrl-Shift-Up`` and ``Ctrl-Shift-Down`` as alternatives to ``Alt-Up`` and ``Alt-Down`` to move rows in Grid and Text Editors.
 - Added Settings Editor button to Preferences dialog, to edit settings.cfg.
 - Created backup of settings.cfg to allow recovering some settings when broken upgrades.

@@ -28,7 +28,7 @@ SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
 from robotide.editor.tags import TagsDisplay
-from controller.controller_creator import testcase_controller as tc
+from controller.controller_creator import _testcase_controller as tc
 from robotide.controller.tags import Tag
 
 

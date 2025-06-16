@@ -70,7 +70,7 @@ def create(data):
     return tcf
 
 
-def testcase_controller(project=None, data=None):
+def _testcase_controller(project=None, data=None):
     if data is None:
         data = BASE_DATA[:]
     base_directory_controller = TestDataDirectoryController(

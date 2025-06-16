@@ -27,15 +27,15 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 try:
-    from controller_creator import testcase_controller
+    from controller_creator import _testcase_controller
 except ModuleNotFoundError:
-    from .controller_creator import testcase_controller
+    from .controller_creator import _testcase_controller
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self._test = testcase_controller()
+        self._test = _testcase_controller()
 
     @property
     def tags(self):

@@ -173,6 +173,16 @@ class RideExecuteSpecXmlImport(RideMessage):
     """Sent whenever spec xml import is requested"""
 
 
+class RideExecuteLibraryInstall(RideMessage):
+    """Sent whenever an installation of library to import is requested"""
+    data = ['item']
+
+
+class RideOpenLibraryDocumentation(RideMessage):
+    """Sent whenever the library documentation is requested"""
+    data = ['item']
+
+
 class RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'silent']

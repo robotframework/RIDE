@@ -31,8 +31,9 @@ from .. import context
 from .. import utils
 from ..controller import ctrlcommands
 from ..publish import PUBLISHER
-from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
-                                RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
+from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport,
+                                RideOpenLibraryDocumentation, RideSaving, RideVariableAdded,
+                                RideVariableUpdated, RideVariableRemoved, RideExecuteLibraryInstall)
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
 
@@ -626,15 +627,26 @@ class ImportSettingListEditor(_AbstractListEditor):
         menu = self._menu
         menu_nt = self._menu_nt
         item = self._controller[self._selection]
-        if item.has_error() and item.type == 'Library':
-            menu = menu[:] + [_('Import Library Spec XML')]
-            menu_nt = menu_nt[:] + ['Import Library Spec XML']
+        if item.type == 'Library':
+            menu = menu[:] + [_('Open Library Documentation')]
+            menu_nt = menu_nt[:] + ['Open Library Documentation']
+            if item.has_error() and item.name != "Remote":
+                menu = menu[:] + [_('Import Library Spec XML'), _('Install Library')]
+                menu_nt = menu_nt[:] + ['Import Library Spec XML', 'Install Library']
         return menu, menu_nt
 
     @staticmethod
     def on_import_library_spec_xml(event):
         __ = event
         RideExecuteSpecXmlImport().publish()
+
+    def on_open_library_documentation(self, event):
+        item = self._controller[self._selection]
+        RideOpenLibraryDocumentation(item=item.name).publish()
+
+    def on_install_library(self, event):
+        item = self._controller[self._selection]
+        RideExecuteLibraryInstall(item=item.name).publish()
 
     def on_edit(self, event):
         setting = self._get_setting()

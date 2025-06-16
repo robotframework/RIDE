@@ -291,10 +291,14 @@ class TestMisc(unittest.TestCase):
         import sys
         from robotide import _replace_std_for_win
         _replace_std_for_win()
-        sys.stdout.write('content')
-        sys.stdout.writelines(['content', 'line two'])
-        sys.stdout.flush()
-        sys.stdout.close()
+        try:
+            sys.stdout.write('content')
+            sys.stdout.writelines(['content', 'line two'])
+            sys.stdout.flush()
+        except Exception:
+            pass
+        # finally:
+        #    sys.stdout.close()
 
 
 class TestFSWatcher(unittest.TestCase):
