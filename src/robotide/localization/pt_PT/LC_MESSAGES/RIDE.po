@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2025-06-16 00:40+0100\n"
-"PO-Revision-Date: 2025-06-06 01:10+0100\n"
+"PO-Revision-Date: 2025-06-16 01:43+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -823,16 +823,20 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
 msgstr ""
+"Indique o nome da biblioteca, o link para a documentação e o comando para "
+"instalar."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
 msgid ""
 "In the command, you can use `%%executable` as a placeholder to be replaced "
 "by the actual path"
 msgstr ""
+"No comando, você pode usar `%%executable` como indicador do local que será "
+"substituído pelo caminho atual"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
-msgstr ""
+msgstr " para o executável do Python."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
@@ -1210,11 +1214,11 @@ msgstr "Apagar Células\tCtrl-Shift-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr "Inserir Células\tCtrl-Shift-4"
+msgstr "Inserir Células\tCtrl-Shift-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
 msgid "Copy\tCtrl-C"
-msgstr "Copiar\tCtrl-Shift-C"
+msgstr "Copiar\tCtrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
 msgid "Cut\tCtrl-X"
@@ -1426,14 +1430,12 @@ msgid "Add Import"
 msgstr "Adicionar Importação"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:631
-#, fuzzy
 msgid "Open Library Documentation"
-msgstr "Procurar na documentação"
+msgstr "Abrir Documentação de Biblioteca"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
-#, fuzzy
 msgid "Install Library"
-msgstr "Biblioteca"
+msgstr "Instalar Biblioteca"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:34
@@ -2197,28 +2199,37 @@ msgid ""
 "documentation.\n"
 "    "
 msgstr ""
+"Instala as bibliotecas em falta e abre a documentação.\n"
+"\n"
+"    Você pode editar settings.cfg para acrescentar o URL para a documentação "
+"e o comando para instalar.\n"
+"    Você pode clicar com o botão direito sobre o nome da Biblioteca, e Abrir "
+"Documentação ou Instalar Biblioteca.\n"
+"    A partir de Ferramentas->Procurar Biblioteca... ou Ajuda->Abrir "
+"Documentação de Biblioteca...você tem\n"
+"    um diálogo para preencher o comando de instalação ou o link para a "
+"documentação.\n"
+"    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr ""
+msgstr "Procurar Biblioteca..."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:40
-#, fuzzy
 msgid "Open Library Documentation..."
-msgstr "Procurar na documentação"
+msgstr "Abrir Documentação de Biblioteca..."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
-msgstr ""
+msgstr "Preparar Info para Instalar Bibliotecas"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
-msgstr ""
+msgstr "Preparar Info para Abrir Documentação de Bibliotecas"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:106
-#, fuzzy
 msgid "Library Finder"
-msgstr "Biblioteca"
+msgstr "Procurar Biblioteca"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
