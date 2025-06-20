@@ -61,7 +61,6 @@ jobs:
   fedora:
     name: Fedora py313
     runs-on: ubuntu-22.04
-    if: ${{ !contains(github.ref, '/debian/') }}
     container:
       image: fedora:41
       options: --privileged
@@ -88,41 +87,6 @@ jobs:
         export GITHUB_ACTIONS=True
         git submodule update --init --recursive
         invoke test-ci
-    - name: Install and run
-      run: |
-        git submodule update --init --recursive
-        pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
-        sleep 10
-        killall xvfb-run
-      
-  debian:
-    name: Debian
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    if: ${{ !contains(github.ref, '/fedora/') }}
-    steps:
-    - uses: actions/checkout@v3.3.0
-      with:
-        submodules: false
-    - name: Fetch tags
-      run: |
-        git fetch --prune --depth=1 --recurse-submodules
-        git submodule update --init --recursive
-    - name: Setup environment
-      run: |
-        sudo apt update -y
-        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4 wxpython-tools
-        git submodule update --init --recursive
-        pip install -r requirements-dev.txt
-        pip install robotframework
-    - name: Run tests
-      run: |
-        Xvfb &
-        export DISPLAY=:0
-        git submodule update --init --recursive
-        invoke test-ci
     - uses: actions/upload-artifact@v4
       with:
         name: coverage-report
@@ -132,12 +96,14 @@ jobs:
           .coverage.2
           .coverage-reports/coverage.xml
           .coverage-reports/htmlcov
-    - name: Install and run
+    - name: Create Package
       run: |
         git submodule update --init --recursive
         pip install -r requirements-dev.txt
-        pip install robotframework
-        pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
-        sleep 10
-        killall xvfb-run
+        python -m build
+    - uses: actions/upload-artifact@v4
+      with:
+        name: package
+        include-hidden-files: true
+        path: |
+          dist/*

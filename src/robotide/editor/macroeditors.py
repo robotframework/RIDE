@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from ..publish.messages import RideItemNameChanged
@@ -20,6 +21,8 @@ from ..usages.UsageRunner import Usages
 from .editors import _RobotTableEditor, FindUsagesHeader
 from .kweditor import KeywordEditor
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 class TestCaseEditor(_RobotTableEditor):
     __test__ = False
@@ -121,8 +124,12 @@ class UserKeywordEditor(TestCaseEditor):
     _settings_open_id = 'user keyword settings open'
 
     def _create_header(self, text, readonly=False):
+        if readonly:
+            text += _(' (READ ONLY)')
+
         def cb(event):
             __ = event
             Usages(self.controller, self._tree.highlight).show()
-        return FindUsagesHeader(self, text, cb, color_foreground=self.color_secondary_foreground,
+        self._title_display = FindUsagesHeader(self, text, cb, color_foreground=self.color_secondary_foreground,
                                 color_background=self.color_secondary_background)
+        return self._title_display

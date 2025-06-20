@@ -58,7 +58,11 @@ class LibraryCache(object):
         return self.__default_kws
 
     def get_all_cached_library_names(self):
-        return [name for name, _ in self._library_keywords]
+        all_libraries = self.get_user_libraries() + [name for name, _ in self._library_keywords]
+        ordered = set(sorted(all_libraries))
+        all_libraries = list(ordered)
+        # print(f"DEBUG: cache.py LibraryCache get_all_cached_library_names  user_libraries={all_libraries}")
+        return all_libraries
 
     def _get_library(self, name, args):
         library_database = \
@@ -227,6 +231,18 @@ class LibraryCache(object):
             name, args = self._get_name_and_args(libsetting)
             default_libs[name] = self._get_library(name, args)
         return default_libs
+
+    def get_user_libraries(self):
+        """ Obtain the libraries defined in settings.cfg to allow showing in completion lists """
+        try:
+            plug = self._settings['Plugins']['Library Finder']
+        except KeyError:
+            plug = []
+        user_lib = []
+        for lib in plug:
+            if not lib.startswith('_'):
+                user_lib.append(lib)
+        return user_lib
 
     @staticmethod
     def _get_name_and_args(libsetting):

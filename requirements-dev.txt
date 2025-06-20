@@ -1,16 +1,19 @@
-setuptools>=70.0.0
+setuptools>=78.1.1
+build
 mockito
 invoke
 urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
-requests>=2.32.3
+requests>=2.32.4
 github3.py
 memory-profiler
 pylint
 pytest
 coverage
 pytest-cov
+pytest-html
 pytest-order
+packaging >= 24.2
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
 # Include also normal project requirements.

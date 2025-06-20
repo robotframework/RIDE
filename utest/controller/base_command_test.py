@@ -32,9 +32,9 @@ SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
 try:
-    from controller_creator import _FakeProject, testcase_controller, BASE_DATA
+    from controller_creator import _FakeProject, _testcase_controller, BASE_DATA
 except ModuleNotFoundError:
-    from .controller_creator import _FakeProject, testcase_controller, BASE_DATA
+    from .controller_creator import _FakeProject, _testcase_controller, BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):
@@ -43,7 +43,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def setUp(self):
         self._data = self._create_data()
-        self._ctrl = testcase_controller(self, data=self._data)
+        self._ctrl = _testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._steps = self._ctrl.steps

@@ -14,9 +14,10 @@
 #  limitations under the License.
 
 import unittest
+import pytest
 import robotide
 
-
+@pytest.mark.skip("Not applicable, because RIDE now uses argparser.")
 class ArgumentParsingTestCase(unittest.TestCase):
 
     def test_no_args(self):

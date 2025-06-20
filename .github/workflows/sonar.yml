@@ -8,7 +8,7 @@ on:
 jobs:
   sonarcloud:
     name: SonarCloud
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -16,7 +16,7 @@ jobs:
       - name: Update ubuntu
         run: sudo apt update -y
       - name: Install missing library
-        run: sudo apt-get install libnotify4 libsdl1.2debian libsdl2.2 -y
+        run: sudo apt-get install libnotify4 libsdl1.2debian libsdl2.2 wxpython-tools -y
       - name: Install xorg
         run: sudo apt-get install -y xorg openbox
       - name: Install Xvfb
@@ -27,18 +27,18 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install invoke and any other packages
         run: pip install coverage invoke pytest
-      - name: Install wxPython
-        run: pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
       - name: Install RIDE dependencies
         run: |
              git submodule update --init --recursive
              pip install -r requirements-dev.txt
-             pip install --force -U setuptools==69.5.1
+             pip install robotframework
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
         run: |
              git submodule update --init --recursive
+             pip install -r requirements-dev.txt
+             pip install robotframework
              pip install .
       - name: Run RIDE unit-tests
         run: |

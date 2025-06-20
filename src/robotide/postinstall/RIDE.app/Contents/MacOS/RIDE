@@ -6,4 +6,4 @@ for i in `cat /etc/paths`
     done
 PATH=$PAL
 export $PATH
-/usr/bin/python3 -m robotide.__init__ $* 2> /dev/null &
+/usr/bin/python3 -m robotide $* 2> /dev/null &

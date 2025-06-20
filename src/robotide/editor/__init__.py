@@ -45,8 +45,8 @@ def get_menudata():
     edit_13 = _("Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n")
     edit_14 = _("Insert Rows | Insert Rows | Ctrlcmd-I\n")
     edit_15 = _("Delete Rows | Delete Rows | Ctrlcmd-D\n")
-    edit_16 = _("Move Rows Up | Move Rows Up | Alt-Up\n")
-    edit_17 = _("Move Rows Down | Move Rows Down | Alt-Down\n")
+    edit_16 = _("Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n")
+    edit_17 = _("Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n")
     tools_0 = _("[Tools]\n")
     tools_1 = _("Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions"
                 " | | | POSITION-70\n")
@@ -75,8 +75,8 @@ Insert Cells | Insert Cells | Ctrlcmd-Shift-I
 Delete Cells | Delete Cells | Ctrlcmd-Shift-D
 Insert Rows | Insert Rows | Ctrlcmd-I
 Delete Rows | Delete Rows | Ctrlcmd-D
-Move Rows Up | Move Rows Up | Alt-Up
-Move Rows Down | Move Rows Down | Alt-Down
+Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up
+Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down
 [Tools]
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
 """
@@ -193,10 +193,10 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         self._create_editor()
 
 
-class _EditorTab(wx.Panel):
+class _EditorTab(wx.ScrolledWindow):
 
     def __init__(self, plugin):
-        wx.Panel.__init__(self, plugin.notebook, style=wx.SUNKEN_BORDER)
+        wx.ScrolledWindow.__init__(self, plugin.notebook, style=wx.SUNKEN_BORDER)
         self.plugin = plugin
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)

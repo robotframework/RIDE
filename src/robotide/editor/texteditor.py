@@ -1843,6 +1843,13 @@ class SourceEditor(wx.Panel):
                 self.indent_block()
             self.mark_file_dirty(self.source_editor.GetModify())
             return
+        elif (((event.ControlDown() and event.ShiftDown()) or event.AltDown()) and
+              event.GetKeyCode() in (wx.WXK_UP, wx.WXK_DOWN)):
+            if event.GetKeyCode() == wx.WXK_UP:
+                self.on_move_rows_up(event)
+            else:
+                self.on_move_rows_down(event)
+            return
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:

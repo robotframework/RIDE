@@ -60,7 +60,7 @@ class EditorPanel(wx.lib.scrolledpanel.ScrolledPanel):
         = show_content_assist = lambda self: None
 
     def __init__(self, plugin, parent, controller, tree):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, style=wx.HSCROLL|wx.VSCROLL|wx.ALWAYS_SHOW_SB)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, style=wx.HSCROLL|wx.VSCROLL)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
@@ -98,6 +98,7 @@ class _RobotTableEditor(EditorPanel):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.Bind(wx.EVT_IDLE, self.on_idle)
         self.SetSizer(self.sizer)
+        self.SetupScrolling()
         if self.title:
             self.sizer.Add(self._create_header(self.title),
                            0, wx.EXPAND | wx.ALL, 6)
@@ -189,8 +190,10 @@ class _RobotTableEditor(EditorPanel):
     def _collabsible_changed(self, event=None):
         self._store_settings_open_status()
         self.GetSizer().Layout()
+        self.EnableScrolling(True, True)
         self.Refresh()
         self.Parent.GetSizer().Layout()
+        self.Parent.EnableScrolling(True, True)
         self.Parent.Refresh()
         if event:
             event.Skip()

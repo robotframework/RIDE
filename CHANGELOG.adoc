@@ -9,6 +9,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added Tools->Library Finder... to install libraries and Help->Open Library Documentation... . They share the same dialog, and definitions are recorded in ``settings.cfg``.
+- Added context menu to install libraries and to open documentation in Grid Editor Import section. Same as above description.
+- Added keyboard shortcuts ``Ctrl-Shift-Up`` and ``Ctrl-Shift-Down`` as alternatives to ``Alt-Up`` and ``Alt-Down`` to move rows in Grid and Text Editors.
 - Added Settings Editor button to Preferences dialog, to edit settings.cfg.
 - Created backup of settings.cfg to allow recovering some settings when broken upgrades.
 - Added current executing keyword and other statuses to TestRunner status bar.
@@ -18,6 +21,15 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 when selecting in Tree shows the filename in StatusBar.
 
 === Changed
+- Improved vertical scroll in Grid Editor, by having main scroll bars out of cells
+- Changed arguments parser to allow ``--version`` and ``--help`` functional in Windows
+- Improved auto-complete in Grid Editor, to allow several matches
+- Changed some informative dialogs and JSON Editor to use the customized colors.
+- Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.
+- On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.
+
+=== Fixed
+- Fixed Create Desktop Shortcut by pointing executable to ``python -m robotide``.
 - Changed some informative dialogs and JSON Editor to use the customized colors.
 - Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.
 - On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.

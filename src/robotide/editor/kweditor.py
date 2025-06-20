@@ -15,6 +15,7 @@
 
 import builtins
 import json
+from typing import Iterable
 from json.decoder import JSONDecodeError
 from multiprocessing import shared_memory
 
@@ -91,7 +92,8 @@ class KeywordEditor(GridEditor, Plugin):
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
         GridEditor.__init__(self, parent, len(controller.steps) + 5, max((controller.max_columns + 1), 5),
-                            parent.plugin.grid_popup_creator)
+                                         parent.plugin.grid_popup_creator)
+        self._grid = self.GetGridWindow()
         self._popup_items = ([
                              _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
                              _(INS_ROWS), _(DEL_ROWS), '---',
@@ -192,10 +194,10 @@ class KeywordEditor(GridEditor, Plugin):
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
-        if hasattr(self, 'SetupScrolling'):
-            self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
-            self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
-            print("DEBUG: GridBase init at SELF SetupScrolling\n")
+        # if hasattr(self, 'SetupScrolling'):
+        #     self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
+        #     # self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
+        #     print("DEBUG: KwEditor init at SELF SetupScrolling\n")
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -698,7 +700,7 @@ class KeywordEditor(GridEditor, Plugin):
                     data = self._get_main_data(data)
                 self._execute(command_class(self.selection.topleft, data))
 
-    def _get_main_data(self, data: []) -> []:
+    def _get_main_data(self, data: Iterable) -> list:
         main_data = []
         for ldata in data:
             new_data = []
@@ -792,6 +794,12 @@ class KeywordEditor(GridEditor, Plugin):
             self.on_json_editor(event)
         elif keycode == ord('D'):
             self.on_delete_cells()
+        elif keycode in (wx.WXK_UP, wx.WXK_DOWN):
+            if keycode == wx.WXK_UP:
+                self.on_move_rows_up(event)
+            else:
+                self.on_move_rows_down(event)
+                return False
         """
         elif keycode == ord('3'):
             self._open_cell_editor_and_execute_sharp_comment()
@@ -867,6 +875,11 @@ class KeywordEditor(GridEditor, Plugin):
             else:
                 self._move_cursor_down(event)
             return False  # event must not be skipped in this case
+        elif keycode in (wx.WXK_UP, wx.WXK_DOWN):
+            if keycode == wx.WXK_UP:
+                self.on_move_rows_up(event)
+            else:
+                self.on_move_rows_down(event)
         return True
 
     def on_key_down(self, event):

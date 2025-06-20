@@ -20,7 +20,7 @@
 	<key>CFBundleExecutable</key>
 	<string>RIDE</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.0b2, (c) 2016- Robot Framework Foundation.</string>
+	<string>2.1.4, (c) 2016- Robot Framework Foundation.</string>
 	<key>CFBundleHelpBookFolder</key>
 	<array>
 		<string>Documentation</string>
@@ -37,17 +37,17 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLongVersionString</key>
-	<string>2.0b2, (c) 2016- Robot Framework Foundation.</string>
+	<string>2.1.4, (c) 2016- Robot Framework Foundation.</string>
 	<key>CFBundleName</key>
 	<string>RIDE</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0b2</string>
+	<string>2.1.4</string>
 	<key>CFBundleSignature</key>
 	<string>RIDE</string>
 	<key>CFBundleVersion</key>
-	<string>2.0b2</string>
+	<string>2.1.4</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>LSRequiresCarbon</key>
