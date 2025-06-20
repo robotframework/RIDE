@@ -799,6 +799,7 @@ class KeywordEditor(GridEditor, Plugin):
                 self.on_move_rows_up(event)
             else:
                 self.on_move_rows_down(event)
+                return False
         """
         elif keycode == ord('3'):
             self._open_cell_editor_and_execute_sharp_comment()
