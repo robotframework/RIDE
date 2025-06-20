@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2025-06-16 00:40+0100\n"
-"PO-Revision-Date: 2024-10-13 03:08\n"
+"PO-Revision-Date: 2025-06-20 16:57\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
-"Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,12 +15,15 @@ msgstr ""
 "X-Crowdin-Language: fi\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"Language: fi_FI\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:353
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:358
 msgid "Found Robot Framework version %s from %s."
 msgstr "Löydetty Robot Framework versio %s lähettäjältä %s."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:45
@@ -30,148 +32,171 @@ msgstr "Löydetty Robot Framework versio %s lähettäjältä %s."
 msgid "Help"
 msgstr "Ohje"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
 msgstr "Julkaisutiedot"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
 msgstr "Näytä julkaisutiedot"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
 msgstr "Offline-tilan muutosloki"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
 msgstr "Näytä Offline-tilan muutosloki"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
 msgstr "Tarkista Online-versio osoitteesta "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
 msgstr "Avaa RIDE uudelleen kielen vaihtamiseksi"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr "Kielen muutos tulee voimaan vasta RIDE:n uudelleen avaamisen jälkeen."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:203
 msgid "Do you want to CLOSE RIDE now?"
 msgstr "Haluatko sulkea RIDE:n nyt?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
 msgstr "Kielimuutos on valmis"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:202
 msgid "You should close this RIDE (Process ID = "
 msgstr "Sinun täytyy sulkea tämä RIDE (Prosess ID = "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
 msgid "New development version is available."
 msgstr "Uusi kehitysversio on saatavilla."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
 msgid "Upgrade?"
 msgstr "Päivitä?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
 msgstr "Voit asentaa version %s kanssa:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
 msgstr "Klikkaa OK päivittääksesi nyt!"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Päivityksen jälkeen avautuu informaatioikkuna, joka kehoittaa sulkemaan "
-"tämän RIDE istunnon."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Päivityksen jälkeen avautuu informaatioikkuna, joka kehoittaa sulkemaan tämän RIDE istunnon."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
 msgstr "Ei Päivitystä Saatavilla"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:126
 msgid "You have the latest version of RIDE."
 msgstr "Sinulla on uusin versio RIDE:sta."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:127
 msgid "              Have a nice day :)"
 msgstr "              Mukavaa päivää :)"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:172
 msgid "An error occurred when installing new version"
 msgstr "Uuden version asentamisessa tapahtui virhe"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:172
 msgid "Failed to Upgrade"
 msgstr "Päivitys epäonnistui"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:202
 msgid "Completed Upgrade"
 msgstr "Päivitys suoritettu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:228
 msgid "Update available"
 msgstr "Päivitys saatavilla"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:236
 msgid " available from "
 msgstr " saatavilla alkaen "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:236
 msgid "New version "
 msgstr "Uusi versio "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:237
 msgid "See this version "
 msgstr "Katso tämä versio "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:239
 msgid "You can update with the command:"
 msgstr "Voit päivittää käyttäen komentoa:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
 msgstr "Tai, klikkaa <b>Päivitä Nyt</b>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
 msgstr "Katso viimeisin kehitys "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"Käytän toista menetelmää RIDE:n päivittämiseen enkä tarvitse automaattisia "
-"päivitystarkistuksia."
+msgstr "Käytän toista menetelmää RIDE:n päivittämiseen enkä tarvitse automaattisia päivitystarkistuksia."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:252
 msgid "remind me later"
 msgstr "muistuta minua myöhemmin"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:258
 msgid "Upgrade Now"
 msgstr "Päivitä Nyt"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
-"Aloitettu RIDE %s käyttäen python versiota %s ,wx version  %s kanssa %s:ssa."
+msgstr "Aloitettu RIDE %s käyttäen python versiota %s ,wx version  %s kanssa %s:ssa."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
@@ -198,46 +223,44 @@ msgid "Some of the icons are from %s."
 msgstr "Jotkut kuvakkeet on lainattu sivustolta %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s projektin ylläpitäjä kiittää alkuperäisiä tekijöitä sekä kaikkia "
-"käyttäjiä ja yhteistyökumppaneita."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s projektin ylläpitäjä kiittää alkuperäisiä tekijöitä sekä kaikkia käyttäjiä ja yhteistyökumppaneita."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"Erityinen kiitos %s :lle siitä, että hän on sponsoroinut käännettyjen "
-"testisarjojen sisällön yhteensopivuutta %s version 6.1 kanssa, niiden %s "
-"kanssa."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "Erityinen kiitos %s :lle siitä, että hän on sponsoroinut käännettyjen testisarjojen sisällön yhteensopivuutta %s version 6.1 kanssa, niiden %s kanssa."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
 msgstr "Lokin asetukset"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:435
 msgid "Output directory: "
 msgstr "Tulostuskansio: "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:455
 msgid "Add suite name to log names"
 msgstr "Lisää sviitin nimi lokin nimiin"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:458
 msgid "Add timestamp to log names"
 msgstr "Lisää aikaleima lokien nimiin"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:461
 msgid "Save Console and Message logs"
 msgstr "Tallenna konsoli ja viestien lokit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:479
 msgid "Select Logs Directory"
 msgstr "Valitse Lokihakemisto"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:501
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:535
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:539
@@ -246,55 +269,68 @@ msgstr "Valitse Lokihakemisto"
 msgid "Arguments"
 msgstr "Argumentit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:514
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
 msgstr "Argumentit testausta varten. Argumentit ovat välilyöntien erotuslista."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
 msgstr "Ei suorita - help tai version vaihtoehtoa"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Unknown option(s):"
 msgstr "Tuntemattomat vaihtoehdot:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:570
 msgid "Tests filters"
 msgstr "Testaa suodattimia"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:580
 msgid "Only run tests with these tags:"
 msgstr "Suorita testit vain näillä tunnisteilla:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:583
 msgid "Skip tests with these tags:"
 msgstr "Ohita testit näillä tageilla:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:681
 msgid "Script to run tests:"
 msgstr "Komentosarja testien suorittamiseksi:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Stop a running test"
 msgstr "Pysäytä käynnissä oleva testi"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:101
 msgid "Step over"
 msgstr "Askel yli"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:132
 msgid "A plugin for running tests from within RIDE"
 msgstr "Liitännäinen suoritettavien testien suorittamiseen RIDE sisältä"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "Run"
 msgstr "Suorita"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
 msgid "Run Tests"
 msgstr "Suorita Testit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:241
@@ -312,188 +348,223 @@ msgstr "Suorita Testit"
 msgid "Tools"
 msgstr "Työkalut"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:233
 msgid "Run the selected tests"
 msgstr "Suorita valitut testit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 msgid "Run Tests with Debug"
 msgstr "Suorita testit virheenjäljityksen avulla"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests with Debug"
 msgstr "Suorita valitut testit debugilla"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:241
 msgid "Stop Test Run"
 msgstr "Pysäytä Testi Suoritus"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:325
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:329
 msgid "[ SENDING STOP SIGNAL ]\n"
 msgstr "[ STOP SIGNAALIA LÄHETETÄÄN ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:334
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:337
 msgid "[ SENDING PAUSE SIGNAL ]\n"
 msgstr "[ PAUSE SIGNAALIA LÄHETETÄÄN ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:342
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:345
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
 msgstr "[ JATKUVA ALLEKIRJOITUS ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:350
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:353
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr "[ VAIHTOEHTON SEURAAVA SIGNAL ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:358
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:361
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
 msgstr "[ KÄYTTÖOIKEUDELLINEN VAIHTOEHTOINEN ]\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:393
 msgid "command: %s\n"
 msgstr "komento: %s\n"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:463
 msgid "Unsaved Modifications"
 msgstr "Tallentamattomat Muutokset"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:464
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"Muutoksia ei ole tallennettu.\n"
+msgstr "Muutoksia ei ole tallennettu.\n"
 "        Haluatko tallentaa kaikki muutokset ja suorittaa testit?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:474
 msgid "No tests selected"
 msgstr "Testejä ei valittu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:474
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
-msgstr ""
-"Ei valittuja testejä. \n"
+msgstr "Ei valittuja testejä. \n"
 "Jatketaanko silti?"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:551
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "Testi päättynyt {}"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:585
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr "Viestiloki ylitti 80 % prosessin muistista, pysäytti nyt..."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:756
 msgid "Start"
 msgstr "Aloita"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:757
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:760
 msgid "Start robot"
 msgstr "Käynnistä robotti"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:758
 msgid "Start running the robot test suite"
 msgstr "Aloita robottitestiohjelman käynnistäminen"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:759
 msgid "Debug"
 msgstr "Debug"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Aloita robotin testaussviitin käyttö DEBUG-logitasolla"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:763
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Pysäytä"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Pause"
 msgstr "Tauko"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:769
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Pause test execution"
 msgstr "Keskeytä testin suoritus"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Continue"
 msgstr "Jatka"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:775
 msgid "Continue test execution"
 msgstr "Testin suorittamista jatketaan"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:776
 msgid "Next"
 msgstr "Seuraava"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:777
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Step next"
 msgstr "Vaihe seuraava"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:815
 msgid "Execution Profile:  "
 msgstr "Suorituksen Profiili:  "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:818
 msgid "Choose which method to use for running the tests"
 msgstr "Valitse menetelmä, jota käytetään testien suorittamiseen"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:825
 msgid "Open Logs Directory"
 msgstr "Avaa Lokihakemisto"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:827
 msgid "View All Logs in Explorer"
 msgstr "Näytä kaikki lokit Explorerissa"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:828
 msgid " Report"
 msgstr " Raportoi"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Näytä robottiraportti selaimessa (CtrlCmd-R)"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:831
 msgid " Log"
 msgstr " Loki"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:832
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Näytä robottiloki selaimessa (CtrlCmd-L)"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Autosave  "
 msgstr " Autosave  "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "Automatically save all changes before running"
 msgstr "Tallenna kaikki muutokset automaattisesti ennen käynnissä"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:845
 msgid " Pause after failure  "
 msgstr " Pysäytä epäonnistumisen jälkeen  "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:846
 msgid "Automatically pause after failing keyword"
 msgstr "Keskeytä avainsanan epäonnistumisen jälkeen automaattisesti"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:848
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:227
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1091
@@ -502,52 +573,60 @@ msgstr "Keskeytä avainsanan epäonnistumisen jälkeen automaattisesti"
 msgid "Settings"
 msgstr "Asetukset"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:962
 msgid "Console log"
 msgstr "Konsoli loki"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:966
 msgid "Message log"
 msgstr "Viestin loki"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1089
 msgid "Starting test:"
 msgstr "Aloitetaan testi:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
 msgid "Ending test:"
 msgstr "Päättyy testi:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1102
 msgid "UNKNOWN STATUS:"
 msgstr "TUNTEMATON TILA:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1130
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1132
 msgid "<<  PAUSED  >>"
 msgstr "<< PAUSED >>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1137
 msgid "<< CONTINUE >>"
 msgstr "<< JATKUE >>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1139
-#, fuzzy
 msgid "<<  CONTINUE  >>"
-msgstr "<< JATKUE >>"
+msgstr "<<  JATKUE  >>"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1184
 msgid "No logs directory"
 msgstr "Ei lokihakemistoa"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1184
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"Ei ole lokihakemistoa. \n"
+msgstr "Ei ole lokihakemistoa. \n"
 "Ole hyvä ja suorita testit ja yritä uudelleen"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1196
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:649
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:143
@@ -556,34 +635,33 @@ msgstr ""
 msgid "RIDE - Preferences"
 msgstr "RIDE - Asetukset"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1287
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "kulunut aika: %s  salasana: %s  ohitettu: %s  epäonnistui: %s"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1321
 msgid "  current keyword: "
 msgstr "  nykyinen avainsana: "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgid "[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[Navigate]\n"
-"        ! o &Takaisin | Mene takaisin edelliseen paikkaan puussa | Alt-%s | "
-"ART_GO_BACK\n"
-"        ! o &Eteenpäin | Siirry seuraavaan paikkaan puussa | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgstr "[Navigate]\n"
+"        ! o &Takaisin | Mene takaisin edelliseen paikkaan puussa | Alt-%s | ART_GO_BACK\n"
+"        ! o &Eteenpäin | Siirry seuraavaan paikkaan puussa | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
 msgstr "Lisää tunniste valittuun"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
@@ -593,14 +671,17 @@ msgstr "Lisää tunniste valittuun"
 msgid "Edit"
 msgstr "Muokkaa"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
 msgstr "Tyhjennä Valitut"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
 msgstr "Lisää Tagi Valittuun"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
 msgstr "Anna Tagin Nimi"
@@ -647,14 +728,11 @@ msgstr "Kommenttisoluja | Kommenttisolut # | Ctrlcmd-Shift-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
-"Kommentin poisto Rivejä | Poista kommentointi valituista riveistä | "
-"Ctrlcmd-4\n"
+msgstr "Kommentin poisto Rivejä | Poista kommentointi valituista riveistä | Ctrlcmd-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
-"Kommentin poisto Solut | Kommentin poisto ruudulla # | Ctrlcmd-Shift-4\n"
+msgstr "Kommentin poisto Solut | Kommentin poisto ruudulla # | Ctrlcmd-Shift-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
@@ -673,14 +751,12 @@ msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
 msgstr "Poista Rivit | Poista Rivit | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
-#, fuzzy
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr "Siirrä Rivit Ylös | Liikuta Rivit Ylös | Alt-Up\n"
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
-#, fuzzy
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr "Siirrä Rivit Alas | Siirrä Rivit Alas | Alt-Down\n"
+msgstr "Siirrä Rivit alas (Alt-Alas tai Ctrl-Vaihto Alapuolelle), Siirrä Rivit Alas\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -688,23 +764,15 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Näytä mahdolliset "
-"avainsanat ja muuttujan täydennykset | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Näytä mahdolliset avainsanat ja muuttujan täydennykset | | | POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"Oletusmuokkaimen liitännäinen. Tunnetaan myös nimellä Grid tai Cell Editor.\n"
-"\n"
+msgstr "Oletusmuokkaimen liitännäinen. Tunnetaan myös nimellä Grid tai Cell Editor.\n\n"
 "    Tämä plugin toteuttaa editorit eri kohteita Robot Framework\n"
 "    testitulokset.\n"
 "    "
@@ -714,62 +782,41 @@ msgid "Editor"
 msgstr "Muokkain"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
-"Mahdollinen putki arvon on karsittava takaiskurivin kaltaisella ”\\”-"
-"merkillä."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgstr "Mahdollinen putki arvon on karsittava takaiskurivin kaltaisella ”\\”-merkillä."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
 msgstr "Erota tagit, joissa on putkimerkki, kuten 'tag' - toinen tagi •3rd'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
-msgstr ""
-"Erottele mahdolliset argumentit putkimerkillä kuten 'Oma avainsana' arg 1 ¶ "
-"arg 2'."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
+msgstr "Erottele mahdolliset argumentit putkimerkillä kuten 'Oma avainsana' arg 1 ¶ arg 2'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
-msgstr ""
-"Käytä aikasyntaksia kuten 1min 10 tai 2 tuntia, tai anna arvo sekunteina.\n"
-"Ennen Robottia v3. .1 valinnainen viesti olisi voitu määritellä, kuten '3 "
-"minuuttia'."
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
+msgstr "Käytä aikasyntaksia kuten 1min 10 tai 2 tuntia, tai anna arvo sekunteina.\n"
+"Ennen Robottia v3. .1 valinnainen viesti olisi voitu määritellä, kuten '3 minuuttia'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"Määrittele pystyviivalla erotellut argumentit, Esim. '${arg1} | ${arg2}'.\n"
-"Oletusarvot merkitään yhtäkuin-merkillä ja viimeinen argumentti voi olla "
-"muuttuja.\n"
+msgstr "Määrittele pystyviivalla erotellut argumentit, Esim. '${arg1} | ${arg2}'.\n"
+"Oletusarvot merkitään yhtäkuin-merkillä ja viimeinen argumentti voi olla muuttuja.\n"
 "Esim. '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Huom. Voit käyttää muuttujalyhenteitä tässä kentässä."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"Alioita voidaan käyttää saman kirjaston tuomiseen useita kertoja eri "
-"nimillä.\n"
+msgstr "Alioita voidaan käyttää saman kirjaston tuomiseen useita kertoja eri nimillä.\n"
 "Alias on asetettu etusivulle: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
 msgstr " . Huomaa, että koska Robot v6.0, tuonti vanha WITH NAME korvataan AS."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
@@ -777,16 +824,11 @@ msgid "Give name and value of the variable."
 msgstr "Anna muuttujan nimi ja arvo."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Anna muuttujan nimi ja arvo. Syötä muuttujan kohdat erillisiin soluihin."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Anna muuttujan nimi ja arvo. Syötä muuttujan kohdat erillisiin soluihin."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
 msgstr "Anna muuttujan nimi ja arvo. Syötä sanakirja erillisiin soluihin."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
@@ -794,10 +836,8 @@ msgid "Individual items must be in format `key=value`"
 msgstr "Yksittäisten kohteiden on oltava muodossa `key=value`"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Anna tuotava kirjaston nimi, valinnaiset argumentit ja valinnainen alias"
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Anna tuotava kirjaston nimi, valinnaiset argumentit ja valinnainen alias"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:51
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
@@ -806,17 +846,15 @@ msgstr "Erota useat argumentit putkimerkillä kuten 'arg 1' kaarella 2'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
+msgstr "Anna kirjaston nimi, kirjaston dokumentaation URL ja komento asennettavaksi."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "Komennossa voit käyttää `%%executable` paikanmerkillä korvataksesi varsinaisen polun"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
-msgstr ""
+msgstr " Python suoritettavaan tiedostoon."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
@@ -848,150 +886,91 @@ msgstr "Lisäksi URL-osoitteet muunnetaan klikattaviksi linkeiksi."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
-"Nämä tunnisteet on asetettu kaikkiin testikoteloihin tässä testisarjassa."
+msgstr "Nämä tunnisteet on asetettu kaikkiin testikoteloihin tässä testisarjassa."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Nämä tunnisteet on asetettu kaikkiin testikoteloihin tässä testisarjassa, "
-"ellei testauslaatikoissa ole omia tageja."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Nämä tunnisteet on asetettu kaikkiin testikoteloihin tässä testisarjassa, ellei testauslaatikoissa ole omia tageja."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Näitä tageja sovelletaan kaikkiin testikoteloihin tässä testisarjassa. Tämä "
-"kenttä on olemassa Robot Framework 6. ja korvaa voimassa ja oletustagien "
-"version 7.0 jälkeen."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Näitä tageja sovelletaan kaikkiin testikoteloihin tässä testisarjassa. Tämä kenttä on olemassa Robot Framework 6. ja korvaa voimassa ja oletustagien version 7.0 jälkeen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Nämä tagit on asetettu tähän testikoteloon Force Tagien lisäksi ja ne "
-"ohittavat mahdolliset oletustagit."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Nämä tagit on asetettu tähän testikoteloon Force Tagien lisäksi ja ne ohittavat mahdolliset oletustagit."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Tämä avainsana suoritetaan ennen minkään testikotelon tai alemman tason "
-"sviitin suorittamista."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Tämä avainsana suoritetaan ennen minkään testikotelon tai alemman tason sviitin suorittamista."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Tämä avainsana suoritetaan sen jälkeen, kun kaikki testitapaukset ja alemman "
-"tason sviitit on suoritettu."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Tämä avainsana suoritetaan sen jälkeen, kun kaikki testitapaukset ja alemman tason sviitit on suoritettu."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Tämä avainsana suoritetaan ennen jokaista testitapausta tässä sviitissä, "
-"ellei testitapauksia ohita sitä."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Tämä avainsana suoritetaan ennen jokaista testitapausta tässä sviitissä, ellei testitapauksia ohita sitä."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Tämä avainsana suoritetaan jokaisen testisarjan jälkeen, paitsi jos "
-"testitapaukset ohittavat sen."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Tämä avainsana suoritetaan jokaisen testisarjan jälkeen, paitsi jos testitapaukset ohittavat sen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"Tämä avainsana suoritetaan ennen muita avainsanoja tässä testitapauksessa "
-"tai avainsanassa."
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "Tämä avainsana suoritetaan ennen muita avainsanoja tässä testitapauksessa tai avainsanassa."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
-"Testissä ohitetaan mahdolliset testisäännöt, jotka on asetettu "
-"sviittitasolle."
+msgstr "Testissä ohitetaan mahdolliset testisäännöt, jotka on asetettu sviittitasolle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Avainsanoja on luotu robottien v7.0:n jälkeen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Tämä avainsana suoritetaan muiden avainsanojen jälkeen tässä "
-"testitapauksessa tai avainsanassa, vaikka testi tai avainsana epäonnistuisi."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Tämä avainsana suoritetaan muiden avainsanojen jälkeen tässä testitapauksessa tai avainsanassa, vaikka testi tai avainsana epäonnistuisi."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
-"Testissä ohitetaan mahdollinen testien korvaaminen sviittitasolla asetettuna."
+msgstr "Testissä ohitetaan mahdollinen testien korvaaminen sviittitasolla asetettuna."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
 msgstr "Määrittää tämän sviitin testien käyttämän oletuspohjan avainsanan."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"Testitapaukset sisältävät vain tietoja, joita käytetään argumenteina tälle "
-"avainsanalle."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "Testitapaukset sisältävät vain tietoja, joita käytetään argumenteina tälle avainsanalle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Määrittää käytettävän mallin avainsanan."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"Testi itsessään sisältää vain tietoja, joita käytetään argumenteina tälle "
-"avainsanalle."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "Testi itsessään sisältää vain tietoja, joita käytetään argumenteina tälle avainsanalle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
 msgstr "Määritä palautusarvo. Käytä putkimerkkiä erottamaan useita arvoja."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Suurin mahdollinen aika testata tapauksia tässä sviitissä sallitaan "
-"suorittaa ennen kuin ne keskeytetään voimakkaasti."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Suurin mahdollinen aika testata tapauksia tässä sviitissä sallitaan suorittaa ennen kuin ne keskeytetään voimakkaasti."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
 msgstr "Yksittäiset testitapaukset voidaan ohittaa aikakatkaisun asetuksella."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
-msgstr ""
-"Tämä testi/avainsana on sallittu suorittaa ennen kuin se keskeytetään "
-"voimakkaasti."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
+msgstr "Tämä testi/avainsana on sallittu suorittaa ennen kuin se keskeytetään voimakkaasti."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"Testaustapauksissa tämä asetus ohittaa testisyklin aikakatkaisun asetettuna "
-"sviittitasolle."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "Testaustapauksissa tämä asetus ohittaa testisyklin aikakatkaisun asetettuna sviittitasolle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1172,12 +1151,8 @@ msgid "Columns"
 msgstr "Sarakkeet"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Sarakkeiden määrä, jotka näytetään tässä editorissa. Valittu arvo "
-"tallennetaan ja käytetään maailmanlaajuisesti."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Sarakkeiden määrä, jotka näytetään tässä editorissa. Valittu arvo tallennetaan ja käytetään maailmanlaajuisesti."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1256,34 +1231,25 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Tee Dict Muuttuja      Ctrl-5"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:950
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>Avainsanaa ei havaittu RIDE</b>\n"
+msgstr "<b>Avainsanaa ei havaittu RIDE</b>\n"
 "        <br>Mahdolliset korjaukset:<br>\n"
 "        <ul>\n"
-"            <li>Tuo kirjasto tai resurssitiedosto, joka sisältää avainsanan."
-"</li>\n"
+"            <li>Tuo kirjasto tai resurssitiedosto, joka sisältää avainsanan.</li>\n"
 "            <li>Kirjaston tuonnin virheet: Harkitse kirjaston spec XML\n"
 "            (Työkalut / Tuo kirjasto Spec XML tai lisäämällä XML-tiedoston\n"
-"            oikea nimi PYTHONPATH:iin) ottaaksesi käyttöön avainsanan "
-"täydennyksen\n"
+"            oikea nimi PYTHONPATH:iin) ottaaksesi käyttöön avainsanan täydennyksen\n"
 "            esimerkiksi Java-kirjastoille.\n"
-"            Kirjaston spec XML voidaan luoda käyttäen libdoc työkalua Robot "
-"Framework.</li>\n"
+"            Kirjaston spec XML voidaan luoda käyttäen libdoc työkalua Robot Framework.</li>\n"
 "        </ul>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1101
@@ -1399,14 +1365,12 @@ msgid "Add Import"
 msgstr "Lisää Tuonti"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:631
-#, fuzzy
 msgid "Open Library Documentation"
-msgstr "Hae dokumentaatiosta"
+msgstr "Avaa Kirjaston Dokumentaatio"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
-#, fuzzy
 msgid "Install Library"
-msgstr "Kirjasto"
+msgstr "Asenna Kirjasto"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:34
@@ -1415,46 +1379,32 @@ msgid "Import Library Spec XML"
 msgstr "Tuo Kirjaston Spec XML"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:685
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>Mahdolliset korjaukset ja huomautukset:<br>\n"
+msgstr "<br>Mahdolliset korjaukset ja huomautukset:<br>\n"
 "        <ul>\n"
 "            <li>Tuontivirhe näytetään punaisella värillä.</li>\n"
-"            <li>Katso Työkalut / Näytä RIDE Loki yksityiskohtaista tietoa "
-"epäonnistumisesta.</li>\n"
-"            <li>Jos tuonti sisältää muuttujan, jota RIDE ei ole alustanut, "
-"harkitse muuttujan\n"
+"            <li>Katso Työkalut / Näytä RIDE Loki yksityiskohtaista tietoa epäonnistumisesta.</li>\n"
+"            <li>Jos tuonti sisältää muuttujan, jota RIDE ei ole alustanut, harkitse muuttujan\n"
 "            lisäämistä muuttuvaan taulukkoon, jolla on oletusarvo.</li>\n"
-"            <li>Jos kirjaston tuonti epäonnistui: Harkitse kirjaston spec "
-"XML (Työkalut / Tuo kirjasto Spec XML tai\n"
-"            lisäämällä XML-tiedoston oikealla nimellä PYTHONPATH:iin), jotta "
-"esimerkiksi Java-kirjastoille voidaan suorittaa avainsana\n"
+"            <li>Jos kirjaston tuonti epäonnistui: Harkitse kirjaston spec XML (Työkalut / Tuo kirjasto Spec XML tai\n"
+"            lisäämällä XML-tiedoston oikealla nimellä PYTHONPATH:iin), jotta esimerkiksi Java-kirjastoille voidaan suorittaa avainsana\n"
 "            .\n"
-"            Kirjaston spec XML voidaan luoda käyttäen libdoc työkalua Robot "
-"Framework.\n"
+"            Kirjaston spec XML voidaan luoda käyttäen libdoc työkalua Robot Framework.\n"
 "            Lisätietoja on \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1505,11 +1455,9 @@ msgid "Get help"
 msgstr "Hae apua"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1138
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1525,20 +1473,16 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>Syntaksin väritys</h1>\n"
+msgstr "<h1>Syntaksin väritys</h1>\n"
 "        <p>\n"
-"        Syntaksin väritys tekstieditoinnille käyttää <a href='https://"
-"pygments.org/'>Pygments</a> syntaksin korostusta.\n"
+"        Syntaksin väritys tekstieditoinnille käyttää <a href='https://pygments.org/'>Pygments</a> syntaksin korostusta.\n"
 "        </p>\n"
 "        <p>\n"
 "        Asenna pygmentteja komentorivillä:\n"
@@ -1554,13 +1498,11 @@ msgstr ""
 "        <p>\n"
 "        Jos sinulla ei ole putkia tai easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >seuraa näitä ohjeita</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Lisätietoja Pygmenttien asentamisesta <a href='https://pygments.org/"
-"download/'>ks. sivusto</a>.\n"
+"        Lisätietoja Pygmenttien asentamisesta <a href='https://pygments.org/download/'>ks. sivusto</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1588,6 +1530,7 @@ msgstr "Parserin Loki"
 msgid "View Parser Log"
 msgstr "Näytä Parserin Loki"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
 msgstr "Luo Pikakuvake Ride-Työpöydälle"
@@ -1712,11 +1655,9 @@ msgid "Auto size columns"
 msgstr "Auto size columns"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:258
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"Maksimi sarakkeen koko\n"
+msgstr "Maksimi sarakkeen koko\n"
 "(sovelletaan, kun automaattinen koko on)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:262
@@ -1802,9 +1743,7 @@ msgstr "Näyttää konsolin värit"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
-"Pyytää vahvistusta kaikkien testien suorittamiseen, jos yhtään testiä ei ole "
-"valittu "
+msgstr "Pyytää vahvistusta kaikkien testien suorittamiseen, jos yhtään testiä ei ole valittu "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
@@ -1872,55 +1811,57 @@ msgstr "Kirjaston tuonti ja PYTHONPATH"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
-"Pilkuilla erotettu luettelo kirjastoista, jotka tuodaan automaattisesti."
+msgstr "Pilkuilla erotettu luettelo kirjastoista, jotka tuodaan automaattisesti."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Pilkuilla erotettu luettelo hakemistoista, jotka lisätään PYTHONPATH kun "
-"kirjastoja etsitään."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Pilkuilla erotettu luettelo hakemistoista, jotka lisätään PYTHONPATH kun kirjastoja etsitään."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
-"Pilkulla erotettu luettelo hakemistoista, jotka sisältävät kirjaston spec "
-"-tiedostoja."
+msgstr "Pilkulla erotettu luettelo hakemistoista, jotka sisältävät kirjaston spec -tiedostoja."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
 msgstr "Tallenna tai lataa asetukset"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
 msgid "Load settings from file..."
 msgstr "Lataa asetukset tiedostosta..."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:49
 msgid "Save settings to file..."
 msgstr "Tallenna asetukset tiedostoon..."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:58
 msgid "Current directory:"
 msgstr "Nykyinen kansio:"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:75
 msgid "File with Settings to Load"
 msgstr "Tiedosto, jossa asetukset ladataan"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:101
 msgid "Save Settings to file"
 msgstr "Tallenna asetukset tiedostoon"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:114
 msgid "Could not open settings file \"%s\" for writing"
 msgstr "Asetustiedostoa \"%s\" ei voitu avata kirjoitettavaksi"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:126
 msgid "Error trying to get '%s' from file %s"
 msgstr "Virhe yritettäessä saada%stiedostosta %s"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:141
 msgid "Invalid config file '%s': %s"
 msgstr "Virheellinen asetustiedosto '%s': %s"
@@ -1963,10 +1904,8 @@ msgid "Line separator:"
 msgstr "Rivin erotin:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
-"Mahdolliset arvot ovat natiivi (nykyisen OS) CRLF (Windows) ja LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr "Mahdolliset arvot ovat natiivi (nykyisen OS) CRLF (Windows) ja LF (Unixy)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
@@ -1976,14 +1915,17 @@ msgstr "Erottavat välilyönnit"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "Solujen välisten välilyöntien lukumäärä tallennettaessa txt-muodossa"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
 msgstr "Lisää äskettäin avatut tiedostot tiedostovalikoon."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
 msgstr "Ei viimeaikaisia tiedostoja"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
@@ -1993,30 +1935,26 @@ msgstr "Ei viimeaikaisia tiedostoja"
 msgid "File"
 msgstr "Tiedosto"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:119
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:125
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:153
 msgid "Exit"
 msgstr "Poistu"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:142
 msgid "Open %s"
 msgstr "Avaa %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
-"command does not work.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -2038,15 +1976,11 @@ msgid "Remove"
 msgstr "Poista"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"Liitännäinen, jolla voit suorittaa komentoja järjestelmässä.\n"
-"\n"
+msgstr "Liitännäinen, jolla voit suorittaa komentoja järjestelmässä.\n\n"
 "    Tämä liitännäinen mahdollistaa jatkuvan ajon asetusten luomisen ja\n"
 "    suorituksen niistä. Suoritetun komennon ulostulo näytetään\n"
 "    erillisessä välilehdessä."
@@ -2069,38 +2003,41 @@ msgstr "Suorita Uudelleen"
 msgid "running"
 msgstr "käynnissä"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
 msgstr "Etsi Testit"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
 msgstr "Tagin Haku"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
 msgstr "Testi"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:66
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
 msgstr "Tulokset: "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Etsi otteluita käyttäen tunnistekuvioita. Katso lisätietoja RF "
-"käyttöoppaasta tai 'robotti --help'."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Etsi otteluita käyttäen tunnistekuvioita. Katso lisätietoja RF käyttöoppaasta tai 'robotti --help'."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:863
 msgid "Include"
 msgstr "Sisällytä"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:117
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:393
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:490
@@ -2108,11 +2045,13 @@ msgstr "Sisällytä"
 msgid "Exclude"
 msgstr "Ohita"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
 msgstr "Lisää kaikki valittuun"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:156
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:164
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:211
@@ -2120,60 +2059,59 @@ msgstr "Lisää kaikki valittuun"
 msgid "Results: %d"
 msgstr "Tulokset: %d"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
 msgstr "Info. "
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
 msgstr "Etsi otteluita testinimellä, dokumentaatiolla ja/tai tagilla."
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
 msgstr "Hae termi"
 
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
-"Liitännäinen nimiin, tageihin ja dokumentaatioon perustuvien testien "
-"etsimiseen"
+msgstr "Liitännäinen nimiin, tageihin ja dokumentaatioon perustuvien testien etsimiseen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+msgid "Install missing libraries and open documentation.\n\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
+msgstr "Asenna puuttuvat kirjastot ja avaa dokumentaatio.\n\n"
+"    Voit muokata settings.cfg lisätäksesi URL-osoitteen ja dokumentaation asentamiseen.\n"
+"    Voit klikata hiiren kakkospainikkeella Kirjaston nimeä ja Open Documentation tai Asenna Kirjasto.\n"
+"    Työkaluista->Kirjaston Finder... tai apua->Avaa kirjaston dokumentaatio... sinulla on\n"
+"    valintaikkuna, joka täyttää asennettavan komennon tai URL-osoitteen dokumentaatiota varten.\n"
+"    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr ""
+msgstr "Kirjaston Etsijä..."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:40
-#, fuzzy
 msgid "Open Library Documentation..."
-msgstr "Hae dokumentaatiosta"
+msgstr "Avaa Kirjaston Dokumentaatio..."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
-msgstr ""
+msgstr "Valmistele tietoa kirjastojen asennukseen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
-msgstr ""
+msgstr "Valmistaudu tietoa kirjastojen avoimeen dokumentaatioon"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:106
-#, fuzzy
 msgid "Library Finder"
-msgstr "Kirjasto"
+msgstr "Kirjaston Etsijä"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
@@ -2184,12 +2122,10 @@ msgid "Info"
 msgstr "Tiedot"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"Kirjasto \"%s\" tuotu\n"
+msgstr "Kirjasto \"%s\" tuotu\n"
 "\"%s\"\n"
 "Tämä saattaa edellyttää RIDE uudelleenkäynnistystä."
 
@@ -2254,11 +2190,9 @@ msgid "Change recursively"
 msgstr "Vaihda rekursiivisesti"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"Anna alustustiedoston muoto hakemistossa\n"
+msgstr "Anna alustustiedoston muoto hakemistossa\n"
 "\"%s\"."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:410
@@ -2286,12 +2220,8 @@ msgid "All files|*.*"
 msgstr "Kaikki tiedostot *.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"Tarjoaa puunäkymän tiedostoille ja kansioille. Avaa valitun kohteen hiiren "
-"oikealla napsautuksella."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "Tarjoaa puunäkymän tiedostoille ja kansioille. Avaa valitun kohteen hiiren oikealla napsautuksella."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:117
@@ -2329,8 +2259,7 @@ msgstr "Etsi Avainsanoja"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
-"Liitännäinen nimeen tai dokumentaatioon perustuvien avainsanojen etsimiseen."
+msgstr "Liitännäinen nimeen tai dokumentaatioon perustuvien avainsanojen etsimiseen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -2354,40 +2283,27 @@ msgstr "[File]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&Uusi projekti | Luo uusi ylimmän tason sviitti | Ctrlcmd-N | ART_NEW\n"
+msgstr "!&Uusi projekti | Luo uusi ylimmän tason sviitti | Ctrlcmd-N | ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!&Avaa testisviitti | Avoin tiedosto, joka sisältää testejä | Ctrlcmd-O | "
-"ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&Avaa testisviitti | Avoin tiedosto, joka sisältää testejä | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Avaa &hakemisto | Avaa hakemisto sisältäen datatiedostot | Shift-Ctrlcmd-O "
-"| ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Avaa &hakemisto | Avaa hakemisto sisältäen datatiedostot | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!Avaa ulkoinen tiedosto | Avaa tiedosto koodineditorissa | | "
-"ART_NORMAL_FILE\n"
+msgstr "!Avaa ulkoinen tiedosto | Avaa tiedosto koodineditorissa | | ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
-"!&Tallentaa | Tallenna valittu datatiedosto | Ctrlcmd-S | ART_FILE_SAVE\n"
+msgstr "!&Tallentaa | Tallenna valittu datatiedosto | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!Tallenna kaikki | Tallenna kaikki muutokset | Ctrlcmd-Shift-S | "
-"ART_FILE_SAVE_AS\n"
+msgstr "!Tallenna kaikki | Tallenna kaikki muutokset | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2459,11 +2375,9 @@ msgid "Test Suites"
 msgstr "Testaa Sviitit"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:411
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"Muutoksia ei ole tallennettu.\n"
+msgstr "Muutoksia ei ole tallennettu.\n"
 "Haluatko tallentaa muutokset ennen poistumista?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:411
@@ -2472,11 +2386,9 @@ msgid "Warning"
 msgstr "Varoitus"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:501
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"Muutoksia ei ole tallennettu.\n"
+msgstr "Muutoksia ei ole tallennettu.\n"
 "Haluatko jatkaa ilman tallennusta?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:552
@@ -2556,19 +2468,12 @@ msgid "Plugin"
 msgstr "Liitännäinen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Info. Liitännäisten käyttöönotto ja poistaminen käytöstä saattaa edellyttää "
-"RIDE uudelleenkäynnistystä, jotta valikot toimivat."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Info. Liitännäisten käyttöönotto ja poistaminen käytöstä saattaa edellyttää RIDE uudelleenkäynnistystä, jotta valikot toimivat."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
-"(Vanhentunut) Tarjoaa esikatselun testitiedot HTML-, TSV- ja TXT-"
-"formaateissa."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(Vanhentunut) Tarjoaa esikatselun testitiedot HTML-, TSV- ja TXT-formaateissa."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
@@ -2596,12 +2501,9 @@ msgid "Search unused keywords"
 msgstr "Etsi käyttämättömiä avainsanoja"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"Tämä ikkuna auttaa löytämään käyttämättömiä avainsanoja avatussa "
-"projektissa.\n"
+msgstr "Tämä ikkuna auttaa löytämään käyttämättömiä avainsanoja avatussa projektissa.\n"
 "Jos haluat, voit rajoittaa haun joukkoon tiedostoja, joissa on suodatin."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
@@ -2622,14 +2524,10 @@ msgid "Use RegEx"
 msgstr "Käytä RegEx"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"Tässä voit määritellä yhden tai useamman pilkulla erotellun merkkijonon "
-"(esim. yleinen, abc,123).\n"
+msgstr "Tässä voit määritellä yhden tai useamman pilkulla erotellun merkkijonon (esim. yleinen, abc,123).\n"
 "Suodatin sopii jos vähintään yksi merkkijono on osa tiedostonimeä.\n"
 "Jos et anna merkkijonoja, kaikki avatut tiedostot sisältyvät"
 
@@ -2688,12 +2586,8 @@ msgid "(None)"
 msgstr "(tyhjä)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"Haussa on mukana seuraavien tiedostojen avainsanat:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "Haussa on mukana seuraavien tiedostojen avainsanat:\n\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2744,11 +2638,9 @@ msgid "Excluded Tag Search"
 msgstr "Poistettu Tagin Haku"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"Testit yhteensä: %d, Testit tunnisteilla %d, Unique tags %d\n"
+msgstr "Testit yhteensä: %d, Testit tunnisteilla %d, Unique tags %d\n"
 "Tällä hetkellä valitut testit %d"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
@@ -2859,11 +2751,9 @@ msgid "Expand all"
 msgstr "Laajenna kaikki"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:435
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Hakemisto sisältää tallentamattomia tietoja!\n"
+msgstr "Hakemisto sisältää tallentamattomia tietoja!\n"
 "Sinun on tallennettava tiedot ennen poissulkemista."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:481
@@ -2897,11 +2787,9 @@ msgstr "Poista Vain Luettu"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:522
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:625
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Tiedosto sisältää tallentamattomia tietoja!\n"
+msgstr "Tiedosto sisältää tallentamattomia tietoja!\n"
 "Sinun on tallennettava tiedot ennen poissulkemista."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:563
@@ -2938,7 +2826,7 @@ msgstr "%s (poistettu)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1217
 msgid "Invalid keyword name: "
-msgstr ""
+msgstr "Virheellinen avainsanan nimi: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
@@ -2982,75 +2870,13 @@ msgstr "%s ei voi olla tyhjä"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
 msgid "No"
-msgstr ""
+msgstr "Ei"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
 msgid "OK"
-msgstr ""
+msgstr "Ok"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
 msgid "Yes"
-msgstr ""
+msgstr "Kyllä"
 
-#~ msgid "Inherited tags are not shown in this view."
-#~ msgstr "Perillisiä tageja ei näytetä tässä näkymässä."
-
-#~ msgid "Force Tags"
-#~ msgstr "Pakota Tagit"
-
-#~ msgid "Default Tags"
-#~ msgstr "Oletus Tagit"
-
-#~ msgid "Test Tags"
-#~ msgstr "Testaa Tagit"
-
-#~ msgid "Suite Setup"
-#~ msgstr "Sviitin Asetukset"
-
-#~ msgid "Suite Teardown"
-#~ msgstr "Suivin Purku"
-
-#~ msgid "Test Setup"
-#~ msgstr "Testaa Asetukset"
-
-#~ msgid "Test Teardown"
-#~ msgstr "Testaa Uloskirjaus"
-
-#~ msgid "Test Template"
-#~ msgstr "Testaa Malli"
-
-#~ msgid "Return Value"
-#~ msgstr "Palautuksen Arvo"
-
-#~ msgid "Insert Rows\tCtrl-I"
-#~ msgstr "Insert Rows       Ctrl-I"
-
-#~ msgid "Delete Rows\tCtrl-D"
-#~ msgstr "Poista Rivejä       Ctrl-D"
-
-#~ msgid "Rename Keyword"
-#~ msgstr "Nimeä Avainsana Uudelleen"
-
-#~ msgid "Comment Cells\tCtrl-Shift-3"
-#~ msgstr "Kommentti Solut      Ctrl-Shift-3"
-
-#~ msgid "Uncomment Cells\tCtrl-Shift-4"
-#~ msgstr "Kommentin Poisto Kennoista      Ctrl-Shift-4"
-
-#~ msgid "Move Cursor Down\tAlt-Enter"
-#~ msgstr "Siirrä Kohdistinta Alas      Alt-Enter"
-
-#~ msgid "Comment Rows\tCtrl-3"
-#~ msgstr "Kommentti Rivit      Ctrl-3"
-
-#~ msgid "Uncomment Rows\tCtrl-4"
-#~ msgstr "Kommentoi Rivejä      Ctrl-4"
-
-#~ msgid "Move Rows Up\tAlt-Up"
-#~ msgstr "Siirrä Rivit Ylös Alt-Up"
-
-#~ msgid "Move Rows Down\tAlt-Down"
-#~ msgstr "Siirrä Rivit Alas       Alt-Down"
-
-#~ msgid "Swap Row Up\tCtrl-T"
-#~ msgstr "Vaihda Rivi Ylös      Ctrl-T"
