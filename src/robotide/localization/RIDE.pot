@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-06-16 00:40+0100\n"
+"POT-Creation-Date: 2025-06-20 19:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1250,7 +1250,7 @@ msgstr ""
 msgid "Make Dict Variable\tCtrl-5"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:950
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:951
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1264,51 +1264,51 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1101
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1102
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:234
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1216
 msgid "Validation Error"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1188
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1189
 msgid "New name"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1201
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1202
 msgid "Save"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1204
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1205
 #: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1234
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
 msgid "Validation Error!"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1236
 msgid "Error in JSON:"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1236
 msgid "Save anyway?"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1405
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1406
 msgid "Please select what you want to check for usage"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1408
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1409
 msgid "Complete cell content"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1409
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1410
 msgid "Variable "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1421
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1422
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1112
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49

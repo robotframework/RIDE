@@ -65,6 +65,11 @@ Framework test data.
 Project: https://github.com/robotframework/RIDE#readme
 """.strip()
 
+# read the contents of your README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description_full = (this_directory / "README.md").read_text()
+
 CLASSIFIERS = """
 Development Status :: 5 - Production/Stable
 License :: OSI Approved :: Apache Software License
@@ -100,7 +105,7 @@ setup(
     name='robotframework-ride',
     version=main_ns['VERSION'],
     description='RIDE :: Robot Framework Test Data Editor',
-    long_description=LONG_DESCRIPTION,
+    long_description=long_description_full,
     long_description_content_type='text/markdown',
     license='Apache License 2.0',
     keywords='robotframework testing testautomation',

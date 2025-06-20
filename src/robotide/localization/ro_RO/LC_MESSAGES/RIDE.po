@@ -1,29 +1,28 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-06-16 00:40+0100\n"
+"POT-Creation-Date: 2025-06-20 19:52+0100\n"
 "PO-Revision-Date: 2025-06-20 16:57\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
+"Language: ro_RO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && "
+"n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"Language: ro_RO\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:353
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:358
 msgid "Found Robot Framework version %s from %s."
 msgstr "S-a găsit Robot Framework versiunea %s de la %s."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:45
@@ -32,172 +31,148 @@ msgstr "S-a găsit Robot Framework versiunea %s de la %s."
 msgid "Help"
 msgstr "Ajutor"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
 msgstr "Note de lansare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
 msgstr "Arată notele de lansare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
 msgstr "Jurnal de modificări offline"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
 msgstr "Arată CHANGELOG offline"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
 msgstr "Verifică versiunea online la "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
 msgstr "Redeschide RIDE pentru schimbarea limbii"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr "Schimbarea limbii va fi corectă numai după redeschiderea RIDE."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:203
 msgid "Do you want to CLOSE RIDE now?"
 msgstr "Vrei să închizi CURSA acum?"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
 msgstr "Schimbare limbă finalizată"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:202
 msgid "You should close this RIDE (Process ID = "
 msgstr "Ar trebui să închideți acest RIDE (Process ID = "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
 msgid "New development version is available."
 msgstr "Este disponibilă o nouă versiune de dezvoltare."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
 msgid "Upgrade?"
 msgstr "Actualizează?"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
 msgstr "Puteți instala versiunea %s cu:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
 msgstr "Faceţi clic pe OK pentru a face upgrade acum!"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:241
-msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr "După actualizare veți vedea o altă fereastră de dialog pentru a închide această instanță RIDE."
+msgid ""
+"After upgrade you will see another dialog informing to close this RIDE "
+"instance."
+msgstr ""
+"După actualizare veți vedea o altă fereastră de dialog pentru a închide "
+"această instanță RIDE."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
 msgstr "Nicio actualizare disponibilă"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:126
 msgid "You have the latest version of RIDE."
 msgstr "Ai cea mai recentă versiune de RIDE."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:127
 msgid "              Have a nice day :)"
 msgstr "              O zi frumoasă :)"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:172
 msgid "An error occurred when installing new version"
 msgstr "A apărut o eroare la instalarea noii versiuni"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:172
 msgid "Failed to Upgrade"
 msgstr "Actualizarea a eșuat"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:202
 msgid "Completed Upgrade"
 msgstr "Actualizare Finalizată"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:228
 msgid "Update available"
 msgstr "Actualizare disponibilă"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:236
 msgid " available from "
 msgstr " disponibil de la "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:236
 msgid "New version "
 msgstr "Versiune nouă "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:237
 msgid "See this version "
 msgstr "Vezi această versiune "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:239
 msgid "You can update with the command:"
 msgstr "Poți actualiza cu comanda:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
 msgstr "Sau apăsați <b>Upgradați acum</b>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
 msgstr "Vezi cea mai recentă dezvoltare "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:247
-msgid "I'm using another method for RIDE updates\n"
+msgid ""
+"I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr "Folosesc o altă metodă pentru actualizările RIDE\n"
+msgstr ""
+"Folosesc o altă metodă pentru actualizările RIDE\n"
 " și nu necesită verificări automate ale actualizărilor"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:252
 msgid "remind me later"
 msgstr "amintește-mi mai târziu"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:258
 msgid "Upgrade Now"
 msgstr "Upgradează acum"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr "A început RIDE %s folosind python versiunea %s cu versiunea wx %s în %s."
+msgstr ""
+"A început RIDE %s folosind python versiunea %s cu versiunea wx %s în %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
@@ -224,44 +199,45 @@ msgid "Some of the icons are from %s."
 msgstr "Unele pictograme sunt de la %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
-msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
-msgstr "%s susținătorul proiectului mulțumește autorilor originali și tuturor utilizatorilor și colaboratorilor."
+msgid ""
+"%s the maintainer of the project thanks the original authors and all users "
+"and collaborators."
+msgstr ""
+"%s susținătorul proiectului mulțumește autorilor originali și tuturor "
+"utilizatorilor și colaboratorilor."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:81
-msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
-msgstr "Mulțumiri speciale %s pentru că au sponsorizat dezvoltarea suitelor de teste traduse compatibilitate cu %s versiunea 6.1, în %s."
+msgid ""
+"A special thanks to %s for having sponsored the development of translated "
+"test suites content compatibility with %s Version 6.1, in their %s."
+msgstr ""
+"Mulțumiri speciale %s pentru că au sponsorizat dezvoltarea suitelor de teste "
+"traduse compatibilitate cu %s versiunea 6.1, în %s."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
 msgstr "Opțiuni jurnal"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:435
 msgid "Output directory: "
 msgstr "Directorul de ieşire: "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:455
 msgid "Add suite name to log names"
 msgstr "Adaugă nume de suită la numele însemnărilor"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:458
 msgid "Add timestamp to log names"
 msgstr "Adăugaţi marcajul de timp la numele de jurnal"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:461
 msgid "Save Console and Message logs"
 msgstr "Salvează consola și jurnalele de mesaje"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:479
 msgid "Select Logs Directory"
 msgstr "Selectați directorul de loguri"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:501
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:535
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:539
@@ -270,68 +246,57 @@ msgstr "Selectați directorul de loguri"
 msgid "Arguments"
 msgstr "Argumente"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:514
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr "Argumentele pentru rularea testului. Argumentele sunt lista separată de spaţiu."
+msgstr ""
+"Argumentele pentru rularea testului. Argumentele sunt lista separată de "
+"spaţiu."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
 msgstr "Nu se execută - opțiunea de ajutor sau versiune dată"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Unknown option(s):"
 msgstr "Opțiune (opțiuni) necunoscută:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:570
 msgid "Tests filters"
 msgstr "Filtre de teste"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:580
 msgid "Only run tests with these tags:"
 msgstr "execută teste numai cu aceste etichete:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:583
 msgid "Skip tests with these tags:"
 msgstr "Sari peste teste cu aceste etichete:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:681
 msgid "Script to run tests:"
 msgstr "Script pentru rularea testelor:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Stop a running test"
 msgstr "Opriți un test de rulare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:101
 msgid "Step over"
 msgstr "Pas peste"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:132
 msgid "A plugin for running tests from within RIDE"
 msgstr "Un plugin pentru rularea testelor din interiorul RIDE"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "Run"
 msgstr "Rulează"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
 msgid "Run Tests"
 msgstr "Rulează testele"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:241
@@ -349,223 +314,190 @@ msgstr "Rulează testele"
 msgid "Tools"
 msgstr "Unelte"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:233
 msgid "Run the selected tests"
 msgstr "Rulează testele selectate"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 msgid "Run Tests with Debug"
 msgstr "Rulează testele cu depanare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests with Debug"
 msgstr "Rulează testele selectate cu Depanare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:241
 msgid "Stop Test Run"
 msgstr "Oprește rularea testului"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:325
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:329
 msgid "[ SENDING STOP SIGNAL ]\n"
 msgstr "[TRIMITE STOP SIGNAL ]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:334
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:337
 msgid "[ SENDING PAUSE SIGNAL ]\n"
 msgstr "[TRIMITE PAUSE SIGNAL ]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:342
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:345
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
 msgstr "[TRIMITE CONTINUE SIGNAL ]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:350
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:353
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr "[TRIMITE PASUL NEXT SIGNAL ]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:358
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:361
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
 msgstr "[TRIMITE STEP OVER SIGNAL ]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:393
 msgid "command: %s\n"
 msgstr "comandă: %s\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:463
 msgid "Unsaved Modifications"
 msgstr "Modificări nesalvate"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:464
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr "Există modificări nesalvate.\n"
+msgstr ""
+"Există modificări nesalvate.\n"
 "        Doriţi să salvaţi toate modificările şi să executaţi testele?"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:474
 msgid "No tests selected"
 msgstr "Nicio testare selectată"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:474
-msgid "No tests selected. \n"
+msgid ""
+"No tests selected. \n"
 "Continue anyway?"
-msgstr "Nici un test selectat. \n"
+msgstr ""
+"Nici un test selectat. \n"
 "Continuați oricum?"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:551
-msgid "\n"
+msgid ""
+"\n"
 "Test finished {}"
-msgstr "\n"
+msgstr ""
+"\n"
 "Test terminat {}"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:585
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr "Jurnalul mesajelor a depășit 80% din memoria procesului, oprire deocamdată..."
+msgstr ""
+"Jurnalul mesajelor a depășit 80% din memoria procesului, oprire deocamdată..."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:756
 msgid "Start"
 msgstr "Pornire"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:757
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:760
 msgid "Start robot"
 msgstr "Robot de pornire"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:758
 msgid "Start running the robot test suite"
 msgstr "Începeți să rulați suita de testare a robotului"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:759
 msgid "Debug"
 msgstr "Debug"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr "Începeți să rulați suita de teste pentru roboți cu nivel de logare DEBUG"
+msgstr ""
+"Începeți să rulați suita de teste pentru roboți cu nivel de logare DEBUG"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:763
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Oprește"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Pause"
 msgstr "Întrerupeți"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:769
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Pause test execution"
 msgstr "Întrerupeți executarea testului"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Continue"
 msgstr "Continuă"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:775
 msgid "Continue test execution"
 msgstr "Continuă executarea testului"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:776
 msgid "Next"
 msgstr "Următoarea"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:777
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Step next"
 msgstr "Pasul următor"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:815
 msgid "Execution Profile:  "
 msgstr "Profil de execuție:  "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:818
 msgid "Choose which method to use for running the tests"
 msgstr "Alegeți metoda de utilizat pentru rularea încercărilor"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:825
 msgid "Open Logs Directory"
 msgstr "Deschide directorul de loguri"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:827
 msgid "View All Logs in Explorer"
 msgstr "Vezi toate jurnalele în Explorator"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:828
 msgid " Report"
 msgstr " Raport"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Vezi raportul robotului în browser (CtrlCmd-R)"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:831
 msgid " Log"
 msgstr " Jurnal"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:832
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Vezi Robot Log în Browser (CtrlCmd-L)"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Autosave  "
 msgstr " Autosave  "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "Automatically save all changes before running"
 msgstr "Salvează automat toate modificările înainte de a rula"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:845
 msgid " Pause after failure  "
 msgstr " Pauză după eșec  "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:846
 msgid "Automatically pause after failing keyword"
 msgstr "Pauză automat după eșuarea cuvântului cheie"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:848
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:227
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1091
@@ -574,60 +506,51 @@ msgstr "Pauză automat după eșuarea cuvântului cheie"
 msgid "Settings"
 msgstr "Setări"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:962
 msgid "Console log"
 msgstr "Jurnal Console"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:966
 msgid "Message log"
 msgstr "Jurnal mesaje"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1089
 msgid "Starting test:"
 msgstr "Începe testul:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
 msgid "Ending test:"
 msgstr "Test de finalizare:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1102
 msgid "UNKNOWN STATUS:"
 msgstr "NECUNOSCUTUL STATUL:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1130
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1132
 msgid "<<  PAUSED  >>"
 msgstr "<< AUZĂ >>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1137
 msgid "<< CONTINUE >>"
 msgstr "<< CONTINUĂ >>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1139
 msgid "<<  CONTINUE  >>"
 msgstr "<< CONTINUĂ >>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1184
 msgid "No logs directory"
 msgstr "Nu există jurnal"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1184
-msgid "There isn't logs directory. \n"
+msgid ""
+"There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr "Directorul de jurnale nu există. \n"
+msgstr ""
+"Directorul de jurnale nu există. \n"
 "Vă rugăm să rulați testele și să încercați din nou"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1196
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:649
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:143
@@ -636,33 +559,34 @@ msgstr "Directorul de jurnale nu există. \n"
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferințe"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1287
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "timpul scurs: %s  trece: %s  sări: %s  eșuează: %s"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1321
 msgid "  current keyword: "
 msgstr "  Cuvânt cheie curent: "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:42
-msgid "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
+msgid ""
+"[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | "
+"ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
+"ART_GO_FORWARD\n"
 "        "
-msgstr "[Navigate]\n"
-"        ! o &Întoarce-te | la locația anterioară din arbore | Alt-%s | ART_GO_BACK\n"
-"        ! &Du-te inainte | la urmatoarea locatie in arbore | Alt-%s | ART_GO_FORWARD\n"
+msgstr ""
+"[Navigate]\n"
+"        ! o &Întoarce-te | la locația anterioară din arbore | Alt-%s | "
+"ART_GO_BACK\n"
+"        ! &Du-te inainte | la urmatoarea locatie in arbore | Alt-%s | "
+"ART_GO_FORWARD\n"
 "        "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
 msgstr "Adaugă Eticheta la cele selectate"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
@@ -672,17 +596,14 @@ msgstr "Adaugă Eticheta la cele selectate"
 msgid "Edit"
 msgstr "Editare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
 msgstr "Ștergeți cele selectate"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
 msgstr "Adaugă Eticheta la Selectat"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
 msgstr "Introduceți numele etichetei"
@@ -729,11 +650,13 @@ msgstr "Comentariu Celule | Celule Comment cu # | Ctrlcmd-Shift-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr "Anulează comentariul rândurile | Nedivează rândurile selectate | Ctrlcmd-4\n"
+msgstr ""
+"Anulează comentariul rândurile | Nedivează rândurile selectate | Ctrlcmd-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr "Anulează observarea celulelor | fără comentarii cu # | Ctrlcmd-Shift-4\n"
+msgstr ""
+"Anulează observarea celulelor | fără comentarii cu # | Ctrlcmd-Shift-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
@@ -753,11 +676,14 @@ msgstr "Şterge rândurile | din Rânduri | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr "Mută rândurile în sus (Alt-Up sau Ctrl-Shift-Up) <unk> Mută rândurile în sus\n"
+msgstr ""
+"Mută rândurile în sus (Alt-Up sau Ctrl-Shift-Up) <unk> Mută rândurile în "
+"sus\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr "Mută rânduri jos (Alt-Jos sau Ctrl-Shift-Down) Mutați rândurile în jos\n"
+msgstr ""
+"Mută rânduri jos (Alt-Jos sau Ctrl-Shift-Down) Mutați rândurile în jos\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -765,16 +691,26 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
-msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr "Conținutul de asistență (Ctrl-Space sau Ctrl-Alt-Space) | Afișați cuvântul cheie posibil și completările variabile | | | POSITION-70\n"
+msgid ""
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
+"and variable completions | | | POSITION-70\n"
+msgstr ""
+"Conținutul de asistență (Ctrl-Space sau Ctrl-Alt-Space) | Afișați cuvântul "
+"cheie posibil și completările variabile | | | POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
-msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr "Editorul implicit de editor. De asemenea cunoscut ca Grid sau Editor de celule.\n\n"
-"    Acest plugin implementează editori pentru diferitele elemente ale Robot Framework\n"
+msgstr ""
+"Editorul implicit de editor. De asemenea cunoscut ca Grid sau Editor de "
+"celule.\n"
+"\n"
+"    Acest plugin implementează editori pentru diferitele elemente ale Robot "
+"Framework\n"
 "    .\n"
 "    "
 
@@ -783,75 +719,117 @@ msgid "Editor"
 msgstr "Editor"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:31
-msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr "Eventualele ţevi din valoare trebuie să fie scăpate cu o bară de fundal ca \"\\ \"."
+msgid ""
+"Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgstr ""
+"Eventualele ţevi din valoare trebuie să fie scăpate cu o bară de fundal ca "
+"\"\\ \"."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
 msgstr "Separați etichetele cu un caracter de țeavă cum ar fi „tag <unk> 3rd”."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:33
-msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
-msgstr "Separați posibilele argumente cu un caracter de țeavă ca 'Cuvintele mele cheie 1 <unk> arg 2'."
+msgid ""
+"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
+"arg 2'."
+msgstr ""
+"Separați posibilele argumente cu un caracter de țeavă ca 'Cuvintele mele "
+"cheie 1 <unk> arg 2'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:34
-msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr "Utilizați sintaxa timpului ca '1min 10s' sau '2 ore' sau dați valoarea ca secunde.\n"
-"Înainte de Robot v3. .1 un mesaj opţional ar fi putut fi specificat ca \"3 minute <unk> Mesajul meu aici\"."
+msgid ""
+"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+"Before Robot v3.0.1 an optional message could have been specified like '3 "
+"minutes | My message here'."
+msgstr ""
+"Utilizați sintaxa timpului ca '1min 10s' sau '2 ore' sau dați valoarea ca "
+"secunde.\n"
+"Înainte de Robot v3. .1 un mesaj opţional ar fi putut fi specificat ca \"3 "
+"minute <unk> Mesajul meu aici\"."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:37
-msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a list variable.\n"
+msgid ""
+"Specify the arguments separated with a pipe character like '${arg1} | $"
+"{arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a "
+"list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr "Specificați argumentele separate cu un caracter de țeavă ca '${arg1} <unk> ${arg2}'.\n"
-"Valorile implicite sunt date folosind semnul egal și ultimul argument poate fi o variabilă de listă.\n"
+msgstr ""
+"Specificați argumentele separate cu un caracter de țeavă ca '${arg1} <unk> $"
+"{arg2}'.\n"
+"Valorile implicite sunt date folosind semnul egal și ultimul argument poate "
+"fi o variabilă de listă.\n"
 "Exemplu: '${arg1} <unk> ${arg2}=valoare implicită <unk> @{rest}'.\n"
 "Notă. Puteți utiliza scurtăturile variabile în acest câmp."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:41
-msgid "Alias can be used to import same library multiple times with different names.\n"
+msgid ""
+"Alias can be used to import same library multiple times with different "
+"names.\n"
 "Alias is prepended with: "
-msgstr "Aliasul poate fi folosit pentru a importa aceeași bibliotecă de mai multe ori cu nume diferite.\n"
+msgstr ""
+"Aliasul poate fi folosit pentru a importa aceeași bibliotecă de mai multe "
+"ori cu nume diferite.\n"
 "Aliasul este preatașat cu: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:43
-msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr " . Reţineţi că de la Robot v6.0, importurile cu vechime cu denumire de origine se înlocuiesc cu importurile de produse din specia AS."
+msgid ""
+" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr ""
+" . Reţineţi că de la Robot v6.0, importurile cu vechime cu denumire de "
+"origine se înlocuiesc cu importurile de produse din specia AS."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Denumirea și valoarea variabilei."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
-msgid "Give name and value of the variable. Input list variable items into separate cells."
-msgstr "Dă numele și valoarea variabilei. Introdu elementele variabile din listă în celule separate."
+msgid ""
+"Give name and value of the variable. Input list variable items into separate "
+"cells."
+msgstr ""
+"Dă numele și valoarea variabilei. Introdu elementele variabile din listă în "
+"celule separate."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:48
-msgid "Give name and value of the variable. Input dictionary items into separate cells."
-msgstr "Dați numele și valoarea variabilei. Introduceți elemente dicționare în celule separate."
+msgid ""
+"Give name and value of the variable. Input dictionary items into separate "
+"cells."
+msgstr ""
+"Dați numele și valoarea variabilei. Introduceți elemente dicționare în "
+"celule separate."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Elementele individuale trebuie să fie în formatul `key=value`"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:50
-msgid "Give name, optional arguments and optional alias of the library to import."
-msgstr "Dă nume, argumente opționale și alias opțional al bibliotecii pentru import."
+msgid ""
+"Give name, optional arguments and optional alias of the library to import."
+msgstr ""
+"Dă nume, argumente opționale și alias opțional al bibliotecii pentru import."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:51
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr "Separați mai multe argumente cu un caracter de țeavă ca 'arg 1 <unk> arg 2'."
+msgstr ""
+"Separați mai multe argumente cu un caracter de țeavă ca 'arg 1 <unk> arg 2'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr "Dă numele bibliotecii, URL-ul documentației bibliotecii și comanda pentru instalare."
+msgstr ""
+"Dă numele bibliotecii, URL-ul documentației bibliotecii și comanda pentru "
+"instalare."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
-msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
-msgstr "În comandă, puteți folosi `%%executable` ca substituent pentru a fi înlocuit cu calea reală"
+msgid ""
+"In the command, you can use `%%executable` as a placeholder to be replaced "
+"by the actual path"
+msgstr ""
+"În comandă, puteți folosi `%%executable` ca substituent pentru a fi înlocuit "
+"cu calea reală"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -859,7 +837,8 @@ msgstr " executabil în Python."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr "Dați calea și argumentele opționale ale fișierului variabil pentru import."
+msgstr ""
+"Dați calea și argumentele opționale ale fișierului variabil pentru import."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
@@ -887,91 +866,157 @@ msgstr "În plus, URL-urile sunt convertite în link-uri care pot fi accesate."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr "Aceste etichete sunt setate la toate testele din această suită de teste."
+msgstr ""
+"Aceste etichete sunt setate la toate testele din această suită de teste."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:64
-msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
-msgstr "Aceste etichete sunt setate pe toate cazurile de testare din această suită de teste, cu excepția cazului în care testele au etichete proprii."
+msgid ""
+"These tags are set to all test cases in this test suite unless test cases "
+"have their own tags."
+msgstr ""
+"Aceste etichete sunt setate pe toate cazurile de testare din această suită "
+"de teste, cu excepția cazului în care testele au etichete proprii."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
-msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
-msgstr "Aceste etichete sunt aplicate la toate testele din acest suit de teste. Acest câmp există de la Robot Framework 6. și va înlocui Tag-urile Forțată și Implicite după versiunea 7.0."
+msgid ""
+"These tags are applied to all test cases in this test suite. This field "
+"exists since Robot Framework 6.0 and will replace Force and Default Tags "
+"after version 7.0."
+msgstr ""
+"Aceste etichete sunt aplicate la toate testele din acest suit de teste. "
+"Acest câmp există de la Robot Framework 6. și va înlocui Tag-urile Forțată "
+"și Implicite după versiunea 7.0."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
-msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
-msgstr "Aceste etichete sunt setate la acest caz de testare în plus față de Tag-uri forțate și suprascriu posibile Etichete implicite."
+msgid ""
+"These tags are set to this test case in addition to Force Tags and they "
+"override possible Default Tags."
+msgstr ""
+"Aceste etichete sunt setate la acest caz de testare în plus față de Tag-uri "
+"forțate și suprascriu posibile Etichete implicite."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:73
-msgid "This keyword is executed before executing any of the test cases or lower level suites."
-msgstr "Acest cuvânt cheie este executat înainte de a executa oricare dintre testele testate sau costume de nivel inferior."
+msgid ""
+"This keyword is executed before executing any of the test cases or lower "
+"level suites."
+msgstr ""
+"Acest cuvânt cheie este executat înainte de a executa oricare dintre testele "
+"testate sau costume de nivel inferior."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
-msgid "This keyword is executed after all test cases and lower level suites have been executed."
-msgstr "Acest cuvânt cheie este executat după ce au fost executate toate testele și suitele de nivel inferior."
+msgid ""
+"This keyword is executed after all test cases and lower level suites have "
+"been executed."
+msgstr ""
+"Acest cuvânt cheie este executat după ce au fost executate toate testele și "
+"suitele de nivel inferior."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
-msgid "This keyword is executed before every test case in this suite unless test cases override it."
-msgstr "Acest cuvânt cheie este executat înainte de fiecare caz de test din această suită, cu excepția cazului în care este suprascris."
+msgid ""
+"This keyword is executed before every test case in this suite unless test "
+"cases override it."
+msgstr ""
+"Acest cuvânt cheie este executat înainte de fiecare caz de test din această "
+"suită, cu excepția cazului în care este suprascris."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
-msgid "This keyword is executed after every test case in this suite unless test cases override it."
-msgstr "Acest cuvânt cheie este executat după fiecare caz de test din această suită, cu excepția cazului în care este suprascris."
+msgid ""
+"This keyword is executed after every test case in this suite unless test "
+"cases override it."
+msgstr ""
+"Acest cuvânt cheie este executat după fiecare caz de test din această suită, "
+"cu excepția cazului în care este suprascris."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
-msgid "This keyword is executed before other keywords in this test case or keyword."
-msgstr "Acest cuvânt cheie este executat înaintea altor cuvinte cheie în acest caz de test sau cuvânt cheie."
+msgid ""
+"This keyword is executed before other keywords in this test case or keyword."
+msgstr ""
+"Acest cuvânt cheie este executat înaintea altor cuvinte cheie în acest caz "
+"de test sau cuvânt cheie."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr "În cazurile de testare, suprascrie posibilitatea de instalare a testului stabilit la nivelul suitului."
+msgstr ""
+"În cazurile de testare, suprascrie posibilitatea de instalare a testului "
+"stabilit la nivelul suitului."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Setarea în cuvinte-cheie există din Robot v7.0."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:84
-msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
-msgstr "Acest cuvânt cheie este executat după alte cuvinte cheie în acest caz de test sau cuvânt-cheie, chiar dacă testul sau cuvântul cheie nu funcționează."
+msgid ""
+"This keyword is executed after other keywords in this test case or keyword "
+"even if the test or keyword fails."
+msgstr ""
+"Acest cuvânt cheie este executat după alte cuvinte cheie în acest caz de "
+"test sau cuvânt-cheie, chiar dacă testul sau cuvântul cheie nu funcționează."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr "În cazurile de testare, suprascrie posibilitatea testului Teardown setat la nivelul suitului."
+msgstr ""
+"În cazurile de testare, suprascrie posibilitatea testului Teardown setat la "
+"nivelul suitului."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr "Specifică cuvântul cheie implicit al șablonului folosit de teste în această suită."
+msgstr ""
+"Specifică cuvântul cheie implicit al șablonului folosit de teste în această "
+"suită."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
-msgid "The test cases will contain only data to use as arguments to that keyword."
-msgstr "Cazurile de testare vor conține doar date care vor fi utilizate ca argumente pentru acest cuvânt-cheie."
+msgid ""
+"The test cases will contain only data to use as arguments to that keyword."
+msgstr ""
+"Cazurile de testare vor conține doar date care vor fi utilizate ca argumente "
+"pentru acest cuvânt-cheie."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Specifică cuvântul cheie al șablonului de utilizat."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
-msgid "The test itself will contain only data to use as arguments to that keyword."
-msgstr "Testul în sine va conține doar date care vor fi utilizate ca argumente pentru acest cuvânt cheie."
+msgid ""
+"The test itself will contain only data to use as arguments to that keyword."
+msgstr ""
+"Testul în sine va conține doar date care vor fi utilizate ca argumente "
+"pentru acest cuvânt cheie."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
-msgid "Specify the return value. Use a pipe character to separate multiple values."
-msgstr "Specificați valoarea de returnare. Utilizați un caracter de conductă pentru a separa valori multiple."
+msgid ""
+"Specify the return value. Use a pipe character to separate multiple values."
+msgstr ""
+"Specificați valoarea de returnare. Utilizați un caracter de conductă pentru "
+"a separa valori multiple."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:96
-msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
-msgstr "Timpul maxim de testare în această suită este permis să se execute înainte de a le anula forțat."
+msgid ""
+"Maximum time test cases in this suite are allowed to execute before aborting "
+"them forcefully."
+msgstr ""
+"Timpul maxim de testare în această suită este permis să se execute înainte "
+"de a le anula forțat."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr "Poate fi suprascris de cazuri individuale de testare folosind setarea Timeout."
+msgstr ""
+"Poate fi suprascris de cazuri individuale de testare folosind setarea "
+"Timeout."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:98
-msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
-msgstr "Timpul maxim de execuție a acestui test/cuvânt cheie este permis înainte de a-l anula forțat."
+msgid ""
+"Maximum time this test/keyword is allowed to execute before aborting it "
+"forcefully."
+msgstr ""
+"Timpul maxim de execuție a acestui test/cuvânt cheie este permis înainte de "
+"a-l anula forțat."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:99
-msgid "With test cases this setting overrides Test Timeout set on the suite level."
-msgstr "Cu cazuri de testare, această setare suprascrie testul Timeout setat la nivelul suitei."
+msgid ""
+"With test cases this setting overrides Test Timeout set on the suite level."
+msgstr ""
+"Cu cazuri de testare, această setare suprascrie testul Timeout setat la "
+"nivelul suitei."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1152,8 +1197,12 @@ msgid "Columns"
 msgstr "Coloane"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:195
-msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
-msgstr "Numărul de coloane afișate în acest editor. Valoarea selectată este stocată și utilizată global."
+msgid ""
+"Number of columns that are shown in this editor. Selected value is stored "
+"and used globally."
+msgstr ""
+"Numărul de coloane afișate în acest editor. Valoarea selectată este stocată "
+"și utilizată global."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1231,73 +1280,83 @@ msgstr "Fă variabilă listă\tCtrl-2"
 msgid "Make Dict Variable\tCtrl-5"
 msgstr "Creează o Variabilă Dict\tCtrl-5"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:950
-msgid "<b>Keyword was not detected by RIDE</b>\n"
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:951
+msgid ""
+"<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</li>\n"
-"            <li>For library import errors: Consider importing library spec XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
+"            <li>Import library or resource file containing the keyword.</"
+"li>\n"
+"            <li>For library import errors: Consider importing library spec "
+"XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with "
+"the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.</li>\n"
 "        </ul>"
-msgstr "<b>Cuvântul cheie nu a fost detectat de RIDE</b>\n"
+msgstr ""
+"<b>Cuvântul cheie nu a fost detectat de RIDE</b>\n"
 "        <br>Corecții posibile:<br>\n"
 "        <ul>\n"
-"            <li>Importul librăriei sau a fișierului cu resurse ce conține cuvântul cheie.</li>\n"
-"            <li>Pentru erorile de import ale bibliotecii: se consideră importarea unei biblioteci de tip XML\n"
-"            (Unelte / Importă Viteza Bibliotecii XML sau prin adăugarea unui fișier XML cu numele corect\n"
+"            <li>Importul librăriei sau a fișierului cu resurse ce conține "
+"cuvântul cheie.</li>\n"
+"            <li>Pentru erorile de import ale bibliotecii: se consideră "
+"importarea unei biblioteci de tip XML\n"
+"            (Unelte / Importă Viteza Bibliotecii XML sau prin adăugarea unui "
+"fișier XML cu numele corect\n"
 "            în PYTHONPATH) pentru a activa completarea cuvântului cheie\n"
 "            , de exemplu, pentru bibliotecile Java.\n"
-"            Viteza bibliotecii XML poate fi creată folosind unealta libdoc din Robot Framework.</li>\n"
+"            Viteza bibliotecii XML poate fi creată folosind unealta libdoc "
+"din Robot Framework.</li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1101
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1102
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:234
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1216
 msgid "Validation Error"
 msgstr "Eroare de validare"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1188
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1189
 msgid "New name"
 msgstr "Nume nou"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1201
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1202
 msgid "Save"
 msgstr "Salvează"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1204
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1205
 #: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Anulează"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1234
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
 msgid "Validation Error!"
 msgstr "Eroare de validare!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1236
 msgid "Error in JSON:"
 msgstr "Eroare în JSON:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1236
 msgid "Save anyway?"
 msgstr "Salvați oricum?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1405
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1406
 msgid "Please select what you want to check for usage"
 msgstr "Vă rugăm să selectați ce doriți să verificați pentru utilizare"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1408
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1409
 msgid "Complete cell content"
 msgstr "Completează conținutul de celule"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1409
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1410
 msgid "Variable "
 msgstr "Variabilă "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1421
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1422
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1112
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
@@ -1380,32 +1439,47 @@ msgid "Import Library Spec XML"
 msgstr "Importă Viteza Bibliotecii XML"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:685
-msgid "<br>Possible corrections and notes:<br>\n"
+msgid ""
+"<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the "
+"failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not "
+"initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec "
+"XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to "
+"enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr "<br>Eșecuri posibile și note:<br>\n"
+msgstr ""
+"<br>Eșecuri posibile și note:<br>\n"
 "        <ul>\n"
 "            <li>Eșecul importului este afișat cu culoare roșie.</li>\n"
-"            <li>Vezi Instrumente / Vezi RIDE Log pentru informaţii detaliate despre eşec.</li>\n"
-"            <li>Dacă importul conține o variabilă pe care RIDE nu a inițializat-o, ia în considerare adăugarea variabilei\n"
+"            <li>Vezi Instrumente / Vezi RIDE Log pentru informaţii detaliate "
+"despre eşec.</li>\n"
+"            <li>Dacă importul conține o variabilă pe care RIDE nu a "
+"inițializat-o, ia în considerare adăugarea variabilei\n"
 "            la tabelul variabil cu o valoare implicită.</li>\n"
-"            <li>Pentru importul bibliotecii a eșuat: luați în considerare importul cărții cu caractere XML (Instrumente / Import Librărie Spec XML sau de\n"
-"            adăugarea fișierului XML cu numele corect în PYTHONPATH) pentru a activa completarea cuvântului cheie\n"
+"            <li>Pentru importul bibliotecii a eșuat: luați în considerare "
+"importul cărții cu caractere XML (Instrumente / Import Librărie Spec XML sau "
+"de\n"
+"            adăugarea fișierului XML cu numele corect în PYTHONPATH) pentru "
+"a activa completarea cuvântului cheie\n"
 "            , de exemplu pentru bibliotecile Java. Viteza bibliotecii\n"
-"            XML poate fi creată folosind unealta libdoc din Robot Framework.\n"
+"            XML poate fi creată folosind unealta libdoc din Robot "
+"Framework.\n"
 "            Pentru mai multe informații, consultați \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1456,9 +1530,11 @@ msgid "Get help"
 msgstr "Obțineți ajutor"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1138
-msgid "<h1>Syntax colorization</h1>\n"
+msgid ""
+"<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://"
+"pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1474,16 +1550,20 @@ msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/"
+"setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://"
+"pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr "<h1>Colorația de Sintaxă</h1>\n"
+msgstr ""
+"<h1>Colorația de Sintaxă</h1>\n"
 "        <p>\n"
-"        Colorația de Sintaxă pentru Editarea Text folosește evidențierea sintaxei <a href='https://pygments.org/'>Pygments</a> .\n"
+"        Colorația de Sintaxă pentru Editarea Text folosește evidențierea "
+"sintaxei <a href='https://pygments.org/'>Pygments</a> .\n"
 "        </p>\n"
 "        <p>\n"
 "        Instalează Pygments de pe linia de comandă cu:\n"
@@ -1499,11 +1579,13 @@ msgstr "<h1>Colorația de Sintaxă</h1>\n"
 "        <p>\n"
 "        Dacă nu ai pip sau easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/"
+"setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >urmaţi aceste instrucţiuni</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Pentru mai multe informaţii despre instalarea Pygings. <a href='https://pygments.org/download/'>vezi site-ul</a>.\n"
+"        Pentru mai multe informaţii despre instalarea Pygings. <a "
+"href='https://pygments.org/download/'>vezi site-ul</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1531,7 +1613,6 @@ msgstr "Jurnal de Parasi"
 msgid "View Parser Log"
 msgstr "Vezi jurnalul Parserului"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
 msgstr "Creați scurtătură RIDE pe desktop"
@@ -1656,9 +1737,11 @@ msgid "Auto size columns"
 msgstr "Auto size columns"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:258
-msgid "Max column size\n"
+msgid ""
+"Max column size\n"
 "(applies when auto size is on)"
-msgstr "Dimensiunea maximă a coloanei\n"
+msgstr ""
+"Dimensiunea maximă a coloanei\n"
 "(se aplică când dimensiunea automată este on)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:262
@@ -1744,7 +1827,9 @@ msgstr "Afișează culorile consolei setate de"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr "Solicită confirmarea pentru a executa toate testele dacă niciunul nu este selectat "
+msgstr ""
+"Solicită confirmarea pentru a executa toate testele dacă niciunul nu este "
+"selectat "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
@@ -1812,57 +1897,55 @@ msgstr "Importurile bibliotecii şi PYTHONPATH"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr "Lista bibliotecilor care vor fi importate automat, separate prin virgulă."
+msgstr ""
+"Lista bibliotecilor care vor fi importate automat, separate prin virgulă."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:45
-msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
-msgstr "Lista de directoare separate prin virgulă care vor fi adăugate la PYTHONPATH atunci când bibliotecile sunt căutate."
+msgid ""
+"Comma separated list of directories to be added to PYTHONPATH when libraries "
+"are searched."
+msgstr ""
+"Lista de directoare separate prin virgulă care vor fi adăugate la PYTHONPATH "
+"atunci când bibliotecile sunt căutate."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr "Lista de directoare cu separator virgulă care conțin fișiere de tip bibliotecă."
+msgstr ""
+"Lista de directoare cu separator virgulă care conțin fișiere de tip "
+"bibliotecă."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
 msgstr "Salvează sau încarcă setările"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
 msgid "Load settings from file..."
 msgstr "Încarcă setările din fișier..."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:49
 msgid "Save settings to file..."
 msgstr "Salvează setările în fișier..."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:58
 msgid "Current directory:"
 msgstr "Directorul curent:"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:75
 msgid "File with Settings to Load"
 msgstr "Fişier cu setări de încărcat"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:101
 msgid "Save Settings to file"
 msgstr "Salvează setările în fișier"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:114
 msgid "Could not open settings file \"%s\" for writing"
 msgstr "Nu s-a putut deschide fișierul de setări \"%s\" pentru scris"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:126
 msgid "Error trying to get '%s' from file %s"
 msgstr "Eroare la încercarea de a obține '%s' din fișierul %s"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:141
 msgid "Invalid config file '%s': %s"
 msgstr "Fișier de configurare nevalid '%s': %s"
@@ -1905,7 +1988,8 @@ msgid "Line separator:"
 msgstr "Separator de linii:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:66
-msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgid ""
+"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
 msgstr "Valorile posibile sunt native (de OS) CRLF (Windows) şi LF (Unixy)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:68
@@ -1916,17 +2000,14 @@ msgstr "Separarea spațiilor"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "Numărul de spații dintre celule la salvarea în format txt"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
 msgstr "Adăugați fișierele deschise recent în meniul de fișiere."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
 msgstr "Nu există fișiere recente"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
@@ -1936,42 +2017,53 @@ msgstr "Nu există fișiere recente"
 msgid "File"
 msgstr "Fişier"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:119
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:125
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:153
 msgid "Exit"
 msgstr "Ieșire"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:142
 msgid "Open %s"
 msgstr "Deschide %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:27
-msgid "The specified command string will be split from whitespaces into a command\n"
+msgid ""
+"The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n\n"
-"The command will be executed in the system directly without opening a shell.\n"
-"This means that shell commands and extensions are not available. For example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n\n"
+"internal spaces, they must be written as '<SPACE>'.\n"
+"\n"
+"The command will be executed in the system directly without opening a "
+"shell.\n"
+"This means that shell commands and extensions are not available. For "
+"example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and "
+"'dir'\n"
+"command does not work.\n"
+"\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr "Șirul de comandă specificat va fi împărțit din spații albe în comanda\n"
-"și argumentele sale. În cazul în care comanda sau oricare dintre argumente necesită spaţiu\n"
-"intern, acestea trebuie să fie scrise ca '<SPACE>'.\n\n"
+msgstr ""
+"Șirul de comandă specificat va fi împărțit din spații albe în comanda\n"
+"și argumentele sale. În cazul în care comanda sau oricare dintre argumente "
+"necesită spaţiu\n"
+"intern, acestea trebuie să fie scrise ca '<SPACE>'.\n"
+"\n"
 "Comanda va fi executată direct în sistem fără a deschide o cochilie.\n"
-"Acest lucru înseamnă că comenzile de shell și extensiile nu sunt disponibile. De exemplu,\n"
-"în fişierele de serie Windows pentru a fi executate trebuie să conţină '. Extensia 'dir' și comanda 'dir'\n"
-"nu funcționează.\n\n"
+"Acest lucru înseamnă că comenzile de shell și extensiile nu sunt "
+"disponibile. De exemplu,\n"
+"în fişierele de serie Windows pentru a fi executate trebuie să conţină '. "
+"Extensia 'dir' și comanda 'dir'\n"
+"nu funcționează.\n"
+"\n"
 "Exemple:\n"
 "    robot. la --include fum C:\\my_test\n"
 "    svn actualizează /home/robot\n"
-"    C:\\Program<SPACE>Fișiere\\App\\prg. xe argument<SPACE>cu spațiul<SPACE>, configurațiile Rulării\n"
+"    C:\\Program<SPACE>Fișiere\\App\\prg. xe argument<SPACE>cu "
+"spațiul<SPACE>, configurațiile Rulării\n"
 "sunt stocate în fișierul de setări RIDE.\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
@@ -1988,13 +2080,18 @@ msgid "Remove"
 msgstr "Elimină"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
-msgid "A plugin for executing commands on the system.\n\n"
+msgid ""
+"A plugin for executing commands on the system.\n"
+"\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr "Un plugin pentru executarea de comenzi în sistem.\n\n"
+msgstr ""
+"Un plugin pentru executarea de comenzi în sistem.\n"
+"\n"
 "    Acest plugin permite crearea de configurații persistente de execuție și\n"
-"    a acestora. Ieșirea comenzii executate este afișată într-o filă separată\n"
+"    a acestora. Ieșirea comenzii executate este afișată într-o filă "
+"separată\n"
 "."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
@@ -2015,41 +2112,38 @@ msgstr "Rulează din nou"
 msgid "running"
 msgstr "rulează"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
 msgstr "Caută teste"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
 msgstr "Căutare etichete"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
 msgstr "Testare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:66
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
 msgstr "Rezultate: "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
-msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
-msgstr "Găsește potriviri folosind modele de etichete. Vezi Ghidul utilizatorului RF sau 'robot --help' pentru mai multe informații."
+msgid ""
+"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
+"more information."
+msgstr ""
+"Găsește potriviri folosind modele de etichete. Vezi Ghidul utilizatorului RF "
+"sau 'robot --help' pentru mai multe informații."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:863
 msgid "Include"
 msgstr "Include"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:117
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:393
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:490
@@ -2057,13 +2151,11 @@ msgstr "Include"
 msgid "Exclude"
 msgstr "Excludere"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
 msgstr "Adaugă toate la cele selectate"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:156
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:164
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:211
@@ -2071,38 +2163,48 @@ msgstr "Adaugă toate la cele selectate"
 msgid "Results: %d"
 msgstr "Rezultate: %d"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
 msgstr "Informaţii. "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
 msgstr "Găsește potriviri după nume, documentație și/sau etichetă."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
 msgstr "Termenul de căutare"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr "Un plugin pentru căutarea de teste pe baza numelui, etichetelor și documentației"
+msgstr ""
+"Un plugin pentru căutarea de teste pe baza numelui, etichetelor și "
+"documentației"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:31
-msgid "Install missing libraries and open documentation.\n\n"
-"    You can edit settings.cfg to add URL for documentation and command to install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
-"    a dialog to fill the command to install or the URL for the documentation.\n"
+msgid ""
+"Install missing libraries and open documentation.\n"
+"\n"
+"    You can edit settings.cfg to add URL for documentation and command to "
+"install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install "
+"Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you "
+"will have\n"
+"    a dialog to fill the command to install or the URL for the "
+"documentation.\n"
 "    "
-msgstr "Instalați bibliotecile lipsă și deschideți documentația.\n\n"
-"    Puteți edita setările.cfg pentru a adăuga URL-ul pentru documentație și comandă pentru a instala.\n"
-"    Puteți da click dreapta pe un nume al bibliotecii și să deschideți documentația sau să instalați Librăria.\n"
-"    De la Unelte>Finder Librărie... sau Help->Deschide Documentația Bibliotecii... veţi avea\n"
-"    un dialog pentru a completa comanda pentru a instala sau URL-ul pentru documentaţie.\n"
+msgstr ""
+"Instalați bibliotecile lipsă și deschideți documentația.\n"
+"\n"
+"    Puteți edita setările.cfg pentru a adăuga URL-ul pentru documentație și "
+"comandă pentru a instala.\n"
+"    Puteți da click dreapta pe un nume al bibliotecii și să deschideți "
+"documentația sau să instalați Librăria.\n"
+"    De la Unelte>Finder Librărie... sau Help->Deschide Documentația "
+"Bibliotecii... veţi avea\n"
+"    un dialog pentru a completa comanda pentru a instala sau URL-ul pentru "
+"documentaţie.\n"
 "    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:39
@@ -2134,10 +2236,12 @@ msgid "Info"
 msgstr "Info"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:79
-msgid "Library \"%s\" imported\n"
+msgid ""
+"Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr "Biblioteca%s\" importată\n"
+msgstr ""
+"Biblioteca%s\" importată\n"
 "din \"%s\"\n"
 "Acest lucru poate necesita repornire RIDE."
 
@@ -2202,9 +2306,11 @@ msgid "Change recursively"
 msgstr "Modificare recursivă"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:396
-msgid "Provide format for initialization file in directory\n"
+msgid ""
+"Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr "Furnizați formatul pentru fișierul de inițializare în directorul\n"
+msgstr ""
+"Furnizați formatul pentru fișierul de inițializare în directorul\n"
 "\"%s\"."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:410
@@ -2232,8 +2338,12 @@ msgid "All files|*.*"
 msgstr "Toate fişierele *.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr "Oferă o vedere de tip copac pentru fișiere și foldere. Deschide elementul selectat cu click-dreapta mouse-ului."
+msgid ""
+"Provides a tree view for Files and Folders. Opens selected item with mouse "
+"right-click."
+msgstr ""
+"Oferă o vedere de tip copac pentru fișiere și foldere. Deschide elementul "
+"selectat cu click-dreapta mouse-ului."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:117
@@ -2271,7 +2381,8 @@ msgstr "Căutare cuvinte cheie"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr "Un plugin pentru căutarea cuvintelor-cheie bazat pe nume sau documentație."
+msgstr ""
+"Un plugin pentru căutarea cuvintelor-cheie bazat pe nume sau documentație."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -2295,27 +2406,41 @@ msgstr "[File]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr "!&Proiect | Nou pentru a crea un nou nivel de top la nivel amaze | Ctrlcmd-N | ART_NEW\n"
+msgstr ""
+"!&Proiect | Nou pentru a crea un nou nivel de top la nivel amaze | Ctrlcmd-N "
+"| ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr "!&Deschide suportul de testare | Deschideţi fişierul care conţine teste | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid ""
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr ""
+"!&Deschide suportul de testare | Deschideţi fişierul care conţine teste | "
+"Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr "!Deschide &Dosar | Dosar Deschis care conține date | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid ""
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
+msgstr ""
+"!Deschide &Dosar | Dosar Deschis care conține date | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr "!Deschideți Fișier extern | Deschideți fișierul în Editorul de Cod | | ART_NORMAL_FILE\n"
+msgstr ""
+"!Deschideți Fișier extern | Deschideți fișierul în Editorul de Cod | | "
+"ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr "!&Salvează | Salvează baza de date selectată | Ctrlcmd-S | ART_FILE_SAVE\n"
+msgstr ""
+"!&Salvează | Salvează baza de date selectată | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr "!Salvează &Toate | Salvează toate modificările | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgstr ""
+"!Salvează &Toate | Salvează toate modificările | Ctrlcmd-Shift-S | "
+"ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2355,7 +2480,9 @@ msgstr "Ghidul utilizatorului Wiki | RIDE (Wiki)\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr "!Raportați o problemă | Deschideți browserul pentru a SEARCH pe trackerul de probleme RIDE\n"
+msgstr ""
+"!Raportați o problemă | Deschideți browserul pentru a SEARCH pe trackerul de "
+"probleme RIDE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
@@ -2387,9 +2514,11 @@ msgid "Test Suites"
 msgstr "Suite de test"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:411
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr "Există modificări nesalvate.\n"
+msgstr ""
+"Există modificări nesalvate.\n"
 "Doriţi să salvaţi modificările înainte de a ieşi?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:411
@@ -2398,9 +2527,11 @@ msgid "Warning"
 msgstr "Avertizare"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:501
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr "Există modificări nesalvate.\n"
+msgstr ""
+"Există modificări nesalvate.\n"
 "Doriţi să continuaţi fără a salva?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:552
@@ -2480,12 +2611,19 @@ msgid "Plugin"
 msgstr "Plugin"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:92
-msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr "Info. Activarea şi dezactivarea plugin-urilor ar putea necesita repornirea RIDE pentru ca meniurile să funcţioneze."
+msgid ""
+"Info. Enabling and disabling plugins might require RIDE restart for menus to "
+"work."
+msgstr ""
+"Info. Activarea şi dezactivarea plugin-urilor ar putea necesita repornirea "
+"RIDE pentru ca meniurile să funcţioneze."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
-msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr "(Obsolet) Oferă previzualizarea datelor de testare în formatele HTML, TSV și TXT."
+msgid ""
+"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr ""
+"(Obsolet) Oferă previzualizarea datelor de testare în formatele HTML, TSV și "
+"TXT."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
@@ -2513,9 +2651,12 @@ msgid "Search unused keywords"
 msgstr "Căutare cuvinte cheie neutilizate"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
-msgid "This dialog helps you finding unused keywords within your opened project.\n"
+msgid ""
+"This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr "Acest dialog vă ajută să găsiți cuvinte cheie neutilizate în cadrul proiectului dvs. deschis.\n"
+msgstr ""
+"Acest dialog vă ajută să găsiți cuvinte cheie neutilizate în cadrul "
+"proiectului dvs. deschis.\n"
 "Dacă doriți, puteți restricționa căutarea la un set de fișiere cu filtrul."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
@@ -2536,11 +2677,16 @@ msgid "Use RegEx"
 msgstr "Folosește RegEx"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
-msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid ""
+"Here you can define one or more strings separated by comma (e.g. "
+"common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr "Aici puteţi defini una sau mai multe şiruri separate prin virgulă (de ex. common,abc,123).\n"
-"Filtrul se potrivește dacă cel puțin un șir face parte din numele fișierului.\n"
+msgstr ""
+"Aici puteţi defini una sau mai multe şiruri separate prin virgulă (de ex. "
+"common,abc,123).\n"
+"Filtrul se potrivește dacă cel puțin un șir face parte din numele "
+"fișierului.\n"
 "Dacă nu introduceţi nici un şir, toate fişierele deschise sunt incluse"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:101
@@ -2598,8 +2744,12 @@ msgid "(None)"
 msgstr "Niciuna)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n\n"
-msgstr "Cuvintele cheie ale următoarelor fișiere vor fi incluse în căutare:\n\n"
+msgid ""
+"Keywords of the following files will be included in the search:\n"
+"\n"
+msgstr ""
+"Cuvintele cheie ale următoarelor fișiere vor fi incluse în căutare:\n"
+"\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2650,9 +2800,11 @@ msgid "Excluded Tag Search"
 msgstr "Caută etichete excluse"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:147
-msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid ""
+"Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr "Total teste %d, teste cu tag-uri %d, tag-uri unice %d\n"
+msgstr ""
+"Total teste %d, teste cu tag-uri %d, tag-uri unice %d\n"
 "Testele selectate în prezent %d"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
@@ -2763,9 +2915,11 @@ msgid "Expand all"
 msgstr "Extinde tot"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:435
-msgid "Directory contains unsaved data!\n"
+msgid ""
+"Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "Directorul conține date nesalvate!\n"
+msgstr ""
+"Directorul conține date nesalvate!\n"
 "Trebuie să salvați datele înainte de a le exclude."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:481
@@ -2799,9 +2953,11 @@ msgstr "Elimină doar citire"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:522
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:625
-msgid "File contains unsaved data!\n"
+msgid ""
+"File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "Fișierul conține date nesalvate!\n"
+msgstr ""
+"Fișierul conține date nesalvate!\n"
 "Trebuie să salvați date înainte de a fi exclus."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:563
@@ -2891,4 +3047,3 @@ msgstr "Ok"
 #: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "Da"
-

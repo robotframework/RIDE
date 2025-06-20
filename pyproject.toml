@@ -6,6 +6,14 @@ build-backend = "hatchling.build"
 name = "robotframework-ride"
 dynamic = ["version"]
 description = "RIDE :: Robot Framework Test Data Editor"
+long_description = """
+Robot Framework is a generic test automation framework for acceptance
+level testing. RIDE is a lightweight and intuitive editor for Robot
+Framework test data.
+
+Project: https://github.com/robotframework/RIDE#readme
+"""
+long_description_content_type = "text/x-rst"
 license = "Apache-2.0"
 license-files = { paths = ["LICENSE.txt"] }
 requires-python = ">=3.8, <3.15"
