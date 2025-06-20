@@ -30,6 +30,9 @@ when selecting in Tree shows the filename in StatusBar.
 
 === Fixed
 - Fixed Create Desktop Shortcut by pointing executable to ``python -m robotide``.
+- Changed some informative dialogs and JSON Editor to use the customized colors.
+- Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.
+- On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.3.rst[2.1.3] - 2025-03-24
 

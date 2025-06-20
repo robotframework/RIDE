@@ -99,6 +99,7 @@ app.namespace = mock(Namespace)
 app.settings = FakeSettings()
 app.register_editor()
 """
+generic_app = wx.App()
 
 DATA = [['kw1', '', ''],
         ['kw2', 'arg1', ''],
@@ -346,7 +347,7 @@ class KeywordEditorTest(unittest.TestCase):
         self._grid.kweditor.on_comment_cells(None)  # THIS IS NOT WORKING
         data = self._grid.kweditor.get_selected_content()
         print(f"DEBUG: After Sharp Comment Data Cell is {data}")
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
 
@@ -572,7 +573,37 @@ class KeywordEditorTest(unittest.TestCase):
         print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_title title={title}")
         # wx.CallLater(4000, dlg.hide)
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
+
+    def test_htmlpopupwindow_dialog_simple(self):
+        dlg = HtmlPopupWindow(self.frame, (400, 200), False, True)
+        dlg.set_content("Example without title")
+        dlg.show_at((1000, 200))
+        shown=dlg.IsShown()
+        print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_simple shown={shown}")
+        assert shown is True
+        wx.CallLater(4000, dlg.hide)
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
+
+    def test_htmlpopupwindow_dialog_title(self):
+        dlg = HtmlPopupWindow(self.panel, (400, 200), True, True)
+        dlg.set_content("Example with title", "This is the Title")
+        dlg.show_at((1000, 100))
+        shown=dlg.IsShown()
+        assert shown is True
+        pw_size = dlg.pw_size
+        pw_pos = dlg.screen_position
+        print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_title pw_size={pw_size} scree_pos={pw_pos}")
+        event=wx.KeyEvent()
+        dlg._detach(event)
+        title = dlg._detached_title
+        print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_title title={title}")
+        wx.CallLater(4000, dlg.hide)
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_contentassist_text_editor(self):
