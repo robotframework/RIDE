@@ -49,6 +49,10 @@ dependencies = [
     "PyPubSub",
     "Pywin32; platform_system == 'Windows'",
     "wxPython",
+    "robotframework",
+    "psutil",
+    "packaging",
+    "requests>=2.32.2",
 ]
 
 [project.urls]
