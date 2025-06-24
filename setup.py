@@ -29,7 +29,7 @@ REQUIREMENTS = ['PyPubSub',
                 'Pywin32; sys_platform=="win32"',
                 'wxPython',
                 'packaging',
-                'requests>=2.32.2']
+                'requests>=2.32.4']
 
 PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],
