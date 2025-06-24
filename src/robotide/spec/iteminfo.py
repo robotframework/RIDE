@@ -17,7 +17,10 @@ import os
 from functools import total_ordering
 
 from .. import utils
-from ..lib.robot.libdocpkg.htmlwriter import DocToHtml
+try:
+    from robot.utils import html_format
+except (ImportError, ModuleNotFoundError):
+    from robotide.lib.robot.utils import html_format
 
 
 class ItemInfo(object):
@@ -180,7 +183,7 @@ class _KeywordInfo(ItemInfo):
 
     @property
     def details(self):
-        formatter = DocToHtml(self.doc_format)
+        # formatter = html_format(self.doc_format)
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s &lt;%s&gt;</td></tr>'
@@ -190,7 +193,7 @@ class _KeywordInfo(ItemInfo):
                 '<tr><td>%s</td></tr>'
                 '</table>') % (self._name(self.item), self._source(self.item), self._type,
                                self._format_args(self.arguments),
-                               formatter(self.doc))
+                               html_format(self.doc))
 
     @staticmethod
     def _format_args(args):
