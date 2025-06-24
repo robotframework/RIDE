@@ -172,6 +172,7 @@ version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fix broken installation of RIDE v2.1.4 by adding missing dependencies.</li>
 <li>Added <b>Tools-&gt;Library Finder...</b> to install libraries and <b>Help-&gt;Open Library Documentation...</b> .
  They share the same dialog, and definitions are recorded in ``settings.cfg``.</li>
 <li>Added context menu to install libraries and to open documentation in Grid Editor Import section.
@@ -216,7 +217,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.1.4
+pip install --upgrade robotframework-ride==2.1.4.1
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -247,7 +248,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 20/June/2025.</p>
+<p>RIDE {VERSION} was released on 24/June/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
