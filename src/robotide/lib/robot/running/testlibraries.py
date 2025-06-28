@@ -16,27 +16,35 @@
 import inspect
 import os
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.libraries import STDLIBS
-from robotide.lib.robot.output import LOGGER
-from robotide.lib.robot.utils import (getdoc, get_error_details, Importer, is_java_init,
-                         is_java_method, JYTHON, normalize, seq2str2, unic,
-                         is_list_like, PY2, PYPY, type_name)
+try:
+    from robot.errors import DataError
+    from robot.libraries import STDLIBS
+    from robot.output import LOGGER
+    from robot.utils import (get_error_details, getdoc, Importer, is_dict_like, is_list_like, normalize,
+                             NormalizedDict, seq2str2, type_name)
+    from robot.running.arguments import EmbeddedArguments
+    from robot.running.context import EXECUTION_CONTEXTS
+    from robot.running.dynamicmethods import (GetKeywordArguments, GetKeywordDocumentation,
+                                 GetKeywordNames, GetKeywordTags, RunKeyword)
+    from robot.running.libraryscopes import LibraryScope
+    from robot.running.outputcapture import OutputCapturer
+except (ImportError, ModuleNotFoundError):
+    from robotide.lib.robot.errors import DataError
+    from robotide.lib.robot.libraries import STDLIBS
+    from robotide.lib.robot.output import LOGGER
+    from robotide.lib.robot.utils import (getdoc, get_error_details, Importer, normalize, seq2str2,
+                                          is_list_like, type_name)
+    from .arguments import EmbeddedArguments
+    from .context import EXECUTION_CONTEXTS
+    from .dynamicmethods import (GetKeywordArguments, GetKeywordDocumentation,
+                                 GetKeywordNames, GetKeywordTags, RunKeyword)
+    from .libraryscopes import LibraryScope
+    from .outputcapture import OutputCapturer
 
-from .arguments import EmbeddedArguments
-from .context import EXECUTION_CONTEXTS
-from .dynamicmethods import (GetKeywordArguments, GetKeywordDocumentation,
-                             GetKeywordNames, GetKeywordTags, RunKeyword)
 from .handlers import Handler, InitHandler, DynamicHandler, EmbeddedArgumentsHandler
 from .handlerstore import HandlerStore
-from .libraryscopes import LibraryScope
-from .outputcapture import OutputCapturer
 
-
-if JYTHON:
-    from java.lang import Object
-else:
-    Object = None
+Object = None
 
 
 def TestLibrary(name, args=None, variables=None, create_handlers=True):
@@ -46,8 +54,7 @@ def TestLibrary(name, args=None, variables=None, create_handlers=True):
         import_name = name
     with OutputCapturer(library_import=True):
         importer = Importer('test library')
-        libcode, source = importer.import_class_or_module(import_name,
-                                                          return_source=True)
+        libcode, source = importer.import_class_or_module(import_name, return_source=True)
     libclass = _get_lib_class(libcode)
     lib = libclass(libcode, name, args or [], source, variables)
     if create_handlers:
@@ -121,7 +128,7 @@ class _BaseTestLibrary(object):
             or self._get_attr(libcode, '__version__')
 
     def _get_attr(self, object, attr, default='', upper=False):
-        value = unic(getattr(object, attr, default))
+        value = getattr(object, attr, default)
         if upper:
             value = normalize(value, ignore='_').upper()
         return value
@@ -137,14 +144,7 @@ class _BaseTestLibrary(object):
         return init if init and self._valid_init(init) else lambda: None
 
     def _valid_init(self, method):
-        # https://bitbucket.org/pypy/pypy/issues/2462/
-        if PYPY:
-            if PY2:
-                return method.__func__ is not object.__init__.__func__
-            return method is not object.__init__
-        return (inspect.ismethod(method) or     # PY2
-                inspect.isfunction(method) or   # PY3
-                is_java_init(method))
+        return inspect.isfunction(method)
 
     def reset_instance(self, instance=None):
         prev = self._libinst
@@ -330,17 +330,6 @@ class _ClassLibrary(_BaseTestLibrary):
     def _validate_handler(self, handler):
         if not inspect.isroutine(handler):
             raise DataError('Not a method or function')
-        if self._is_implicit_java_or_jython_method(handler):
-            raise DataError('Implicit methods are ignored')
-
-    def _is_implicit_java_or_jython_method(self, handler):
-        if not is_java_method(handler):
-            return False
-        for signature in handler.argslist[:handler.nargs]:
-            cls = signature.declaringClass
-            if not (cls is Object or cls.__module__ == 'org.python.proxies'):
-                return False
-        return True
 
 
 class _ModuleLibrary(_BaseTestLibrary):

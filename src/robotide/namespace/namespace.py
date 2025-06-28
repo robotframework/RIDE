@@ -46,7 +46,6 @@ class Namespace(object):
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
-        # print(f"DEBUG: namespace.py Namespace _init_caches {self.settings}")
         self._lib_cache = LibraryCache(
             self.settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self.settings)
@@ -141,7 +140,6 @@ class Namespace(object):
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
         sugs = set()  # self._words_cache or
-        # print(f"DEBUG: namespace.py Namespace get_suggestions_for ENTER start={start} {datafile=} {ctx=} {sugs=}")
         while start and start[-1] in [']', '}', '=', ',']:
             start = start[:-1]
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
@@ -159,7 +157,6 @@ class Namespace(object):
         # print(f"DEBUG: namespace.py Namespace get_suggestions_for FROM CONTENT start={start} {sugs=}")
         sugs_list = list(sugs)
         sugs_list.sort()
-        # print(f"DEBUG: namespace.py Namespace get_suggestions_for RETURN {sugs_list=}")
         return sugs_list
 
     def _get_suggestions_from_hooks(self, datafile, start):
