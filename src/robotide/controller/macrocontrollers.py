@@ -499,6 +499,10 @@ class UserKeywordController(WithStepsController):
     def arguments(self):
         return ArgumentsController(self, self.kw.args)
 
+    @property
+    def is_private(self):
+        return self.kw.is_private
+
     def validate_keyword_name(self, name):
         return self._parent.validate_name(name)
 

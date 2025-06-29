@@ -32,11 +32,16 @@ module may still be changed in the future major releases.
 __ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#programmatic-modification-of-results
 __ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface
 """
-
-from robotide.lib.robot import model
-from robotide.lib.robot.conf import RobotSettings
-from robotide.lib.robot.output import LOGGER, Output, pyloggingconf
-from robotide.lib.robot.utils import setter
+try:
+    from robot import model
+    from robot.conf import RobotSettings
+    from robot.output import LOGGER, Output, pyloggingconf
+    from robot.utils import setter
+except (ImportError, ModuleNotFoundError):
+    from robotide.lib.robot import model
+    from robotide.lib.robot.conf import RobotSettings
+    from robotide.lib.robot.output import LOGGER, Output, pyloggingconf
+    from robotide.lib.robot.utils import setter
 
 from .steprunner import StepRunner
 from .randomizer import Randomizer
@@ -278,6 +283,10 @@ class UserKeyword(object):
         self.return_ = return_ or ()
         self.timeout = timeout
         self.keywords = []
+
+    @property
+    def is_private(self):
+        return self.name.startswith('_') or 'robot:private' in [x.replace(' ', '').lower() for x in self.tags]
 
     @setter
     def keywords(self, keywords):

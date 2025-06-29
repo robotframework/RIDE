@@ -235,6 +235,9 @@ class Namespace(object):
         kw = self.find_keyword(datafile, kw_name)
         return kw if isinstance(kw, UserKeywordInfo) else None
 
+    def is_private(self, datafile, kwname):  # TODO: Add condition for robot:private in tags
+        return kwname.startswith('_') and self.is_user_keyword(datafile, kwname)
+
     def is_user_keyword(self, datafile, kw_name):
         return bool(self.find_user_keyword(datafile, kw_name))
 
