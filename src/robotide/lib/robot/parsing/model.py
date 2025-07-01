@@ -1130,7 +1130,7 @@ class UserKeyword(TestCase):
         return [self.args, self.doc, self.setup_, self.tags,  self.timeout, self.teardown, self.return_]
 
     @property
-    def is_private(self):
+    def is_private_keyword(self):
         return (self.name.startswith('_') or
                 (self.tags and 'robot:private' in [x.replace(' ', '').lower() for x in self.tags]))
 

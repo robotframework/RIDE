@@ -285,7 +285,7 @@ class UserKeyword(object):
         self.keywords = []
 
     @property
-    def is_private(self):
+    def is_private_keyword(self):
         return self.name.startswith('_') or 'robot:private' in [x.replace(' ', '').lower() for x in self.tags]
 
     @setter

@@ -151,7 +151,7 @@ class TestKeywordSuggestions(_DataFileTest):
         #       f" private_keywords={[x.is_private for x in self.tcf_ctrl.keywords]}")
         sugs = self.ns.get_suggestions_for(self.kw, '_another')
         assert '_another private keyword' in [s.name for s in sugs]
-        assert [False, True, True] == [x.is_private for x in self.tcf_ctrl.keywords]
+        assert [False, True, True] == [x.is_private_keyword for x in self.tcf_ctrl.keywords]
         for s in sugs:
             print(s)
 
