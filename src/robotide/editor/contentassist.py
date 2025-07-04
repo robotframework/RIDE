@@ -97,6 +97,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         key_code, alt_down = event.GetKeyCode(), event.AltDown()
         control_down = event.CmdDown() or event.ControlDown()
         key_char = event.GetUnicodeKey()
+        # print(f"DEBUG: contentassist.pt on_key_down key_code={key_code} cha={key_char} controlDown={control_down} "
+        #       f"\n L/R ARROW = {key_code in (wx.WXK_RIGHT, wx.WXK_LEFT)}")
         if key_char not in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             self._selection = self.GetStringSelection()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
@@ -110,12 +112,18 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
                     self.SetInsertionPoint(len(value))
                     self._popup.hide()
                     self.reset()
+            """
             else:
                 event.Skip()
+            """
+            event.Skip()
         elif key_code == wx.WXK_RETURN and self._popup.is_shown():
             self.on_focus_lost(event)
         elif key_code == wx.WXK_TAB:
-            self.on_focus_lost(event, False)
+            # self.on_focus_lost(event, True)
+            self.fill_suggestion()  # accept value and continue editing
+            # event.Skip()
+            # wx.CallAfter(self._show_auto_suggestions_when_enabled)
         elif key_code == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
         elif key_code in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] and self._popup.is_shown():
@@ -150,7 +158,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def on_char(self, event):
         key_char = event.GetUnicodeKey()
-        if key_char != wx.WXK_RETURN:
+        if 32 <= key_char < 256:  # != wx.WXK_RETURN:  Was activating popup with left/right arrow
             self._show_auto_suggestions_when_enabled()
         if key_char == wx.WXK_NONE:
             event.Skip()
@@ -260,6 +268,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return value
 
     def on_focus_lost(self, event, set_value=True):
+        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase on_focus_lost ENTER {event}")
         event.Skip()
         if not self._popup.is_shown():
             return
@@ -278,14 +287,17 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             popup_value = self._popup.get_value()
         else:
             popup_value = in_value
-        if popup_value and popup_value.lower() in initial_value.lower():
-            initial_value = initial_value.replace(initial_value, '')
-        parts = initial_value.split()
-        for p in parts:
-            if popup_value and popup_value.lower().startswith(p.strip('}])').lower()):
-                idx = initial_value.index(p)
-                initial_value = initial_value[:idx]
-                break
+        if popup_value:
+            if popup_value.lower() in initial_value.lower():
+                initial_value = initial_value.replace(initial_value, '')
+            parts = initial_value.split()
+            for p in parts:
+                if popup_value and popup_value.lower().startswith(p.strip('}])').lower()):
+                    idx = initial_value.index(p)
+                    initial_value = initial_value[:idx]
+                    break
+        else:
+            popup_value = ''
         if self.gherkin_prefix:
             initial_value = initial_value.replace(self.gherkin_prefix, '')  # Should be left replace
             value = self.gherkin_prefix + initial_value + popup_value  # or self.GetValue()
@@ -295,7 +307,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def fill_suggestion(self, value=None):
         value = self._get_popup_suggestion(value)
-        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
+        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):
@@ -304,6 +316,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.SetValue(value)
             self.SetInsertionPoint(len(value))
         self.hide()
+        # self.reset()
 
     def pop_event_handlers(self, event):
         __ = event
@@ -325,6 +338,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._showing_content_assist = False
 
     def show_content_assist(self):
+        print(f"DEBUG: contentassist.py show_content_assist ENTER "
+              f"self._showing_content_assist={self._showing_content_assist}")
         if self._showing_content_assist:
             return
         if self._populate_content_assist():
@@ -351,6 +366,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     def _show_content_assist(self):
         _, height = self.GetSize()
         x, y = self.ClientToScreen((0, 0))
+        print(f"DEBUG: contentassist.py _show_content_assist COORDS  {x=}, {y=}, {height=}"
+              f" CALL self._popup.show()")
         self._popup.show(x, y, height)
 
     def content_assist_value(self):
@@ -566,7 +583,7 @@ class ContentAssistPopup(object):
             return False
         self._choices = list(set([c for c in self._choices if c is not None]))
         # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
-        self._list.populate(self._choices)
+        self._list.populate(sorted(self._choices))
         return True
 
     @staticmethod

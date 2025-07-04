@@ -759,6 +759,8 @@ class KeywordEditor(GridEditor, Plugin):
             cell_editor.EndEdit(self.selection.topleft.row, self.selection.topleft.col, self)
 
     def show_content_assist(self):
+        print(f"DEBUG: kweditor.py KeyworkEditor calling show_content_assist PARENT SECTION {self._parent.section}"
+              f" IsCellEditControlShown={self.IsCellEditControlShown()}")
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
@@ -1297,6 +1299,7 @@ class ContentAssistCellEditor(GridCellEditor):
 
     def show_content_assist(self, args=None):
         _ = args
+        print(f"DEBUG: kweditor.py show_content_assist args={args}")
         if self._tc:
             self._tc.show_content_assist()
 
@@ -1381,7 +1384,7 @@ class ContentAssistCellEditor(GridCellEditor):
         key = event.GetKeyCode()
         event.Skip()  # DEBUG seen this skip as soon as possible
         if key == wx.WXK_DELETE or key > 255:
-            # print(f"DEBUG: Delete key at ContentAssist key {key}")
+            print(f"DEBUG: Delete key at ContentAssist key {key}")
             self._grid.HideCellEditControl()
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)

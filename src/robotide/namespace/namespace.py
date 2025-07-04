@@ -233,8 +233,12 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
+        # if kw:
+        #     print(f"DEBUG: namespace.py Namespace find_user_keyword kw_name=={kw_name}"
+        #           f" datafile={datafile.source} kw.source={kw.source}")
         return kw if isinstance(kw, UserKeywordInfo) else None
 
+    # DEBUG: This keyword is not used, Delete or use kw.is_private_keyword from ItemInfo
     def is_private(self, datafile, kwname):  # TODO: Add condition for robot:private in tags
         return kwname.startswith('_') and self.is_user_keyword(datafile, kwname)
 
@@ -690,6 +694,8 @@ class _Keywords(object):
             # filename = os.path.basename(origin.source)
             # print(f"DEBUG: namespace.py _Keywords get keywords in loop FOUND {kw_name} @ {filename}"
             #       f" RETURNING {self.keywords[kw_name]} {self.keywords[kw_name].source == filename}")
+            # print(f"DEBUG: namespace.py _Keywords get keywords in loop FOUND {kw_name}"
+            #       f" source={self.keywords[kw_name].source}")
             return self.keywords[kw_name]
         # print(f"DEBUG: namespace.py _Keywords get keywords {self.keywords}")
         bdd_name = self._get_bdd_name(kw_name)
@@ -700,6 +706,8 @@ class _Keywords(object):
         for regexp in self.embedded_keywords:
             try:
                 if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
+                    # print(f"DEBUG: namespace.py _Keywords get keywords in REGEX FOUND {kw_name}"
+                    #       f" source={self.embedded_keywords[regexp].source}")
                     return self.embedded_keywords[regexp]
             except AttributeError:
                 pass
