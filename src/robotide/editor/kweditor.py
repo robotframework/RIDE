@@ -1374,6 +1374,7 @@ class ContentAssistCellEditor(GridCellEditor):
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
+        # print(f"DEBUG: kweditor.py ContentAssistCellEditor suggestion={suggestion}")
         return suggestion or self._tc.GetValue()
 
     def Reset(self):
