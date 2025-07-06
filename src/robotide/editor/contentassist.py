@@ -12,7 +12,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from operator import index
 
 import wx
 from wx import Colour
@@ -318,7 +317,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase _get_popup_suggestion RETURN value={value}")
         return value
 
-    # DEBUG THIS IS BEING CALLED FROM kweditor
+    # DEBUG THIS IS BEING CALLED FROM kweditor and ContentAssistPopup
     def fill_suggestion(self, value=None):
         value = self._get_popup_suggestion(value)
         # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
@@ -382,7 +381,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def _show_content_assist(self):
         _, height = self.GetSize()
-        x, y = self.ClientToScreen((0, 0))
+        x, y = self.ClientToScreen(wx.Point(0, 0))
         # print(f"DEBUG: contentassist.py _show_content_assist COORDS  {x=}, {y=}, {height=}"
         #       f" CALL self._popup.show()")
         self._popup.show(x, y, height)
@@ -622,10 +621,10 @@ class ContentAssistPopup(object):
         return None
 
     def show(self, xcoord, ycoord, cell_height):
-        self._main_popup.SetPosition((xcoord,
+        self._main_popup.SetPosition(wx.Point(xcoord,
                                       self._move_y_where_room(ycoord,
                                                               cell_height)))
-        self._details_popup.SetPosition((self._move_x_where_room(xcoord),
+        self._details_popup.SetPosition(wx.Point(self._move_x_where_room(xcoord),
                                          self._move_y_where_room(ycoord,
                                                                  cell_height)))
         self._main_popup.Show()

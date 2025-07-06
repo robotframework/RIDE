@@ -761,6 +761,7 @@ class KeywordEditor(GridEditor, Plugin):
             if value:
                 wx.CallAfter(self.cell_value_edited, self.selection.topleft.row,
                              self.selection.topleft.col, value)
+                wx.CallAfter(self.show_content_assist)
 
     def show_content_assist(self):
         # print(f"DEBUG: kweditor.py KeyworkEditor calling show_content_assist PARENT SECTION {self._parent.section}"
