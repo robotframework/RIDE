@@ -241,6 +241,7 @@ class _XMLKeywordContent(_KeywordInfo):
         self._source = lambda x: source
         _KeywordInfo.__init__(self, item)
         self.args = self._format_args(self._parse_args(item))
+        print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent INIT arrgs={self.args[:]}")
         if doc_format in ("TEXT", "ROBOT", "REST", "HTML"):
             self.doc_format = doc_format
         else:
@@ -252,7 +253,14 @@ class _XMLKeywordContent(_KeywordInfo):
         return self
 
     def _name(self, node):
-        return node.get('name')
+        print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent _NAME CALL node.get('name') node={node}")
+        if hasattr(node, 'name'):
+            name = node.get('name')
+            print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent _NAME node HAS 'NAME' name={name}")
+            return node.get('name')
+        else:
+            print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent _NAME node DOES NOT HAVE 'NAME'")
+            return ''
 
     @staticmethod
     def _doc(node):

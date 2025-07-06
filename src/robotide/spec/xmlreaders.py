@@ -30,6 +30,7 @@ class SpecInitializer(object):
     def init_from_spec(self, name):
         specfile = self._find_from_pythonpath(name) or \
             self._find_from_library_xml_directories(name)
+        print(f"\nDEBUG: spec.xmlreaders SpecInitializer specfile={specfile}")
         return self._init_from_specfile(specfile, name)
 
     def _find_from_library_xml_directories(self, name):
@@ -85,6 +86,7 @@ class SpecInitializer(object):
 
 
 def _parse_xml(file, name):
+    print(f"\nDEBUG: spec.xmlreaders _parse_xml ENTER file={file}  name={name}")
     root = utils.ET.parse(file).getroot()
     if root.tag != 'keywordspec':
         # DEBUG: XML validation errors should be logged
