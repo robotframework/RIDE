@@ -757,10 +757,14 @@ class KeywordEditor(GridEditor, Plugin):
         if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row, self.selection.topleft.col, self)
+            value = cell_editor.get_value()
+            if value:
+                wx.CallAfter(self.cell_value_edited, self.selection.topleft.row,
+                             self.selection.topleft.col, value)
 
     def show_content_assist(self):
-        print(f"DEBUG: kweditor.py KeyworkEditor calling show_content_assist PARENT SECTION {self._parent.section}"
-              f" IsCellEditControlShown={self.IsCellEditControlShown()}")
+        # print(f"DEBUG: kweditor.py KeyworkEditor calling show_content_assist PARENT SECTION {self._parent.section}"
+        #       f" IsCellEditControlShown={self.IsCellEditControlShown()}")
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
@@ -842,7 +846,16 @@ class KeywordEditor(GridEditor, Plugin):
         return True
 
     def _call_direct_function(self, event: wx.KeyEvent, keycode: int):
-        if keycode == wx.WXK_WINDOWS_MENU:
+        if keycode == wx.WXK_TAB:
+            if self.IsCellEditControlShown():
+                # print(f"DEBUG: kweditor.py KeywordEditor _call_direct_function PRESSED TAB key={keycode}")
+                self._get_cell_editor().update_from_suggestion_list()  # accept value and continue editing
+                self.save()
+            else:
+                self.save()
+                self._move_grid_cursor(event, keycode)
+            return False
+        elif keycode == wx.WXK_WINDOWS_MENU:
             self.on_cell_right_click(event)
         elif keycode == wx.WXK_BACK:
             self._move_grid_cursor(event, keycode)
@@ -850,6 +863,7 @@ class KeywordEditor(GridEditor, Plugin):
             if self.IsCellEditControlShown():
                 # fill auto-suggestion into cell when pressing enter
                 self._get_cell_editor().update_from_suggestion_list()
+                self.save()
                 self._move_grid_cursor(event, keycode)
             else:
                 self.open_cell_editor()
@@ -978,7 +992,12 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _move_grid_cursor(self, event, keycode):
         self.DisableCellEditControl()
-        if keycode == wx.WXK_RETURN:
+        if keycode == wx.WXK_TAB:
+            if event.ShiftDown():
+                self.MoveCursorLeft(False)
+            else:
+                self.MoveCursorRight(False)
+        elif keycode == wx.WXK_RETURN:
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
@@ -1278,6 +1297,7 @@ class KeywordEditor(GridEditor, Plugin):
         return sorted(words)
     """
 
+
 class ContentAssistCellEditor(GridCellEditor):
 
     def __init__(self, plugin, controller, language='En'):
@@ -1297,9 +1317,9 @@ class ContentAssistCellEditor(GridCellEditor):
         self._counter = 0
         self._height = 0
 
-    def show_content_assist(self, args=None):
+    def show_content_assist(self, args=None):  # TODO: check if this is ever called
         _ = args
-        print(f"DEBUG: kweditor.py show_content_assist args={args}")
+        # print(f"DEBUG: kweditor.py show_content_assist args={args}")
         if self._tc:
             self._tc.show_content_assist()
 
@@ -1372,20 +1392,24 @@ class ContentAssistCellEditor(GridCellEditor):
         # this will cause deleting all text in edit mode not working
         self._grid.cell_value_edited(row, col, self._value)
 
-    def _get_value(self):
+    def _get_value(self):  # TODO: Check why most of the times is getting None
         suggestion = self._tc.content_assist_value()
-        # print(f"DEBUG: kweditor.py ContentAssistCellEditor suggestion={suggestion}")
+        # print(f"DEBUG: kweditor.py ContentAssistCellEditor _get_value suggestion={suggestion}")
         return suggestion or self._tc.GetValue()
+
+    def get_value(self):
+        return self._tc.get_value()
 
     def Reset(self):
         self._tc.SetValue(self._original_value)
         self._tc.reset()
 
-    def StartingKey(self, event):
+    def StartingKey(self, event):  # TODO: Check why this is never called
         key = event.GetKeyCode()
+        # print(f"DEBUG: kweditor.py ContentAssistCellEditor StartingKey pressed key={key}")
         event.Skip()  # DEBUG seen this skip as soon as possible
         if key == wx.WXK_DELETE or key > 255:
-            print(f"DEBUG: Delete key at ContentAssist key {key}")
+            # print(f"DEBUG: Delete key at ContentAssist key {key}")
             self._grid.HideCellEditControl()
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)

@@ -120,11 +120,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             """
             event.Skip()
         elif key_code == wx.WXK_RETURN and self._popup.is_shown():
-            print(f"DEBUG: contentassist.pt on_key_down POP SHOWN PRESS RETURN CALL FOCUS LOST")
+            # print(f"DEBUG: contentassist.pt on_key_down POP SHOWN PRESS RETURN CALL FOCUS LOST")
             self.on_focus_lost(event)
         elif key_code == wx.WXK_TAB:
             # self.on_focus_lost(event, True)
-            print(f"DEBUG: contentassist.pt on_key_down PRESS TAB")
+            # print(f"DEBUG: contentassist.pt on_key_down PRESS TAB")
             self.fill_suggestion()  # accept value and continue editing
             self._popup.hide()
             self.reset()
@@ -147,7 +147,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             wx.CallAfter(self._show_auto_suggestions_when_enabled)
         # Can not catch the following keyEvent from grid cell
         elif key_code == wx.WXK_RETURN:
-            print(f"DEBUG: contentassist.pt on_key_down PRESS RETURN FILL AND SKIP")
+            # print(f"DEBUG: contentassist.pt on_key_down PRESS RETURN FILL AND SKIP")
             # fill suggestion in dialogs when pressing enter
             self.fill_suggestion()
             event.Skip()
@@ -318,10 +318,10 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase _get_popup_suggestion RETURN value={value}")
         return value
 
-    # DEBUG THIS IS NOT BEING CALLED
+    # DEBUG THIS IS BEING CALLED FROM kweditor
     def fill_suggestion(self, value=None):
         value = self._get_popup_suggestion(value)
-        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
+        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):
@@ -329,8 +329,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
                 wrapper_view.open_cell_editor()
             self.SetValue(value)
             self.SetInsertionPoint(len(value))
-        # self.hide()
+        self.hide()
         # self.reset()
+
+    def get_value(self):
+        return self.GetValue()
 
     def pop_event_handlers(self, event):
         __ = event
@@ -717,7 +720,8 @@ class ContentAssistList(wx.ListCtrl):
         self.InsertColumn(0, '', width=self.Size[0])
         for row, item in enumerate(data):
             self.InsertItem(row, item)
-        self.Select(0)
+        if self.GetItemCount() > 0:
+            self.Select(0)
 
     def get_text(self, index):
         return self.GetItem(index).GetText()
