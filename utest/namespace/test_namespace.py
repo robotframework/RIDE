@@ -211,8 +211,11 @@ class TestKeywordSuggestions(_DataFileTest):
         self._assert_import_kws(sugs, 'Dialogs')
 
     def test_xml_library(self):
+        contr = self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords
+        print(f"\nDEBUG: namespace TestXMLLibrary controller={[(x.name, x.source) for x in contr.items]} len kws={len(contr)}")
         sugs = self.ns.get_suggestions_for(self._get_controller(
             TESTCASEFILE_WITH_EVERYTHING).keywords[0], 'Attributeless Keyword')
+        print(f"\nDEBUG: namespace TestXMLLibrary sugs={sugs[:]}")
         self._assert_import_kws(sugs, 'LibSpecLibrary')
 
     def test_xml_library_is_library_keyword(self):
