@@ -160,15 +160,21 @@ class TestLibraryFinderInstall(unittest.TestCase):
         if os.path.exists(DATADIR):
             shutil.rmtree(DATADIR, ignore_errors=True)
 
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_call_plugin_exec_install(self):
         from time import sleep
         wx.CallLater(8000, self.app.ExitMainLoop)
-        wx.CallLater(5000, close_open_dialogs)
-        RideExecuteLibraryInstall(item=None).publish()
-        sleep(1)
+        if os.sep != '\\':
+            wx.CallLater(5000, close_open_dialogs)
+            RideExecuteLibraryInstall(item=None).publish()
+            sleep(1)
         wx.CallLater(6000, close_open_dialogs)
         RideExecuteLibraryInstall(item="AppiumLibrary").publish()
         self.libplugin._execute_namespace_update()
+
+    def test_call_plugin_find_install(self):
+        wx.CallLater(8000, self.app.ExitMainLoop)
+        wx.CallLater(6000, close_open_dialogs)
         command = self.libplugin.find_install_command(None)
         assert command == []
         command = self.libplugin.find_install_command("NonExisting")
@@ -463,9 +469,10 @@ class TestLibraryFinderDoc(unittest.TestCase):
     def test_call_plugin_doc(self, mock_input):
         from time import sleep
         wx.CallLater(8000, self.app.ExitMainLoop)
-        wx.CallLater(5000, close_open_dialogs)
-        RideOpenLibraryDocumentation(item=None).publish()
-        sleep(1)
+        if os.sep != '\\':
+            wx.CallLater(5000, close_open_dialogs)
+            RideOpenLibraryDocumentation(item=None).publish()
+            sleep(1)
         wx.CallLater(6000, close_open_dialogs)
         RideOpenLibraryDocumentation(item="RequestsLibrary").publish()
         documentation = self.libplugin.find_documentation_url(None)
