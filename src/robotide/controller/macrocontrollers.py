@@ -177,12 +177,16 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         steps = self.steps
         if row < 0 or len(steps) <= row:
             return None
+        # print(f"DEBUG: macrocontrollers.py WithStepsController call get_cell_info row={row} col={col}")
         return steps[row].get_cell_info(col)
 
     def get_keyword_info(self, kw_name):
+        # print(f"DEBUG: macrocontrollers.py WithStepsController get_keyword_info call keyword_info kw_name={kw_name}")
         return self.datafile_controller.keyword_info(None, kw_name)
 
     def is_user_keyword(self, value):
+        # print(f"DEBUG: macrocontrollers.py WithStepsController is_user_keyword call "
+        #       f"DATAFILE_CONTROLER.is_user_keyword value={value}, source={self.datafile_controller.source}")
         return self.datafile_controller.is_user_keyword(None, value)
 
     def is_library_keyword(self, value):

@@ -87,7 +87,13 @@ class StepController(_BaseController):
     def get_keyword_info(self, kw):
         if not kw:
             return None
-        return self.parent.get_keyword_info(kw)
+        # print(f"DEBUG: stepcontrollers.py StepController get_keyword_info call parent kw={kw}")
+        kw_info = self.parent.get_keyword_info(kw)
+        if kw_info:  # and kw_info.type == CellType.KEYWORD:
+            private = kw_info.is_private_keyword
+            # print(f"DEBUG: stepcontrollers.py StepController get_keyword_info called parent get_keyword_info  kw_info={kw_info} "
+            #       f"kw={kw} is PRIVATE?=={private}")
+        return kw_info
 
     def __eq__(self, other):
         if self is other:
@@ -115,6 +121,7 @@ class StepController(_BaseController):
     def get_cell_info(self, col):
         position = self._get_cell_position(col)
         content = self._get_content_with_type(col, position)
+        # print(f"DEBUG: stepcontrollers.py StepController call get_cell_info col={col} content.type={content.type}")
         if content.type == ContentType.COMMENTED:
             return self._build_cell_info(content, CellPosition(CellType.OPTIONAL, None))
         return self._build_cell_info(content, position)
@@ -132,6 +139,7 @@ class StepController(_BaseController):
         return False
 
     def _build_cell_info(self, content, position):
+        # print(f"DEBUG: stepcontrollers.py StepController _build_cell_info call CellInfo content={content} position={position}")
         return CellInfo(content, position)
 
     def _get_cell_position(self, column):
@@ -244,13 +252,13 @@ class StepController(_BaseController):
                 return CellContent(ContentType.UNKNOWN_VARIABLE, value)
             return CellContent(ContentType.VARIABLE, value)
         if self.is_user_keyword(value):
-            return CellContent(
-                ContentType.USER_KEYWORD, value,
-                self.get_keyword_info(value).source)
+            kw_info = self.get_keyword_info(value)
+            source = kw_info.source
+            # print(f"DEBUG: stepcontrollers.py StepController file={self.display_name} "
+            #       f"call get_keyword_info value={value}, source={source} PRIVATE={kw_info.private}")
+            return CellContent(ContentType.USER_KEYWORD, value, source=source, private=kw_info.private)
         if self.is_library_keyword(value):
-            return CellContent(
-                ContentType.LIBRARY_KEYWORD, value,
-                self.get_keyword_info(value).source)
+            return CellContent(ContentType.LIBRARY_KEYWORD, value, source=self.get_keyword_info(value).source)
         if value == 'END':  # DEBUG Don't consider start column (col == 0 and)
             return CellContent(ContentType.END, value)
         return CellContent(ContentType.STRING, value)
@@ -284,6 +292,8 @@ class StepController(_BaseController):
         return self.datafile_controller.is_modifiable()
 
     def is_user_keyword(self, value):
+        # print(f"DEBUG: stepcontrollers.py StepController is_user_keyword CALL parent.is_user_keyword"
+        #       f" = {self.parent.source}")
         return self.parent.is_user_keyword(value)
 
     def is_library_keyword(self, value):
@@ -297,7 +307,7 @@ class StepController(_BaseController):
         return any(variablematcher.value_contains_variable(item, name)
                    for item in self.as_list())
 
-    def contains_variable_assignment(self, name):
+    def contains_variable_assignment(self, name):  # TODO: Consider first cell if variable and FOR assignments
         return any(variablematcher.value_contains_variable(item, "%s=" % name)
                    for item in self.as_list())
 

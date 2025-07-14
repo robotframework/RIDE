@@ -13,10 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from enum import Enum, auto
 from ..action.shortcut import localize_shortcuts
 from ..utils import highlightmatcher, html_escape
 
 CTRL_LABEL = localize_shortcuts('CtrlCmd')
+
+
+class PrivateError(Enum):
+    no_error = auto()
+    invalid = auto()
 
 
 class CellInfo(object):
@@ -25,6 +31,7 @@ class CellInfo(object):
         self._cell_content = cell_content
         self._cell_position = cell_position
         self.for_loop = for_loop
+        self._error_state = PrivateError.no_error
 
     @property
     def content_type(self):
@@ -39,11 +46,21 @@ class CellInfo(object):
         return self._cell_content.source
 
     @property
+    def private(self):
+        return self._cell_content.private
+
+    @property
     def arg_name(self):
         return self._cell_position.argument_name
 
     def has_error(self):
-        return self.argument_missing() or self.too_many_arguments()
+        return self.argument_missing() or self.too_many_arguments() or self._error_state == PrivateError.invalid
+
+    def set_or_clear_error(self, mode=False):
+        if mode:
+            self._error_state = PrivateError.invalid
+        else:
+            self._error_state = PrivateError.no_error
 
     def argument_missing(self):
         return self.cell_type == CellType.MANDATORY \
@@ -137,10 +154,11 @@ class _TooltipMessage(object):
 
 class CellContent(object):
 
-    def __init__(self, ctype, value, source=None):
+    def __init__(self, ctype, value, source=None, private=False):
         self.type = ctype
         self.value = value
         self.source = source
+        self.private = private
 
 
 class CellPosition(object):

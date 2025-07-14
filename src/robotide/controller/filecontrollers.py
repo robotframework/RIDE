@@ -275,6 +275,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def keyword_info(self, datafile, keyword_name):
         _ = datafile
+        # print(f"DEBUG: filecontrollers.py _DataController keyword_info call keyword_info keyword_name={keyword_name}")
         return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     def mark_dirty(self):

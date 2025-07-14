@@ -14,7 +14,7 @@
 #  limitations under the License.
 import wx
 
-from ..controller.cellinfo import CellType
+from ..controller.cellinfo import CellType, ContentType, CellContent
 
 
 # this import fails in HUDSON
@@ -59,6 +59,21 @@ class Colorizer(object):
         if cell_info is None:
             self._set_default_colors(row, col)
             return
+        # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell cell_info={cell_info}")
+        if cell_info.cell_type == CellType.KEYWORD and cell_info.content_type==ContentType.USER_KEYWORD:
+            source = self._controller.display_name
+            parent = self._controller.parent
+            parent_name = self._controller.datafile_controller.name
+            cell_source = (cell_info.source.split('.')[0]).title()
+            private = cell_info.private
+            # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
+            #       f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
+            #       f"\n Same File? {cell_source==parent_name} PRIVATE={private}")
+            if private and cell_source != parent_name:
+                cell_info.set_or_clear_error(True)
+            else:
+                cell_info.set_or_clear_error(False)  # TODO: Check if kw is being used in Keywords section
+            # self._controller.get_cell_info CellContent.value
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
         self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info, selection_content))
         self._grid.SetCellFont(row, col, self._get_cell_font(row, col, cell_info))
@@ -80,6 +95,8 @@ class Colorizer(object):
     def _get_cell_font(self, row, col, cell_info):
         font = self._grid.GetCellFont(row, col)
         font.SetWeight(self._get_weight(cell_info))
+        if cell_info.private:
+            font.SetStyle(wx.FONTSTYLE_ITALIC)
         return font
 
     @staticmethod

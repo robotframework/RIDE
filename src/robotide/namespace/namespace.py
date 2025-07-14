@@ -264,6 +264,7 @@ class Namespace(object):
         casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in UPPERCASE_KWS)
         kwds = self._retriever.get_keywords_cached(datafile, self._context_factory, caseless=not casesensitive)
         # print(f"DEBUG: namespace.py Namespace find_keyword will GET kw_name=={kw_name} casesensitive={casesensitive}")
+        #      f"\n PRIVATE? {self.is_private(datafile, kw_name)}")
         return kwds.get(kw_name, origin=datafile)
 
     def is_library_keyword(self, datafile, kw_name):

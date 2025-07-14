@@ -187,7 +187,9 @@ class _KeywordInfo(ItemInfo):
 
     @property
     def is_private_keyword(self):
-        return self.item.name.startswith('_') or self.item.is_private_keyword
+        if hasattr(self.item, 'name'):
+            return self.item.name.startswith('_') or self.item.is_private_keyword
+        return False
 
     @property
     def arguments(self):
