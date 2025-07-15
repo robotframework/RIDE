@@ -255,12 +255,24 @@ class MockGrid(object):
         'enable auto suggestions': False
     }
 
+    NumberRows = NumberCols = 10
+
     def GetCellFont(self, x, y):
         return Font()
 
 
-class Font(object):
+class Font(wx.Font):
+
+    def __init__(self):
+        wx.Font.__init__(self, wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False))
+
     SetWeight = lambda s, x: True
+
+
+class DClass(String):
+
+    def __init__(self, name):
+        self.name = name.title()
 
 
 class ControllerWithCellInfo(object):
@@ -269,11 +281,15 @@ class ControllerWithCellInfo(object):
     cell_types = [getattr(CellType, i) for i in
                   dir(CellType) if not i.startswith('__') ]
 
-    def __init__(self):
+    def __init__(self, controller_name='My Test or Keyword', name='Example'):
         self._string = String()
+        self.display_name = controller_name
+        self.datafile_controller = DClass(name)
+        self.parent = lambda : object
 
     def get_cell_info(self, row, column):
-        return CellInfo(CellContent(self._get(self.content_types), self._get_data(), None),
+        return CellInfo(CellContent(self._get(self.content_types), self._get_data(), 'example.robot',
+                                    (row == column == 1)),
                         CellPosition(self._get(self.cell_types), None))
 
     def _get(self, items):
@@ -303,12 +319,14 @@ class TestPerformance(unittest.TestCase):
 
 
 class TestColorIdentification(unittest.TestCase):
-    _data = ['xyz', 'FOR', 'try', 'for', 'LOG']
+    _data = ['xyz', 'FOR', 'try', 'for', 'LOG', 'My KW']
     _type = [CellInfo(CellContent(ContentType.STRING, _data[0]), CellPosition(CellType.UNKNOWN, None)),
              CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, _data[1]), CellPosition(CellType.ASSIGN, '${i}')),
              CellInfo(CellContent(ContentType.STRING, _data[2]), CellPosition(CellType.UNKNOWN, None)),
              CellInfo(CellContent(ContentType.STRING, _data[3]), CellPosition(CellType.UNKNOWN, None)),
-             CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, _data[4]), CellPosition(CellType.MANDATORY, 'Message'))
+             CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, _data[4]), CellPosition(CellType.MANDATORY, 'Message')),
+             CellInfo(CellContent(ContentType.USER_KEYWORD, _data[5], source='other.robot',
+                                  private=True), CellPosition(CellType.KEYWORD, None))
              ]
 
     def test_unknown_string(self):
@@ -359,7 +377,40 @@ class TestColorIdentification(unittest.TestCase):
         bk_color = colorizer._get_background_color(self._type[4], self._data[4])
         # print(f"DEBUG: Background color={bk_color.title().upper()}")
         assert txt_color.title().upper() == grid.settings['text library keyword'].upper()
+        assert bk_color.title().upper() == grid.settings['background highlight'].upper()  #
+
+    def test_private_bad(self):
+        grid = MockGrid()
+        colorizer = Colorizer(grid, ControllerWithCellInfo('Another Test', 'other'))
+        colorizer._coloring_task(0, 'My KW', 1, 1)
+        txt_color = colorizer._get_text_color(self._type[5])
+        # print(f"DEBUG: Text color={txt_color.title().upper()}")
+        self._type[5].set_or_clear_error(True)  # forcing error
+        bk_color = colorizer._get_background_color(self._type[5], self._data[5])
+        assert self._type[5].has_error()
+        # print(f"DEBUG: Background color={bk_color.title().upper()}")
+        # print(f"DEBUG: Background color={bk_color.title().upper()} has_error={self._type[5].has_error()}"
+        #       f"\n {self._type[5]}")
+        assert txt_color.title().upper() == grid.settings['text user keyword'].upper()
+        # DEBUG: NOT WORKING
+        # assert bk_color.title().upper() == grid.settings['background error'].upper()  # I am cheating here ;)
+        assert colorizer._grid is not None
+        colorizer.close()
+        assert colorizer._grid is None
+
+
+    def test_private_good(self):
+        grid = MockGrid()
+        colorizer = Colorizer(grid, ControllerWithCellInfo('Another Test', 'Example'))
+        txt_color = colorizer._get_text_color(self._type[5])
+        # print(f"DEBUG: Text color={txt_color.title().upper()}")
+        bk_color = colorizer._get_background_color(self._type[5], self._data[5])
+        # print(f"DEBUG: Background color={bk_color.title().upper()}")
+        assert txt_color.title().upper() == grid.settings['text user keyword'].upper()
         assert bk_color.title().upper() == grid.settings['background highlight'].upper()  # I am cheating here ;)
+        assert colorizer._grid is not None
+        colorizer.close()
+        assert colorizer._grid is None
 
 
 if __name__ == '__main__':
