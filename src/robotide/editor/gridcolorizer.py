@@ -66,13 +66,15 @@ class Colorizer(object):
             parent_name = self._controller.datafile_controller.name
             cell_source = (cell_info.source.split('.')[0]).title()
             private = cell_info.private
-            # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
-            #       f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
-            #       f"\n Same File? {cell_source==parent_name} PRIVATE={private}")
-            if private and cell_source != parent_name:
-                cell_info.set_or_clear_error(True)
-            else:
-                cell_info.set_or_clear_error(False)  # TODO: Check if kw is being used in Keywords section
+            print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
+                  f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
+                  f"\n Same File? {cell_source==parent_name} PRIVATE={private} "
+                  f" section={self._grid._parent.section} ")
+            if private:
+                if self._grid._parent.section == 'tests' or (self._grid._parent.section == 'keywords' and cell_source != parent_name):
+                    cell_info.set_or_clear_error(True)
+                else:
+                    cell_info.set_or_clear_error(False)
             # self._controller.get_cell_info CellContent.value
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
         self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info, selection_content))

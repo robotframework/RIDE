@@ -1321,7 +1321,6 @@ class ContentAssistCellEditor(GridCellEditor):
 
     def show_content_assist(self, args=None):  # TODO: check if this is ever called
         _ = args
-        # print(f"DEBUG: kweditor.py show_content_assist args={args}")
         if self._tc:
             self._tc.show_content_assist()
 
