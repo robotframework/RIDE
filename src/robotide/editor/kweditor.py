@@ -199,6 +199,8 @@ class KeywordEditor(GridEditor, Plugin):
         #     # self.ShowScrollbars(wx.SHOW_SB_ALWAYS, wx.SHOW_SB_ALWAYS)
         #     print("DEBUG: KwEditor init at SELF SetupScrolling\n")
         # self.Refresh()
+        # print(f"DEBUG: kweditor.py KeywordEditor parent={self._parent} name={self._parent.name}"
+        #       f"\n controller={self._controller} section={self._parent.section}")
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)

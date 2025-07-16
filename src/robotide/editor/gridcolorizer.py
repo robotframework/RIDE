@@ -14,7 +14,8 @@
 #  limitations under the License.
 import wx
 
-from ..controller.cellinfo import CellType, ContentType, CellContent
+from ..controller.cellinfo import CellType, ContentType
+from ..controller.macrocontrollers import UserKeywordController
 
 
 # this import fails in HUDSON
@@ -66,12 +67,14 @@ class Colorizer(object):
             parent_name = self._controller.datafile_controller.name
             cell_source = (cell_info.source.split('.')[0]).title()
             private = cell_info.private
-            print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
-                  f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
-                  f"\n Same File? {cell_source==parent_name} PRIVATE={private} "
-                  f" section={self._grid._parent.section} ")
+            current_section = 'keywords' if isinstance(self._controller, UserKeywordController) else 'tests'
+            # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
+            #       f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
+            #       f"\n Same File? {cell_source==parent_name} PRIVATE={private} "
+            #       f" section={self._grid._parent.section} current_section={current_section}")
             if private:
-                if self._grid._parent.section == 'tests' or (self._grid._parent.section == 'keywords' and cell_source != parent_name):
+                if current_section == 'tests' or (current_section == 'keywords'
+                                                             and cell_source != parent_name):
                     cell_info.set_or_clear_error(True)
                 else:
                     cell_info.set_or_clear_error(False)

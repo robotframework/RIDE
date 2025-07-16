@@ -30,7 +30,6 @@ class TestCaseEditor(_RobotTableEditor):
     _settings_open_id = 'test case settings open'
 
     def __init__(self, plugin, parent, _controller, tree):
-        self.section = 'tests'   # To use with private keywords - should not use in tests o tasks
         _RobotTableEditor.__init__(self, plugin, parent, _controller, tree)
 
     def _populate(self):
@@ -122,7 +121,6 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.on_uncomment_cells(None)
 
     def show_content_assist(self):
-        print(f"DEBUG: macroeditors.py TestCaseEditor calling show_content_assist SECTION {self.section}")
         self.kweditor.show_content_assist()
 
 
@@ -130,7 +128,6 @@ class UserKeywordEditor(TestCaseEditor):
     _settings_open_id = 'user keyword settings open'
 
     def __init__(self, plugin, parent, _controller, tree):
-        self.section = 'keywords'   # To use with private keywords - can use in keywords sections if defined in file
         TestCaseEditor.__init__(self, plugin, parent, _controller, tree)
 
     def _create_header(self, text, readonly=False):
