@@ -172,8 +172,10 @@ version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added indication of <b>private</b> keywords in Grid Editor, keywords will show in <em>Italic</em>, and with error
+ background, when they are used outside of Keywords section, or from different files.</li>
 <li>Added indication of <b>private</b> keywords in Details pop-up for keywords with tag <b>robot:private</b> or name starting
- with underscore, <b>'_'</b></li>
+ with underscore, <b>'_'</b> in Grid Editor.</li>
 <li>Modified the action of key TAB when selecting from auto-suggestions list in Grid Editor. Pressing TAB, selects the
  item and continues in cell editor.</li>
 <li>Fix cursor position when editing cells in Grid Editor.</li>
@@ -253,7 +255,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 06/July/2025.</p>
+<p>RIDE {VERSION} was released on 17/July/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

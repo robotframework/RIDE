@@ -9,7 +9,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
-- Added indication of *private* keywords in Details pop-up for keywords with tag *robot:private* or name starting with underscore, *'_'*.
+- Added indication of *private* keywords in Grid Editor, keywords will show in _Italic_, and with error
+ background, when they are used outside of Keywords section, or from different files.
+
+- Added indication of *private* keywords in Details pop-up for keywords with tag *robot:private* or name starting with underscore, *'_'* in Grid Editor.
 
 === Changed
 - Modified the action of key TAB when selecting from auto-suggestions list in Grid Editor. Pressing TAB, selects the item and continues in cell editor.
