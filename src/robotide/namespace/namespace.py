@@ -46,7 +46,6 @@ class Namespace(object):
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
-        # print(f"DEBUG: namespace.py Namespace _init_caches {self.settings}")
         self._lib_cache = LibraryCache(
             self.settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self.settings)
@@ -141,7 +140,6 @@ class Namespace(object):
         datafile = controller.datafile
         ctx = self._context_factory.ctx_for_controller(controller)
         sugs = set()  # self._words_cache or
-        # print(f"DEBUG: namespace.py Namespace get_suggestions_for ENTER start={start} {datafile=} {ctx=} {sugs=}")
         while start and start[-1] in [']', '}', '=', ',']:
             start = start[:-1]
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
@@ -159,7 +157,6 @@ class Namespace(object):
         # print(f"DEBUG: namespace.py Namespace get_suggestions_for FROM CONTENT start={start} {sugs=}")
         sugs_list = list(sugs)
         sugs_list.sort()
-        # print(f"DEBUG: namespace.py Namespace get_suggestions_for RETURN {sugs_list=}")
         return sugs_list
 
     def _get_suggestions_from_hooks(self, datafile, start):
@@ -236,7 +233,14 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
+        # if kw:
+        #     print(f"DEBUG: namespace.py Namespace find_user_keyword kw_name=={kw_name}"
+        #           f" datafile={datafile.source} kw.source={kw.source}")
         return kw if isinstance(kw, UserKeywordInfo) else None
+
+    # DEBUG: This keyword is not used, Delete or use kw.is_private_keyword from ItemInfo
+    def is_private(self, datafile, kwname):  # TODO: Add condition for robot:private in tags
+        return kwname.startswith('_') and self.is_user_keyword(datafile, kwname)
 
     def is_user_keyword(self, datafile, kw_name):
         return bool(self.find_user_keyword(datafile, kw_name))
@@ -260,6 +264,7 @@ class Namespace(object):
         casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in UPPERCASE_KWS)
         kwds = self._retriever.get_keywords_cached(datafile, self._context_factory, caseless=not casesensitive)
         # print(f"DEBUG: namespace.py Namespace find_keyword will GET kw_name=={kw_name} casesensitive={casesensitive}")
+        #      f"\n PRIVATE? {self.is_private(datafile, kw_name)}")
         return kwds.get(kw_name, origin=datafile)
 
     def is_library_keyword(self, datafile, kw_name):
@@ -690,6 +695,8 @@ class _Keywords(object):
             # filename = os.path.basename(origin.source)
             # print(f"DEBUG: namespace.py _Keywords get keywords in loop FOUND {kw_name} @ {filename}"
             #       f" RETURNING {self.keywords[kw_name]} {self.keywords[kw_name].source == filename}")
+            # print(f"DEBUG: namespace.py _Keywords get keywords in loop FOUND {kw_name}"
+            #       f" source={self.keywords[kw_name].source}")
             return self.keywords[kw_name]
         # print(f"DEBUG: namespace.py _Keywords get keywords {self.keywords}")
         bdd_name = self._get_bdd_name(kw_name)
@@ -700,6 +707,8 @@ class _Keywords(object):
         for regexp in self.embedded_keywords:
             try:
                 if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
+                    # print(f"DEBUG: namespace.py _Keywords get keywords in REGEX FOUND {kw_name}"
+                    #       f" source={self.embedded_keywords[regexp].source}")
                     return self.embedded_keywords[regexp]
             except AttributeError:
                 pass

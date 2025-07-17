@@ -146,8 +146,7 @@ class LibraryManager(Thread):
 
     def get_and_insert_keywords(self, library_name, library_args):
         result_queue = queue.Queue(maxsize=1)
-        self._messages.put(
-            ('insert', library_name, library_args, result_queue), timeout=3)
+        self._messages.put(('insert', library_name, library_args, result_queue), timeout=3)
         try:
             return result_queue.get(timeout=5)
         except queue.Empty as e:

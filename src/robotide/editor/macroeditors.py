@@ -24,9 +24,13 @@ from .kweditor import KeywordEditor
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
+
 class TestCaseEditor(_RobotTableEditor):
     __test__ = False
     _settings_open_id = 'test case settings open'
+
+    def __init__(self, plugin, parent, _controller, tree):
+        _RobotTableEditor.__init__(self, plugin, parent, _controller, tree)
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
@@ -122,6 +126,9 @@ class TestCaseEditor(_RobotTableEditor):
 
 class UserKeywordEditor(TestCaseEditor):
     _settings_open_id = 'user keyword settings open'
+
+    def __init__(self, plugin, parent, _controller, tree):
+        TestCaseEditor.__init__(self, plugin, parent, _controller, tree)
 
     def _create_header(self, text, readonly=False):
         if readonly:

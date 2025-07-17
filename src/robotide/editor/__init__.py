@@ -307,6 +307,7 @@ class _EditorTab(wx.ScrolledWindow):
 
     def on_content_assistance(self, event):
         __ = event
+        print(f"DEBUG: init.py _EditorTab on_content_assistance event={event}")
         self.editor.show_content_assist()
 
     def save(self, message=None):

@@ -103,7 +103,14 @@ class WithNamespace(object):
         self.namespace.clear_update_listeners()
 
     def is_user_keyword(self, datafile, value):
-        return self.namespace.is_user_keyword(datafile, value)
+        user_kw = self.namespace.is_user_keyword(datafile, value)
+        if user_kw:
+            private=self.is_private(datafile, value)
+            # print(f"DEBUG: basecontroller.py is_user_keyword CALLED is_private=={private} datafile={datafile.source}")
+        return user_kw  # self.namespace.is_user_keyword(datafile, value)
+
+    def is_private(self, datafile, value):
+        return self.namespace.is_private(datafile, value)
 
     def is_library_keyword(self, datafile, value):
         return self.namespace.is_library_keyword(datafile, value)
@@ -115,6 +122,7 @@ class WithNamespace(object):
         return self.namespace.get_all_cached_library_names()
 
     def keyword_info(self, datafile, keyword_name):
+        # print(f"DEBUG: basecontroller.py WithNamespace keyword_info call find_keyword keyword_name={keyword_name}")
         return self.namespace.find_keyword(datafile, keyword_name)
 
     def is_library_import_ok(self, imp):
