@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20080401 09:09:28" type="library" name="OldStyleLibSpecLibrary">
-<version>&amp;lt;unknown&amp;gt;</version>
+<keywordspec name="libspeclibrrary" type="LIBRARY" format="ROBOT" scope="GLOBAL" generated="2025-07-06T20:08:58+00:00" specversion="6" source="libspeclibrary.py" lineno="1">
+<version/>
 <doc>Documentation for LibSpec test Library</doc>
+<tags/>
+<inits>
+</inits>
+<keywords>
 <kw name="Normal Keyword"> 
+<arguments repr="foo">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="foo">
+<name>foo</name>
+</arg>
+</arguments>
 <doc>This is kw documentation.
 
 This is more docs.</doc>
-<arguments>
-<arg>foo</arg>
-</arguments>
+<shortdoc>A Normal Keyword</shortdoc>
 </kw>
 <kw name="Attributeless Keyword"> 
-<doc></doc>
+<doc/>
+<shortdoc/>
 <arguments>
 </arguments>
 </kw>
 <kw name="Multiarg Keyword"> 
-<doc></doc>
+<doc/>
+<shortdoc/>
 <arguments>
-<arg>arg1</arg>
-<arg>arg2=default value</arg>
-<arg>*args</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="arg1">
+<name>arg1</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="arg2=default value">
+<name>arg2</name>
+<default>default value</default>
+</arg>
+<arg kind="VAR_POSITIONAL" required="false" repr="*args">
+<name>args</name>
+</arg>
 </arguments>
+<doc/>
+<shortdoc/>
 </kw>
+</keywords>
+<typedocs>
+</typedocs>
 </keywordspec>

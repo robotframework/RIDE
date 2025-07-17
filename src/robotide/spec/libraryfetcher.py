@@ -13,12 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .. import robotapi
+from ..robotapi import TestLibrary
 from .iteminfo import LibraryKeywordInfo
 
 
 def get_import_result(path, args):
-    lib = robotapi.TestLibrary(path, args)
+    lib = TestLibrary(path, args)
     kws = [
         LibraryKeywordInfo(
             kw.name,

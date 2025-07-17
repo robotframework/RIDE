@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import pytest
+# import os
+# import pytest
 # DISPLAY = os.getenv('DISPLAY')
 # if not DISPLAY:
 #     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
@@ -24,7 +24,8 @@ from robotide.context import IS_WINDOWS
 from robotide.editor.clipboard import _GridClipboard
 from utest.resources import UIUnitTestBase
 
-NEWLINE = '\n' if IS_WINDOWS else '\n'
+
+# NEWLINE = os.linesep
 
 
 class TestGridClipBoard(UIUnitTestBase):
@@ -42,7 +43,7 @@ class TestGridClipBoard(UIUnitTestBase):
     def _test_clipboard(self, content, expected=''):
         clipb = _GridClipboard()
         clipb.set_contents(content)
-        assert (clipb._get_contents() == expected)  # expected.replace('\n', os.linesep))
+        assert (clipb._get_contents() == expected.replace('\r', ''))  # expected.replace('\n', NEWLINE))
 
 
 if __name__ == '__main__':
