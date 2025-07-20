@@ -248,6 +248,12 @@ class _TestData(object):
 
     @property
     def name(self):
+        # if self.has_setting_table():
+        #     print(f"DEBUG: model.py _TestData name HAS SETTING_TABLE")
+        suite_name = self.setting_table.suite_name
+        if suite_name and suite_name.value:
+            # print(f"DEBUG: model.py _TestData name RETURN SUITE_NAME={suite_name.value}")
+            return suite_name.value
         return self._format_name(self._get_basename()) if self.source else None
 
     @property

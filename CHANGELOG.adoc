@@ -6,7 +6,10 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-// == https://github.com/robotframework/RIDE[Unreleased]
+== https://github.com/robotframework/RIDE[Unreleased]
+
+=== Added
+- Added parsing of option *--name* or *-N* and *Name* setting, to allow running test suites with them set.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.4.1.rst[2.1.4.1] - 2025-06-24
 
