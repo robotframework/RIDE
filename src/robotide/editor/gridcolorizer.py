@@ -12,9 +12,11 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import re
 import wx
 
-from ..controller.cellinfo import CellType
+from ..controller.cellinfo import CellType, ContentType
+from ..controller.macrocontrollers import UserKeywordController
 
 
 # this import fails in HUDSON
@@ -23,6 +25,7 @@ from ..controller.cellinfo import CellType
 # wxFONTWEIGHT_NORMAL = 90
 # DEBUG using wx.FONTWEIGHT_BOLD, wx.FONTWEIGHT_NORMAL
 
+prefix=re.compile(r'^\d+_{2,}')
 
 class Colorizer(object):
 
@@ -59,6 +62,25 @@ class Colorizer(object):
         if cell_info is None:
             self._set_default_colors(row, col)
             return
+        # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell cell_info={cell_info}")
+        if cell_info.cell_type == CellType.KEYWORD and cell_info.content_type==ContentType.USER_KEYWORD:
+            source = self._controller.display_name
+            parent = self._controller.parent
+            parent_name = self._controller.datafile_controller.name
+            cell_source = prefix.sub('', cell_info.source.split('.')[0], 1).title()
+            private = cell_info.private
+            current_section = 'keywords' if isinstance(self._controller, UserKeywordController) else 'tests'
+            # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
+            #       f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
+            #       f"\n Same File? {cell_source==parent_name} PRIVATE={private} "
+            #       f" source={self._controller.datafile_controller.datafile.source} current_section={current_section}")
+            if private:
+                if current_section == 'tests' or (current_section == 'keywords'
+                                                             and cell_source != parent_name):
+                    cell_info.set_or_clear_error(True)
+                else:
+                    cell_info.set_or_clear_error(False)
+            # self._controller.get_cell_info CellContent.value
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
         self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info, selection_content))
         self._grid.SetCellFont(row, col, self._get_cell_font(row, col, cell_info))
@@ -80,6 +102,8 @@ class Colorizer(object):
     def _get_cell_font(self, row, col, cell_info):
         font = self._grid.GetCellFont(row, col)
         font.SetWeight(self._get_weight(cell_info))
+        if cell_info.private:
+            font.SetStyle(wx.FONTSTYLE_ITALIC)
         return font
 
     @staticmethod
