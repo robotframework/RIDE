@@ -124,6 +124,20 @@ class ArgsParserTests(unittest.TestCase):
         result = ArgsParser.get_output_directory(args, DEFAULT_LOGS)
         self.assertEqual('/temp/report', result)
 
+    def test_get_named_suite_short(self):
+        args = ['-N', 'My Named Suite',
+                '--suite', 'suite_name_1',
+                '--test', 'test_1']
+        result = ArgsParser.get_named_suite(args)
+        self.assertEqual('My Named Suite', result)
+
+    def test_get_named_suite_long(self):
+        args = ['--name', 'My Named Suite',
+                '--suite', 'suite_name_1',
+                '--test', 'test_1']
+        result = ArgsParser.get_named_suite(args)
+        self.assertEqual('My Named Suite', result)
+
 
 if __name__ == '__main__':
     unittest.main()
