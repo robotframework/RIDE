@@ -150,7 +150,7 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.1. However, 
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.a7 with wxPython 4.2.3).</li>
@@ -172,6 +172,7 @@ version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added parsing of option <b>--name</b> or <b>-N</b> and <b>Name</b> setting, to allow running tests with them set.</li>
 <li>Added indication of <b>private</b> keywords in Grid Editor, keywords will show in <em>Italic</em>, and with error
  background, when they are used outside of Keywords section, or from different files.</li>
 <li>Added indication of <b>private</b> keywords in Details pop-up for keywords with tag <b>robot:private</b> or name starting
@@ -255,7 +256,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 17/July/2025.</p>
+<p>RIDE {VERSION} was released on 20/July/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
