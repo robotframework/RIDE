@@ -12,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import re
 import wx
 
 from ..controller.cellinfo import CellType, ContentType
@@ -24,6 +25,7 @@ from ..controller.macrocontrollers import UserKeywordController
 # wxFONTWEIGHT_NORMAL = 90
 # DEBUG using wx.FONTWEIGHT_BOLD, wx.FONTWEIGHT_NORMAL
 
+prefix=re.compile(r'^\d+_{2,}')
 
 class Colorizer(object):
 
@@ -65,13 +67,13 @@ class Colorizer(object):
             source = self._controller.display_name
             parent = self._controller.parent
             parent_name = self._controller.datafile_controller.name
-            cell_source = (cell_info.source.split('.')[0]).title()
+            cell_source = prefix.sub('', cell_info.source.split('.')[0], 1).title()
             private = cell_info.private
             current_section = 'keywords' if isinstance(self._controller, UserKeywordController) else 'tests'
             # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell USER KEYWORD source={source} "
             #       f"CELL Source=={cell_source} parent={parent}  parent_name={parent_name}"
             #       f"\n Same File? {cell_source==parent_name} PRIVATE={private} "
-            #       f" section={self._grid._parent.section} current_section={current_section}")
+            #       f" source={self._controller.datafile_controller.datafile.source} current_section={current_section}")
             if private:
                 if current_section == 'tests' or (current_section == 'keywords'
                                                              and cell_source != parent_name):

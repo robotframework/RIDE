@@ -161,8 +161,11 @@ RELEASE_NOTES = f"""
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
 version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 -->
-<li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings and changes.</li>
+<li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
+and changes.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
+<li>🐞 - In Grid Editor, private keywords defined in test suites with <b>Name</b> setting, will show with error color
+ even if used correctly in another local keyword.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors. The option to not reformat the file is not working.</li>
 <li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
@@ -256,7 +259,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 20/July/2025.</p>
+<p>RIDE {VERSION} was released on 21/July/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
