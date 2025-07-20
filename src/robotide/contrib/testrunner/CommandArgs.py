@@ -60,10 +60,20 @@ class CommandArgs:
         self._output_directory = output_directory
         return self
 
-    def with_runnable_tests(self, tests):
+    def with_runnable_tests(self, tests, named_suite=''):
+        def fix_name(name):
+            if named_suite:
+                if '.' in name:
+                    l_name = name.split('.')
+                    l_name[0] = named_suite
+                    return '.'.join(l_name)
+                else:
+                    return named_suite
+            return name
+
         self._tests_to_run.clear()
         for suite, test in tests:
-            self._tests_to_run += ['--suite', suite, '--test', test]
+            self._tests_to_run += ['--suite', fix_name(suite), '--test', fix_name(test)]
         return self
 
     def without_console_color(self, without_colors=True):

@@ -181,6 +181,7 @@ class TestRunnerPlugin(Plugin):
         self._initmemory = None
         self._limitmemory = None  # This will be +80%
         self._maxmemmsg = None
+        self._named_suite = ''
         self.active_status_bar = self.__getattr__('active_status_bar')
         self.use_colors = self.__getattr__('use colors')
         self.fail_color = self.__getattr__('fail color')
@@ -192,6 +193,10 @@ class TestRunnerPlugin(Plugin):
         return list(
             map(lambda ctrl: (ctrl.datafile_controller.longname, ctrl.longname),
                 self._selected_tests))
+
+    def named_suite(self, args):
+        self._named_suite = ArgsParser.get_named_suite(args)
+        return self._named_suite
 
     def _register_shortcuts(self):
         self.register_shortcut('CtrlCmd-C', self._copy_from_log_ctrls)
@@ -410,7 +415,7 @@ class TestRunnerPlugin(Plugin):
             .with_python_path(self.global_settings.get('pythonpath', None)) \
             .with_console_width(self._get_console_width()) \
             .without_console_color(not use_colors) \
-            .with_runnable_tests(self._names_to_run) \
+            .with_runnable_tests(self._names_to_run, self.named_suite(profile_command_args)) \
             .build()
 
     def _save_command_args_in_file(self, args):
@@ -430,16 +435,14 @@ class TestRunnerPlugin(Plugin):
         self._report_file = self._log_file = None
         self._log_message_queue = Queue()
 
-        self._min_log_level_number = \
-            ArgsParser.get_message_log_level(args)
+        self._min_log_level_number = ArgsParser.get_message_log_level(args)
 
-        self._logs_directory = \
-            ArgsParser.get_output_directory(args, self._default_output_dir)
+        self._logs_directory = ArgsParser.get_output_directory(args, self._default_output_dir)
 
-        console_log_name = \
-            SettingsParser.get_console_log_name(profile_settings)
-        self._console_log = '' if not console_log_name \
-            else os.path.join(self._logs_directory, console_log_name)
+        self._test_runner.set_named_suite(self.named_suite(args))  # When no tests selected, to have execution status
+
+        console_log_name = SettingsParser.get_console_log_name(profile_settings)
+        self._console_log = '' if not console_log_name else os.path.join(self._logs_directory, console_log_name)
 
     def _get_current_working_dir(self, profile):
         if profile.name == runprofiles.CustomScriptProfile.name:

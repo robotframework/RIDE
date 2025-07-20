@@ -9,6 +9,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added parsing of option *--name* or *-N* and *Name* setting, to allow running test suites with them set.
+
 - Added indication of *private* keywords in Grid Editor, keywords will show in _Italic_, and with error
  background, when they are used outside of Keywords section, or from different files.
 
