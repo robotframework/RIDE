@@ -534,6 +534,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             pass
 
     def _on_timer(self, event):
+        if not self.is_focused():  # Was reaching here with contentassist in kweditor
+            event.Skip()
+            return
         self._editor.store_position()
         self._open_tree_selection_in_editor()
         event.Skip()

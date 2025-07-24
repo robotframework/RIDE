@@ -248,6 +248,12 @@ class _TestData(object):
 
     @property
     def name(self):
+        # if self.has_setting_table():
+        #     print(f"DEBUG: model.py _TestData name HAS SETTING_TABLE")
+        suite_name = self.setting_table.suite_name
+        if suite_name and suite_name.value:
+            # print(f"DEBUG: model.py _TestData name RETURN SUITE_NAME={suite_name.value}")
+            return suite_name.value
         return self._format_name(self._get_basename()) if self.source else None
 
     @property
@@ -1128,6 +1134,11 @@ class UserKeyword(TestCase):
     @property
     def settings(self):
         return [self.args, self.doc, self.setup_, self.tags,  self.timeout, self.teardown, self.return_]
+
+    @property
+    def is_private_keyword(self):
+        return (self.name.startswith('_') or
+                (self.tags and 'robot:private' in [x.replace(' ', '').lower() for x in self.tags]))
 
     def __iter__(self):
         for element in ([self.args, self.doc, self.setup_, self.tags, self.timeout] + self.steps +

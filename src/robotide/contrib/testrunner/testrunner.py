@@ -64,12 +64,18 @@ class TestRunner(object):
         self.profiles = {}
         self._pause_longname = None
         self._pause_testname = None
+        self._named_suite = ''
+        self._suite_name = None
 
     def enable(self, result_handler):
         self._start_listener_server(result_handler)
 
     def add_profile(self, name, item):
         self.profiles[name] = item
+
+    def set_named_suite(self, name):
+        self._suite_name = self._project.suite.name
+        self._named_suite = name
 
     def get_profile(self, name):
         return self.profiles[name]
@@ -125,6 +131,9 @@ class TestRunner(object):
 
     def _get_test_controller(self, longname, testname=None):
         ret = self._project.find_controller_by_longname(longname, testname)
+        if not ret and self._named_suite:
+            ret = self._project.find_controller_by_longname(longname.replace(self._named_suite, self._suite_name)
+                                                            .strip('.'), testname)
         return ret
 
     def clear_server(self):
@@ -186,6 +195,8 @@ class TestRunner(object):
     def command_ended(self):
         self._results.set_stopped(None)
         self._process = None
+        self._named_suite = ''
+        self._suite_name = None
 
 
 # The following two classes implement a small line-buffered socket

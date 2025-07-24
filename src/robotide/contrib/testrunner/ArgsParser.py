@@ -36,8 +36,7 @@ class ArgsParser:
 
     @staticmethod
     def get_message_log_level(args, default='INFO'):
-        level = ArgsParser._get_arg_value('-L', '--loglevel',
-                                          args, default)
+        level = ArgsParser._get_arg_value('-L', '--loglevel', args, default)
         level_list = level.upper().split(':')
         try:
             min_level = LOG_LEVELS[level_list[0]] or LOG_LEVELS[default]
@@ -49,8 +48,11 @@ class ArgsParser:
 
     @staticmethod
     def get_output_directory(args, default):
-        return ArgsParser._get_arg_value('-d', '--outputdir',
-                                         args, default)
+        return ArgsParser._get_arg_value('-d', '--outputdir', args, default)
+
+    @staticmethod
+    def get_named_suite(args, default=''):
+        return ArgsParser._get_arg_value('-N', '--name', args, default)
 
     @staticmethod
     def _get_arg_value(short_name, full_name, source, default):

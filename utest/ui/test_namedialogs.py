@@ -52,7 +52,7 @@ class TestNameDialogTest(UIUnitTestBase):
         test_ctrl = file_controller().create_test('A test')
         dlg = TestCaseNameDialog(test_ctrl, item=test_ctrl.data)
         wx.CallAfter(dlg.EndModal, wx.ID_YES)
-        assert dlg.execute() == None
+        assert dlg.execute() in (None, 5101)  # In command Windows got 5101 instead of None
 
     def test_get_title(self):
         test_ctrl = file_controller().create_test('A test')

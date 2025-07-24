@@ -150,7 +150,7 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.1. However, 
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.a7 with wxPython 4.2.3).</li>
@@ -161,8 +161,11 @@ RELEASE_NOTES = f"""
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
 version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 -->
-<li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings and changes.</li>
+<li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
+and changes.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
+<li>🐞 - In Grid Editor, private keywords defined in test suites with <b>Name</b> setting, will show with error color
+ even if used correctly in another local keyword.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors. The option to not reformat the file is not working.</li>
 <li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
@@ -172,6 +175,14 @@ version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added indication of <b>private</b> keywords in Grid Editor, keywords will show in <em>Italic</em>, and with error
+ background, when they are used outside of Keywords section, or from different files.</li>
+<li>Added indication of <b>private</b> keywords in Details pop-up for keywords with tag <b>robot:private</b> or name starting
+ with underscore, <b>'_'</b> in Grid Editor.</li>
+<li>Modified the action of key TAB when selecting from auto-suggestions list in Grid Editor. Pressing TAB, selects the
+ item and continues in cell editor.</li>
+<li>Fix cursor position when editing cells in Grid Editor.</li>
+<li>Added parsing of option <b>--name</b> or <b>-N</b> and <b>Name</b> setting, to allow running tests with them set.</li>
 <li>Fix broken installation of RIDE v2.1.4 by adding missing dependencies.</li>
 <li>Added <b>Tools-&gt;Library Finder...</b> to install libraries and <b>Help-&gt;Open Library Documentation...</b> .
  They share the same dialog, and definitions are recorded in ``settings.cfg``.</li>
@@ -248,7 +259,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 24/June/2025.</p>
+<p>RIDE {VERSION} was released on 25/July/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

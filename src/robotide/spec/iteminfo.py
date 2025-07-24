@@ -17,11 +17,15 @@ import os
 from functools import total_ordering
 
 from .. import utils
-from ..lib.robot.libdocpkg.htmlwriter import DocToHtml
+try:
+    from robot.utils import html_format
+except (ImportError, ModuleNotFoundError):
+    from robotide.lib.robot.utils import html_format
 
 
 class ItemInfo(object):
     """Represents an object that can be displayed by content assistant."""
+    private = False
 
     def __init__(self, name, source, details):
         """Creates an item info.
@@ -31,6 +35,8 @@ class ItemInfo(object):
             Item name. Is shown in the first column of the content assist popup.
           source
             Item source. Is shown in the second column of the content assist popup.
+          private
+            Only for UserKeywords (in TestSuiteFile or ResourceFile)
           details
             Detailed information for item that is shown in the additional popup
             besides the list that contains content assist values. Will be
@@ -58,6 +64,10 @@ class ItemInfo(object):
 
     def is_user_keyword(self):
         return not self.is_library_keyword()
+
+    @property
+    def is_private_keyword(self):
+        return False
 
     @staticmethod
     def m_cmp(a, b):
@@ -173,6 +183,13 @@ class _KeywordInfo(ItemInfo):
         ItemInfo.__init__(self, self._name(item), self._source(item), None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
         self.item = item
+        self.private = self.is_private_keyword
+
+    @property
+    def is_private_keyword(self):
+        if hasattr(self.item, 'name'):
+            return self.item.name.startswith('_') or self.item.is_private_keyword
+        return False
 
     @property
     def arguments(self):
@@ -180,24 +197,27 @@ class _KeywordInfo(ItemInfo):
 
     @property
     def details(self):
-        formatter = DocToHtml(self.doc_format)
+        # formatter = html_format(self.doc_format)
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s &lt;%s&gt;</td></tr>'
+                '%s'
                 '<tr><td><i>Arguments:</i></td><td>%s</td></tr>'
                 '</table>'
                 '<table>'
                 '<tr><td>%s</td></tr>'
                 '</table>') % (self._name(self.item), self._source(self.item), self._type,
+                               f'<tr><td><i>Private:</i></td><td><b>True</b></td></tr>' if self.private else '',
                                self._format_args(self.arguments),
-                               formatter(self.doc))
+                               html_format(self.doc))
 
     @staticmethod
     def _format_args(args):
         return '[ %s ]' % ' | '.join(args)
 
     def __str__(self):
-        return 'KeywordInfo[name: %s, source: %s, doc: %s]' % (self.name, self.source, self.doc)
+        return ('KeywordInfo[name: %s, source: %s, private: %s, doc: %s]' %
+                (self.name, self.source, self.private, self.doc))
 
     def _name(self, item):
         return item.name
@@ -223,6 +243,7 @@ class _XMLKeywordContent(_KeywordInfo):
         self._source = lambda x: source
         _KeywordInfo.__init__(self, item)
         self.args = self._format_args(self._parse_args(item))
+        print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent INIT arrgs={self.args[:]}")
         if doc_format in ("TEXT", "ROBOT", "REST", "HTML"):
             self.doc_format = doc_format
         else:
@@ -234,7 +255,14 @@ class _XMLKeywordContent(_KeywordInfo):
         return self
 
     def _name(self, node):
-        return node.get('name')
+        print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent _NAME CALL node.get('name') node={node}")
+        if hasattr(node, 'name'):
+            name = node.get('name')
+            print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent _NAME node HAS 'NAME' name={name}")
+            return node.get('name')
+        else:
+            print(f"\nDEBUG: spec.iteminfo _XMLKeywordContent _NAME node DOES NOT HAVE 'NAME'")
+            return ''
 
     @staticmethod
     def _doc(node):
