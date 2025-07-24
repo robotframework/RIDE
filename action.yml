@@ -1,0 +1,447 @@
+name: 'CodeBoarding [Diagram-First Documentation]'
+description: 'Generates diagram-first visualizations of your codebase using static analysis and large language models.'
+author: 'CodeBoarding'
+
+branding:
+  icon: 'book-open'  # or 'layers', 'git-branch', 'book-open', 'target'
+  color: 'blue'
+
+inputs:
+  output_directory:
+    description: 'Directory where documentation files will be saved'
+    required: false
+    default: 'docs'
+  repository_url:
+    description: 'Repository URL to fetch documentation for (defaults to current repository)'
+    required: true
+  source_branch:
+    description: 'Source branch for comparison'
+    required: true
+  target_branch:
+    description: 'Target branch for comparison'
+    required: true
+  output_format:
+    description: 'Output format for documentation files (.md, .mdx, .rst, or .html)'
+    required: false
+    default: '.md'
+
+outputs:
+  markdown_files_created:
+    description: 'Number of Markdown files created'
+    value: ${{ steps.process-docs.outputs.markdown_files_created }}
+  json_files_created:
+    description: 'Number of JSON files created'
+    value: ${{ steps.process-docs.outputs.json_files_created }}
+  output_directory:
+    description: 'Directory where Markdown files were saved'
+    value: ${{ steps.process-docs.outputs.output_directory }}
+  json_directory:
+    description: 'Directory where JSON files were saved (.codeboarding)'
+    value: ${{ steps.process-docs.outputs.json_directory }}
+  has_changes:
+    description: 'Whether any files were created or changed'
+    value: ${{ steps.process-docs.outputs.has_changes }}
+  repo_url:
+    description: 'Repository URL that was analyzed'
+    value: ${{ steps.repo-url.outputs.repo_url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Determine repository URL
+      id: repo-url
+      shell: bash
+      run: |
+        # Use the provided repository URL if it's not empty
+        if [ -n "${{ inputs.repository_url }}" ]; then
+          REPO_URL="${{ inputs.repository_url }}"
+          echo "Using provided repository URL: $REPO_URL"
+        # Otherwise try to determine from git if we're in a git repository
+        elif git config --get remote.origin.url > /dev/null 2>&1; then
+          REPO_URL=$(git config --get remote.origin.url)
+          # Convert SSH URL to HTTPS if needed
+          if [[ $REPO_URL == git@* ]]; then
+            REPO_URL=$(echo $REPO_URL | sed 's|git@github.com:|https://github.com/|')
+          fi
+          echo "Using git remote URL: $REPO_URL"
+        else
+          REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+          echo "Using GitHub context URL: $REPO_URL"
+        fi
+        echo "repo_url=$REPO_URL" >> $GITHUB_OUTPUT
+
+    - name: Create and poll documentation job
+      id: fetch-docs
+      shell: bash
+      run: |
+        CREATE_JOB_URL="https://server.codeboarding.org/github_action/jobs"
+        REPO_URL="${{ steps.repo-url.outputs.repo_url }}"
+        SOURCE_BRANCH="${{ inputs.source_branch }}"
+        TARGET_BRANCH="${{ inputs.target_branch }}"
+        OUTPUT_DIRECTORY="${{ inputs.output_directory }}"
+        OUTPUT_FORMAT="${{ inputs.output_format }}"
+        
+        echo "🚀 Creating CodeBoarding analysis job...$CREATE_JOB_URL"
+        echo "📊 Repository: $REPO_URL"
+        echo "🌿 Source branch: $SOURCE_BRANCH"
+        echo "🎯 Target branch: $TARGET_BRANCH"
+        echo "📄 Output format: $OUTPUT_FORMAT"
+        
+        # Create JSON payload
+        JSON_PAYLOAD=$(jq -n \
+          --arg url "$REPO_URL" \
+          --arg source_branch "$SOURCE_BRANCH" \
+          --arg target_branch "$TARGET_BRANCH" \
+          --arg output_directory "$OUTPUT_DIRECTORY" \
+          --arg extension "$OUTPUT_FORMAT" \
+          '{
+            url: $url,
+            source_branch: $source_branch,
+            target_branch: $target_branch,
+            output_directory: $output_directory,
+            extension: $extension
+          }')
+        
+        echo "📋 Request payload:"
+        echo "$JSON_PAYLOAD"
+        
+        # Create temporary file for response
+        TEMP_FILE=$(mktemp)
+        
+        echo "🌐 Making API request to create job..."
+        
+        # Make the API call to create job
+        response=$(curl -s -w "%{http_code}" -o "$TEMP_FILE" \
+          -X POST \
+          -H "Content-Type: application/json" \
+          -d "$JSON_PAYLOAD" \
+          --max-time 60 \
+          --connect-timeout 30 \
+          "$CREATE_JOB_URL")
+        curl_exit_code=$?
+        
+        http_code=${response: -3}
+        
+        echo "✅ Job creation request completed!"
+        echo "📋 Response status code: $http_code"
+        echo "🔧 Curl exit code: $curl_exit_code"
+        
+        # Handle curl errors
+        if [ $curl_exit_code -ne 0 ]; then
+          echo "❌ Error: Curl failed with exit code $curl_exit_code"
+          case $curl_exit_code in
+            6) echo "🌐 Couldn't resolve host - check network connectivity" ;;
+            7) echo "🔌 Failed to connect to host - server might be down" ;;
+            28) echo "⏰ Request timed out - server might be busy" ;;
+            *) echo "❓ Unknown curl error - check network and server status" ;;
+          esac
+          rm -f "$TEMP_FILE"
+          exit 1
+        fi
+        
+        if [ "$http_code" != "202" ]; then
+          echo "❌ Error: Job creation failed with status code $http_code"
+          echo "📄 Response content:"
+          cat "$TEMP_FILE"
+          
+          # Try to parse as JSON for better error message
+          if jq -e '.detail' "$TEMP_FILE" > /dev/null 2>&1; then
+            echo "🔍 Error details: $(jq -r '.detail' "$TEMP_FILE")"
+          fi
+          
+          rm -f "$TEMP_FILE"
+          exit 1
+        fi
+        
+        # Check if response is valid JSON
+        if ! jq empty "$TEMP_FILE" 2>/dev/null; then
+          echo "❌ Error: Invalid JSON response"
+          echo "📄 Response content:"
+          cat "$TEMP_FILE"
+          rm -f "$TEMP_FILE"
+          exit 1
+        fi
+        
+        # Extract job_id from response
+        JOB_ID=$(jq -r '.job_id' "$TEMP_FILE")
+        
+        if [ "$JOB_ID" = "null" ] || [ -z "$JOB_ID" ]; then
+          echo "❌ Error: No job_id found in response"
+          echo "📄 Response content:"
+          cat "$TEMP_FILE"
+          rm -f "$TEMP_FILE"
+          exit 1
+        fi
+        
+        echo "✅ Job created successfully!"
+        echo "🆔 Job ID: $JOB_ID"
+        
+        # Start polling job status
+        STATUS_URL="https://server.codeboarding.org/github_action/jobs/$JOB_ID"
+        
+        echo "📊 Starting job status polling..."
+        echo "⏰ This may take 15-45 minutes for large repositories..."
+        echo "💡 If your workflow times out, increase 'timeout-minutes' in your job configuration"
+        
+        # Polling loop
+        POLL_COUNT=0
+        MAX_POLLS=90  # 90 minutes max (90 * 1 minute intervals)
+        
+        while [ $POLL_COUNT -lt $MAX_POLLS ]; do
+          POLL_COUNT=$((POLL_COUNT + 1))
+          
+          echo "🔍 Polling attempt $POLL_COUNT of $MAX_POLLS ($(date '+%H:%M:%S'))"
+          
+          # Make status check API call
+          response=$(curl -s -w "%{http_code}" -o "$TEMP_FILE" \
+            --max-time 30 \
+            --connect-timeout 10 \
+            "$STATUS_URL")
+          
+          curl_exit_code=$?
+          http_code=${response: -3}
+          
+          # Handle curl errors
+          if [ $curl_exit_code -ne 0 ]; then
+            echo "⚠️  Warning: Status check failed with curl exit code $curl_exit_code"
+            echo "🔄 Retrying in 30 seconds..."
+            sleep 30
+            continue
+          fi
+          
+          if [ "$http_code" != "200" ]; then
+            echo "⚠️  Warning: Status check failed with HTTP code $http_code"
+            echo "📄 Response content:"
+            cat "$TEMP_FILE"
+            echo "🔄 Retrying in 30 seconds..."
+            sleep 30
+            continue
+          fi
+          
+          # Check if response is valid JSON
+          if ! jq empty "$TEMP_FILE" 2>/dev/null; then
+            echo "⚠️  Warning: Invalid JSON response"
+            echo "📄 Response content:"
+            cat "$TEMP_FILE"
+            echo "🔄 Retrying in 30 seconds..."
+            sleep 30
+            continue
+          fi
+          
+          # Extract status from response
+          STATUS=$(jq -r '.status' "$TEMP_FILE")
+          
+          echo "📊 Current job status: $STATUS"
+          
+          if [ "$STATUS" = "COMPLETED" ]; then
+            echo "✅ Job completed successfully!"
+            
+            # Check if result field exists and contains files
+            if jq -e '.result' "$TEMP_FILE" > /dev/null; then
+              echo "📦 Result field found, preparing output..."
+              
+              # Check if result is a JSON string or already a JSON object
+              RESULT_TYPE=$(jq -r '.result | type' "$TEMP_FILE")
+              
+              if [ "$RESULT_TYPE" = "string" ]; then
+                echo "🔧 Result is a JSON string, parsing it..."
+                # Parse the JSON string in the result field
+                jq -r '.result' "$TEMP_FILE" | jq '.' > "${TEMP_FILE}_result"
+              else
+                echo "🔧 Result is already a JSON object, extracting it..."
+                # Extract the result object directly
+                jq '.result' "$TEMP_FILE" > "${TEMP_FILE}_result"
+              fi
+              
+              # Verify the extracted result
+              if jq -e '.files' "${TEMP_FILE}_result" > /dev/null; then
+                echo "✅ Files extracted successfully"
+                mv "${TEMP_FILE}_result" "$TEMP_FILE"
+                echo "response_file=$TEMP_FILE" >> $GITHUB_OUTPUT
+                exit 0  # Successfully extracted files, exit with success
+              else
+                echo "❌ Error: Extracted result is missing files structure"
+                echo "📄 Extracted content:"
+                cat "${TEMP_FILE}_result"
+                rm -f "${TEMP_FILE}_result" "$TEMP_FILE"
+                exit 1
+              fi
+            else
+              echo "❌ Error: Job completed but no result or result.files found in response"
+              echo "📄 Response structure:"
+              jq '.' "$TEMP_FILE"
+              
+              # If result exists, show what it contains
+              if jq -e '.result' "$TEMP_FILE" > /dev/null; then
+                echo "📄 Result field content:"
+                RESULT_TYPE=$(jq -r '.result | type' "$TEMP_FILE")
+                echo "Result type: $RESULT_TYPE"
+                
+                if [ "$RESULT_TYPE" = "string" ]; then
+                  echo "Result string content:"
+                  jq -r '.result' "$TEMP_FILE"
+                else
+                  echo "Result object content:"
+                  jq '.result' "$TEMP_FILE"
+                fi
+              fi
+              
+              rm -f "$TEMP_FILE"
+              exit 1
+            fi
+          elif [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "ERROR" ]; then
+            echo "❌ Job failed with status: $STATUS"
+            echo "📄 Response content:"
+            cat "$TEMP_FILE"
+            rm -f "$TEMP_FILE"
+            exit 1
+          else
+            # Job still in progress
+            echo "⏳ Job in progress (status: $STATUS)..."
+            
+            # Show additional progress information if available
+            if jq -e '.updated_at' "$TEMP_FILE" > /dev/null; then
+              UPDATED_AT=$(jq -r '.updated_at' "$TEMP_FILE")
+              echo "🕐 Last updated: $UPDATED_AT"
+            fi
+            
+            echo "💤 Waiting 15 seconds before next check..."
+            sleep 15
+          fi
+        done
+        
+        # Only reach here if we've exceeded max polls without completion
+        echo "❌ Error: Job polling timed out after $MAX_POLLS attempts"
+        echo "🏗️  The repository analysis is taking longer than expected."
+        echo "📊 This might be due to:"
+        echo "   • Very large repository size (>10k files)"
+        echo "   • Complex codebase requiring extensive analysis"
+        echo "   • Server load or processing delays"
+        echo ""
+        echo "💡 Suggestions:"
+        echo "   • Try again later when server load might be lower"
+        echo "   • Consider analyzing smaller branches or specific directories"
+        echo "   • Increase your GitHub Actions job timeout-minutes to 120+"
+        echo "   • Contact support if the issue persists"
+        
+        rm -f "$TEMP_FILE"
+        exit 1
+
+    - name: Process documentation files
+      id: process-docs
+      shell: bash
+      run: |
+        RESPONSE_FILE="${{ steps.fetch-docs.outputs.response_file }}"
+        MD_OUTPUT_DIR="${{ inputs.output_directory }}"
+        JSON_OUTPUT_DIR=".codeboarding"
+        OUTPUT_FORMAT="${{ inputs.output_format }}"
+        
+        # Validate output format
+        if [[ "$OUTPUT_FORMAT" != ".md" && "$OUTPUT_FORMAT" != ".mdx" && "$OUTPUT_FORMAT" != ".rst" && "$OUTPUT_FORMAT" != ".html" ]]; then
+          echo "Error: Invalid output format '$OUTPUT_FORMAT'. Must be either '.md', '.mdx', '.rst', or '.html'"
+          exit 1
+        fi
+        
+        # Clean and create the output directories
+        mkdir -p "$MD_OUTPUT_DIR"
+        
+        # Remove existing .codeboarding files before adding new ones
+        if [ -d "$JSON_OUTPUT_DIR" ]; then
+          echo "Cleaning existing JSON files from $JSON_OUTPUT_DIR"
+          rm -rf "$JSON_OUTPUT_DIR"
+        fi
+        mkdir -p "$JSON_OUTPUT_DIR"
+        
+        # Initialize counters
+        MARKDOWN_FILES_CREATED=0
+        JSON_FILES_CREATED=0
+        
+        echo "=== Processing Documentation Files ==="
+        echo "Response JSON structure:"
+        jq . "$RESPONSE_FILE"
+        echo "Using output format: $OUTPUT_FORMAT"
+          # Parse JSON response and create files using keys as filenames
+        if jq -e '.files' "$RESPONSE_FILE" > /dev/null; then
+          echo "Files key found, proceeding to create files..."
+          
+          # Check if files object is empty
+          FILES_COUNT=$(jq '.files | length' "$RESPONSE_FILE")
+          if [ "$FILES_COUNT" -eq 0 ]; then
+            echo "ℹ️  No documentation files were generated for this repository/branch combination."
+            echo "📝 This might be because:"
+            echo "   • No changes were detected between the source and target branches"
+            echo "   • The repository or branches don't exist or are not accessible"
+            echo "   • No analyzable code files were found"
+            echo "   • The branches are identical (no diff to analyze)"
+          else
+            # Get each key from files object and create a file with that name
+            while IFS= read -r filename; do
+              echo "Processing file: $filename"
+              
+              # Get the content for this filename
+              content=$(jq -r ".files[\"$filename\"]" "$RESPONSE_FILE")
+              
+              # Determine file type and destination
+              if [[ "$filename" == *.json ]]; then
+                # JSON file
+                output_dir="$JSON_OUTPUT_DIR"
+                output_filename="$filename"
+                echo "$content" > "$output_dir/$output_filename"
+                echo "Created JSON file: $output_dir/$output_filename"
+                JSON_FILES_CREATED=$((JSON_FILES_CREATED + 1))
+              else
+                # Documentation file - add appropriate extension if not present
+                output_dir="$MD_OUTPUT_DIR"
+                
+                # Check if filename has an extension
+                if [[ "$filename" == *.* ]]; then
+                  # Extract basename without extension
+                  basename="${filename%.*}"
+                else
+                  basename="$filename"
+                fi
+                
+                # Add the selected output format extension
+                output_filename="${basename}${OUTPUT_FORMAT}"
+                
+                echo "$content" > "$output_dir/$output_filename"
+                echo "Created documentation file: $output_dir/$output_filename"
+                MARKDOWN_FILES_CREATED=$((MARKDOWN_FILES_CREATED + 1))
+              fi
+            done < <(jq -r '.files | keys[]' "$RESPONSE_FILE")
+          fi
+        else
+          echo "No 'files' key found in response JSON - checking if job completed with no results"
+        fi
+        
+        # Clean up temporary file
+        rm -f "$RESPONSE_FILE"
+        
+        # Check if any files were created
+        TOTAL_FILES=$((MARKDOWN_FILES_CREATED + JSON_FILES_CREATED))
+        if [ "$TOTAL_FILES" -gt 0 ]; then
+          HAS_CHANGES="true"
+          echo "Created $MARKDOWN_FILES_CREATED Markdown files in $MD_OUTPUT_DIR"
+          echo "Created $JSON_FILES_CREATED JSON files in $JSON_OUTPUT_DIR"
+          
+          # List created files
+          if [ "$MARKDOWN_FILES_CREATED" -gt 0 ]; then
+            echo "Markdown files created:"
+            ls -la "$MD_OUTPUT_DIR"
+          fi
+          
+          if [ "$JSON_FILES_CREATED" -gt 0 ]; then
+            echo "JSON files created:"
+            ls -la "$JSON_OUTPUT_DIR"
+          fi
+        else
+          HAS_CHANGES="false"
+          echo "No files were created"
+        fi
+        
+        # Set outputs
+        echo "markdown_files_created=$MARKDOWN_FILES_CREATED" >> $GITHUB_OUTPUT
+        echo "json_files_created=$JSON_FILES_CREATED" >> $GITHUB_OUTPUT
+        echo "output_directory=$MD_OUTPUT_DIR" >> $GITHUB_OUTPUT
+        echo "json_directory=$JSON_OUTPUT_DIR" >> $GITHUB_OUTPUT
+        echo "has_changes=$HAS_CHANGES" >> $GITHUB_OUTPUT
