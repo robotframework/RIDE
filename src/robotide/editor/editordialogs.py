@@ -26,7 +26,7 @@ from .dialoghelps import get_help
 from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, ContentAssistEditor, VariableNameEditor,
                            ArgumentEditor, FileNameEditor)
 from .formatters import ListToStringFormatter
-from robotide.lib.compat.parsing import language
+from ..lib.compat.parsing import language
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation

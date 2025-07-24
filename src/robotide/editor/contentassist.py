@@ -280,6 +280,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             popup_value = in_value
         if popup_value and popup_value.lower() in initial_value.lower():
             initial_value = initial_value.replace(initial_value, '')
+        elif not popup_value:
+            return initial_value
         parts = initial_value.split()
         for p in parts:
             if popup_value and popup_value.lower().startswith(p.strip('}])').lower()):
