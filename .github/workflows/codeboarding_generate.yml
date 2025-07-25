@@ -21,7 +21,7 @@ jobs:
           repository_url: ${{ github.server_url }}/${{ github.repository }}
           source_branch: ${{ github.head_ref || github.ref_name }}
           target_branch: ${{ github.base_ref || 'main' }}
-          output_directory: 'docs'
+          output_directory: 'doc'
           output_format: '.md'
           
       - name: Upload Documentation
