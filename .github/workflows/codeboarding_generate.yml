@@ -1,0 +1,32 @@
+name: Generate Documentation
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required to access branch history
+        
+      - name: Generate Documentation
+        uses: codeboarding/codeboarding-ghaction@v1
+        with:
+          repository_url: ${{ github.server_url }}/${{ github.repository }}
+          source_branch: ${{ github.head_ref || github.ref_name }}
+          target_branch: ${{ github.base_ref || 'main' }}
+          output_directory: 'docs'
+          output_format: '.md'
+          
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: |
+            doc/.codeboarding/
