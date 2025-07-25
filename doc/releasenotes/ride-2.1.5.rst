@@ -40,44 +40,6 @@
    -  Fix cursor position when editing cells in Grid Editor.
    -  Added parsing of option **--name** or **-N** and **Name** setting,
       to allow running tests with them set.
-   -  Fix broken installation of RIDE v2.1.4 by adding missing
-      dependencies.
-   -  Added **Tools->Library Finder...** to install libraries and
-      **Help->Open Library Documentation...** . They share the same
-      dialog, and definitions are recorded in \``settings.cfg`\`.
-   -  Added context menu to install libraries and to open documentation
-      in Grid Editor Import section. Same as above description.
-   -  Added keyboard shortcuts **Ctrl-Shift-Up** and **Ctrl-Shift-Down**
-      as alternatives to **Alt-Up** and **Alt-Down** to move rows in
-      Grid and Text Editors.
-   -  Improved vertical scroll in Grid Editor, by having main scroll
-      bars out of cells.
-   -  Fixed Create Desktop Shortcut by pointing executable to **python
-      -m robotide**.
-   -  Changed arguments parser to allow **--version** and **--help**
-      functional in Windows.
-   -  Improved auto-complete in Grid Editor, to allow several matches.
-   -  Fixed white blocks on Tree due to failed animation when test
-      execution is too rapid, causing crash on Windows.
-   -  Added Settings Editor button to Preferences dialog, to edit
-      settings.cfg.
-   -  Created backup of settings.cfg to allow recovering some settings
-      when broken upgrades.
-   -  Changed some informative dialogs and JSON Editor to use the
-      customized colors.
-   -  Added current executing keyword and other statuses to TestRunner
-      status bar.
-   -  Modified import statements to allow running RIDE without Robot
-      Framework installed or versions older than 6.0.
-   -  Added Config Panel button to supported installed Plugins next to
-      their name in Plugin Manager dialog.
-   -  Added Config Panel button to Plugins, working examples in Text
-      Editor and Test Runner.
-   -  On Windows ignore false modification on files when opening Test
-      Suites, causing confirmation dialog.
-   -  Added divided Status Bar. Left side for main window, right side
-      for Plugins. Working example in Text Editor, when selecting in
-      Tree shows the filename in StatusBar.
 
    **The minimal wxPython version is, 4.0.7, and RIDE supports the
    current version, 4.2.3, which we recommend.**
@@ -110,7 +72,7 @@
 
    .. code:: literal-block
 
-      pip install --upgrade robotframework-ride==2.1.4.1
+      pip install --upgrade robotframework-ride==2.1.5
 
    to install exactly the specified release, which is the same as using
 
