@@ -1,10 +1,11 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
 [project]
 name = "robotframework-ride"
-dynamic = ["version"]
+dynamic = ["version", "readme"]
+
 description = "RIDE :: Robot Framework Test Data Editor"
 long_description = """
 Robot Framework is a generic test automation framework for acceptance
@@ -72,6 +73,14 @@ include = [
 [tool.hatch.build.targets.wheel]
 packages = ["src/robotide"]
 
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = 'text/markdown'
+fragments = [
+    {path = 'README.md'},
+    {text = '\n## License\n\n'},
+    {path = 'LICENSE.txt'},
+]
+
 [project.scripts]
 ride_postinstall = "robotide.postinstall:main"
 
@@ -86,11 +95,11 @@ dependencies = [
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.13"]
-version = ["2.1.4"]
+version = ["2.1.5.1"]
 
 [tool.poetry]
 name = "robotframework-ride"
-version = "2.1.4"
+version = "2.1.5.1"
 description = "RIDE :: Robot Framework Test Data Editor"
 authors = ["Robot Framework Developers <robotframework@gmail.com>"]
 license = "Apache-2.0 license"
@@ -110,3 +119,4 @@ psutil = "*"
 pytest = "*"
 pytest-mock = "*"
 coverage = "*"
+

@@ -153,7 +153,7 @@ RELEASE_NOTES = f"""
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.a7 with wxPython 4.2.3).</li>
+<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.b2 with wxPython 4.2.3).</li>
 <li>There are some changes, or known issues:<ul>
 <!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
@@ -175,6 +175,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fix faulty cell editor in settings of Grid Editor which would prevent to change to Text Editor and Run tabs.</li>
 <li>Added indication of <b>private</b> keywords in Grid Editor, keywords will show in <em>Italic</em>, and with error
  background, when they are used outside of Keywords section, or from different files.</li>
 <li>Added indication of <b>private</b> keywords in Details pop-up for keywords with tag <b>robot:private</b> or name starting
@@ -183,28 +184,6 @@ and changes.</li>
  item and continues in cell editor.</li>
 <li>Fix cursor position when editing cells in Grid Editor.</li>
 <li>Added parsing of option <b>--name</b> or <b>-N</b> and <b>Name</b> setting, to allow running tests with them set.</li>
-<li>Fix broken installation of RIDE v2.1.4 by adding missing dependencies.</li>
-<li>Added <b>Tools-&gt;Library Finder...</b> to install libraries and <b>Help-&gt;Open Library Documentation...</b> .
- They share the same dialog, and definitions are recorded in ``settings.cfg``.</li>
-<li>Added context menu to install libraries and to open documentation in Grid Editor Import section.
- Same as above description.</li>
-<li>Added keyboard shortcuts <b>Ctrl-Shift-Up</b> and <b>Ctrl-Shift-Down</b> as alternatives to <b>Alt-Up</b> and
- <b>Alt-Down</b> to move rows in Grid and Text Editors.</li>
-<li>Improved vertical scroll in Grid Editor, by having main scroll bars out of cells.</li> 
-<li>Fixed Create Desktop Shortcut by pointing executable to <b>python -m robotide</b>.</li>
-<li>Changed arguments parser to allow <b>--version</b> and <b>--help</b> functional in Windows.</li>
-<li>Improved auto-complete in Grid Editor, to allow several matches.</li>
-<li>Fixed white blocks on Tree due to failed animation when test execution is too rapid, causing crash on Windows.</li>
-<li>Added Settings Editor button to Preferences dialog, to edit settings.cfg.</li>
-<li>Created backup of settings.cfg to allow recovering some settings when broken upgrades.</li>
-<li>Changed some informative dialogs and JSON Editor to use the customized colors.</li>
-<li>Added current executing keyword and other statuses to TestRunner status bar.</li>
-<li>Modified import statements to allow running RIDE without Robot Framework installed or versions older than 6.0.</li>
-<li>Added Config Panel button to supported installed Plugins next to their name in Plugin Manager dialog.</li>
-<li>Added Config Panel button to Plugins, working examples in Text Editor and Test Runner.</li>
-<li>On Windows ignore false modification on files when opening Test Suites, causing confirmation dialog.</li>
-<li>Added divided Status Bar. Left side for main window, right side for Plugins. Working example in Text Editor,
-when selecting in Tree shows the filename in StatusBar.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
@@ -228,7 +207,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.1.4.1
+pip install --upgrade robotframework-ride==2.1.5.1
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -259,7 +238,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 25/July/2025.</p>
+<p>RIDE {VERSION} was released on 26/July/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

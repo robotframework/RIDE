@@ -42,7 +42,10 @@ RET_VAL = 'Return Value'
 TEST_TEMPL = 'Test Template'
 
 def editor_dialog(obj, lang='en'):
-    set_lang = lang if lang and len(lang) > 0 else 'en'
+    if isinstance(lang, list) and lang == ['']:
+        set_lang = 'en'
+    else:
+        set_lang = lang if lang and len(lang) > 0 else 'en'
     english_label = language.get_english_label(set_lang, obj.label).replace('Task', 'Test')
     # print(f"DEBUG: editordialogs.py editor_dialog object name={obj.label} english_label={english_label}"
     #       f"lang={lang} ")
