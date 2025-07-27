@@ -61,7 +61,7 @@ class LibraryCache(object):
         all_libraries = self.get_user_libraries() + [name for name, _ in self._library_keywords]
         ordered = set(all_libraries)
         all_libraries = sorted(ordered)
-        print(f"DEBUG: cache.py LibraryCache get_all_cached_library_names  user_libraries={all_libraries}")
+        # print(f"DEBUG: cache.py LibraryCache get_all_cached_library_names  user_libraries={all_libraries}")
         return all_libraries
 
     def _get_library(self, name, args):
