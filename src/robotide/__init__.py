@@ -38,7 +38,7 @@ from string import Template
 
 errorMessageTemplate = Template("""$reason
 RIDE depends on wx (wxPython). Known versions for Python3 are: 4.0.7.post2, 4.1.1 and 4.2.1.\
-At the time of this release the current wxPython version is 4.2.1.\
+At the time of this release the current wxPython version is 4.2.3.\
 You can install with 'pip install wxPython' on most operating systems, or find the \
 the download link from https://wxPython.org/""")
 
@@ -152,7 +152,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
         message = ("RIDE needs a newer wxPython version. Your current "
                    "version is %s."
                    "\n"
-                   "At the time of this release the current wxPython version is 4.2.1. See "
+                   "At the time of this release the current wxPython version is 4.2.3. See "
                    "https://wxPython.org/ for downloads and instructions."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION

@@ -175,6 +175,8 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Restored init and main scripts and texteditor, because some changes in Grid Editor were not being saved in Text 
+Editor and would be lost.</li>
 <li>Fix faulty cell editor in settings of Grid Editor which would prevent to change to Text Editor and Run tabs.</li>
 <li>Added indication of <b>private</b> keywords in Grid Editor, keywords will show in <em>Italic</em>, and with error
  background, when they are used outside of Keywords section, or from different files.</li>
@@ -207,7 +209,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.1.5.1
+pip install --upgrade robotframework-ride==2.1.5.2
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -238,7 +240,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 26/July/2025.</p>
+<p>RIDE {VERSION} was released on 30/July/2025.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

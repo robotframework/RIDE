@@ -8,6 +8,12 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 // == https://github.com/robotframework/RIDE[Unreleased]
 
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.5.2.rst[2.1.5.2] - 2025-07-30
+
+=== Fixed
+- Restored init and main scripts and texteditor, because some changes in Grid Editor were not being saved in Text
+Editor and would be lost.
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.5.1.rst[2.1.5.1] - 2025-07-26
 
 === Fixed
