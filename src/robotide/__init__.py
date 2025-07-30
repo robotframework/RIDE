@@ -13,51 +13,41 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import argparse
+"""RIDE -- Robot Framework test data editor
+
+Usage: ride.py [--noupdatecheck] [--debugconsole] [--settingspath <full path|settings filename>] [--version] [inpath]
+
+RIDE can be started either without any arguments or by giving a path to a test
+data file or directory to be opened.
+
+To disable update checker use --noupdatecheck.
+
+To start debug console for RIDE problem debugging use --debugconsole option.
+
+To use different settings use the option --settingspath followed by the path to the settings file or file name.
+
+To see RIDE's version use --version.
+
+RIDE's API is still evolving while the project is moving towards the 1.0
+release. The most stable, and best documented, module is `robotide.pluginapi`.
+"""
+
 import os
 import sys
+from string import Template
 
-try:
-    from robotide import version
-except ImportError:
-    print("Error getting RIDE version!")
-    sys.exit(1)
-
-errorMessage = """wxPython not found.\n
-RIDE depends on wx (wxPython). Known versions for Python3 are: 4.0.7.post2, 4.1.1 and 4.2.3.\
-At the time of this release the current wxPython version is 4.2.3.\
+errorMessageTemplate = Template("""$reason
+RIDE depends on wx (wxPython). Known versions for Python3 are: 4.0.7.post2, 4.1.1 and 4.2.1.\
+At the time of this release the current wxPython version is 4.2.1.\
 You can install with 'pip install wxPython' on most operating systems, or find the \
-the download link from https://wxPython.org/"""
-
-if __name__ == '__main__' and 'robotide' not in sys.modules:
-    from pathlib import Path
-    robotide_dir = Path(__file__).absolute().parent  # zipsafe
-    sys.path = [str(robotide_dir.parent)] + [p for p in sys.path if Path(p) != robotide_dir]
-
-parser = argparse.ArgumentParser(prog='ride', description='RIDE is an IDE for Robot Framework test cases and tasks.',
-                    epilog='See information about Robot Framework ecosystem at https://robotframewok.org/',
-                    add_help=False)
-parser.add_argument('inpath', nargs='?', help='Path to a test data file or'
-                                         ' directory to be opened.')
-parser.add_argument('-n', '--noupdatecheck', action='store_true', help='To disable update check.')
-parser.add_argument('-d', '--debugconsole', action='store_true',
-                    help='To start debug console for RIDE problem debugging, and wxPython inspection tool.')
-parser.add_argument('-s', '--settingspath', default=None, help='<full path|settings filename>\n'
-                                                 'To use different settings use the option --settingspath followed by'
-                                                 ' the path to the settings file or file name.')
-parser.add_argument('-v', '--version', action='version', version=f'{version.VERSION}',
-                    help='To see RIDE\'s version.')
-parser.add_argument('-h', '--help', action='help', help='RIDE can be started either without any '
-                                         'arguments or by giving a path to a test data file or'
-                                         ' directory to be opened.')
-# arguments = parser.parse_args()
+the download link from https://wxPython.org/""")
 
 try:
     import wx
     import wx.lib.inspection
-    from wx import Colour, Size
+    from wx import Colour
 except ModuleNotFoundError:
-    print(errorMessage)
+    print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
 
 # Insert bundled robot to path before anything else
@@ -67,18 +57,45 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 def main(*args):
     _replace_std_for_win()
-    arguments = parser.parse_args()
-    noupdatecheck = arguments.noupdatecheck
-    debugconsole = arguments.debugconsole
-    settingspath = arguments.settingspath
-    inpath = arguments.inpath  # _parse_args(*args)
-    # print(f"DEBUG: main.py {noupdatecheck=} {debugconsole=} {settingspath=} {inpath=}")
+    if '--version' in args:
+        try:
+            from . import version
+        except ImportError:
+            print("Error getting RIDE version!")
+            sys.exit(1)
+        print(version.VERSION)
+        sys.exit(0)
+    noupdatecheck, debug_console, settings_path, inpath = _parse_args(args)
+    if len(args) > 3 or '--help' in args:
+        print(__doc__)
+        sys.exit()
     try:
-        _run(inpath, not noupdatecheck, debugconsole, settingspath=settingspath)
+        _run(inpath, not noupdatecheck, debug_console, settingspath=settings_path)
     except Exception:  # DEBUG
         import traceback
         traceback.print_exception(*sys.exc_info())
         sys.stderr.write('\n\nUse --help to get usage information.\n')
+
+
+def _parse_args(args):
+    if not args:
+        return False, False, None, None
+    arguments = list(args)
+    noupdatecheck = '--noupdatecheck' in arguments
+    if noupdatecheck:
+        arguments.remove('--noupdatecheck')
+    debug_console = '--debugconsole' in arguments
+    if debug_console:
+        arguments.remove('--debugconsole')
+    settings_path = None
+    if '--settingspath' in arguments:
+        arguments.remove('--settingspath')
+        if len(arguments) > 0:
+            settings_path = arguments.pop(0)
+        else:
+            settings_path = None
+    inpath = arguments[0] if arguments else None
+    return noupdatecheck, debug_console, settings_path, inpath
 
 
 def _run(inpath=None, updatecheck=True, debug_console=False, settingspath=None):
@@ -141,7 +158,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
         style = wx.ICON_EXCLAMATION
         if not parent:
             _ = wx.App()
-            parent = wx.Frame(None, size=Size(0, 0))
+            parent = wx.Frame(None, size=(0, 0))
         sys.stderr.write("{0}\n{1}\n".format(title, message))
         dlg = wx.MessageDialog(parent, message=message, caption=title, style=style)
         dlg.ShowModal()

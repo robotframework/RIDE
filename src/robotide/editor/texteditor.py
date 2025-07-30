@@ -535,8 +535,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _on_timer(self, event):
         if not self.is_focused():  # Was reaching here with contentassist in kweditor
-            event.Skip()
-            return
+            # event.Skip()
+            # return
+            # DEBUG: This is important to have changes done from kweditor reflected in texteditor
+            # for example, a bad library import deleted from kweditor would remain in texteditor
+            print(f"DEBUG: textedit in loop _on_timer event={event}")
         self._editor.store_position()
         self._open_tree_selection_in_editor()
         event.Skip()

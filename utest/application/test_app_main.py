@@ -75,20 +75,17 @@ class TestMain(unittest.TestCase):
     def tearDown(self):
         builtins.__import__ = real_import
 
-    @pytest.mark.skip("New main process uses sys.argv")
     def test_main_call_with_extra_args(self):
         from robotide import main
         with pytest.raises(SystemExit):
             main('--noupdatecheck', '--debugconsole', '--version', 'test.robot')
 
-    @pytest.mark.skip("New main process uses sys.argv")
     def test_main_call_with_help(self):
         from robotide import main
         with pytest.raises(SystemExit):
             result = main('--noupdatecheck', '--debugconsole', '--help')
-            assert result.startswith('usage: ride')
+            assert result.startswith('RIDE')
 
-    @pytest.mark.skip("New main process uses sys.argv")
     def test_main_call_with_version(self):
         from robotide import main
         with pytest.raises(SystemExit):
@@ -96,7 +93,6 @@ class TestMain(unittest.TestCase):
             print(f"DEBUG: Result is {result}")
             assert result.startswith('v2.')
 
-    @pytest.mark.skip("New main process uses sys.argv")
     def test_main_call_with_fail_version(self):
         import robotide
         with (MonkeyPatch().context()):
@@ -105,7 +101,6 @@ class TestMain(unittest.TestCase):
                 result = robotide.main('--version')  # Need to capture output
                 assert result.startswith('v2.')
 
-    """
     def test_parse_args(self):
         from robotide import _parse_args
         noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=None)
@@ -123,7 +118,6 @@ class TestMain(unittest.TestCase):
         noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=('--garbagein', '--garbageout'))
         # returns always first arg
         assert (noupdatecheck, debug_console, settings_path, inpath) == (False, False, None, '--garbagein')
-    """
 
     def test_run_call_with_fail_import(self):
         import robotide.application
