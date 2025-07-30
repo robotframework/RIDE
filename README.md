@@ -29,7 +29,6 @@ See the [release notes](https://github.com/robotframework/RIDE/blob/master/doc/r
 
 **Version [1.7.4.2](https://github.com/robotframework/RIDE/tree/release/1.7.4.2) was the last release supporting Python 2.7**
 
-
 **The current development version is based on 2.1.5.2, supports Python from 3.8 up to 3.14 (30th July 2025).**
 
 Currently, the unit tests are tested on Python 3.10, 3.11 and 3.13 (3.13 is the recommended version).
