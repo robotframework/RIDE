@@ -5,6 +5,9 @@ RIDE is an IDE (Integrated Development Environment) exclusive for https://robotf
 
 '''
 
+image:https://deepwiki.com/badge.svg[Ask DeepWiki, link=https://deepwiki.com/robotframework/RIDE]
+
+'''
 Robot Framework supports, since version 6.1, files with localized definitions. RIDE was updated to accept those files, and we are working on a localization project to have its GUI in the same languages supported by Robot Framework.
 You can help in this localization project at https://crowdin.com/project/robotframework-ride[Crowdin] image:https://badges.crowdin.net/robotframework-ride/localized.svg[Crowdin, link=https://crowdin.com/project/robotframework-ride]
 
