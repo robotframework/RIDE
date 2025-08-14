@@ -299,7 +299,9 @@ class SettingValueDisplay(wx.TextCtrl, HtmlPopupWindow):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         self.color_secondary_background = parent.color_secondary_background
+        self.color_secondary_foreground = parent.color_secondary_foreground
         self.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])
