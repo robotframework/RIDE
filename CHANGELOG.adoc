@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Fixed
+- Fixed crash when renaming test cases names on Tree (Project Explorer), by cancelling with Escape or by adding a Space in the end.
 - Fixed  missing text colorization in suites and test settings on Grid Editor.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1.5.2.rst[2.1.5.2] - 2025-07-30

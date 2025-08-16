@@ -140,6 +140,7 @@ class TreeController(object):
             (ctrl_or_cmd(), wx.WXK_UP, self._tree.on_move_up),
             (ctrl_or_cmd(), wx.WXK_DOWN, self._tree.on_move_down),
             (wx.ACCEL_NORMAL, wx.WXK_F2, self._tree.label_editor.on_label_edit),
+            (wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self._tree.label_editor.on_label_edited),
             (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self._tree.on_right_click),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('d'), lambda event: self._expanded_handler().on_safe_delete(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),

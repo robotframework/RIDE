@@ -20,7 +20,7 @@ import wx
 from wx import Colour, Point
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
-from wx.lib.agw.customtreectrl import GenericTreeItem
+from wx.lib.agw.customtreectrl import GenericTreeItem, TreeEvent
 from wx.lib.mixins import treemixin
 
 from ..context import IS_WINDOWS
@@ -1285,9 +1285,12 @@ class TreeLabelEditListener(object):
                 self._editing_label = False
 
     def on_label_edited(self, event):
+        if not self._editing_label:
+            return
         self._editing_label = False
         self._on_label_edit_called = False
-        self._tree.controller.get_handler(event.GetItem()).end_label_edit(event)
+        if isinstance(event, TreeEvent):
+            self._tree.controller.get_handler(event.GetItem()).end_label_edit(event)
 
         # Reset edit control as it doesn't seem to reset it in case the focus
         # goes directly away from the tree control
@@ -1300,7 +1303,7 @@ class TreeLabelEditListener(object):
 
     def _stop_editing(self):
         control = self._tree.GetEditControl()
-        if control and wx.Window.FindFocus():
+        if control:  # and wx.Window.FindFocus():
             control.StopEditing()
 
     def on_delete(self, event):
