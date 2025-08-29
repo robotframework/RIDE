@@ -5,4 +5,5 @@ ifdef::env-github[:outfilesuffix: .adoc]
 - Minerva Järvensivu: Finnish
 - https://github.com/HelioGuilherme66[Hélio Guilherme]: Portuguese, Brazilian Portuguese
 - Hyeonho Kang: Korean
+- https://github.com/ripplepiam[Bo Pan]: Chinese Simplified
 - Unknown: Pirates
