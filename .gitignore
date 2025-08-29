@@ -2,6 +2,7 @@ tmp
 build
 dist
 .idea
+.vscode
 .*project
 *.pyc
 *$py.class
@@ -16,3 +17,4 @@ MANIFEST
 .coverage
 coverage.xml
 utest/resources/fake.cfg
+*.po~
