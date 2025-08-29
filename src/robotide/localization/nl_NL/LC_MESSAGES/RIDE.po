@@ -1,10 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-06-20 19:52+0100\n"
+"POT-Creation-Date: 2025-08-29 23:30+0800\n"
 "PO-Revision-Date: 2025-06-24 11:47\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,1452 +16,1536 @@ msgstr ""
 "X-Crowdin-Language: nl\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"Language: nl_NL\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:353
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:358
+#: src/robotide/application/application.py:353
+#: src/robotide/application/application.py:358
 msgid "Found Robot Framework version %s from %s."
 msgstr "Robot Framework versie %s gevonden in %s."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
+#: src/robotide/application/releasenotes.py:54
+#: src/robotide/application/releasenotes.py:57
+#: src/robotide/spec/libraryfinder.py:45
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
 msgstr "Hulp"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
+#: src/robotide/application/releasenotes.py:54
+#: src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
 msgstr "Vrijgavedocument"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
+#: src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
 msgstr "Toon het vrijgavedocument"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
+#: src/robotide/application/releasenotes.py:57
+#: src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
 msgstr "Offline lijst met aanpassingen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
+#: src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
 msgstr "Toon de offline lijst met aanpassingen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
+#: src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
 msgstr "Bekijk de online versie op "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:30
+#: src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
 msgstr "Herstart RIDE voor taalwijziging"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
+#: src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr "De taalwijziging is pas afgerond na een herstart van de RIDE."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:50
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:203
+#: src/robotide/application/restartutil.py:32
+#: src/robotide/application/restartutil.py:50
+#: src/robotide/application/updatenotifier.py:203
 msgid "Do you want to CLOSE RIDE now?"
 msgstr "Wilt u RIDE nu AFSLUITEN?"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:48
+#: src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
 msgstr "Taalwijziging toegepast"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:49
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:202
+#: src/robotide/application/restartutil.py:49
+#: src/robotide/application/updatenotifier.py:202
 msgid "You should close this RIDE (Process ID = "
 msgstr "U moet deze RIDE sluiten (Proces ID = "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
+#: src/robotide/application/updatenotifier.py:115
 msgid "New development version is available."
 msgstr "Er is een nieuwe onofficiële versie beschikbaar."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:115
+#: src/robotide/application/updatenotifier.py:115
 msgid "Upgrade?"
 msgstr "Bijwerken?"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:116
+#: src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
 msgstr "Je kunt versie %s installeren met:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:117
+#: src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
 msgstr "Klik op OK om RIDE nu bij te werken!"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:118
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:241
-msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr "Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om dit RIDE-venster te sluiten."
+#: src/robotide/application/updatenotifier.py:118
+#: src/robotide/application/updatenotifier.py:241
+msgid ""
+"After upgrade you will see another dialog informing to close this RIDE "
+"instance."
+msgstr ""
+"Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om "
+"dit RIDE-venster te sluiten."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:126
+#: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
 msgstr "Geen nieuwe versie beschikbaar"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:126
+#: src/robotide/application/updatenotifier.py:126
 msgid "You have the latest version of RIDE."
 msgstr "Je hebt al de nieuwste versie van RIDE."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:127
+#: src/robotide/application/updatenotifier.py:127
 msgid "              Have a nice day :)"
 msgstr "              Fijne dag :-)"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:172
+#: src/robotide/application/updatenotifier.py:172
 msgid "An error occurred when installing new version"
 msgstr "Fout opgetreden bij het installeren van de nieuwe versie"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:172
+#: src/robotide/application/updatenotifier.py:172
 msgid "Failed to Upgrade"
 msgstr "Bijwerken mislukt"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:202
+#: src/robotide/application/updatenotifier.py:202
 msgid "Completed Upgrade"
 msgstr "Klaar met bijwerken"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:228
+#: src/robotide/application/updatenotifier.py:228
 msgid "Update available"
 msgstr "Nieuwe versie beschikbaar"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:236
+#: src/robotide/application/updatenotifier.py:236
 msgid " available from "
 msgstr " beschikbaar op "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:236
+#: src/robotide/application/updatenotifier.py:236
 msgid "New version "
 msgstr "Nieuwe versie "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:237
+#: src/robotide/application/updatenotifier.py:237
 msgid "See this version "
 msgstr "Bekijk deze versie "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:239
+#: src/robotide/application/updatenotifier.py:239
 msgid "You can update with the command:"
 msgstr "Je kunt RIDE zelf bijwerken met de opdracht:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:240
+#: src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
 msgstr "Of, klik <b>Nu bijwerken</b>"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:242
+#: src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
 msgstr "Bekijk de laatste ontwikkelingen in de "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:247
-msgid "I'm using another method for RIDE updates\n"
+#: src/robotide/application/updatenotifier.py:247
+msgid ""
+"I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr "Ik gebruik een andere methode om RIDE bij te werken\n"
+msgstr ""
+"Ik gebruik een andere methode om RIDE bij te werken\n"
 " en heb geen automatische update controles nodig"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:252
+#: src/robotide/application/updatenotifier.py:252
 msgid "remind me later"
 msgstr "herinner me later"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:258
+#: src/robotide/application/updatenotifier.py:258
 msgid "Upgrade Now"
 msgstr "Nu bijwerken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:59
+#: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr "RIDE versie %s opgestart met Python versie %s and wxPython versie %s onder %s."
+msgstr ""
+"RIDE versie %s opgestart met Python versie %s and wxPython versie %s onder "
+"%s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:72
+#: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
 msgstr "Hartelijk dank aan alle RIDE vertalers: %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:74
+#: src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
 msgstr "RIDE - Ontwikkelomgeving voor Robot Framework inhoud"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
+#: src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
 msgstr "RIDE %s draaiend onder Python %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
+#: src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
 msgstr "RIDE is een ontwikkelomgeving voor %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
+#: src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
 msgstr "Kijk voor meer informatie op RIDE's projectpagina's op %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
+#: src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
 msgstr "Enkele van de gebruikte pictogrammen komen van %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
-msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
-msgstr "%s, de beheerder van dit project, bedankt de oorspronkelijke auteurs, alle gebruikers en iedereen die heeft bijgedragen."
+#: src/robotide/context/__init__.py:80
+msgid ""
+"%s the maintainer of the project thanks the original authors and all users "
+"and collaborators."
+msgstr ""
+"%s, de beheerder van dit project, bedankt de oorspronkelijke auteurs, alle "
+"gebruikers en iedereen die heeft bijgedragen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:81
-msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
-msgstr "Een bijzonder dankjewel aan de %s voor het sponsoren van de ontwikkeling voor de ondersteuning van vertaalde inhoud voor %s versie 6.1, als onderdeel van de %s."
+#: src/robotide/context/__init__.py:81
+msgid ""
+"A special thanks to %s for having sponsored the development of translated "
+"test suites content compatibility with %s Version 6.1, in their %s."
+msgstr ""
+"Een bijzonder dankjewel aan de %s voor het sponsoren van de ontwikkeling "
+"voor de ondersteuning van vertaalde inhoud voor %s versie 6.1, als onderdeel "
+"van de %s."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:426
+#: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
 msgstr "Log opties"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:435
+#: src/robotide/contrib/testrunner/runprofiles.py:435
 msgid "Output directory: "
 msgstr "Uitvoer map: "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:455
+#: src/robotide/contrib/testrunner/runprofiles.py:455
 msgid "Add suite name to log names"
 msgstr "Voeg suitenaam toe aan bestandsnamen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:458
+#: src/robotide/contrib/testrunner/runprofiles.py:458
 msgid "Add timestamp to log names"
 msgstr "Voeg tijdstempel toe aan bestandsnamen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:461
+#: src/robotide/contrib/testrunner/runprofiles.py:461
 msgid "Save Console and Message logs"
 msgstr "Console- en Berichtenlogs opslaan"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:479
+#: src/robotide/contrib/testrunner/runprofiles.py:479
 msgid "Select Logs Directory"
 msgstr "Open map met Logs"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:501
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:535
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:539
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:680
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
+#: src/robotide/contrib/testrunner/runprofiles.py:501
+#: src/robotide/editor/editordialogs.py:538
+#: src/robotide/editor/editordialogs.py:542
+#: src/robotide/editor/editordialogs.py:683
+#: src/robotide/editor/settingeditors.py:575
 msgid "Arguments"
 msgstr "Parameters"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:514
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:540
+#: src/robotide/contrib/testrunner/runprofiles.py:514
+#: src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
 msgstr "Parameters voor de testrun als een spatiegescheiden lijst."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:559
+#: src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
 msgstr "Wordt niet uitgevoerd: help of versie optie meegegeven"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:564
+#: src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Unknown option(s):"
 msgstr "Onbekende optie(s):"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:570
+#: src/robotide/contrib/testrunner/runprofiles.py:570
 msgid "Tests filters"
 msgstr "Testfilters"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:580
+#: src/robotide/contrib/testrunner/runprofiles.py:580
 msgid "Only run tests with these tags:"
 msgstr "Voer alleen tests uit met deze labels:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:583
+#: src/robotide/contrib/testrunner/runprofiles.py:583
 msgid "Skip tests with these tags:"
 msgstr "Sla tests met deze labels over:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:681
+#: src/robotide/contrib/testrunner/runprofiles.py:681
 msgid "Script to run tests:"
 msgstr "Script voor het uitvoeren van tests:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:100
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Stop a running test"
 msgstr "Stop een lopende test"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:101
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:101
 msgid "Step over"
 msgstr "Stap over"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:132
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:132
 msgid "A plugin for running tests from within RIDE"
 msgstr "Een plugin voor het uitvoeren van tests vanuit RIDE"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:161
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "Run"
 msgstr "Uitvoeren"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 msgid "Run Tests"
 msgstr "Tests uitvoeren"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:231
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:241
-#: /home2/helio/github/RIDE/tools/../src/robotide/log/log.py:86
-#: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:85
-#: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:53
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:41
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:43
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:37
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:53
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:827
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:839
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:236
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:240
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:246
+#: src/robotide/log/log.py:86
+#: src/robotide/parserlog/parserlog.py:85
+#: src/robotide/postinstall/desktopshortcut.py:53
+#: src/robotide/searchtests/searchtests.py:41
+#: src/robotide/spec/libraryfinder.py:43
+#: src/robotide/spec/specimporter.py:37
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/keywordsearch.py:53
+#: src/robotide/ui/mainframe.py:827
+#: src/robotide/ui/mainframe.py:839
+#: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Hulpmiddelen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:233
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests"
 msgstr "Voer de geselecteerde tests uit"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 msgid "Run Tests with Debug"
 msgstr "Tests uitvoeren met Debug"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:238
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:243
 msgid "Run the selected tests with Debug"
 msgstr "Voer de geselecteerde tests uit met Debug"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:241
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:246
 msgid "Stop Test Run"
 msgstr "Stop testrun"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:325
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:329
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:330
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:334
 msgid "[ SENDING STOP SIGNAL ]\n"
 msgstr "[ STOP AANGEVRAAGD ]\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:334
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:337
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:339
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:342
 msgid "[ SENDING PAUSE SIGNAL ]\n"
 msgstr "[ ONDERBREKEN AANGEVRAAGD ]\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:342
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:345
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:347
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:350
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
 msgstr "[ HERVATTEN AANGEVRAAGD ]\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:350
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:353
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:355
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:358
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr "[ STAP-VOLGENDE AANGEVRAAGD ]\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:358
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:361
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:363
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:366
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
 msgstr "[ STAP-OVER AANGEVRAAGD ]\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:393
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:398
 msgid "command: %s\n"
 msgstr "opdracht: %s\n"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:463
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:466
 msgid "Unsaved Modifications"
 msgstr "Niet-opgeslagen wijzigingen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:464
-msgid "There are unsaved modifications.\n"
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:467
+msgid ""
+"There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr "Er zijn niet-opgeslagen wijzigingen.\n"
+msgstr ""
+"Er zijn niet-opgeslagen wijzigingen.\n"
 "        Wilt u alle wijzigingen opslaan en de tests uitvoeren?"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:474
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:477
 msgid "No tests selected"
 msgstr "Geen testgevallen geselecteerd"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:474
-msgid "No tests selected. \n"
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:477
+msgid ""
+"No tests selected. \n"
 "Continue anyway?"
-msgstr "Je hebt geen enkele test geselecteerd. \n"
+msgstr ""
+"Je hebt geen enkele test geselecteerd. \n"
 "Wil je alle tests uitvoeren?"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:551
-msgid "\n"
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:554
+msgid ""
+"\n"
 "Test finished {}"
-msgstr "\n"
+msgstr ""
+"\n"
 "Testrun is beëindigd {}"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:585
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:588
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr "De Berichten log gebruikt meer dan 80% van het procesgeheugen. Voorlopig gestopt..."
+msgstr ""
+"De Berichten log gebruikt meer dan 80% van het procesgeheugen. Voorlopig "
+"gestopt..."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:756
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:759
 msgid "Start"
 msgstr "Tests uitvoeren"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:757
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:760
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:760
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:763
 msgid "Start robot"
 msgstr "Start Robot testrun"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:758
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:761
 msgid "Start running the robot test suite"
 msgstr "Start het uitvoeren van de testsuite"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:759
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:762
 msgid "Debug"
 msgstr "Debug"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:764
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Start het uitvoeren van de testsuite met logniveau DEBUG"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:763
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:30
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:766
+#: src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Stoppen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:767
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Pause"
 msgstr "Onderbreken"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:769
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:770
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:773
 msgid "Pause test execution"
 msgstr "Testrun pauzeren"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:771
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 msgid "Continue"
 msgstr "Hervatten"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:775
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:777
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Continue test execution"
 msgstr "Uitvoeren van testrun hervatten"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:776
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:779
 msgid "Next"
 msgstr "Volgende stap"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:777
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:778
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Step next"
 msgstr "Stap naar volgend actiewoord"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:815
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:818
 msgid "Execution Profile:  "
 msgstr "Profiel:  "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:818
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:821
 msgid "Choose which method to use for running the tests"
 msgstr "Kies welk profiel je wilt gebruiken voor het uitvoeren van de tests"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:825
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:828
 msgid "Open Logs Directory"
 msgstr "Open map met Logs"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:827
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:830
 msgid "View All Logs in Explorer"
 msgstr "Bekijk de Logs in Verkenner"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:828
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:831
 msgid " Report"
 msgstr " Testrapport"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:829
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:832
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Bekijk Robot Rapport in browser (CtrlCmd-R)"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:831
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:834
 msgid " Log"
 msgstr " Logboek"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:832
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:835
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Bekijk Robot Logboek in browser (CtrlCmd-L)"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:839
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:842
 msgid " Autosave  "
 msgstr " Automatisch opslaan  "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:840
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:843
 msgid "Automatically save all changes before running"
 msgstr "Automatisch alle wijzigingen opslaan als een testrun start"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:845
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:848
 msgid " Pause after failure  "
 msgstr " Pauzeren na fout  "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:846
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:849
 msgid "Automatically pause after failing keyword"
 msgstr "Automatisch pauzeren na gefaald actiewoord"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:848
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1091
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editor.py:211
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:152
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
+#: src/robotide/editor/editors.py:227
+#: src/robotide/editor/texteditor.py:1099
+#: src/robotide/preferences/editor.py:211
+#: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Instellingen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:962
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:965
 msgid "Console log"
 msgstr "Console log"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:966
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:969
 msgid "Message log"
 msgstr "Berichten log"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1089
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1092
 msgid "Starting test:"
 msgstr "Begin test:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1097
 msgid "Ending test:"
 msgstr "Einde test:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1102
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
 msgid "UNKNOWN STATUS:"
 msgstr "ONBEKENDE STATUS:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1130
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1132
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1133
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1135
 msgid "<<  PAUSED  >>"
 msgstr "<< GEPAUZEERD >>"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1137
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1140
 msgid "<< CONTINUE >>"
 msgstr "<< HERVAT >>"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1139
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1142
 msgid "<<  CONTINUE  >>"
 msgstr "<<  HERVAT  >>"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1184
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1187
 msgid "No logs directory"
 msgstr "Logboek map ontbreekt"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1184
-msgid "There isn't logs directory. \n"
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1187
+msgid ""
+"There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr "Er is geen logboekmap. \n"
+msgstr ""
+"Er is geen logboekmap. \n"
 "Voer de tests uit en probeer opnieuw"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1196
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:649
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:143
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:276
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:617
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1199
+#: src/robotide/editor/texteditor.py:657
+#: src/robotide/preferences/general.py:143
+#: src/robotide/preferences/general.py:276
+#: src/robotide/ui/mainframe.py:617
 msgid "RIDE - Preferences"
 msgstr "RIDE-voorkeuren"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1287
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1290
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "verstreken tijd: %s  succes: %s  overgeslagen: %s  gefaald: %s"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1321
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1324
 msgid "  current keyword: "
 msgstr "  huidig actiewoord: "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:42
-msgid "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
+#: src/robotide/controller/ui/treecontroller.py:42
+msgid ""
+"[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | "
+"ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
+"ART_GO_FORWARD\n"
 "        "
-msgstr "[Navigatie]\n"
-"        !&Terug | Ga terug naar de vorige locatie in testsuite | Alt-%s | ART_GO_BACK\n"
-"        !&Vooruit | Ga vooruit naar de volgende locatie in testsuite | Alt-%s | ART_GO_FORWARD\n"
+msgstr ""
+"[Navigatie]\n"
+"        !&Terug | Ga terug naar de vorige locatie in testsuite | Alt-%s | "
+"ART_GO_BACK\n"
+"        !&Vooruit | Ga vooruit naar de volgende locatie in testsuite | Alt-"
+"%s | ART_GO_FORWARD\n"
 "        "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
+#: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
 msgstr "Voeg &label toe aan selectie"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:56
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:110
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:657
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
+#: src/robotide/controller/ui/treecontroller.py:56
+#: src/robotide/controller/ui/treecontroller.py:58
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/editor/settingeditors.py:110
+#: src/robotide/editor/settingeditors.py:659
+#: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr "Bewerken"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:58
+#: src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
 msgstr "Selectie wissen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:71
+#: src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
 msgstr "Voeg label toe aan selectie"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:71
+#: src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
 msgstr "Geef labelnaam"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:31
+#: src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
 msgstr "[Bewerken]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
+#: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
 msgstr "On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:33
+#: src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
 msgstr "Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:35
+#: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
 msgstr "&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:36
+#: src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
 msgstr "K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:37
+#: src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
 msgstr "&Plakken | Plakken van klembord | Ctrlcmd-V\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:38
+#: src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
 msgstr "&Invoegen | Invoegen | Shift-Ctrl-V\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:39
+#: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
 msgstr "&Verwijderen | Verwijderen | Del\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:40
+#: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr "Rijen &uitcommentariëren | Geselecteerde rijen als commentaar markeren | Ctrlcmd-3\n"
+msgstr ""
+"Rijen &uitcommentariëren | Geselecteerde rijen als commentaar markeren | "
+"Ctrlcmd-3\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:41
+#: src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr "&Cellen uitcommentariëren | Cell met # als commentaar markeren | Ctrlcmd-Shift-3\n"
+msgstr ""
+"&Cellen uitcommentariëren | Cell met # als commentaar markeren | Ctrlcmd-"
+"Shift-3\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
+#: src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr "Rijen &oncommentariëren | Commentaarmarkering verwijderen van geselecteerde rijen | Ctrlcmd-4\n"
+msgstr ""
+"Rijen &oncommentariëren | Commentaarmarkering verwijderen van geselecteerde "
+"rijen | Ctrlcmd-4\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
+#: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr "Cellen onco&mmentariëren | Commentaarmarkering verwijderen van cellen met een # | Ctrlcmd-Shift-4\n"
+msgstr ""
+"Cellen onco&mmentariëren | Commentaarmarkering verwijderen van cellen met "
+"een # | Ctrlcmd-Shift-4\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
+#: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
 msgstr "C&ellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:45
+#: src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
 msgstr "Cellen ver&wijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
+#: src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 msgstr "&Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
+#: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
 msgstr "Rijen verwij&deren | Rijen verwijderen | Ctrlcmd-D\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
+#: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr "Verplaats Rows Omhoog (Alt-Up of Ctrl-Shift-Up) | Verplaats Rows Omhoog\n"
+msgstr ""
+"Verplaats Rows Omhoog (Alt-Up of Ctrl-Shift-Up) | Verplaats Rows Omhoog\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
+#: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr "Verplaats Rows Omhoog (Alt-Up of Ctrl-Shift-Up) | Verplaats Rows Omhoog\n"
+msgstr ""
+"Verplaats Rows Omhoog (Alt-Up of Ctrl-Shift-Up) | Verplaats Rows Omhoog\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
+#: src/robotide/editor/__init__.py:50
+#: src/robotide/ui/mainframe.py:66
 msgid "[Tools]\n"
 msgstr "[Hulpmiddelen]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
-msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr "Conte&xt assistent (Ctrl-Space or Ctrl-Alt-Space) | Toon suggesties voor actiewoorden en variabelen | | | POSITION-70\n"
+#: src/robotide/editor/__init__.py:51
+msgid ""
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
+"and variable completions | | | POSITION-70\n"
+msgstr ""
+"Conte&xt assistent (Ctrl-Space or Ctrl-Alt-Space) | Toon suggesties voor "
+"actiewoorden en variabelen | | | POSITION-70\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
-msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
+#: src/robotide/editor/__init__.py:88
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr "De standaard editor plugin. Ook wel Grid- of Celeditor genoemd.\n\n"
-"    Deze plugin ondersteunt bij het creëren van de diverse typen inhoud voor Robot Framework\n"
+msgstr ""
+"De standaard editor plugin. Ook wel Grid- of Celeditor genoemd.\n"
+"\n"
+"    Deze plugin ondersteunt bij het creëren van de diverse typen inhoud voor "
+"Robot Framework\n"
 "    "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:95
+#: src/robotide/editor/__init__.py:95
 msgid "Editor"
 msgstr "Editor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:31
-msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr "Indien de waarde pipe-tekens bevat moeten deze geëscaped worden met een backslash: '\\|'."
+#: src/robotide/editor/dialoghelps.py:31
+msgid ""
+"Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgstr ""
+"Indien de waarde pipe-tekens bevat moeten deze geëscaped worden met een "
+"backslash: '\\|'."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:32
+#: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr "Scheid labels met een pipe-teken. Voorbeeld: \"label één | tweede label | 3e”."
+msgstr ""
+"Scheid labels met een pipe-teken. Voorbeeld: \"label één | tweede label | "
+"3e”."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:33
-msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
-msgstr "Scheid parameters met pipe-tekens. Voorbeeld: 'Mijn actiewoord | par 1 | par 2'."
+#: src/robotide/editor/dialoghelps.py:33
+msgid ""
+"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
+"arg 2'."
+msgstr ""
+"Scheid parameters met pipe-tekens. Voorbeeld: 'Mijn actiewoord | par 1 | par "
+"2'."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:34
-msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr "Gebruik Robot's tijdsyntax zoals bijvoorbeeld '1min 10s', '2 hours' of een los getal voor seconden.\n"
-"Vóór Robot v3.0.1 kon een extra tekst meegegeven worden: '3 minutes | Eigen foutmelding'."
+#: src/robotide/editor/dialoghelps.py:34
+msgid ""
+"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+"Before Robot v3.0.1 an optional message could have been specified like '3 "
+"minutes | My message here'."
+msgstr ""
+"Gebruik Robot's tijdsyntax zoals bijvoorbeeld '1min 10s', '2 hours' of een "
+"los getal voor seconden.\n"
+"Vóór Robot v3.0.1 kon een extra tekst meegegeven worden: '3 minutes | Eigen "
+"foutmelding'."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:37
-msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a list variable.\n"
+#: src/robotide/editor/dialoghelps.py:37
+msgid ""
+"Specify the arguments separated with a pipe character like '${arg1} | $"
+"{arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a "
+"list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr "Specificeer parameters gescheiden door een pipe-teken. Voorbeeld: '${par1} | ${par2}'.\n"
-"Standaardwaarden worden gespecificeerd door middel van een is-gelijk-aan-teken (=). De laatste parameter kan een lijstvariabele zijn.\n"
+msgstr ""
+"Specificeer parameters gescheiden door een pipe-teken. Voorbeeld: '${par1} | "
+"${par2}'.\n"
+"Standaardwaarden worden gespecificeerd door middel van een is-gelijk-aan-"
+"teken (=). De laatste parameter kan een lijstvariabele zijn.\n"
 "Voorbeeld: '${par1} | ${par2}=standaardwaarde | @{rest}'.\n"
 "Merk op dat variabele snelkoppelingen toegestaan zijn in dit veld."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:41
-msgid "Alias can be used to import same library multiple times with different names.\n"
+#: src/robotide/editor/dialoghelps.py:41
+msgid ""
+"Alias can be used to import same library multiple times with different "
+"names.\n"
 "Alias is prepended with: "
-msgstr "Een alias kan worden gebruikt om dezelfde bibliotheek meerdere keren te importeren met verschillende namen.\n"
+msgstr ""
+"Een alias kan worden gebruikt om dezelfde bibliotheek meerdere keren te "
+"importeren met verschillende namen.\n"
 "De alias wordt aangeduid met: "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:43
-msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr " . Merk op dat sinds Robot v6.0 imports die voorheen WITH NAME gebruikten nu AS gebruiken."
+#: src/robotide/editor/dialoghelps.py:43
+msgid ""
+" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr ""
+" . Merk op dat sinds Robot v6.0 imports die voorheen WITH NAME gebruikten nu "
+"AS gebruiken."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
+#: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Geef de variabele een naam en waarde."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
-msgid "Give name and value of the variable. Input list variable items into separate cells."
-msgstr "Geef de variabele een naam en waarden. Zet elke waarde in zijn eigen cel."
+#: src/robotide/editor/dialoghelps.py:46
+msgid ""
+"Give name and value of the variable. Input list variable items into separate "
+"cells."
+msgstr ""
+"Geef de variabele een naam en waarden. Zet elke waarde in zijn eigen cel."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:48
-msgid "Give name and value of the variable. Input dictionary items into separate cells."
-msgstr "Geef de variabele een naam en waarden. Zet elk sleutel-waarde paar in zijn eigen cel."
+#: src/robotide/editor/dialoghelps.py:48
+msgid ""
+"Give name and value of the variable. Input dictionary items into separate "
+"cells."
+msgstr ""
+"Geef de variabele een naam en waarden. Zet elk sleutel-waarde paar in zijn "
+"eigen cel."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
+#: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Elke cel moet de vorm `sleutel=waarde` hebben."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:50
-msgid "Give name, optional arguments and optional alias of the library to import."
-msgstr "Geef de naam, optioneel de parameters en indien gewenst een alias voor de te importeren bibliotheek."
+#: src/robotide/editor/dialoghelps.py:50
+msgid ""
+"Give name, optional arguments and optional alias of the library to import."
+msgstr ""
+"Geef de naam, optioneel de parameters en indien gewenst een alias voor de te "
+"importeren bibliotheek."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:51
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
+#: src/robotide/editor/dialoghelps.py:51
+#: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr "Scheid meerdere parameters met een pipe-teken. Voorbeeld: 'par 1 | par 2'."
+msgstr ""
+"Scheid meerdere parameters met een pipe-teken. Voorbeeld: 'par 1 | par 2'."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
+#: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr "Geef bibliotheeknaam, bibliotheekdocumentatie-URL en commando om te installeren."
+msgstr ""
+"Geef bibliotheeknaam, bibliotheekdocumentatie-URL en commando om te "
+"installeren."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
-msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
-msgstr "In het commando kan je `%%uitvoerbaar ` gebruiken als een placeholder die vervangen wordt door het werkelijke pad"
+#: src/robotide/editor/dialoghelps.py:53
+msgid ""
+"In the command, you can use `%%executable` as a placeholder to be replaced "
+"by the actual path"
+msgstr ""
+"In het commando kan je `%%uitvoerbaar ` gebruiken als een placeholder die "
+"vervangen wordt door het werkelijke pad"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
+#: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
 msgstr " naar Python uitvoerbaar."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
+#: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr "Geef de bestandslocatie en optioneel de parameters van het te importeren variabelenbestand."
+msgstr ""
+"Geef de bestandslocatie en optioneel de parameters van het te importeren "
+"variabelenbestand."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:57
+#: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
 msgstr "Geef de bestandslocatie van het te importeren resourcebestand."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:58
+#: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr "Bestaande resources worden automatisch toegevoegd in de suiteverkenner."
+msgstr ""
+"Bestaande resources worden automatisch toegevoegd in de suiteverkenner."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
+#: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
 msgstr "Schrijf de documentatie."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
+#: src/robotide/editor/dialoghelps.py:59
 msgid "New resources must be created separately."
 msgstr "Nieuwe resources moeten handmatig worden aangemaakt."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:60
+#: src/robotide/editor/dialoghelps.py:60
 msgid "Simple formatting like *bold* and _italic_ can be used."
 msgstr "Eenvoudige opmaak, zoals *vet* en _cursief_, kunnen worden gebruikt."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:61
+#: src/robotide/editor/dialoghelps.py:61
 msgid "Additionally, URLs are converted to clickable links."
 msgstr "Hyperlinks worden automatisch omgezet naar klikbare koppelingen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:62
+#: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
 msgstr "Deze labels worden toegepast op alle testgevallen in deze suite."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:64
-msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
-msgstr "Deze labels worden toegepast op alle testgevallen in deze testsuite, tenzij testgevallen hun eigen tags hebben."
+#: src/robotide/editor/dialoghelps.py:64
+msgid ""
+"These tags are set to all test cases in this test suite unless test cases "
+"have their own tags."
+msgstr ""
+"Deze labels worden toegepast op alle testgevallen in deze testsuite, tenzij "
+"testgevallen hun eigen tags hebben."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
-msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
-msgstr "Deze labels worden toegepast op alle testgevallen in deze suite. Dit veld is nieuw sinds Robot Framework 6. Vanaf Robot Framework 7 vervangt deze instelling de 'Forceer Labels' en 'Standaard Labels' instellingen."
+#: src/robotide/editor/dialoghelps.py:66
+msgid ""
+"These tags are applied to all test cases in this test suite. This field "
+"exists since Robot Framework 6.0 and will replace Force and Default Tags "
+"after version 7.0."
+msgstr ""
+"Deze labels worden toegepast op alle testgevallen in deze suite. Dit veld is "
+"nieuw sinds Robot Framework 6. Vanaf Robot Framework 7 vervangt deze "
+"instelling de 'Forceer Labels' en 'Standaard Labels' instellingen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
-msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
-msgstr "Deze labels worden toegepast op dit testgeval naast de labels van Forceer Labels. Ze overschrijven mogelijke Standaardlabels."
+#: src/robotide/editor/dialoghelps.py:70
+msgid ""
+"These tags are set to this test case in addition to Force Tags and they "
+"override possible Default Tags."
+msgstr ""
+"Deze labels worden toegepast op dit testgeval naast de labels van Forceer "
+"Labels. Ze overschrijven mogelijke Standaardlabels."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:73
-msgid "This keyword is executed before executing any of the test cases or lower level suites."
-msgstr "Dit actiewoord wordt uitgevoerd vóór het starten van de tests of onderliggende suites."
+#: src/robotide/editor/dialoghelps.py:73
+msgid ""
+"This keyword is executed before executing any of the test cases or lower "
+"level suites."
+msgstr ""
+"Dit actiewoord wordt uitgevoerd vóór het starten van de tests of "
+"onderliggende suites."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
-msgid "This keyword is executed after all test cases and lower level suites have been executed."
-msgstr "Dit actiewoord wordt uitgevoerd na beëindiging van alle tests en onderliggende suites."
+#: src/robotide/editor/dialoghelps.py:75
+msgid ""
+"This keyword is executed after all test cases and lower level suites have "
+"been executed."
+msgstr ""
+"Dit actiewoord wordt uitgevoerd na beëindiging van alle tests en "
+"onderliggende suites."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
-msgid "This keyword is executed before every test case in this suite unless test cases override it."
-msgstr "Dit actiewoord wordt uitgevoerd vóór elke test in deze suite, tenzij de test een eigen testvoorbereiding heeft."
+#: src/robotide/editor/dialoghelps.py:77
+msgid ""
+"This keyword is executed before every test case in this suite unless test "
+"cases override it."
+msgstr ""
+"Dit actiewoord wordt uitgevoerd vóór elke test in deze suite, tenzij de test "
+"een eigen testvoorbereiding heeft."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
-msgid "This keyword is executed after every test case in this suite unless test cases override it."
-msgstr "Dit actiewoord wordt uitgevoerd na elke test in deze suite, tenzij de test een eigen testafronding heeft."
+#: src/robotide/editor/dialoghelps.py:79
+msgid ""
+"This keyword is executed after every test case in this suite unless test "
+"cases override it."
+msgstr ""
+"Dit actiewoord wordt uitgevoerd na elke test in deze suite, tenzij de test "
+"een eigen testafronding heeft."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
-msgid "This keyword is executed before other keywords in this test case or keyword."
-msgstr "Dit actiewoord wordt uitgevoerd vóór de start van deze test of dit actiewoord."
+#: src/robotide/editor/dialoghelps.py:81
+msgid ""
+"This keyword is executed before other keywords in this test case or keyword."
+msgstr ""
+"Dit actiewoord wordt uitgevoerd vóór de start van deze test of dit "
+"actiewoord."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:82
+#: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr "Bij testgevallen overschrijft deze voorbereiding een eventuele testvoorbereiding op suite-niveau."
+msgstr ""
+"Bij testgevallen overschrijft deze voorbereiding een eventuele "
+"testvoorbereiding op suite-niveau."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
+#: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Actiewoordvoorbereiding is nieuw sinds Robot Framework v7.0."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:84
-msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
-msgstr "Dit actiewoord wordt uitgevoerd na het beëindigen van deze test of dit actiewoord, zelfs als de test of het actiewoord is gefaald."
+#: src/robotide/editor/dialoghelps.py:84
+msgid ""
+"This keyword is executed after other keywords in this test case or keyword "
+"even if the test or keyword fails."
+msgstr ""
+"Dit actiewoord wordt uitgevoerd na het beëindigen van deze test of dit "
+"actiewoord, zelfs als de test of het actiewoord is gefaald."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
+#: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr "Bij testgevallen overschrijft deze afronding een eventuele testafronding op suite-niveau."
+msgstr ""
+"Bij testgevallen overschrijft deze afronding een eventuele testafronding op "
+"suite-niveau."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
+#: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr "Specificeert het actiewoord dat voor tests in deze suite als sjabloon wordt gebruikt."
+msgstr ""
+"Specificeert het actiewoord dat voor tests in deze suite als sjabloon wordt "
+"gebruikt."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
-msgid "The test cases will contain only data to use as arguments to that keyword."
-msgstr "De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
+#: src/robotide/editor/dialoghelps.py:89
+msgid ""
+"The test cases will contain only data to use as arguments to that keyword."
+msgstr ""
+"De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). "
+"Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
+#: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Specificeer het actiewoord dat als sjabloon moet worden gebruikt."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
-msgid "The test itself will contain only data to use as arguments to that keyword."
-msgstr "De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
+#: src/robotide/editor/dialoghelps.py:91
+msgid ""
+"The test itself will contain only data to use as arguments to that keyword."
+msgstr ""
+"De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). "
+"Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
-msgid "Specify the return value. Use a pipe character to separate multiple values."
-msgstr "Geef de returnwaarde. Gebruik een pipe-teken om meerdere waarden te scheiden."
+#: src/robotide/editor/dialoghelps.py:93
+msgid ""
+"Specify the return value. Use a pipe character to separate multiple values."
+msgstr ""
+"Geef de returnwaarde. Gebruik een pipe-teken om meerdere waarden te scheiden."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:96
-msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
-msgstr "Maximaal toegestane tijdsduur per testgeval in deze suite. Bij overschrijding wordt de test afgebroken."
+#: src/robotide/editor/dialoghelps.py:96
+msgid ""
+"Maximum time test cases in this suite are allowed to execute before aborting "
+"them forcefully."
+msgstr ""
+"Maximaal toegestane tijdsduur per testgeval in deze suite. Bij "
+"overschrijding wordt de test afgebroken."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:97
+#: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr "Kan worden overschreven voor individuele testgevallen met de tijdslimietinstelling van die test."
+msgstr ""
+"Kan worden overschreven voor individuele testgevallen met de "
+"tijdslimietinstelling van die test."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:98
-msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
-msgstr "Maximaal toegestane tijdsduur voor dit testgeval/actiewoord. Bij overschrijding wordt deze afgebroken."
+#: src/robotide/editor/dialoghelps.py:98
+msgid ""
+"Maximum time this test/keyword is allowed to execute before aborting it "
+"forcefully."
+msgstr ""
+"Maximaal toegestane tijdsduur voor dit testgeval/actiewoord. Bij "
+"overschrijding wordt deze afgebroken."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:99
-msgid "With test cases this setting overrides Test Timeout set on the suite level."
-msgstr "Bij testgevallen overschrijft deze instelling een eventuele testtijdslimiet op suite-niveau."
+#: src/robotide/editor/dialoghelps.py:99
+msgid ""
+"With test cases this setting overrides Test Timeout set on the suite level."
+msgstr ""
+"Bij testgevallen overschrijft deze instelling een eventuele testtijdslimiet "
+"op suite-niveau."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:100
+#: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
 msgstr "Geef een naam en de waarde voor de suite-metagegevens."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:101
+#: src/robotide/editor/dialoghelps.py:101
 msgid "Give a name for the new test case."
 msgstr "Geef het nieuwe testgeval een naam."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:102
+#: src/robotide/editor/dialoghelps.py:102
 msgid "Give a name and arguments for the new user keyword."
 msgstr "Geef het nieuwe gebruikersactiewoord een naam en zijn parameters."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:103
+#: src/robotide/editor/dialoghelps.py:103
 msgid "Give a name for the new user keyword."
 msgstr "Geef het nieuwe gebruikersactiewoord een naam."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:81
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:737
+#: src/robotide/editor/editordialogs.py:84
+#: src/robotide/editor/settingeditors.py:487
+#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:739
 msgid "Comment"
 msgstr "Opmerking"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:132
+#: src/robotide/editor/editordialogs.py:135
 msgid "Scalar Variable"
 msgstr "Variabele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:140
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:159
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:179
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:205
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:242
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:600
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:623
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:648
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:678
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:92
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:94
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:331
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:357
+#: src/robotide/editor/editordialogs.py:143
+#: src/robotide/editor/editordialogs.py:162
+#: src/robotide/editor/editordialogs.py:182
+#: src/robotide/editor/editordialogs.py:208
+#: src/robotide/editor/editordialogs.py:245
+#: src/robotide/editor/editordialogs.py:603
+#: src/robotide/editor/editordialogs.py:626
+#: src/robotide/editor/editordialogs.py:651
+#: src/robotide/editor/editordialogs.py:681
+#: src/robotide/run/configmanagerui.py:101
+#: src/robotide/ui/filedialogs.py:92
+#: src/robotide/ui/filedialogs.py:94
+#: src/robotide/ui/filedialogs.py:331
+#: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
 msgstr "Naam"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:140
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:160
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:180
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:601
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:737
+#: src/robotide/editor/editordialogs.py:143
+#: src/robotide/editor/editordialogs.py:163
+#: src/robotide/editor/editordialogs.py:183
+#: src/robotide/editor/editordialogs.py:604
+#: src/robotide/editor/settingeditors.py:487
+#: src/robotide/editor/settingeditors.py:739
 msgid "Value"
 msgstr "Waarde"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:152
+#: src/robotide/editor/editordialogs.py:155
 msgid "List Variable"
 msgstr "Lijstvariabele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:172
+#: src/robotide/editor/editordialogs.py:175
 msgid "Dictionary Variable"
 msgstr "Dictvariabele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:196
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:664
+#: src/robotide/editor/editordialogs.py:199
+#: src/robotide/editor/editordialogs.py:230
+#: src/robotide/editor/settingeditors.py:576
+#: src/robotide/editor/settingeditors.py:666
 msgid "Library"
 msgstr "Bibliotheek"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:206
+#: src/robotide/editor/editordialogs.py:209
 msgid "Alias"
 msgstr "Alias"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:206
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:275
+#: src/robotide/editor/editordialogs.py:209
+#: src/robotide/editor/editordialogs.py:278
 msgid "Args"
 msgstr "Parameters"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:244
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:305
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
+#: src/robotide/editor/editordialogs.py:247
+#: src/robotide/editor/editordialogs.py:308
+#: src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
 msgstr "Documentatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:245
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
+#: src/robotide/editor/editordialogs.py:248
+#: src/robotide/run/configmanagerui.py:101
 msgid "Command"
 msgstr "Opdracht"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:268
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:679
+#: src/robotide/editor/editordialogs.py:271
+#: src/robotide/editor/settingeditors.py:576
+#: src/robotide/editor/settingeditors.py:681
 msgid "Variables"
 msgstr "Variabelen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:274
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:292
+#: src/robotide/editor/editordialogs.py:277
+#: src/robotide/editor/editordialogs.py:295
 msgid "Path"
 msgstr "Lokatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:287
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
+#: src/robotide/editor/editordialogs.py:290
+#: src/robotide/editor/settingeditors.py:576
+#: src/robotide/editor/settingeditors.py:673
 msgid "Resource"
 msgstr "Resource"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:393
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
+#: src/robotide/editor/editordialogs.py:396
+#: src/robotide/searchtests/dialogsearchtests.py:61
+#: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
 msgstr "Labels"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:421
+#: src/robotide/editor/editordialogs.py:424
 msgid "Suite Setup is run before any tests"
 msgstr "Suitevoorbereiding wordt uitgevoerd vóór de testgevallen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:480
+#: src/robotide/editor/editordialogs.py:483
 msgid "Setup"
 msgstr "Voorbereiding"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:494
+#: src/robotide/editor/editordialogs.py:497
 msgid "Teardown"
 msgstr "Afronding"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:508
+#: src/robotide/editor/editordialogs.py:511
 msgid "Template"
 msgstr "Sjabloon"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:568
+#: src/robotide/editor/editordialogs.py:571
 msgid "Test Timeout"
 msgstr "Testtijdslimiet"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:582
+#: src/robotide/editor/editordialogs.py:585
 msgid "Timeout"
 msgstr "Tijdslimiet"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:595
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:737
+#: src/robotide/editor/editordialogs.py:598
+#: src/robotide/editor/settingeditors.py:739
 msgid "Metadata"
 msgstr "Metagegevens"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:614
+#: src/robotide/editor/editordialogs.py:617
 msgid "New Test Case"
 msgstr "Nieuw testgeval"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:639
+#: src/robotide/editor/editordialogs.py:642
 msgid "Copy User Keyword"
 msgstr "Kopieer gebruikersactiewoord"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:668
+#: src/robotide/editor/editordialogs.py:671
 msgid "New User Keyword"
 msgstr "Nieuw gebruikersactiewoord"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:163
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:400
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/macroeditors.py:128
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:195
+#: src/robotide/editor/editors.py:163
+#: src/robotide/editor/editors.py:400
+#: src/robotide/editor/macroeditors.py:135
+#: src/robotide/ui/mainframe.py:195
 msgid " (READ ONLY)"
 msgstr " (ALLEEN LEZEN)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:350
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:357
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:151
+#: src/robotide/editor/editors.py:350
+#: src/robotide/searchtests/dialogsearchtests.py:61
+#: src/robotide/searchtests/dialogsearchtests.py:85
+#: src/robotide/ui/keywordsearch.py:357
+#: src/robotide/usages/usagesdialog.py:151
 msgid "Source"
 msgstr "Herkomst"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:387
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:484
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:753
+#: src/robotide/editor/editors.py:387
+#: src/robotide/ui/keywordsearch.py:207
+#: src/robotide/ui/treenodehandlers.py:493
+#: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
 msgstr "Vind gebruik"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
+#: src/robotide/editor/fieldeditors.py:191
 msgid "Columns"
 msgstr "Kolommen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:195
-msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
-msgstr "Het aantal kolommen dat wordt getoond in deze editor. Dit is één instelling voor alle lijsten."
+#: src/robotide/editor/fieldeditors.py:195
+msgid ""
+"Number of columns that are shown in this editor. Selected value is stored "
+"and used globally."
+msgstr ""
+"Het aantal kolommen dat wordt getoond in deze editor. Dit is één instelling "
+"voor alle lijsten."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
+#: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
 msgstr "Cellen verwijderen\tCtrl-Shift-3"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
+#: src/robotide/editor/kweditor.py:98
 msgid "Insert Cells\tCtrl-Shift-I"
 msgstr "Cellen invoegen\tCtrl-Shift-4"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
+#: src/robotide/editor/kweditor.py:100
 msgid "Copy\tCtrl-C"
 msgstr "Kopiëren\tCtrl-C"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
+#: src/robotide/editor/kweditor.py:100
 msgid "Cut\tCtrl-X"
 msgstr "Knippen\tCtrl-X"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
+#: src/robotide/editor/kweditor.py:100
 msgid "Select All\tCtrl-A"
 msgstr "Alles selecteren\tCtrl-A"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
+#: src/robotide/editor/kweditor.py:101
 msgid "Delete\tDel"
 msgstr "Verwijderen\tDelete"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
+#: src/robotide/editor/kweditor.py:101
 msgid "Insert\tCtrl-Shift-V"
 msgstr "Invoegen\tCtrl-I"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
+#: src/robotide/editor/kweditor.py:101
 msgid "Paste\tCtrl-V"
 msgstr "Plakken\tCtrl-V"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
+#: src/robotide/editor/kweditor.py:104
 msgid "Create Keyword"
 msgstr "Nieuw actiewoord maken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
+#: src/robotide/editor/kweditor.py:105
 msgid "Extract Keyword"
 msgstr "Nieuw actiewoord van selectie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
+#: src/robotide/editor/kweditor.py:106
 msgid "Extract Variable"
 msgstr "Nieuwe variabele van waarde"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:108
+#: src/robotide/editor/kweditor.py:108
 msgid "Find Where Used"
 msgstr "Vind toepassingen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
+#: src/robotide/editor/kweditor.py:109
 msgid "JSON Editor\tCtrl-Shift-J"
 msgstr "JSON editor Ctrl-Shift-J"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: src/robotide/editor/kweditor.py:111
 msgid "Go to Definition\tCtrl-B"
 msgstr "Spring naar definitie\tCtrl-B"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
+#: src/robotide/editor/kweditor.py:113
 msgid "Undo\tCtrl-Z"
 msgstr "Ongedaan maken\tCtrl-Z"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:114
+#: src/robotide/editor/kweditor.py:114
 msgid "Redo\tCtrl-Y"
 msgstr "Opnieuw doen\tCtrl-Y"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:116
+#: src/robotide/editor/kweditor.py:116
 msgid "Make Variable\tCtrl-1"
 msgstr "Nieuwe variabele maken\tCtrl-1"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:117
+#: src/robotide/editor/kweditor.py:117
 msgid "Make List Variable\tCtrl-2"
 msgstr "Nieuwe lijstvariabele maken\tCtrl-2"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:118
+#: src/robotide/editor/kweditor.py:118
 msgid "Make Dict Variable\tCtrl-5"
 msgstr "Nieuwe dictvariabele maken\tCtrl-5"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:951
-msgid "<b>Keyword was not detected by RIDE</b>\n"
+#: src/robotide/editor/kweditor.py:972
+msgid ""
+"<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</li>\n"
-"            <li>For library import errors: Consider importing library spec XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
+"            <li>Import library or resource file containing the keyword.</"
+"li>\n"
+"            <li>For library import errors: Consider importing library spec "
+"XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with "
+"the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.</li>\n"
 "        </ul>"
-msgstr "<b>Actiewoord niet gevonden door RIDE</b>\n"
+msgstr ""
+"<b>Actiewoord niet gevonden door RIDE</b>\n"
 "        <br>Mogelijke oplossingen:<br>\n"
 "        <ul>\n"
-"            <li>Importeer de bibliotheek of resource met het actiewoord.</li>\n"
-"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de bibliotheek te importeren als Spec \n"
-"            XML (Zie Hulpmiddelen -> Importeer bibliotheek als Spec XML of door\n"
-"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) om actiewoord voltooiing\n"
+"            <li>Importeer de bibliotheek of resource met het actiewoord.</"
+"li>\n"
+"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de "
+"bibliotheek te importeren als Spec \n"
+"            XML (Zie Hulpmiddelen -> Importeer bibliotheek als Spec XML of "
+"door\n"
+"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) "
+"om actiewoord voltooiing\n"
 "            mogelijk te maken. Voor bijvoorbeeld Java bibliotheken.\n"
-"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de Libdoc tool van Robot Framework.\n"
+"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de "
+"Libdoc tool van Robot Framework.\n"
 "            Voor meer informatie zie de \n"
-"            <a href=\\\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-\n"
+"            <a href=\\\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-\n"
 "            specs\\\">wiki</a>.</li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1102
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:234
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1216
+#: src/robotide/editor/kweditor.py:1128
+#: src/robotide/ui/mainframe.py:200
+#: src/robotide/ui/treenodehandlers.py:243
+#: src/robotide/ui/treeplugin.py:1216
 msgid "Validation Error"
 msgstr "Validatiefout"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1189
+#: src/robotide/editor/kweditor.py:1215
 msgid "New name"
 msgstr "Nieuwe naam"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1202
+#: src/robotide/editor/kweditor.py:1228
 msgid "Save"
 msgstr "Opslaan"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1205
-#: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
+#: src/robotide/editor/kweditor.py:1231
+#: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Annuleer"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1235
+#: src/robotide/editor/kweditor.py:1261
 msgid "Validation Error!"
 msgstr "Validatiefout!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1236
+#: src/robotide/editor/kweditor.py:1262
 msgid "Error in JSON:"
 msgstr "Fout in JSON:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1236
+#: src/robotide/editor/kweditor.py:1262
 msgid "Save anyway?"
 msgstr "Toch opslaan?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1406
+#: src/robotide/editor/kweditor.py:1438
 msgid "Please select what you want to check for usage"
 msgstr "Selecteer waarvan u toepassingen wilt vinden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1409
+#: src/robotide/editor/kweditor.py:1441
 msgid "Complete cell content"
 msgstr "Gehele celinhoud"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1410
+#: src/robotide/editor/kweditor.py:1442
 msgid "Variable "
 msgstr "Variabele "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1422
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1110
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1112
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:98
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:160
+#: src/robotide/editor/kweditor.py:1454
+#: src/robotide/editor/texteditor.py:1118
+#: src/robotide/editor/texteditor.py:1120
+#: src/robotide/searchtests/dialogsearchtests.py:49
+#: src/robotide/searchtests/dialogsearchtests.py:127
+#: src/robotide/searchtests/dialogsearchtests.py:184
+#: src/robotide/ui/review.py:98
+#: src/robotide/ui/review.py:160
 msgid "Search"
 msgstr "Zoeken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:375
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:679
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:783
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/treenodehandlers.py:384
+#: src/robotide/ui/treenodehandlers.py:688
+#: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:675
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:779
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/treenodehandlers.py:684
+#: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
 msgstr "Verplaats omhoog\tCtrl-Up"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:40
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:676
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:780
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/treenodehandlers.py:685
+#: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
 msgstr "Verplaats omlaag\tCtrl-Down"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:102
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/settingeditors.py:102
+#: src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
 msgstr "Wissen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:485
+#: src/robotide/editor/settingeditors.py:487
 msgid "Variable"
 msgstr "Variabele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:486
+#: src/robotide/editor/settingeditors.py:488
 msgid "Add Dict"
 msgstr "Nieuwe dict"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:486
+#: src/robotide/editor/settingeditors.py:488
 msgid "Add List"
 msgstr "Nieuwe lijst"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:486
+#: src/robotide/editor/settingeditors.py:488
 msgid "Add Scalar"
 msgstr "Nieuwe waarde"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
+#: src/robotide/editor/settingeditors.py:575
 msgid "Import"
 msgstr "Import"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:573
+#: src/robotide/editor/settingeditors.py:575
 msgid "Name / Path"
 msgstr "Naam / Lokatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:574
+#: src/robotide/editor/settingeditors.py:576
 msgid "Import Failed Help"
 msgstr "Import hulp"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:588
+#: src/robotide/editor/settingeditors.py:590
 msgid "Add Import"
 msgstr "Import toevoegen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:631
+#: src/robotide/editor/settingeditors.py:633
 msgid "Open Library Documentation"
 msgstr "Open Bibliotheek documentatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
+#: src/robotide/editor/settingeditors.py:636
 msgid "Install Library"
 msgstr "Installeer Bibliotheek"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:634
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:34
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:63
+#: src/robotide/editor/settingeditors.py:636
+#: src/robotide/spec/specimporter.py:34
+#: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr "Importeer Bibliotheek als Spec XML"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:685
-msgid "<br>Possible corrections and notes:<br>\n"
+#: src/robotide/editor/settingeditors.py:687
+msgid ""
+"<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the "
+"failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not "
+"initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec "
+"XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to "
+"enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr "<br>Notities en mogelijke oplossingen:<br>\n"
+msgstr ""
+"<br>Notities en mogelijke oplossingen:<br>\n"
 "        <ul>\n"
-"            <li>Een fout bij importeren wordt getoond met een rode kleur.</li>\n"
-"            <li>Bekijk het RIDE Logboek onder Hulpmiddelen voor meer informatie over de fout.</li>\n"
-"            <li>Als de import een variabele bevat die RIDE nog niet kent, overweeg dan om de variabele\n"
-"            toe te voegen aan de tabel met variabelen met een standaardwaarde.</li>\n"
-"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de bibliotheek te importeren als Spec XML (Zie Hulpmiddelen -> Importeer bibliotheek als Spec XML of door\n"
-"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) om actiewoord voltooiing\n"
+"            <li>Een fout bij importeren wordt getoond met een rode kleur.</"
+"li>\n"
+"            <li>Bekijk het RIDE Logboek onder Hulpmiddelen voor meer "
+"informatie over de fout.</li>\n"
+"            <li>Als de import een variabele bevat die RIDE nog niet kent, "
+"overweeg dan om de variabele\n"
+"            toe te voegen aan de tabel met variabelen met een "
+"standaardwaarde.</li>\n"
+"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de "
+"bibliotheek te importeren als Spec XML (Zie Hulpmiddelen -> Importeer "
+"bibliotheek als Spec XML of door\n"
+"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) "
+"om actiewoord voltooiing\n"
 "            mogelijk te maken. Voor bijvoorbeeld Java bibliotheken.\n"
-"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de Libdoc tool van Robot Framework.\n"
+"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de "
+"Libdoc tool van Robot Framework.\n"
 "            Voor meer informatie zie de \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:685
+#: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
 msgstr "Hulp bij importfouten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:738
+#: src/robotide/editor/settingeditors.py:740
 msgid "Add Metadata"
 msgstr "Nieuwe metagegevens"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:383
+#: src/robotide/editor/texteditor.py:383
 msgid "Text Edit"
 msgstr "Teksteditor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1466
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:185
+#: src/robotide/editor/texteditor.py:467
+#: src/robotide/editor/texteditor.py:1474
+#: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Herkomst: "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:898
+#: src/robotide/editor/texteditor.py:906
 msgid "Can not apply changes from Text Editor"
 msgstr "Kan wijzigingen van teksteditor niet toepassen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:899
+#: src/robotide/editor/texteditor.py:907
 msgid "ERROR: Data sanity check failed!"
 msgstr "FOUT: Data integriteitscontrole mislukt!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:899
+#: src/robotide/editor/texteditor.py:907
 msgid "Error at line"
 msgstr "Fout op regel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:900
+#: src/robotide/editor/texteditor.py:908
 msgid "Reset changes?"
 msgstr "Wijzigingen ongedaan maken?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1087
+#: src/robotide/editor/texteditor.py:1095
 msgid "Apply Changes"
 msgstr "Wijzigingen toepassen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1122
+#: src/robotide/editor/texteditor.py:1130
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Syntaxkleuring uitgeschakeld vanwege ontbrekende factoren."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1123
+#: src/robotide/editor/texteditor.py:1131
 msgid "Get help"
 msgstr "Hulp tonen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1138
-msgid "<h1>Syntax colorization</h1>\n"
+#: src/robotide/editor/texteditor.py:1146
+msgid ""
+"<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://"
+"pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1476,16 +1561,20 @@ msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/"
+"setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://"
+"pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr "<h1>Syntaxkleuring</h1>\n"
+msgstr ""
+"<h1>Syntaxkleuring</h1>\n"
 "        <p>\n"
-"        Syntaxkleuring voor de Teksteditor maakt gebruik van <a href='https://pygments.org/'>Pygments</a> Syntaxkleuring.\n"
+"        Syntaxkleuring voor de Teksteditor maakt gebruik van <a "
+"href='https://pygments.org/'>Pygments</a> Syntaxkleuring.\n"
 "        </p>\n"
 "        <p>\n"
 "        Installeer Pygments via de opdrachtprompt met:\n"
@@ -1501,1396 +1590,1473 @@ msgstr "<h1>Syntaxkleuring</h1>\n"
 "        <p>\n"
 "        Beschik je niet over pip of easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/"
+"setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >doorloop dan deze instructies</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Bekijk voor meer informatie over het installeren de <a href='https://pygments.org/download/'>Pygments website</a>.\n"
+"        Bekijk voor meer informatie over het installeren de <a href='https://"
+"pygments.org/download/'>Pygments website</a>.\n"
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1163
+#: src/robotide/editor/texteditor.py:1171
 msgid "Getting syntax colorization"
 msgstr "Syntaxkleuring configureren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:1264
+#: src/robotide/editor/texteditor.py:1272
 msgid "No matches found."
 msgstr "Geen overeenkomsten gevonden."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/log/log.py:45
+#: src/robotide/log/log.py:45
 msgid "RIDE Log"
 msgstr "RIDE-Logboek"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/log/log.py:86
+#: src/robotide/log/log.py:86
 msgid "View RIDE Log"
 msgstr "&RIDE-logboek weergeven"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:45
+#: src/robotide/parserlog/parserlog.py:45
 msgid "Parser Log"
 msgstr "Parser Log"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:85
+#: src/robotide/parserlog/parserlog.py:85
 msgid "View Parser Log"
 msgstr "&Parserlogboek weergeven"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:54
+#: src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
 msgstr "RIDE &bureaubladsnelkoppeling maken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:42
+#: src/robotide/preferences/editors.py:42
 msgid "Text background"
 msgstr "Tekstachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:85
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:95
+#: src/robotide/preferences/editors.py:85
+#: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
 msgstr "Kleuren op standaardwaarden instellen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:86
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:96
+#: src/robotide/preferences/editors.py:86
+#: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
 msgstr "Instellingen opslaan of laden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:129
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:195
+#: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "Tekengrootte"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:138
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:204
+#: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "Zoominstelling"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:143
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:209
+#: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "Vaste tekenbreedte"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:148
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:214
+#: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "Lettertype"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:159
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:162
+#: src/robotide/preferences/editors.py:159
+#: src/robotide/preferences/editors.py:162
 msgid "Text Editor"
 msgstr "Teksteditor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:163
+#: src/robotide/preferences/editors.py:163
 msgid "Text Editor Settings"
 msgstr "Instellingen voor teksteditor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:174
+#: src/robotide/preferences/editors.py:174
 msgid "Argument foreground"
 msgstr "Parametervoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:175
+#: src/robotide/preferences/editors.py:175
 msgid "Comment foreground"
 msgstr "Commentaarvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:176
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:392
+#: src/robotide/preferences/editors.py:176
+#: src/robotide/preferences/editors.py:392
 msgid "Error foreground"
 msgstr "Voorgrond bij fout"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:177
+#: src/robotide/preferences/editors.py:177
 msgid "Gherkin keyword foreground"
 msgstr "Gherkin actiewoordvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:178
+#: src/robotide/preferences/editors.py:178
 msgid "Heading foreground"
 msgstr "Koptekstvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:179
+#: src/robotide/preferences/editors.py:179
 msgid "Import foreground"
 msgstr "Importvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:180
+#: src/robotide/preferences/editors.py:180
 msgid "Variable foreground"
 msgstr "Variabelevoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:181
+#: src/robotide/preferences/editors.py:181
 msgid "Keyword definition foreground"
 msgstr "Actiewoordvoorgrond in definitie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:182
 msgid "Keyword call foreground"
 msgstr "Actiewoordvoorgrond bij gebruik"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:183
+#: src/robotide/preferences/editors.py:183
 msgid "Separator"
 msgstr "Scheidingsteken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:184
+#: src/robotide/preferences/editors.py:184
 msgid "Setting foreground"
 msgstr "Instellingenvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:185
+#: src/robotide/preferences/editors.py:185
 msgid "Syntax characters"
 msgstr "Syntaxtekens"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:190
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:390
+#: src/robotide/preferences/editors.py:190
+#: src/robotide/preferences/editors.py:390
 msgid "Text foreground"
 msgstr "Tekstvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:231
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:266
+#: src/robotide/preferences/editors.py:231
+#: src/robotide/preferences/editors.py:266
 msgid "Enable auto suggestions"
 msgstr "Automatische suggesties"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:238
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:241
+#: src/robotide/preferences/editors.py:238
+#: src/robotide/preferences/editors.py:241
 msgid "Grid Editor"
 msgstr "Tabeleditor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:242
+#: src/robotide/preferences/editors.py:242
 msgid "Grid Editor Settings"
 msgstr "Instellingen voor Tabeleditor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:251
+#: src/robotide/preferences/editors.py:251
 msgid "Default column size"
 msgstr "Standaard kolombreedte"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:255
+#: src/robotide/preferences/editors.py:255
 msgid "Auto size columns"
 msgstr "Automatische kolombreedte"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:258
-msgid "Max column size\n"
+#: src/robotide/preferences/editors.py:258
+msgid ""
+"Max column size\n"
 "(applies when auto size is on)"
-msgstr "Maximale kolombreedte\n"
+msgstr ""
+"Maximale kolombreedte\n"
 "(bij automatische kolombreedte)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:262
+#: src/robotide/preferences/editors.py:262
 msgid "Word wrap and auto size rows"
 msgstr "Automatische rijhoogte met tekstterugloop"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:298
+#: src/robotide/preferences/editors.py:298
 msgid "User Keyword Foreground"
 msgstr "Gebruikersactiewoordvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:299
+#: src/robotide/preferences/editors.py:299
 msgid "Library Keyword Foreground"
 msgstr "Bibliotheekactiewoordvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:300
+#: src/robotide/preferences/editors.py:300
 msgid "Variable Foreground"
 msgstr "Variabelevoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:301
+#: src/robotide/preferences/editors.py:301
 msgid "Unknown Variable Foreground"
 msgstr "Onbekende-variabelevoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:302
+#: src/robotide/preferences/editors.py:302
 msgid "Comments Foreground"
 msgstr "Commentaarvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:303
+#: src/robotide/preferences/editors.py:303
 msgid "Default Foreground"
 msgstr "Standaard voorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:304
+#: src/robotide/preferences/editors.py:304
 msgid "Empty Foreground"
 msgstr "Leeg-voorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:320
+#: src/robotide/preferences/editors.py:320
 msgid "Variable Background"
 msgstr "Variabeleachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:321
+#: src/robotide/preferences/editors.py:321
 msgid "Keyword Background"
 msgstr "Actiewoordachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:322
+#: src/robotide/preferences/editors.py:322
 msgid "Mandatory Field Background"
 msgstr "Verplicht-veldachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:323
+#: src/robotide/preferences/editors.py:323
 msgid "Optional Field Background"
 msgstr "Optioneel-veldachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:324
+#: src/robotide/preferences/editors.py:324
 msgid "Mandatory Empty Field Background"
 msgstr "Leeg verplicht-veldachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:325
+#: src/robotide/preferences/editors.py:325
 msgid "Unknown Background"
 msgstr "Onbekend-achtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:326
+#: src/robotide/preferences/editors.py:326
 msgid "Error Background"
 msgstr "Foutachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:327
+#: src/robotide/preferences/editors.py:327
 msgid "Highlight Background"
 msgstr "Highlightachtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:352
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:355
+#: src/robotide/preferences/editors.py:352
+#: src/robotide/preferences/editors.py:355
 msgid "Test Runner"
 msgstr "Testrunner"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:356
+#: src/robotide/preferences/editors.py:356
 msgid "Test Runner Settings"
 msgstr "Instellingen voor testrunner"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:360
+#: src/robotide/preferences/editors.py:360
 msgid "Colors will be active after next RIDE restart."
 msgstr "Een RIDE herstart is nodig om de kleurinstellingen toe te passen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:376
+#: src/robotide/preferences/editors.py:376
 msgid "Shows console colors set by"
 msgstr "Consolekleuren tonen volgens optie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:378
+#: src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr "Bevestiging vragen om alle tests uit te voeren wanneer er geen geselecteerd zijn "
+msgstr ""
+"Bevestiging vragen om alle tests uit te voeren wanneer er geen geselecteerd "
+"zijn "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:393
+#: src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
 msgstr "Voorgrond bij falen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:394
+#: src/robotide/preferences/editors.py:394
 msgid "Pass foreground"
 msgstr "Voorgrond bij succes"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:395
+#: src/robotide/preferences/editors.py:395
 msgid "Skip foreground"
 msgstr "Voorgrond bij overslaan"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:98
+#: src/robotide/preferences/general.py:98
 msgid "Apply to Project and File Explorer panels"
 msgstr "Toepassen op Project- en Bestandsverkenner vensters"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:224
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:148
+#: src/robotide/preferences/general.py:224
+#: src/robotide/ui/filedialogs.py:148
 msgid "Language"
 msgstr "Taal"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:236
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:239
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:242
+#: src/robotide/preferences/general.py:236
+#: src/robotide/preferences/general.py:239
+#: src/robotide/preferences/general.py:242
 msgid "General"
 msgstr "Algemeen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:240
+#: src/robotide/preferences/general.py:240
 msgid "General Settings"
 msgstr "Algemene instellingen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:249
+#: src/robotide/preferences/general.py:249
 msgid "Foreground"
 msgstr "Voorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:250
+#: src/robotide/preferences/general.py:250
 msgid "Background"
 msgstr "Achtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:251
+#: src/robotide/preferences/general.py:251
 msgid "Secondary Foreground"
 msgstr "Secondaire voorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:252
+#: src/robotide/preferences/general.py:252
 msgid "Secondary Background"
 msgstr "Secondaire achtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:253
+#: src/robotide/preferences/general.py:253
 msgid "Text Foreground"
 msgstr "Tekstvoorgrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:254
+#: src/robotide/preferences/general.py:254
 msgid "Help Background"
 msgstr "Hulp-achtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:27
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:31
+#: src/robotide/preferences/imports.py:27
+#: src/robotide/preferences/imports.py:31
 msgid "Importing"
 msgstr "Imports"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:30
+#: src/robotide/preferences/imports.py:30
 msgid "Library imports and PYTHONPATH"
 msgstr "Bibliotheekimports en PYTHONPATH"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:43
+#: src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
 msgstr "Kommagescheiden lijst van bibliotheken om automatisch te laden."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:45
-msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
-msgstr "Kommagescheiden lijst van mappen om toe te voegen aan PYTHONPATH wanneer naar bibliotheken gezocht wordt."
+#: src/robotide/preferences/imports.py:45
+msgid ""
+"Comma separated list of directories to be added to PYTHONPATH when libraries "
+"are searched."
+msgstr ""
+"Kommagescheiden lijst van mappen om toe te voegen aan PYTHONPATH wanneer "
+"naar bibliotheken gezocht wordt."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:47
+#: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr "Kommagescheiden lijst van mappen met Spec XML bestanden van bibliotheken."
+msgstr ""
+"Kommagescheiden lijst van mappen met Spec XML bestanden van bibliotheken."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:42
+#: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
 msgstr "Instellingen opslaan of laden"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
+#: src/robotide/preferences/managesettingsdialog.py:48
 msgid "Load settings from file..."
 msgstr "Instellingen laden van bestand..."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:49
+#: src/robotide/preferences/managesettingsdialog.py:49
 msgid "Save settings to file..."
 msgstr "Instellingen opslaan naar bestand..."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:58
+#: src/robotide/preferences/managesettingsdialog.py:58
 msgid "Current directory:"
 msgstr "Huidige map:"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:75
+#: src/robotide/preferences/managesettingsdialog.py:75
 msgid "File with Settings to Load"
 msgstr "Kies bestand met instellingen om te laden"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:101
+#: src/robotide/preferences/managesettingsdialog.py:101
 msgid "Save Settings to file"
 msgstr "Instellingen opslaan naar bestand"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:114
+#: src/robotide/preferences/managesettingsdialog.py:114
 msgid "Could not open settings file \"%s\" for writing"
 msgstr "Bestand \"%s\" kan niet geopend worden om in te schrijven"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:126
+#: src/robotide/preferences/managesettingsdialog.py:126
 msgid "Error trying to get '%s' from file %s"
 msgstr "Fout bij het ophalen van '%s' uit bestand %s"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:141
+#: src/robotide/preferences/managesettingsdialog.py:141
 msgid "Invalid config file '%s': %s"
 msgstr "Ongeldig configuratiebestand '%s': %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:27
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:30
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:31
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:33
+#: src/robotide/preferences/saving.py:27
+#: src/robotide/preferences/saving.py:30
+#: src/robotide/preferences/saving.py:31
+#: src/robotide/preferences/saving.py:33
 msgid "Saving"
 msgstr "Bestandsformaat"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:42
+#: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
 msgstr "Aanmaken als taak?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:43
+#: src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
 msgstr "Standaardinstelling voor taak- of testsecties."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:44
+#: src/robotide/preferences/saving.py:44
 msgid "Reformat?"
 msgstr "Bestandsinhoud herschikken?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:45
+#: src/robotide/preferences/saving.py:45
 msgid "Should it recalculate identation on Save?"
 msgstr "Bij opslaan inspringen normaliseren?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:58
+#: src/robotide/preferences/saving.py:58
 msgid "Default file format:"
 msgstr "Standaard bestandsformaat:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:61
+#: src/robotide/preferences/saving.py:61
 msgid "TXT format separator:"
 msgstr "Scheidingsteken voor txt-formaat:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:64
+#: src/robotide/preferences/saving.py:64
 msgid "Line separator:"
 msgstr "Regelscheidingsteken:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:66
-msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr "Beschikbare opties zijn: CRLF (Windows), LF (Unix) of native (op basis van het huidige besturingssysteem)"
+#: src/robotide/preferences/saving.py:66
+msgid ""
+"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr ""
+"Beschikbare opties zijn: CRLF (Windows), LF (Unix) of native (op basis van "
+"het huidige besturingssysteem)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:68
+#: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
 msgstr "Aantal scheidingsspaties"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:70
+#: src/robotide/preferences/saving.py:70
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "Het aantal spaties tussen cellen bij opslaan in txt-formaat"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
+#: src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
 msgstr "Recent geopende bestanden in Bestandsmenu tonen."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
+#: src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
 msgstr "Geen recente bestanden"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:110
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:140
+#: src/robotide/recentfiles/recentfiles.py:118
+#: src/robotide/recentfiles/recentfiles.py:124
+#: src/robotide/recentfiles/recentfiles.py:151
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/review.py:140
 msgid "File"
 msgstr "Bestand"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:119
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:125
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:153
+#: src/robotide/recentfiles/recentfiles.py:119
+#: src/robotide/recentfiles/recentfiles.py:125
+#: src/robotide/recentfiles/recentfiles.py:153
 msgid "Exit"
 msgstr "Afsluiten"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:142
+#: src/robotide/recentfiles/recentfiles.py:142
 msgid "Open %s"
 msgstr "Open %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:27
-msgid "The specified command string will be split from whitespaces into a command\n"
+#: src/robotide/run/configmanagerui.py:27
+msgid ""
+"The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n\n"
-"The command will be executed in the system directly without opening a shell.\n"
-"This means that shell commands and extensions are not available. For example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n\n"
+"internal spaces, they must be written as '<SPACE>'.\n"
+"\n"
+"The command will be executed in the system directly without opening a "
+"shell.\n"
+"This means that shell commands and extensions are not available. For "
+"example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and "
+"'dir'\n"
+"command does not work.\n"
+"\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr "De opdracht in opdrachtveld wordt door middel van spaties gesplitst in een opdracht\n"
-"en haar parameters. Als het commando, of een van de parameters, zelf spaties bevatten,\n"
-"schrijf deze dan uit door ze te vervangen met '<SPACE>'.\n\n"
-"Het commando wordt direct op het systeem uitgevoerd zonder een opdrachtprompt te\n"
-"openen. Dit betekent dat commando's en extensies van de opdrachtprompt niet beschikbaar\n"
-"zijn. Om bijvoorbeeld Windows batchbestanden uit te voeren moet deze de '.bat' extensie\n"
-"bevatten en ook het standaard 'dir'-commando zal niet werken.\n\n"
+msgstr ""
+"De opdracht in opdrachtveld wordt door middel van spaties gesplitst in een "
+"opdracht\n"
+"en haar parameters. Als het commando, of een van de parameters, zelf spaties "
+"bevatten,\n"
+"schrijf deze dan uit door ze te vervangen met '<SPACE>'.\n"
+"\n"
+"Het commando wordt direct op het systeem uitgevoerd zonder een "
+"opdrachtprompt te\n"
+"openen. Dit betekent dat commando's en extensies van de opdrachtprompt niet "
+"beschikbaar\n"
+"zijn. Om bijvoorbeeld Windows batchbestanden uit te voeren moet deze de "
+"'.bat' extensie\n"
+"bevatten en ook het standaard 'dir'-commando zal niet werken.\n"
+"\n"
 "Voorbeelden:\n"
 "    robot.bat --loglevel debug C:\\mijn_tests\n"
 "    svn update /home/robot\n"
-"    C:\\Program<SPACE>Files\\App\\prg.exe parameter<SPACE>met<SPACE>spatie.\n\n"
-"Macroconfiguraties worden opgeslagen als onderdeel van de RIDE instellingen.\n"
+"    C:\\Program<SPACE>Files\\App\\prg.exe parameter<SPACE>met<SPACE>spatie.\n"
+"\n"
+"Macroconfiguraties worden opgeslagen als onderdeel van de RIDE "
+"instellingen.\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
+#: src/robotide/run/configmanagerui.py:45
+#: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "Macroconfiguraties beheren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:99
+#: src/robotide/run/configmanagerui.py:99
 msgid "New"
 msgstr "Nieuw"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:99
+#: src/robotide/run/configmanagerui.py:99
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
-msgid "A plugin for executing commands on the system.\n\n"
+#: src/robotide/run/runanything.py:30
+msgid ""
+"A plugin for executing commands on the system.\n"
+"\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr "Een plugin voor het uitvoeren van opdrachten op het systeem.\n\n"
+msgstr ""
+"Een plugin voor het uitvoeren van opdrachten op het systeem.\n"
+"\n"
 "    Met deze plugin maak je Macros voor het uitvoeren van opdrachten op het\n"
-"    besturingssysteem van de computer. Uitvoer van de uitgevoerde opdrachten\n"
+"    besturingssysteem van de computer. Uitvoer van de uitgevoerde "
+"opdrachten\n"
 "    wordt weergegeven in een apart tabblad."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:57
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:65
+#: src/robotide/run/runanything.py:55
+#: src/robotide/run/runanything.py:57
+#: src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "Macros"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#: src/robotide/run/ui.py:27
 msgid "finished"
 msgstr "klaar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
+#: src/robotide/run/ui.py:28
 msgid "Run Again"
 msgstr "Opnieuw uitvoeren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:29
+#: src/robotide/run/ui.py:29
 msgid "running"
 msgstr "actief"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
+#: src/robotide/searchtests/dialogsearchtests.py:36
+#: src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
 msgstr "Testgevallen zoeken"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:50
+#: src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
 msgstr "Labels Zoeken"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
+#: src/robotide/searchtests/dialogsearchtests.py:61
+#: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
 msgstr "Tests"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:66
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:90
+#: src/robotide/searchtests/dialogsearchtests.py:66
+#: src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
 msgstr "Resultaten: "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
-msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
-msgstr "Vind overeenkomsten met labelpatronen. Zie de Robot Framework gebruikershandleiding of gebruik 'robot --help' voor meer informatie."
+#: src/robotide/searchtests/dialogsearchtests.py:82
+msgid ""
+"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
+"more information."
+msgstr ""
+"Vind overeenkomsten met labelpatronen. Zie de Robot Framework "
+"gebruikershandleiding of gebruik 'robot --help' voor meer informatie."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:863
+#: src/robotide/searchtests/dialogsearchtests.py:96
+#: src/robotide/ui/treenodehandlers.py:872
 msgid "Include"
 msgstr "Meetellen"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:117
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:393
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:490
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:583
+#: src/robotide/searchtests/dialogsearchtests.py:117
+#: src/robotide/ui/treenodehandlers.py:402
+#: src/robotide/ui/treenodehandlers.py:499
+#: src/robotide/ui/treenodehandlers.py:592
 msgid "Exclude"
 msgstr "Uitsluiten"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
+#: src/robotide/searchtests/dialogsearchtests.py:139
+#: src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
 msgstr "Selecteer alles"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:156
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:164
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:211
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:284
+#: src/robotide/searchtests/dialogsearchtests.py:156
+#: src/robotide/searchtests/dialogsearchtests.py:164
+#: src/robotide/ui/keywordsearch.py:211
+#: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
 msgstr "Aantal resultaten: %d"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:177
+#: src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
 msgstr "Info: "
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:195
+#: src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
 msgstr "Vind overeenkomsten in testnaam, documentatie en/of label."
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:212
+#: src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
 msgstr "Zoekterm"
 
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
+#: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr "Een plugin voor het zoeken van testgevallen gebaseerd op naam, labels en documentatie"
+msgstr ""
+"Een plugin voor het zoeken van testgevallen gebaseerd op naam, labels en "
+"documentatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:31
-msgid "Install missing libraries and open documentation.\n\n"
-"    You can edit settings.cfg to add URL for documentation and command to install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
-"    a dialog to fill the command to install or the URL for the documentation.\n"
+#: src/robotide/spec/libraryfinder.py:31
+msgid ""
+"Install missing libraries and open documentation.\n"
+"\n"
+"    You can edit settings.cfg to add URL for documentation and command to "
+"install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install "
+"Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you "
+"will have\n"
+"    a dialog to fill the command to install or the URL for the "
+"documentation.\n"
 "    "
-msgstr "Installeer ontbrekende bibliotheken en open de documentatie.\n\n"
-"    U kunt settings.cfg bewerken om URL toe te voegen voor documentatie en commando om te installeren.\n"
-"    Je kunt met de rechtermuisknop klikken op een naam van een bibliotheek, en Documentatie openen of Bibliotheek installeren.\n"
-"    Van Tools->Bibliotheek zoeken... of Help->Open Bibliotheek Documentatie... je krijgt\n"
-"    een dialoogvenster voor de installatie van het commando of de URL voor de documentatie.\n"
+msgstr ""
+"Installeer ontbrekende bibliotheken en open de documentatie.\n"
+"\n"
+"    U kunt settings.cfg bewerken om URL toe te voegen voor documentatie en "
+"commando om te installeren.\n"
+"    Je kunt met de rechtermuisknop klikken op een naam van een bibliotheek, "
+"en Documentatie openen of Bibliotheek installeren.\n"
+"    Van Tools->Bibliotheek zoeken... of Help->Open Bibliotheek "
+"Documentatie... je krijgt\n"
+"    een dialoogvenster voor de installatie van het commando of de URL voor "
+"de documentatie.\n"
 "    "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:39
+#: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
 msgstr "Bibliotheek Zoeken..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:40
+#: src/robotide/spec/libraryfinder.py:40
 msgid "Open Library Documentation..."
 msgstr "Open bibliotheek Documentatie..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:44
+#: src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
 msgstr "Voorbereiden Info op installeren van bibliotheken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:46
+#: src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
 msgstr "Voorbereiden Info op Open Documentatie van Bibliotheken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/libraryfinder.py:106
+#: src/robotide/spec/libraryfinder.py:106
 msgid "Library Finder"
 msgstr "Bibliotheek Zoeker"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:61
+#: src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
 msgstr "Spec XML Bibliotheek| *.xml| Alle Filesľ*.*"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:78
+#: src/robotide/spec/specimporter.py:78
 msgid "Info"
 msgstr "Info"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:79
-msgid "Library \"%s\" imported\n"
+#: src/robotide/spec/specimporter.py:79
+msgid ""
+"Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr "Bibliotheek \"%s\" geïmporteerd\n"
+msgstr ""
+"Bibliotheek \"%s\" geïmporteerd\n"
 "uit \"%s\"\n"
 "Vereist herstart van RIDE."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:83
+#: src/robotide/spec/specimporter.py:83
 msgid "Import failed"
 msgstr "Importeren mislukt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:84
+#: src/robotide/spec/specimporter.py:84
 msgid "Could not import library from file \"%s\""
 msgstr "Kan bibliotheek niet importeren uit bestand \"%s\""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/filedialogs.py:110
 msgid "Type"
 msgstr "Type"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:110
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:230
+#: src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/filedialogs.py:230
 msgid "Directory"
 msgstr "Map"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:170
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:303
+#: src/robotide/ui/filedialogs.py:170
+#: src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
 msgstr "Nieuw resourcebestand"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:172
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:117
+#: src/robotide/ui/filedialogs.py:172
+#: src/robotide/ui/preview.py:117
 msgid "Format"
 msgstr "Bestandsformaat"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:184
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:199
+#: src/robotide/ui/filedialogs.py:184
+#: src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
 msgstr "Bovenliggende map"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:185
+#: src/robotide/ui/filedialogs.py:185
 msgid "Choose Parent Directory"
 msgstr "Kies bovenliggende map"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:202
+#: src/robotide/ui/filedialogs.py:202
 msgid "Created Path"
 msgstr "Bestandslokatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:287
+#: src/robotide/ui/filedialogs.py:287
 msgid "New Project"
 msgstr "Nieuw Project"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:317
+#: src/robotide/ui/filedialogs.py:317
 msgid "Add Suite"
 msgstr "Voeg suite toe"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:341
+#: src/robotide/ui/filedialogs.py:341
 msgid "Add Directory"
 msgstr "Voeg map toe"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:353
+#: src/robotide/ui/filedialogs.py:353
 msgid "Set Data Format"
 msgstr "Stel bestandsformaat in"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:377
+#: src/robotide/ui/filedialogs.py:377
 msgid "Change recursively"
 msgstr "Pas recursief toe"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:396
-msgid "Provide format for initialization file in directory\n"
+#: src/robotide/ui/filedialogs.py:396
+msgid ""
+"Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr "Geef het formaat voor het initialisatiebestand in map\n"
+msgstr ""
+"Geef het formaat voor het initialisatiebestand in map\n"
 "\"%s\"."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:410
+#: src/robotide/ui/filedialogs.py:410
 msgid "Open"
 msgstr "Open"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:415
+#: src/robotide/ui/filedialogs.py:415
 msgid "Robot data (*.robot)|*.robot"
 msgstr "Robotbestanden (*.robot)|*.robot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:416
+#: src/robotide/ui/filedialogs.py:416
 msgid "Robot data (*.txt)|*.txt"
 msgstr "Robotbestanden (*.txt)|*.txt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:417
+#: src/robotide/ui/filedialogs.py:417
 msgid "Robot resource file (*.resource)|*.resource"
 msgstr "Robot resourcebestand (*.resource)|*.resource"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:418
+#: src/robotide/ui/filedialogs.py:418
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
 msgstr "Tabgescheiden Robotbestanden (*.tsv)|*.tsv"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:420
+#: src/robotide/ui/filedialogs.py:420
 msgid "All files|*.*"
 msgstr "Alle bestanden|*.*"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr "Toont een boomweergave voor bestanden en mappen. Opent het geselecteerde item met een rechtermuisklik."
+#: src/robotide/ui/fileexplorerplugin.py:29
+msgid ""
+"Provides a tree view for Files and Folders. Opens selected item with mouse "
+"right-click."
+msgstr ""
+"Toont een boomweergave voor bestanden en mappen. Opent het geselecteerde "
+"item met een rechtermuisklik."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:61
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:117
+#: src/robotide/ui/fileexplorerplugin.py:61
+#: src/robotide/ui/fileexplorerplugin.py:117
 msgid "Files"
 msgstr "Bestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:66
+#: src/robotide/ui/fileexplorerplugin.py:66
 msgid "View"
 msgstr "Weergave"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:66
+#: src/robotide/ui/fileexplorerplugin.py:66
 msgid "View File Explorer"
 msgstr "Toon bestandsverkenner"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:68
+#: src/robotide/ui/fileexplorerplugin.py:68
 msgid "Show File Explorer panel"
 msgstr "Toont het bestandsverkenner paneel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:35
+#: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
 msgstr "<alle actiewoorden>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:36
+#: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
 msgstr "<alle gebruikersactiewoorden>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:37
+#: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
 msgstr "<alle bibliotheekactiewoorden>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:39
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:59
+#: src/robotide/ui/keywordsearch.py:39
+#: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
 msgstr "Actiewoorden zoeken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
+#: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr "Een plugin voor het zoeken van actiewoorden op basis van naam of documentatie."
+msgstr ""
+"Een plugin voor het zoeken van actiewoorden op basis van naam of "
+"documentatie."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
+#: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
 msgstr "Zoek actiewoorden in suites, resourcebestanden en bibliotheken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:173
+#: src/robotide/ui/keywordsearch.py:173
 msgid "Search term: "
 msgstr "Zoekterm: "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:180
+#: src/robotide/ui/keywordsearch.py:180
 msgid "Search documentation"
 msgstr "Doorzoek documentatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:357
+#: src/robotide/ui/keywordsearch.py:357
 msgid "Description"
 msgstr "Beschrijving"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:57
+#: src/robotide/ui/mainframe.py:57
 msgid "[File]\n"
 msgstr "[Bestand]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
+#: src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr "!&Nieuw Project | Creëert een nieuw topniveau suite | Ctrlcmd-N | ART_NEW\n"
+msgstr ""
+"!&Nieuw Project | Creëert een nieuw topniveau suite | Ctrlcmd-N | ART_NEW\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr "!&Open Test Suite | Open bestand met tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+#: src/robotide/ui/mainframe.py:60
+msgid ""
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr ""
+"!&Open Test Suite | Open bestand met tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr "!Open &map | Open map met robotbestanden | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+#: src/robotide/ui/mainframe.py:61
+msgid ""
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
+msgstr ""
+"!Open &map | Open map met robotbestanden | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
+#: src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr "!Open e&xtern bestand | Open bestand in los venster | | ART_NORMAL_FILE\n"
+msgstr ""
+"!Open e&xtern bestand | Open bestand in los venster | | ART_NORMAL_FILE\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr "!&Opslaan | Geselecteerd bestand opslaan | Ctrlcmd-S | ART_FILE_SAVE\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr "!&Alles opslaan | Sla alle wijzigingen op | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgstr ""
+"!&Alles opslaan | Sla alle wijzigingen op | Ctrlcmd-Shift-S | "
+"ART_FILE_SAVE_AS\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!A&fsluiten | RIDE afsluiten | Ctrlcmd-Q\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!&Zoek ongebruikte actiewoorden | | | | POSITION-54\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:68
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!Pl&ugins beheren | | | | POSITION-81\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
+#: src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!Bekijk alle &labels | | F7 | | POSITION-82\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!RIDE-&voorkeuren | | | | POSITION-99\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:71
 msgid "[Help]\n"
 msgstr "[Hulp]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:72
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "!Sneltoetsen | Toont de in RIDE beschikbare sneltoetsen\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:73
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "!Gebruikershandleiding | Gebruikershandleiding van Robot Framework\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:74
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Wiki | RIDE gebruikershandleiding (Wiki)\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr "!Meld een probleem | Opent de RIDE Issue tracker\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
 msgstr "!Over RIDE | Informatie over RIDE\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr "!Controleer op upgrades | Gebruikt PyPi om te controleren of er een nieuwe versie beschikbaar is\n"
+msgstr ""
+"!Controleer op upgrades | Gebruikt PyPi om te controleren of er een nieuwe "
+"versie beschikbaar is\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:176
+#: src/robotide/ui/mainframe.py:176
 msgid "Saved %s"
 msgstr "%s opgeslagen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:177
+#: src/robotide/ui/mainframe.py:177
 msgid "Saved all files"
 msgstr "Alle bestanden opgeslagen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:205
+#: src/robotide/ui/mainframe.py:205
 msgid "Modification prevented"
 msgstr "Wijziging tegengehouden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:206
+#: src/robotide/ui/mainframe.py:206
 msgid "\"%s\" is read only"
 msgstr "\"%s\" is beperkt tot alleen-lezen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:280
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:107
+#: src/robotide/ui/mainframe.py:280
+#: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Testsuites"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:411
-msgid "There are unsaved modifications.\n"
+#: src/robotide/ui/mainframe.py:411
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr "Er zijn niet-opgeslagen wijzigingen.\n"
+msgstr ""
+"Er zijn niet-opgeslagen wijzigingen.\n"
 "Wilt u de wijzigingen opslaan voordat u afsluit?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:411
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:501
+#: src/robotide/ui/mainframe.py:411
+#: src/robotide/ui/mainframe.py:501
 msgid "Warning"
 msgstr "Waarschuwing"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:501
-msgid "There are unsaved modifications.\n"
+#: src/robotide/ui/mainframe.py:501
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr "Er zijn niet-opgeslagen wijzigingen.\n"
+msgstr ""
+"Er zijn niet-opgeslagen wijzigingen.\n"
 "Wilt u doorgaan zonder op te slaan?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:552
+#: src/robotide/ui/mainframe.py:552
 msgid "Choose a directory containing Robot files"
 msgstr "Kies een map met Robotbestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:704
+#: src/robotide/ui/mainframe.py:704
 msgid "Workspace modifications detected on the file system."
 msgstr "Er zijn bestanden gewijzigd buiten RIDE."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:705
+#: src/robotide/ui/mainframe.py:705
 msgid "Do you want to reload the workspace?"
 msgstr "Wilt u het project opnieuw laden?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:707
+#: src/robotide/ui/mainframe.py:707
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Met <Ja> worden niet-opgeslagen wijzigingen overschreven."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:708
+#: src/robotide/ui/mainframe.py:708
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Met <Nee> negeer je de binnenkomende wijzigingen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:709
+#: src/robotide/ui/mainframe.py:709
 msgid "Files Changed On Disk"
 msgstr "Bestanden gewijzigd op de achtergrond"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:752
+#: src/robotide/ui/mainframe.py:752
 msgid "Customize..."
 msgstr "Aanpassen..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:840
+#: src/robotide/ui/mainframe.py:840
 msgid "search unused keywords"
 msgstr "zoek ongebruikte actiewoorden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:840
+#: src/robotide/ui/mainframe.py:840
 msgid "stop test run"
 msgstr "stop testrun"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:841
+#: src/robotide/ui/mainframe.py:841
 msgid "preview"
 msgstr "voorbeeld"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:841
+#: src/robotide/ui/mainframe.py:841
 msgid "view ride log"
 msgstr "RIDE-logboek bekijken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:883
+#: src/robotide/ui/mainframe.py:883
 msgid "Shortcut keys for RIDE"
 msgstr "Sneltoetsen voor RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:921
+#: src/robotide/ui/mainframe.py:921
 msgid "Show"
 msgstr "Weergeven"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:922
+#: src/robotide/ui/mainframe.py:922
 msgid "Hide"
 msgstr "Verbergen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:923
+#: src/robotide/ui/mainframe.py:923
 msgid "Close"
 msgstr "Sluiten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:48
+#: src/robotide/ui/pluginmanager.py:48
 msgid "Manage Plugins"
 msgstr "Plugin beheer"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:63
+#: src/robotide/ui/pluginmanager.py:63
 msgid "Installed Plugins\n"
 msgstr "Geïnstalleerde Plugins\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:82
+#: src/robotide/ui/pluginmanager.py:82
 msgid "Enabled"
 msgstr "Actief"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:83
+#: src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
 msgstr "Plugin"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:92
-msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr "Merk op: Het in- en uitschakelen van plugins kan een herstart van RIDE vereisen om toe te passen."
+#: src/robotide/ui/pluginmanager.py:92
+msgid ""
+"Info. Enabling and disabling plugins might require RIDE restart for menus to "
+"work."
+msgstr ""
+"Merk op: Het in- en uitschakelen van plugins kan een herstart van RIDE "
+"vereisen om toe te passen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
-msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr "(verouderd) Geeft een voorbeeld van de robotbestanden in HTML, TSV en TXT formaten."
+#: src/robotide/ui/preview.py:32
+msgid ""
+"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr ""
+"(verouderd) Geeft een voorbeeld van de robotbestanden in HTML, TSV en TXT "
+"formaten."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
+#: src/robotide/ui/preview.py:41
+#: src/robotide/ui/preview.py:100
 msgid "Preview"
 msgstr "Voorbeeld"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:43
+#: src/robotide/ui/preview.py:43
 msgid "Show preview of the current file"
 msgstr "Voorbeeld van het huidige bestand weergeven"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:83
+#: src/robotide/ui/preview.py:83
 msgid "Text (Pipes)"
 msgstr "Tekst (Pipes)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:83
+#: src/robotide/ui/preview.py:83
 msgid "Text (Spaces)"
 msgstr "Tekst (Spaties)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:123
+#: src/robotide/ui/preview.py:123
 msgid "Print"
 msgstr "Afdrukken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:39
+#: src/robotide/ui/review.py:39
 msgid "Search unused keywords"
 msgstr "Zoek ongebruikte actiewoorden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
-msgid "This dialog helps you finding unused keywords within your opened project.\n"
+#: src/robotide/ui/review.py:66
+msgid ""
+"This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr "Dit dialoogvenster helpt je ongebruikte actiewoorden in het geopende project te vinden.\n"
-"Als je wilt, kun je het zoeken beperken tot bepaalde bestanden door een filter in te stellen."
+msgstr ""
+"Dit dialoogvenster helpt je ongebruikte actiewoorden in het geopende project "
+"te vinden.\n"
+"Als je wilt, kun je het zoeken beperken tot bepaalde bestanden door een "
+"filter in te stellen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
+#: src/robotide/ui/review.py:70
 msgid "Filter is"
 msgstr "Filter is"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:71
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:242
+#: src/robotide/ui/review.py:71
+#: src/robotide/ui/review.py:242
 msgid "inactive"
 msgstr "inactief"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:84
+#: src/robotide/ui/review.py:84
 msgid "Filter"
 msgstr "Filter"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:91
+#: src/robotide/ui/review.py:91
 msgid "Use RegEx"
 msgstr "Gebruik RegEx"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
-msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+#: src/robotide/ui/review.py:93
+msgid ""
+"Here you can define one or more strings separated by comma (e.g. "
+"common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr "Hier kunt u een of meer zoektermen definiëren gescheiden door een komma (bijv. appel,abc,123).\n"
-"Het filter komt overeen als ten minste één zoekterm deel uitmaakt van de bestandsnaam.\n"
+msgstr ""
+"Hier kunt u een of meer zoektermen definiëren gescheiden door een komma "
+"(bijv. appel,abc,123).\n"
+"Het filter komt overeen als ten minste één zoekterm deel uitmaakt van de "
+"bestandsnaam.\n"
 "Als je geen tekenreeksen invoert, worden alle geopende bestanden meegenomen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:101
+#: src/robotide/ui/review.py:101
 msgid "Test case files"
 msgstr "Testsuitebestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:104
+#: src/robotide/ui/review.py:104
 msgid "Resource files"
 msgstr "Resourcebestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:106
+#: src/robotide/ui/review.py:106
 msgid "Mode"
 msgstr "Modus"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:107
+#: src/robotide/ui/review.py:107
 msgid "exclude"
 msgstr "uitsluiten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:107
+#: src/robotide/ui/review.py:107
 msgid "include"
 msgstr "inclusief"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:109
+#: src/robotide/ui/review.py:109
 msgid "Test the filter"
 msgstr "Check het filter"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:139
+#: src/robotide/ui/review.py:139
 msgid "Keyword"
 msgstr "Actiewoord"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:146
+#: src/robotide/ui/review.py:146
 msgid "Delete marked keywords"
 msgstr "Gemarkeerde actiewoorden verwijderen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:157
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:320
+#: src/robotide/ui/review.py:157
+#: src/robotide/ui/review.py:320
 msgid "Unused Keywords"
 msgstr "Ongebruikte actiewoorden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:163
+#: src/robotide/ui/review.py:163
 msgid "Abort"
 msgstr "Annuleren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:247
+#: src/robotide/ui/review.py:247
 msgid "active"
 msgstr "actief"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:270
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:353
+#: src/robotide/ui/review.py:270
+#: src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
 msgstr "Ongebruikte actiewoorden (%d)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:279
+#: src/robotide/ui/review.py:279
 msgid "(None)"
 msgstr "(Geen)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n\n"
-msgstr "Actiewoorden van de volgende bestanden zullen worden meegenomen in de zoekopdracht:\n\n"
+#: src/robotide/ui/review.py:282
+msgid ""
+"Keywords of the following files will be included in the search:\n"
+"\n"
+msgstr ""
+"Actiewoorden van de volgende bestanden zullen worden meegenomen in de "
+"zoekopdracht:\n"
+"\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
+#: src/robotide/ui/review.py:283
 msgid "Included files"
 msgstr "Meegenomen bestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:339
+#: src/robotide/ui/review.py:339
 msgid "Searching.%s \t- %s"
 msgstr "Zoekt.%s \t- %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:354
+#: src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
 msgstr "Klaar met zoeken - %d ongebruikte actiewoorden gevonden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:402
+#: src/robotide/ui/review.py:402
 msgid "listing datafiles"
 msgstr "lijst van Robotbestanden aan het samenstellen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:405
+#: src/robotide/ui/review.py:405
 msgid "searching from "
 msgstr "aan het zoeken in "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:37
+#: src/robotide/ui/tagdialogs.py:37
 msgid "View all tags"
 msgstr "Bekijk alle labels"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:76
+#: src/robotide/ui/tagdialogs.py:76
 msgid "Tag"
 msgstr "Label"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:77
+#: src/robotide/ui/tagdialogs.py:77
 msgid "Occurrences"
 msgstr "Aantal"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:82
+#: src/robotide/ui/tagdialogs.py:82
 msgid "The List"
 msgstr "Labellijst"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:85
+#: src/robotide/ui/tagdialogs.py:85
 msgid "Refresh"
 msgstr "Vernieuwen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:86
+#: src/robotide/ui/tagdialogs.py:86
 msgid "Included Tag Search"
 msgstr "Label-inclusief zoeken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:89
+#: src/robotide/ui/tagdialogs.py:89
 msgid "Excluded Tag Search"
 msgstr "Label-exclusief zoeken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:147
-msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
+#: src/robotide/ui/tagdialogs.py:147
+msgid ""
+"Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr "Totaal aantal tests: %d, Tests met labels: %d, Unieke tags: %d\n"
+msgstr ""
+"Totaal aantal tests: %d, Tests met labels: %d, Unieke tags: %d\n"
 "Momenteel geselecteerd: %d tests"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:233
 msgid "Select all"
 msgstr "Alles selecteren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:262
+#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
 msgstr "Hernoem"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:234
+#: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests with this tag"
 msgstr "Toon tests met dit label"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:234
+#: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests without this tag"
 msgstr "Toon tests zonder dit label"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:261
+#: src/robotide/ui/tagdialogs.py:261
 msgid "Renaming tag '%s'."
 msgstr "Hernoem label '%s'."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
+#: src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
 msgstr "Verwijder een label '%s' ?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:652
+#: src/robotide/ui/tagdialogs.py:276
+#: src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:245
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:351
+#: src/robotide/ui/treenodehandlers.py:254
+#: src/robotide/ui/treenodehandlers.py:360
 msgid "New Resource"
 msgstr "Nieuw resourcebestand"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:349
+#: src/robotide/ui/treenodehandlers.py:358
 msgid "New Suite\tCtrl-Shift-F"
 msgstr "Nieuw testsuitebestand\tCtrl-Shift-F"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:350
+#: src/robotide/ui/treenodehandlers.py:359
 msgid "New Directory"
 msgstr "Nieuwe testsuitemap"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:353
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:564
+#: src/robotide/ui/treenodehandlers.py:362
+#: src/robotide/ui/treenodehandlers.py:485
+#: src/robotide/ui/treenodehandlers.py:573
 msgid "New User Keyword\tCtrl-Shift-K"
 msgstr "Nieuw actiewoord\tCtrl-Shift-K"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:354
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:477
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:565
+#: src/robotide/ui/treenodehandlers.py:363
+#: src/robotide/ui/treenodehandlers.py:486
+#: src/robotide/ui/treenodehandlers.py:574
 msgid "New Scalar\tCtrl-Shift-V"
 msgstr "Nieuwe variabele\tCtrl-Shift-V"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:355
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:478
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:566
+#: src/robotide/ui/treenodehandlers.py:364
+#: src/robotide/ui/treenodehandlers.py:487
+#: src/robotide/ui/treenodehandlers.py:575
 msgid "New List Variable\tCtrl-Shift-L"
 msgstr "Nieuwe lijstvariabele\tCtrl-Shift-L"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:356
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:479
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:567
+#: src/robotide/ui/treenodehandlers.py:365
+#: src/robotide/ui/treenodehandlers.py:488
+#: src/robotide/ui/treenodehandlers.py:576
 msgid "New Dictionary Variable"
 msgstr "Nieuwe dictvariabele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:358
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:482
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:570
+#: src/robotide/ui/treenodehandlers.py:367
+#: src/robotide/ui/treenodehandlers.py:491
+#: src/robotide/ui/treenodehandlers.py:579
 msgid "Change Format"
 msgstr "Formaat wijzigen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:359
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:493
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:586
+#: src/robotide/ui/treenodehandlers.py:368
+#: src/robotide/ui/treenodehandlers.py:502
+#: src/robotide/ui/treenodehandlers.py:595
 msgid "Open Containing Folder"
 msgstr "Toon in map"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:380
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:578
+#: src/robotide/ui/treenodehandlers.py:389
+#: src/robotide/ui/treenodehandlers.py:587
 msgid "Select All Tests"
 msgstr "Selecteer alle tests"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:381
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:579
+#: src/robotide/ui/treenodehandlers.py:390
+#: src/robotide/ui/treenodehandlers.py:588
 msgid "Deselect All Tests"
 msgstr "Wis selectie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:382
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:580
+#: src/robotide/ui/treenodehandlers.py:391
+#: src/robotide/ui/treenodehandlers.py:589
 msgid "Select Only Failed Tests"
 msgstr "Selecteer alleen gefaalde tests"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:383
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:581
+#: src/robotide/ui/treenodehandlers.py:392
+#: src/robotide/ui/treenodehandlers.py:590
 msgid "Select Only Passed Tests"
 msgstr "Selecteer alleen succesvolle tests"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:395
+#: src/robotide/ui/treenodehandlers.py:404
 msgid "Collapse all"
 msgstr "Alles inklappen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:395
+#: src/robotide/ui/treenodehandlers.py:404
 msgid "Expand all"
 msgstr "Alles uitvouwen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:435
-msgid "Directory contains unsaved data!\n"
+#: src/robotide/ui/treenodehandlers.py:444
+msgid ""
+"Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "Map bevat niet-opgeslagen gegevens!\n"
+msgstr ""
+"Map bevat niet-opgeslagen gegevens!\n"
 "Sla de gegevens op alvorens de map uit te sluiten."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:481
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:569
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:677
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:781
+#: src/robotide/ui/treenodehandlers.py:490
+#: src/robotide/ui/treenodehandlers.py:578
+#: src/robotide/ui/treenodehandlers.py:686
+#: src/robotide/ui/treenodehandlers.py:790
 msgid "Rename\tF2"
 msgstr "Hernoemen\tF2"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:483
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:488
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:576
+#: src/robotide/ui/treenodehandlers.py:492
+#: src/robotide/ui/treenodehandlers.py:497
+#: src/robotide/ui/treenodehandlers.py:580
+#: src/robotide/ui/treenodehandlers.py:585
 msgid "Sort Keywords"
 msgstr "Sorteer actiewoorden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:485
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:572
+#: src/robotide/ui/treenodehandlers.py:494
+#: src/robotide/ui/treenodehandlers.py:581
 msgid "Delete\tCtrl-Shift-D"
 msgstr "Verwijderen\tCtrl-Shift-D"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:487
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:574
+#: src/robotide/ui/treenodehandlers.py:496
+#: src/robotide/ui/treenodehandlers.py:583
 msgid "Sort Variables"
 msgstr "Sorteer variabelen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:492
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:585
+#: src/robotide/ui/treenodehandlers.py:501
+#: src/robotide/ui/treenodehandlers.py:594
 msgid "Remove Read Only"
 msgstr "Alleen-lezen opheffen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:522
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:625
-msgid "File contains unsaved data!\n"
+#: src/robotide/ui/treenodehandlers.py:531
+#: src/robotide/ui/treenodehandlers.py:634
+msgid ""
+"File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "Bestand bevat niet-opgeslagen gegevens!\n"
+msgstr ""
+"Bestand bevat niet-opgeslagen gegevens!\n"
 "Sla het bestand op alvorens deze uit te sluiten."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:563
+#: src/robotide/ui/treenodehandlers.py:572
 msgid "New Test Case\tCtrl-Shift-T"
 msgstr "Nieuw testgeval\tCtrl-Shift-T"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:575
+#: src/robotide/ui/treenodehandlers.py:584
 msgid "Sort Tests"
 msgstr "Sorteer testgevallen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:652
+#: src/robotide/ui/treenodehandlers.py:661
 msgid "Delete test case file"
 msgstr "Testsuitebestand verwijderen?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:674
+#: src/robotide/ui/treenodehandlers.py:683
 msgid "Copy\tCtrl-Shift-C"
 msgstr "Kopiëren\tCtrl-Shift-C"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:830
+#: src/robotide/ui/treenodehandlers.py:839
 msgid "Add Resource"
 msgstr "Resourcebestand toevoegen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:61
+#: src/robotide/ui/treeplugin.py:61
 msgid "Provides a tree view for Test Suites "
 msgstr "Toont een boomweergave voor testsuites "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:213
+#: src/robotide/ui/treeplugin.py:213
 msgid "External Resources"
 msgstr "Externe resourcebestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:353
+#: src/robotide/ui/treeplugin.py:353
 msgid "%s (excluded)"
 msgstr "%s (uitgesloten)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1217
+#: src/robotide/ui/treeplugin.py:1217
 msgid "Invalid keyword name: "
 msgstr "Ongeldige trefwoord: "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:58
+#: src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
 msgstr "'%s' - %dx gebruikt - aan het zoeken%s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:63
+#: src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
 msgstr "'%s' - %dx gebruikt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:93
+#: src/robotide/usages/usagesdialog.py:93
 msgid "Go to definition"
 msgstr "Open definitie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:151
+#: src/robotide/usages/usagesdialog.py:151
 msgid "Location"
 msgstr "Lokatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:151
+#: src/robotide/usages/usagesdialog.py:151
 msgid "Usage"
 msgstr "Gebruik"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:185
 msgid "Imported Location"
 msgstr "Geïmporteerde lokatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:185
 msgid "Imported name"
 msgstr "Geïmporteerde naam"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Location"
 msgstr "Importeerlokatie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Name"
 msgstr "Importeernaam"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:159
+#: src/robotide/validators/__init__.py:159
 msgid "%s cannot be empty"
 msgstr "%s mag niet leeg zijn"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
+#: src/robotide/widgets/dialog.py:133
 msgid "No"
 msgstr "Neen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
+#: src/robotide/widgets/dialog.py:133
 msgid "OK"
 msgstr "OK"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/widgets/dialog.py:133
+#: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "ja"
-
