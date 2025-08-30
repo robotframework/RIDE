@@ -46,7 +46,10 @@ langDomain = 'RIDE'
 
 pyExe = sys.executable
 pyFolder = os.path.split(pyExe)[0]
-pyI18nFolder = os.path.join(pyFolder, 'Tools', 'i18n')
+if os.path.isfile('/etc/redhat-release'):  # In Fedora 42, install `sudo dnf install python-devel`
+    pyI18nFolder = '/usr/bin'
+else:
+    pyI18nFolder = os.path.join(pyFolder, 'Tools', 'i18n')
 pyGettext = os.path.join(pyI18nFolder, 'pygettext.py')
 pyMsgfmt = os.path.join(pyI18nFolder, 'msgfmt.py')
 outFolder = os.path.join(appFolder, 'localization')
