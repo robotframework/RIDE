@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2025-08-29 23:30+0800\n"
 "PO-Revision-Date: 2025-08-29 14:43+0800\n"
-"Last-Translator: \n"
+"Last-Translator: Bo Pan <ripplepiam@gmail.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -173,15 +173,15 @@ msgstr "开始使用 python 版本 %s 的 RIDE %s 在 %s 中使用 wx 版本 %s�
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
-msgstr "感谢所有RIDE翻译: %s"
+msgstr "感谢所有 RIDE 翻译员：%s"
 
 #: src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
-msgstr "RIDE -- 机器人框架测试数据编辑器"
+msgstr "RIDE -- Robot Framework 测试数据编辑器"
 
 #: src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
-msgstr "在 Python %s 上运行的 RIDE %s。"
+msgstr "RIDE %s 正运行于 Python %s 。"
 
 #: src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
@@ -189,23 +189,25 @@ msgstr "RIDE 是 %s 的测试数据编辑器。"
 
 #: src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
-msgstr "欲了解更多信息，请参阅 %s 的项目页面。"
+msgstr "更多信息，请查阅项目主页：%s"
 
 #: src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
-msgstr "某些图标来自 %s"
+msgstr "部分图标来源于 %s."
 
 #: src/robotide/context/__init__.py:80
 msgid ""
 "%s the maintainer of the project thanks the original authors and all users "
 "and collaborators."
-msgstr "%s 该项目的维护者感谢原作者和所有用户与合作者。"
+msgstr "项目维护者 %s 对原作者以及所有用户和贡献者表示感谢。"
 
 #: src/robotide/context/__init__.py:81
 msgid ""
 "A special thanks to %s for having sponsored the development of translated "
 "test suites content compatibility with %s Version 6.1, in their %s."
-msgstr "特别感谢 %s 赞助开发 %s 版本6.1翻译测试套装内容兼容性的 %s。"
+msgstr ""
+"特别感谢 %s，赞助了已翻译测试套件内容与 %s 6.1 版本兼容性的开发工作 (在其 %s "
+"中)。"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -2303,7 +2305,7 @@ msgstr ""
 
 #: src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
-msgstr ""
+msgstr "!关于 | 关于 RIDE 的信息\n"
 
 #: src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
