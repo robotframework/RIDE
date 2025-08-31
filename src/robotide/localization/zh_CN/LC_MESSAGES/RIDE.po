@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2025-08-29 23:30+0800\n"
-"PO-Revision-Date: 2025-08-29 14:43+0800\n"
+"PO-Revision-Date: 2025-08-31 09:35+0800\n"
 "Last-Translator: Bo Pan <ripplepiam@gmail.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 "X-Generator: Poedit 3.7\n"
+"X-Poedit-SearchPath-0: .\n"
 
 #: src/robotide/application/application.py:353
 #: src/robotide/application/application.py:358
@@ -29,12 +30,12 @@ msgstr "从 %s 找到机器人框架版本 %s。"
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
-msgstr "帮助"
+msgstr "帮助(&H)"
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
-msgstr "发布说明"
+msgstr "打开发布说明(&E)"
 
 #: src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
@@ -43,11 +44,11 @@ msgstr "显示发布笔记"
 #: src/robotide/application/releasenotes.py:57
 #: src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
-msgstr "离线更改日志"
+msgstr "打开变更日志(&F)"
 
 #: src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
-msgstr "显示离线更改"
+msgstr "显示离线 CHANGELOG"
 
 #: src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
@@ -288,7 +289,7 @@ msgstr "运行"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 msgid "Run Tests"
-msgstr "运行测试"
+msgstr "运行测试(&U)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
@@ -305,23 +306,23 @@ msgstr "运行测试"
 #: src/robotide/ui/mainframe.py:839
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
-msgstr "工具"
+msgstr "工具(&T)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests"
-msgstr "运行选中的测试"
+msgstr "运行所选测试"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 msgid "Run Tests with Debug"
-msgstr "通过调试运行测试"
+msgstr "运行测试 (调试)(&R)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:243
 msgid "Run the selected tests with Debug"
-msgstr "通过调试运行选中的测试"
+msgstr "以调试模式运行所选测试"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
 msgid "Stop Test Run"
-msgstr "停止测试运行"
+msgstr "停止测试运行(&S)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:330
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:334
@@ -561,14 +562,14 @@ msgid ""
 "ART_GO_FORWARD\n"
 "        "
 msgstr ""
-"[Navigate]\n"
-"        ！ o &back | 返回前一个位置树树 | Alt-%s | ART_GO_BACK\n"
-"        ！ o &Forward | 转到下一页树中的位置 | Alt-%s | ART_GO_FORWARD\n"
+"[导航(&N)]\n"
+"        !返回(&B) | 返回树形视图的上一个位置 | Alt-%s | ART_GO_BACK\n"
+"        !前进(&F) | 前往树形视图的下一个位置 | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
-msgstr "将标签添加到选中的"
+msgstr "给所选测试添加标签(&A)"
 
 #: src/robotide/controller/ui/treecontroller.py:56
 #: src/robotide/controller/ui/treecontroller.py:58
@@ -577,15 +578,15 @@ msgstr "将标签添加到选中的"
 #: src/robotide/editor/settingeditors.py:659
 #: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
-msgstr "编辑"
+msgstr "编辑(&E)"
 
 #: src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
-msgstr "清除选中项"
+msgstr "清除选中项(&C)"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
-msgstr "将标签添加到选中的"
+msgstr "将标签添加到选中的测试"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
@@ -597,71 +598,71 @@ msgstr "[Edit]\n"
 
 #: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr "&撤消|撤销上次修改 | Ctrlcmd-Z\n"
+msgstr "撤消(&U) | 撤销上次修改 | Ctrlcmd-Z\n"
 
 #: src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr "&Redo | 重做修改 | Ctrlcmd-Y\n"
+msgstr "重做(&R) | 重做修改 | Ctrlcmd-Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr "剪切|剪切|Ctrlcmd-X\n"
+msgstr "剪切(&T) | 剪切 | Ctrlcmd-X\n"
 
 #: src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
-msgstr ""
+msgstr "复制(&C) | 复制 | Ctrlcmd-C\n"
 
 #: src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr "粘贴|粘贴 | Ctrlcmd-V\n"
+msgstr "粘贴(&P) | 粘贴 | Ctrlcmd-V\n"
 
 #: src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
-msgstr ""
+msgstr "插入(&I) | 插入 | Shift-Ctrl-V\n"
 
 #: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr "&删除 | 删除 | Del\n"
+msgstr "删除(&D) | 删除 | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr "评论行 | 评论选定行 | Ctrlcmd-3\n"
+msgstr "注释行(&M) | 注释掉所选行 | Ctrlcmd-3\n"
 
 #: src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr "评论单元格 | 评论单元格与 # | Ctrlcmd-Shift-3\n"
+msgstr "注释单元格(&E) | 使用 # 注释单元格 | Ctrlcmd-Shift-3\n"
 
 #: src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr "取消评论行 | 取消评论所选行 | Ctrlcmd-4\n"
+msgstr "取消注释行(&N) | 取消注释所选行 | Ctrlcmd-4\n"
 
 #: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr "取消评论单元格 | 取消注释单元格与 # | Ctrlcmd-Shift-4\n"
+msgstr "取消注释单元格(&L) | 取消用 # 注释单元格 | Ctrlcmd-Shift-4\n"
 
 #: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr "插入单元格 | 插入单元格 | Ctrlcmd-Shift-I\n"
+msgstr "插入单元格(&S) | 插入单元格 | Ctrlcmd-Shift-I\n"
 
 #: src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr "删除单元格 | 删除单元格 | Ctrlcmd-Shift-D\n"
+msgstr "删除单元格(&) | 删除单元格 | Ctrlcmd-Shift-D\n"
 
 #: src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+msgstr "插入行(&W) | 插入行 | Ctrlcmd-I\n"
 
 #: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr "删除行 | 删除行 | Ctrlcmd-D\n"
+msgstr "删除行(&) | 删除行 | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "上移行(&V) (Alt-Up 或 Ctrl-Shift-Up) | 向上移动所选行\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr "向下移动行 (Alt-own 或 Ctrl-Ctrl-Shift-Down) | 向下移动行\n"
+msgstr "下移行(&) (Alt-Down 或 Ctrl-Shift-Down) | 向下移动所选行\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:66
@@ -673,8 +674,8 @@ msgid ""
 "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
 "and variable completions | | | POSITION-70\n"
 msgstr ""
-"内容帮助 (Ctrl-Space 或 Ctrl-Alt-Space) | 显示可能的关键词和变量补全| | | "
-"POSITION-70\n"
+"内容辅助(&O) (Ctrl-Space 或 Ctrl-Alt-Space) | 显示可能的关键词和变量补全 | | "
+"| POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -1333,7 +1334,7 @@ msgstr "安装库"
 #: src/robotide/spec/specimporter.py:34
 #: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
-msgstr "导入库Spec XML"
+msgstr "导入库规范 XML"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid ""
@@ -1358,6 +1359,22 @@ msgid ""
 "            </li>\n"
 "        </ul>"
 msgstr ""
+"<br>可能的修正和注意事项：<br>\n"
+"        <ul>\n"
+"            <li>导入失败会以红色显示。</li>\n"
+"            <li>有关失败的详细信息，点击 \"工具/查看 RIDE 日志\"。</li>\n"
+"            <li>如果导入的库中包含 RIDE 尚未初始化的变量，可考虑将该变量添加"
+"到 \"变量表\" 中，并设置默认值。</li>\n"
+"            <li>关于库导入失败：可考虑导入库规范 XML \n"
+"            (点击 \"工具/导入库规范 XML\" 或将 XML 文件以正确名称添加到 "
+"PYTHONPATH) \n"
+"            以启用关键字补全功能，例如 Java 库。\n"
+"            库规范 XML 可使用 Robot Framework 的 libdoc 工具生成。\n"
+"            更多信息请查阅：\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            </li>\n"
+"        </ul>"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
@@ -1479,7 +1496,7 @@ msgstr "RIDE 日志"
 
 #: src/robotide/log/log.py:86
 msgid "View RIDE Log"
-msgstr "查看RIDE日志"
+msgstr "查看 RIDE 日志(&W)"
 
 #: src/robotide/parserlog/parserlog.py:45
 msgid "Parser Log"
@@ -1487,11 +1504,11 @@ msgstr "解析器日志"
 
 #: src/robotide/parserlog/parserlog.py:85
 msgid "View Parser Log"
-msgstr "查看解析器日志"
+msgstr "查看解析器日志(&I)"
 
 #: src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
-msgstr "创建 RIDE 桌面快捷方式"
+msgstr "创建 RIDE 桌面快捷方式(&T)"
 
 #: src/robotide/preferences/editors.py:42
 msgid "Text background"
@@ -1875,7 +1892,7 @@ msgstr "将最近打开的文件添加到文件菜单。"
 
 #: src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
-msgstr "没有最近的文件"
+msgstr "没有最近的文件(R)"
 
 #: src/robotide/recentfiles/recentfiles.py:118
 #: src/robotide/recentfiles/recentfiles.py:124
@@ -1884,7 +1901,7 @@ msgstr "没有最近的文件"
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
-msgstr "文件"
+msgstr "文件(&F)"
 
 #: src/robotide/recentfiles/recentfiles.py:119
 #: src/robotide/recentfiles/recentfiles.py:125
@@ -1920,7 +1937,7 @@ msgstr ""
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
-msgstr "管理运行配置"
+msgstr "管理运行配置(&M)"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "New"
@@ -1948,7 +1965,7 @@ msgstr ""
 #: src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
-msgstr "宏图"
+msgstr "宏(&M)"
 
 #: src/robotide/run/ui.py:27
 msgid "finished"
@@ -1965,7 +1982,7 @@ msgstr "正在运行"
 #: src/robotide/searchtests/dialogsearchtests.py:36
 #: src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
-msgstr "搜索测试"
+msgstr "搜索测试(&E)"
 
 #: src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
@@ -2042,14 +2059,21 @@ msgid ""
 "documentation.\n"
 "    "
 msgstr ""
+"安装缺失的库并打开文档。\n"
+"\n"
+"    你可以编辑 settings.cfg 来添加 \"文档 URL\" 或 \"安装命令\"。\n"
+"    你可以右键点击库名称，然后选择 \"打开文档\" 或 \"安装库\"。\n"
+"    通过 工具->库查找器... 或 帮助->打开库文档...\n"
+"    可以弹出对话框，填写安装命令或文档 URL。\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr "库查找..."
+msgstr "库查找器(&L)..."
 
 #: src/robotide/spec/libraryfinder.py:40
 msgid "Open Library Documentation..."
-msgstr "打开库文档..."
+msgstr "打开库文档(&O)..."
 
 #: src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
@@ -2061,11 +2085,11 @@ msgstr "准备打开库文档的信息"
 
 #: src/robotide/spec/libraryfinder.py:106
 msgid "Library Finder"
-msgstr "书库查找器"
+msgstr "库查找器"
 
 #: src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
-msgstr "库 Spec XML|*.xml|所有文件|*.*"
+msgstr "库规范 XML|*.xml|所有文件|*.*"
 
 #: src/robotide/spec/specimporter.py:78
 msgid "Info"
@@ -2077,6 +2101,9 @@ msgid ""
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
+"库 \"%s\"\n"
+"已从 \"%s\" 导入\n"
+"可能需要重启 RIDE。"
 
 #: src/robotide/spec/specimporter.py:83
 msgid "Import failed"
@@ -2084,7 +2111,7 @@ msgstr "导入失败"
 
 #: src/robotide/spec/specimporter.py:84
 msgid "Could not import library from file \"%s\""
-msgstr "无法从文件中导入库\"%s\""
+msgstr "无法从文件 \"%s\" 导入库"
 
 #: src/robotide/ui/filedialogs.py:110
 msgid "Type"
@@ -2179,15 +2206,15 @@ msgstr "为文件和文件夹提供树木视图。用鼠标右键打开选中的
 #: src/robotide/ui/fileexplorerplugin.py:61
 #: src/robotide/ui/fileexplorerplugin.py:117
 msgid "Files"
-msgstr "文件"
+msgstr "文件资源"
 
 #: src/robotide/ui/fileexplorerplugin.py:66
 msgid "View"
-msgstr "查看"
+msgstr "视图(&V)"
 
 #: src/robotide/ui/fileexplorerplugin.py:66
 msgid "View File Explorer"
-msgstr "查看文件浏览器"
+msgstr "显示文件资源面板(&V)"
 
 #: src/robotide/ui/fileexplorerplugin.py:68
 msgid "Show File Explorer panel"
@@ -2208,11 +2235,11 @@ msgstr "<all library keywords>"
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
-msgstr "搜索关键字"
+msgstr "搜索关键字(&A)"
 
 #: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr "基于名称或文档搜索关键字的插件。"
+msgstr "一个用于根据名称或文档搜索关键字的插件。"
 
 #: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -2236,52 +2263,51 @@ msgstr "[File]\n"
 
 #: src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr "!&新项目 | 创建新的顶级套装 | Ctrlcmd-N | ART_NEW\n"
+msgstr "!新建项目(&N) | 创建一个新的顶层测试套件 | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:60
 msgid ""
 "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr "!&打开测试套件 | 打开包含测试的文件 | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!打开测试套件(&O) | 打开包含测试的文件 | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid ""
 "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
 "ART_FOLDER_OPEN\n"
 msgstr ""
-"!Open &Directory | 打开包含数据文件的目录| Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
+"!打开目录(&D) | 打开包含数据文件的目录 | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr "!打开外部文件 | 在代码编辑器中打开文件 | | ART_NORMAL_FILE\n"
+msgstr "!打开文件(&P) | 在代码编辑器中打开文件 | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr "!&保存 | 保存选中的数据文件 | Ctrlcmd-S | ART_FILE_SAVE\n"
+msgstr "!保存(&S) | 保存选中的数据文件 | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr "!保存 &All | 保存所有更改 | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgstr "!保存全部(&A) | 保存所有更改 | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr "!E&xit | 退出RIDE | Ctrlcmd-Q\n"
+msgstr "!退出(&X) | 退出 RIDE | Ctrlcmd-Q\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr "!搜索未使用的关键字 | | | | POSITION-54\n"
+msgstr "!搜索未使用的关键字(&C) | | | | POSITION-54\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr "!管理插件 | | | | POSITION-81\n"
+msgstr "!管理插件(&M) | | | | POSITION-81\n"
 
 #: src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr "!查看所有标签 | | F7 | | POSITION-82\n"
+msgstr "!查看所有标签(&V) | | F7 | | POSITION-82\n"
 
 #: src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr "!首选项 | | | | POSITION-99\n"
+msgstr "!首选项(&P) | | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:71
 msgid "[Help]\n"
@@ -2289,31 +2315,31 @@ msgstr "[Help]\n"
 
 #: src/robotide/ui/mainframe.py:72
 msgid "!Shortcut keys | RIDE shortcut keys\n"
-msgstr "!快捷键 | RIDE 快捷键\n"
+msgstr "!快捷键一览(&S) | 查看 RIDE 所有快捷键\n"
 
 #: src/robotide/ui/mainframe.py:73
 msgid "!User Guide | Robot Framework User Guide\n"
-msgstr "!User Guide | Robot Framework 用户指南\n"
+msgstr "!RF 用户指南(&U) | Robot Framework 的用户指南\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
-msgstr "!Wiki | RIDE 用户指南 (Wiki)\n"
+msgstr "!Github Wiki (&W) | RIDE 在Github上的维基百科\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
+msgstr "!报告问题(&R) | 在 Github Issues 上报告您发现的问题\n"
 
 #: src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
-msgstr "!关于 | 关于 RIDE 的信息\n"
+msgstr "!关于 RIDE (&A) | 关于 RIDE 的信息\n"
 
 #: src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr "!检查升级 | PyPi 看看新发布的版本\n"
+msgstr "!检查更新(&C) | 在 PyPi 上查找新发布的版本\n"
 
 #: src/robotide/ui/mainframe.py:176
 msgid "Saved %s"
-msgstr "保存的 %s"
+msgstr "保存 %s"
 
 #: src/robotide/ui/mainframe.py:177
 msgid "Saved all files"
@@ -2325,7 +2351,7 @@ msgstr "无法修改"
 
 #: src/robotide/ui/mainframe.py:206
 msgid "\"%s\" is read only"
-msgstr "“%s”只读"
+msgstr "\"%s\" 只读"
 
 #: src/robotide/ui/mainframe.py:280
 #: src/robotide/ui/treeplugin.py:107
@@ -2337,8 +2363,8 @@ msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
-"有未保存的修改。\n"
-"您想要在退出之前保存您的更改吗？"
+"您有有未保存的修改！\n"
+"在退出之前，您想保存所有更改吗？"
 
 #: src/robotide/ui/mainframe.py:411
 #: src/robotide/ui/mainframe.py:501
@@ -2350,10 +2376,12 @@ msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
+"您有有未保存的修改！\n"
+"确定要在不保存的情况下继续？"
 
 #: src/robotide/ui/mainframe.py:552
 msgid "Choose a directory containing Robot files"
-msgstr "选择包含机器人文件的目录"
+msgstr "选择包含 robot 文件的目录"
 
 #: src/robotide/ui/mainframe.py:704
 msgid "Workspace modifications detected on the file system."
@@ -2393,11 +2421,11 @@ msgstr "预览"
 
 #: src/robotide/ui/mainframe.py:841
 msgid "view ride log"
-msgstr "查看乘坐日志"
+msgstr "查看 RIDE 日志"
 
 #: src/robotide/ui/mainframe.py:883
 msgid "Shortcut keys for RIDE"
-msgstr "RIDE快捷键"
+msgstr "RIDE 快捷键一览"
 
 #: src/robotide/ui/mainframe.py:921
 msgid "Show"
