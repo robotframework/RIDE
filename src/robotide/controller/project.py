@@ -22,7 +22,8 @@ from .dataloader import DataLoader
 from .robotdata import new_test_case_file, new_test_data_directory
 from ..context import LOG
 from ..controller.ctrlcommands import NullObserver, SaveFile
-from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
+from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged, RideSettingsChanged
+from ..preferences.settings import RideSettings
 from .. import spec
 from ..spec.xmlreaders import SpecInitializer
 
@@ -37,8 +38,9 @@ class Project(_BaseController, WithNamespace):
         self._name_space = namespace
         self._set_namespace(self._name_space)
         self.tasks = tasks
+        self.settings_path = None
         self.internal_settings = settings
-        self._loader = DataLoader(self._name_space, settings)
+        self._loader = DataLoader(self._name_space, self.internal_settings)
         self.controller = None
         self.name = None
         self.external_resources = []
@@ -76,6 +78,39 @@ class Project(_BaseController, WithNamespace):
         self.internal_settings.set('default directory', default_dir)
         self._name_space.update_exec_dir_global_var(default_dir)
         self._name_space.update_cur_dir_global_var(default_dir)
+
+    def update_project_settings(self, path):
+        from ..preferences import initialize_settings
+        default_dir = path if os.path.isdir(path) else os.path.dirname(path)
+        local_settings_dir = os.path.join(default_dir, '.robot')
+        old_settings_dir = self.settings_path
+        print(f"DEBUG: Project.py Project update_project_settings ENTER: path={local_settings_dir}")
+        if os.path.isdir(local_settings_dir):
+            old_settings = self.internal_settings.get_without_default('General')
+            old_bkg = old_settings['background']
+            local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
+            self.settings_path = local_settings
+            if os.path.isfile(local_settings):
+                self.internal_settings = RideSettings(local_settings)
+                print(f"DEBUG: Project.py Project update_project_settings EXISTING project settings "
+                      f"{local_settings=} settings={[items for items in self.internal_settings]}")
+            else:
+                default = RideSettings()
+                settings_path = default.user_path
+                new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
+                print(f"DEBUG: Project.py Project update_project_settings NEW project settings new_path={new_path}"
+                      f" local_settings={local_settings}")
+                self.internal_settings = RideSettings(new_path)
+            new_settings = self.internal_settings.get_without_default('General')
+            new_bkg = new_settings.get_without_default('background')
+            # RideSettingsChanged(keys=('General', 'background'), old=old_bkg, new=new_bkg).publish()
+            print(f"DEBUG: Project.py Project update_project_settings END after Publish\n{self.internal_settings}"
+                  f" old={old_bkg}, new={new_bkg}")
+        self._loader = DataLoader(self._name_space, self.internal_settings)
+        print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
+        if self.settings_path != old_settings_dir:
+            RideSettingsChanged(keys=('General', 'background'), old=None, new=None).publish()
+        return self.settings_path, self.internal_settings
 
     # DEBUG: in all other controllers data returns a robot data model object.
     @property
@@ -159,6 +194,7 @@ class Project(_BaseController, WithNamespace):
     def _load_initfile(self, path, load_observer, language=None):
         if os.path.splitext(os.path.split(path)[1])[0] != '__init__':
             return None
+        self.update_project_settings(path)
         initfile = self._loader.load_initfile(path, load_observer, language)
         if not initfile:
             return None
@@ -166,6 +202,7 @@ class Project(_BaseController, WithNamespace):
         return initfile
 
     def load_datafile(self, path, load_observer, language=None):
+        self.update_project_settings(path)
         datafile = self._load_datafile(path, load_observer, language)
         if datafile:
             return datafile

@@ -332,10 +332,15 @@ class RIDE(wx.App):
         self.workspace_path = self.workspace_path or self._get_latest_path()
         if self.workspace_path:
             self._controller.update_default_dir(self.workspace_path)
+            if not self.settings_path:
+                self.settings_path, self.settings = self._controller.update_project_settings(self.workspace_path)
+                RideSettingsChanged(keys=('General', 'background'), old=None, new=None).publish()
             theme = self.settings.get_without_default('General')
             background = theme['background']
             foreground = theme['foreground']
-            # print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}")
+            print(f"DEBUG: application.py RIDE _load_data after workspace_path setting_path={self.settings_path}")
+            print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}"
+                  f"\n Workspace:{self.workspace_path} ")
             observer = LoadProgressObserver(self.frame, background=background, foreground=foreground)
             self._controller.load_data(self.workspace_path, observer)
 
