@@ -25,9 +25,11 @@ from .pluginconnector import plugin_factory
 
 class PluginLoader(object):
 
-    def __init__(self, application, load_dirs, standard_classes):
+    def __init__(self, application, load_dirs, standard_classes, silent=False):
         self._load_errors = []
-        self.plugins = [plugin_factory(application, cls) for cls in standard_classes + self._find_classes(load_dirs)]
+        self.silent = silent
+        self.plugins = [plugin_factory(application, cls, silent) for cls in standard_classes +
+                        self._find_classes(load_dirs)]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
@@ -74,8 +76,8 @@ class PluginLoader(object):
             m_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(m_module)
         except Exception as err:
-            self._load_errors.append("Importing plugin module '%s' failed:\n%s"
-                                     % (path, err))
+            if not self.silent:
+                self._load_errors.append(f"Importing plugin module '{path}' failed:\n{err}")
             return []
         return [cls for _, cls in
                 inspect.getmembers(m_module, predicate=inspect.isclass)]

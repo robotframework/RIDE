@@ -94,6 +94,14 @@ class RIDE(wx.App):
         self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)  # LANGUAGE_PORTUGUESE
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
+        # Use Project settings if available
+        from ..recentfiles import RecentFilesPlugin
+        self.settings = RideSettings(self.settings_path)  # We need this to know the available plugins
+        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), [RecentFilesPlugin],
+                                           silent=True)
+        self.workspace_path = self.workspace_path or self._get_latest_path()
+        if not self.settings_path:
+            self.settings_path = self.initialize_project_settings(self.workspace_path)
         self.settings = RideSettings(self.settings_path)
 
         class Message:
@@ -105,7 +113,7 @@ class RIDE(wx.App):
         from ..context import coreplugins, SETTINGS_DIRECTORY
         from ..ui.treeplugin import TreePlugin
         librarydatabase.initialize_database()
-        self.preferences = Preferences(self.settings)
+        self.preferences = Preferences(self.settings, self.settings_path)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         # Try to get FontInfo as soon as possible
@@ -128,7 +136,7 @@ class RIDE(wx.App):
         except Exception as e:
             print(f"RIDE: There was a problem loading panels position."
                   f" Please delete the definition 'AUI NB Perspective' in "
-                  f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
+                  f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
@@ -332,15 +340,9 @@ class RIDE(wx.App):
         self.workspace_path = self.workspace_path or self._get_latest_path()
         if self.workspace_path:
             self._controller.update_default_dir(self.workspace_path)
-            if not self.settings_path:
-                self.settings_path, self.settings = self._controller.update_project_settings(self.workspace_path)
-                RideSettingsChanged(keys=('General', 'background'), old=None, new=None).publish()
             theme = self.settings.get_without_default('General')
             background = theme['background']
             foreground = theme['foreground']
-            print(f"DEBUG: application.py RIDE _load_data after workspace_path setting_path={self.settings_path}")
-            print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}"
-                  f"\n Workspace:{self.workspace_path} ")
             observer = LoadProgressObserver(self.frame, background=background, foreground=foreground)
             self._controller.load_data(self.workspace_path, observer)
 
@@ -381,6 +383,49 @@ class RIDE(wx.App):
 
     def get_plugins(self):
         return self._plugin_loader.plugins
+
+    def initialize_project_settings(self, path):
+        """ Detects if exists a directory named .robot at project root, and creates ride_settings.cfg
+            if not exists, or returns the path to existing file.
+        """
+        from ..preferences import initialize_settings
+        default_dir = path if os.path.isdir(path) else os.path.dirname(path)
+        local_settings_dir = os.path.join(default_dir, '.robot')
+        old_settings_dir = self.settings_path
+        print(f"DEBUG: Project.py Project initialize_project_settings ENTER: path={local_settings_dir}")
+        if os.path.isdir(local_settings_dir):
+            # old_settings = self.internal_settings.get_without_default('General')
+            # old_bkg = old_settings['background']
+            local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
+            self.settings_path = local_settings
+            if os.path.isfile(local_settings):
+                # os.putenv('RIDESETTINGS', local_settings)
+                os.environ['RIDESETTINGS'] = local_settings
+                self.settings = RideSettings(local_settings)
+                print(f"DEBUG: Project.py Project initialize_project_settings EXISTING project settings "
+                      f"{local_settings=} \nRIDESETTINGS={os.getenv('RIDESETTINGS', 'RIDE')}"
+                      f"\nsettings={self.dump_settings()}")
+            else:
+                default = RideSettings()
+                settings_path = default.user_path
+                new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
+                print(f"DEBUG: Project.py Project initialize_project_settings NEW project settings new_path={new_path}"
+                      f" local_settings={local_settings}")
+                self.settings = RideSettings(new_path)
+            # new_settings = self.settings.get_without_default('General')
+            # new_bkg = new_settings.get_without_default('background')
+            # RideSettingsChanged(keys=('General', 'background'), old=old_bkg, new=new_bkg).publish()
+        else:
+            os.environ['RIDESETTINGS'] = ''
+        print(f"DEBUG: Project.py Project initialize_project_settings RETURNING: path={self.settings_path}")
+        # if self.settings_path != old_settings_dir:
+        #     RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
+        return self.settings_path
+
+    def dump_settings(self):
+        keys = [items for items in self.settings]
+        values = [f"{val}={self.settings[val]}" for val in keys]
+        return values
 
     def register_preference_panel(self, panel_class):
         """Add the given panel class to the list of known preference panels"""

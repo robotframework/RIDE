@@ -359,6 +359,7 @@ class Settings(_Section):
 class RideSettings(Settings):
 
     def __init__(self, path=None):
+        self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
         if path:
             self._default_path = path
         else:
@@ -367,7 +368,9 @@ class RideSettings(Settings):
                 self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
             elif path.endswith('.cfg') and os.path.exists(path):
                 self._default_path = path
-        # print(f"DEBUG: settings.py RideSettings SETTINGS {self._default_path=}")
+            os.environ['RIDESETTINGS'] = self._default_path
+        # print(f"DEBUG: settings.py RideSettings SETTINGS {self._default_path=} ")
+        #      f"RIDESETTINGS={os.environ['RIDESETTINGS']}")
         self.user_path = initialize_settings(self._default_path)
         Settings.__init__(self, self.user_path)
         self._settings_dir = os.path.dirname(self.user_path)
@@ -386,6 +389,7 @@ class RideSettings(Settings):
             self.set('executable', EXECUTABLE)
             self.set('last_settings_path', new_user_path)
             self.user_path = new_user_path
+            os.environ['RIDESETTINGS'] = self.user_path
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""

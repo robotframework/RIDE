@@ -75,6 +75,7 @@ class Project(_BaseController, WithNamespace):
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
+        self.update_project_settings(path)
         self.internal_settings.set('default directory', default_dir)
         self._name_space.update_exec_dir_global_var(default_dir)
         self._name_space.update_cur_dir_global_var(default_dir)
@@ -91,6 +92,8 @@ class Project(_BaseController, WithNamespace):
             local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
             self.settings_path = local_settings
             if os.path.isfile(local_settings):
+                # os.putenv('RIDESETTINGS', local_settings)
+                os.environ['RIDESETTINGS'] = local_settings
                 self.internal_settings = RideSettings(local_settings)
                 print(f"DEBUG: Project.py Project update_project_settings EXISTING project settings "
                       f"{local_settings=} settings={[items for items in self.internal_settings]}")
@@ -98,6 +101,7 @@ class Project(_BaseController, WithNamespace):
                 default = RideSettings()
                 settings_path = default.user_path
                 new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
+                os.environ['RIDESETTINGS'] = local_settings
                 print(f"DEBUG: Project.py Project update_project_settings NEW project settings new_path={new_path}"
                       f" local_settings={local_settings}")
                 self.internal_settings = RideSettings(new_path)
@@ -106,6 +110,8 @@ class Project(_BaseController, WithNamespace):
             # RideSettingsChanged(keys=('General', 'background'), old=old_bkg, new=new_bkg).publish()
             print(f"DEBUG: Project.py Project update_project_settings END after Publish\n{self.internal_settings}"
                   f" old={old_bkg}, new={new_bkg}")
+        else:
+            os.environ['RIDESETTINGS'] = ''
         self._loader = DataLoader(self._name_space, self.internal_settings)
         print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
         if self.settings_path != old_settings_dir:
