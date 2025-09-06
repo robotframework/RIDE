@@ -84,6 +84,7 @@ class RIDE(wx.App):
         self._updatecheck = updatecheck
         self.workspace_path = path
         self.changed_workspace = False
+        self.preferences = None
         self.settings_path = settingspath
         context.APP = self
         wx.App.__init__(self, redirect=False)
@@ -113,7 +114,8 @@ class RIDE(wx.App):
         from ..context import coreplugins, SETTINGS_DIRECTORY
         from ..ui.treeplugin import TreePlugin
         librarydatabase.initialize_database()
-        self.preferences = Preferences(self.settings, self.settings_path)
+        # self.preferences = Preferences(self.settings, self.settings_path)
+        self.reload_preferences(Message)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         # Try to get FontInfo as soon as possible
@@ -123,8 +125,7 @@ class RIDE(wx.App):
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
-        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
-                                           coreplugins.get_core_plugins())
+        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
@@ -163,6 +164,7 @@ class RIDE(wx.App):
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
         RideSettingsChanged(keys=('General', 'ui language'), old=None, new=None).publish()
+        PUBLISHER.subscribe(self.reload_preferences, RideSettingsChanged)
         wx.CallLater(600, ReleaseNotes(self).bring_to_front)
         return True
 
@@ -171,6 +173,14 @@ class RIDE(wx.App):
         self.Destroy()
         wx.Exit()
         return True
+
+    def reload_preferences(self, message):
+        if message.keys[0] != "General":
+            return
+        if self.preferences:
+           del self.preferences
+        self.settings = RideSettings(self.settings_path)
+        self.preferences = Preferences(self.settings, self.settings_path)
 
     @staticmethod
     def _ApplyThemeToWidget(widget, fore_color=wx.BLUE, back_color=wx.LIGHT_GREY, theme: (None, dict) = None):
@@ -403,7 +413,7 @@ class RIDE(wx.App):
                 os.environ['RIDESETTINGS'] = local_settings
                 self.settings = RideSettings(local_settings)
                 print(f"DEBUG: Project.py Project initialize_project_settings EXISTING project settings "
-                      f"{local_settings=} \nRIDESETTINGS={os.getenv('RIDESETTINGS', 'RIDE')}"
+                      f"{local_settings=} \nRIDESETTINGS={os.environ['RIDESETTINGS']}"
                       f"\nsettings={self.dump_settings()}")
             else:
                 default = RideSettings()
@@ -418,8 +428,8 @@ class RIDE(wx.App):
         else:
             os.environ['RIDESETTINGS'] = ''
         print(f"DEBUG: Project.py Project initialize_project_settings RETURNING: path={self.settings_path}")
-        # if self.settings_path != old_settings_dir:
-        #     RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
+        if self.settings_path != old_settings_dir:
+            RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
         return self.settings_path
 
     def dump_settings(self):
