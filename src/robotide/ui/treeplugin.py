@@ -34,7 +34,8 @@ from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideIt
                        RideTestCaseAdded, RideUserKeywordRemoved, RideUserKeywordRenamed,  RideTestCaseRemoved,
                        RideDataFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,
                        RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
-                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged)
+                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged,
+                       RideSettingsChanged)
 from ..controller.ctrlcommands import MoveTo
 from ..pluginapi import Plugin
 from ..action import ActionInfo
@@ -117,6 +118,7 @@ class TreePlugin(Plugin):
                                         position=1))
         """
         self.subscribe(self.on_tree_selection, RideTreeSelection)
+        self.subscribe(self.reload_tree, RideSettingsChanged)
         # self.save_setting('opened', True)
         # DEBUG: Add toggle checkbox to menu View/Hide Tree
         if self.opened:
@@ -145,6 +147,17 @@ class TreePlugin(Plugin):
 
     def set_editor(self, editor):
         self._tree.set_editor(editor)
+
+    def reload_tree(self, message):
+        if message.keys[0] != "General":
+            return
+        try:
+            if message.keys[1] == "reload":
+                # reload style
+                wx.CallLater(50000, self.on_show_tree, None)
+                # print("DEBUG: treeplugin.py TreePlugin reload_tree RELOADED TREE")
+        except IndexError:
+            pass
 
     def on_show_tree(self, event):
         __ = event

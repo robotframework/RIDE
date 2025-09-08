@@ -87,6 +87,7 @@ class RIDE(wx.App):
         self.preferences = None
         self.settings_path = settingspath
         context.APP = self
+        # print(f"DEBUG: Application.py RIDE __init__ path={self.workspace_path}\n")
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):  # Overrides wx method
@@ -100,7 +101,9 @@ class RIDE(wx.App):
         self.settings = RideSettings(self.settings_path)  # We need this to know the available plugins
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), [RecentFilesPlugin],
                                            silent=True)
+        # print(f"DEBUG: Application.py RIDE OnInit path={self.workspace_path}\n")
         self.workspace_path = self.workspace_path or self._get_latest_path()
+        # print(f"DEBUG: Application.py RIDE OnInit AFTER _get_latest_path() path={self.workspace_path}")
         if not self.settings_path:
             self.settings_path = self.initialize_project_settings(self.workspace_path)
         self.settings = RideSettings(self.settings_path)
@@ -181,6 +184,12 @@ class RIDE(wx.App):
            del self.preferences
         self.settings = RideSettings(self.settings_path)
         self.preferences = Preferences(self.settings, self.settings_path)
+        try:
+            if message.keys[1] == "reload":
+                # reload plugins
+                print("DEBUG: application.py RELOAD PLUGINS HERE!")
+        except IndexError:
+            pass
 
     @staticmethod
     def _ApplyThemeToWidget(widget, fore_color=wx.BLUE, back_color=wx.LIGHT_GREY, theme: (None, dict) = None):
@@ -402,7 +411,7 @@ class RIDE(wx.App):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         local_settings_dir = os.path.join(default_dir, '.robot')
         old_settings_dir = self.settings_path
-        print(f"DEBUG: Project.py Project initialize_project_settings ENTER: path={local_settings_dir}")
+        # print(f"DEBUG: Project.py Project initialize_project_settings ENTER: path={local_settings_dir}")
         if os.path.isdir(local_settings_dir):
             # old_settings = self.internal_settings.get_without_default('General')
             # old_bkg = old_settings['background']
@@ -412,22 +421,22 @@ class RIDE(wx.App):
                 # os.putenv('RIDESETTINGS', local_settings)
                 os.environ['RIDESETTINGS'] = local_settings
                 self.settings = RideSettings(local_settings)
-                print(f"DEBUG: Project.py Project initialize_project_settings EXISTING project settings "
-                      f"{local_settings=} \nRIDESETTINGS={os.environ['RIDESETTINGS']}"
-                      f"\nsettings={self.dump_settings()}")
+                # print(f"DEBUG: Project.py Project initialize_project_settings EXISTING project settings "
+                #       f"{local_settings=} \nRIDESETTINGS={os.environ['RIDESETTINGS']}"
+                #      f"\nsettings={self.dump_settings()}")
             else:
                 default = RideSettings()
                 settings_path = default.user_path
                 new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
-                print(f"DEBUG: Project.py Project initialize_project_settings NEW project settings new_path={new_path}"
-                      f" local_settings={local_settings}")
+                # print(f"DEBUG: Project.py Project initialize_project_settings NEW project settings new_path={new_path}"
+                #       f" local_settings={local_settings}")
                 self.settings = RideSettings(new_path)
             # new_settings = self.settings.get_without_default('General')
             # new_bkg = new_settings.get_without_default('background')
             # RideSettingsChanged(keys=('General', 'background'), old=old_bkg, new=new_bkg).publish()
         else:
             os.environ['RIDESETTINGS'] = ''
-        print(f"DEBUG: Project.py Project initialize_project_settings RETURNING: path={self.settings_path}")
+        # print(f"DEBUG: Project.py Project initialize_project_settings RETURNING: path={self.settings_path}")
         if self.settings_path != old_settings_dir:
             RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
         return self.settings_path

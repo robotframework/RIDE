@@ -276,7 +276,7 @@ class PanelContainer(wx.Panel):
         from ..context import SETTINGS_DIRECTORY
         main_settings_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
         new_path = os.environ['RIDESETTINGS']
-        print(f"DEBUG: editor.py on_edit_settings original_path={path} file={new_path}  default_file={main_settings_path}")
+        # print(f"DEBUG: editor.py on_edit_settings original_path={path} file={new_path}  default_file={main_settings_path}")
         if os.path.exists(new_path):
             customsourceeditor.main(new_path)
         elif path != main_settings_path:

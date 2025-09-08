@@ -85,7 +85,7 @@ class Project(_BaseController, WithNamespace):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         local_settings_dir = os.path.join(default_dir, '.robot')
         old_settings_dir = self.settings_path
-        print(f"DEBUG: Project.py Project update_project_settings ENTER: path={local_settings_dir}")
+        # print(f"DEBUG: Project.py Project update_project_settings ENTER: path={local_settings_dir}")
         if os.path.isdir(local_settings_dir):
             # old_settings = self.internal_settings.get_without_default('General')
             # old_bkg = old_settings['background']
@@ -95,15 +95,15 @@ class Project(_BaseController, WithNamespace):
                 # os.putenv('RIDESETTINGS', local_settings)
                 os.environ['RIDESETTINGS'] = local_settings
                 self.internal_settings = RideSettings(local_settings)
-                print(f"DEBUG: Project.py Project update_project_settings EXISTING project settings "
-                      f"{local_settings=} settings={[items for items in self.internal_settings]}")
+                # print(f"DEBUG: Project.py Project update_project_settings EXISTING project settings "
+                #       f"{local_settings=} settings={[items for items in self.internal_settings]}")
             else:
                 default = RideSettings()
                 settings_path = default.user_path
                 new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
                 os.environ['RIDESETTINGS'] = local_settings
-                print(f"DEBUG: Project.py Project update_project_settings NEW project settings new_path={new_path}"
-                      f" local_settings={local_settings}")
+                # print(f"DEBUG: Project.py Project update_project_settings NEW project settings new_path={new_path}"
+                #       f" local_settings={local_settings}")
                 self.internal_settings = RideSettings(new_path)
             # new_settings = self.internal_settings.get_without_default('General')
             # new_bkg = new_settings.get_without_default('background')
@@ -113,9 +113,9 @@ class Project(_BaseController, WithNamespace):
         else:
             os.environ['RIDESETTINGS'] = ''
         self._loader = DataLoader(self._name_space, self.internal_settings)
-        print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
+        # print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
         if self.settings_path != old_settings_dir:
-            RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
+            RideSettingsChanged(keys=('General', 'reload'), old=None, new=None).publish()
         return self.settings_path, self.internal_settings
 
     # DEBUG: in all other controllers data returns a robot data model object.

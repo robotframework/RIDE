@@ -66,6 +66,7 @@ def main(*args):
         print(version.VERSION)
         sys.exit(0)
     noupdatecheck, debug_console, settings_path, inpath = _parse_args(args)
+    # print(f"DEBUG: robotide/__init__.py main inpath={inpath}\n")
     if len(args) > 3 or '--help' in args:
         print(__doc__)
         sys.exit()
