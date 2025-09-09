@@ -18,6 +18,7 @@ import os.path
 
 import wx
 
+from ..context import SETTINGS_DIRECTORY
 from ..pluginapi import Plugin
 from ..action import ActionInfo, SeparatorInfo
 from ..publish import RideOpenSuite, RideFileNameChanged
@@ -104,6 +105,7 @@ class RecentFilesPlugin(Plugin):
         if path in self.recent_files:
             self.recent_files.remove(path)
         self.recent_files.insert(0, path)
+        self._save_last_file(path)
         self._save_settings_and_update_file_menu()
 
     def _save_settings_and_update_file_menu(self):
@@ -129,6 +131,10 @@ class RecentFilesPlugin(Plugin):
         entry = RecentFileEntry(n+1, path, self)
         self.register_action(entry.get_action_info())
 
+    def _save_last_file(self, path):
+        last_file_path = os.path.join(SETTINGS_DIRECTORY, 'last_file.txt')
+        with open(last_file_path, mode='w', encoding='utf-8') as fp:
+            fp.write(path)
 
 class RecentFileEntry(object):
 

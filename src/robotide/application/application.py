@@ -23,6 +23,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from ..namespace import Namespace
+from ..context import SETTINGS_DIRECTORY
 from ..controller import Project
 from ..spec import librarydatabase
 from ..ui import LoadProgressObserver
@@ -389,10 +390,18 @@ class RIDE(wx.App):
             return None
 
     def _get_latest_path(self):
+        last_file = None
+        last_file_path = os.path.join(SETTINGS_DIRECTORY, 'last_file.txt')
+        if os.path.isfile(last_file_path):
+            with open(last_file_path, 'r', encoding='utf-8') as fp:
+                last_file = fp.read()
         recent = self._get_recentfiles_plugin()
         if not recent or not recent.recent_files:
-            return None
-        return recent.recent_files[0]
+            if last_file:
+                return last_file
+            else:
+                return None
+        return last_file if last_file and last_file != recent.recent_files[0] else recent.recent_files[0]
 
     def _get_recentfiles_plugin(self):
         from ..recentfiles import RecentFilesPlugin
