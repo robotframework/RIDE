@@ -15,7 +15,9 @@
 
 import builtins
 import os
+import psutil
 import subprocess
+import sys
 
 import wx
 
@@ -59,6 +61,26 @@ BACKGROUND_HELP = 'background help'
 FOREGROUND_TEXT = 'foreground text'
 FONT_SIZE = 'font size'
 FONT_FACE = 'font face'
+
+
+def restart_RIDE(args:list):
+    script = os.path.abspath(os.path.dirname(__file__) + '/../__init__.py')
+    python = sys.executable
+    arguments = [python, script]
+    for a in args:
+        if a:
+            arguments.append(a)
+    print(f"DEBUG: Application.py restart_RIDE arguments={arguments}\n")
+    """
+    try:
+        process = psutil.Process(os.getpid())
+        # process.terminate()
+        for handler in process.open_files() + process.connections():
+            os.close(handler.fd)
+    except Exception as e:
+        pass
+    """
+    subprocess.Popen(arguments)
 
 
 class UnthemableWidgetError(Exception):
@@ -187,8 +209,36 @@ class RIDE(wx.App):
         self.preferences = Preferences(self.settings, self.settings_path)
         try:
             if message.keys[1] == "reload":
-                # reload plugins
-                print("DEBUG: application.py RELOAD PLUGINS HERE!")
+                # reload plugins (was the original idea)
+                from .updatenotifier import _askyesno
+                SPC = "  "
+                if not _askyesno(_("Restart RIDE?"), f"{SPC}{_('Project Settings Detected')}{SPC}\n{SPC}"
+                                                f"{_('RIDE must be restarted to fully use these Project Settings')}\n"
+                                                f"\n\n{SPC}{_('Click OK to Restart RIDE!')}\n\n", wx.GetActiveWindow(),
+                                 no_default=False):
+                    return False
+                args = [f"{'--noupdatecheck' if not self._updatecheck else ''}",
+                        f"--settingspath {message.keys[2]}", f"{message.keys[3]}"]
+                restart_RIDE(args)
+                wx.CallLater(50000, self.OnExit)
+                # The next block was an attempt to reload plugins, in particular Test Runner to
+                # load the Arguments for the project. This did not work because the plugins are
+                # loaded at creation of ui/mainframe. For now, we open a new instance of RIDE
+                # with the test suite/project argument.
+                """
+                # print("DEBUG: application.py RELOAD PLUGINS HERE!")
+                from time import sleep
+                for plu in self._plugin_loader.plugins:
+                    # print(f"DEBUG: Application RIDE plugin: {plu} {plu.name}\n"
+                    #       f"Plugin object={plu.conn_plugin}")
+                    if plu.name == 'Editor':
+                        plu.conn_plugin._show_editor()
+                    if plu.name == 'Test Runner':
+                        plu.disable()
+                        sleep(2)
+                        plu.enable()
+                        # plu.conn_plugin._show_notebook_tab()
+                """
         except IndexError:
             pass
 

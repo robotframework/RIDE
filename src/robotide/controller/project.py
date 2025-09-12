@@ -115,7 +115,7 @@ class Project(_BaseController, WithNamespace):
         self._loader = DataLoader(self._name_space, self.internal_settings)
         # print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
         if self.settings_path != old_settings_dir:
-            RideSettingsChanged(keys=('General', 'reload'), old=None, new=None).publish()
+            RideSettingsChanged(keys=('General', 'reload', self.settings_path, path), old=None, new=None).publish()
         return self.settings_path, self.internal_settings
 
     # DEBUG: in all other controllers data returns a robot data model object.
