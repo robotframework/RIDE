@@ -64,7 +64,7 @@ FONT_FACE = 'font face'
 
 
 def restart_RIDE(args:list):
-    script = os.path.abspath(os.path.dirname(__file__) + '/../__init__.py')
+    script = os.path.abspath(os.path.dirname(__file__) + '/../__init__.py')  # This is probably a different signature
     python = sys.executable
     arguments = [python, script]
     for a in args:
@@ -80,7 +80,8 @@ def restart_RIDE(args:list):
     except Exception as e:
         pass
     """
-    subprocess.Popen(arguments)
+    str_args = " ".join(arguments)
+    subprocess.Popen(str_args, shell=True)
 
 
 class UnthemableWidgetError(Exception):
@@ -220,7 +221,7 @@ class RIDE(wx.App):
                 args = [f"{'--noupdatecheck' if not self._updatecheck else ''}",
                         f"--settingspath {message.keys[2]}", f"{message.keys[3]}"]
                 restart_RIDE(args)
-                wx.CallLater(50000, self.OnExit)
+                wx.CallLater(1000, self.OnExit)
                 # The next block was an attempt to reload plugins, in particular Test Runner to
                 # load the Arguments for the project. This did not work because the plugins are
                 # loaded at creation of ui/mainframe. For now, we open a new instance of RIDE
