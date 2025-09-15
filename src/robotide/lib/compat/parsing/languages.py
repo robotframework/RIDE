@@ -258,7 +258,7 @@ class Language:
 
         Raises `ValueError` if no matching language is found.
         """
-        normalized = normalize(name, ignore='-')
+        normalized = normalize(name.replace('_', '-'), ignore='-')
         for lang in cls.__subclasses__():
             if normalized == normalize(lang.__name__):
                 return lang()

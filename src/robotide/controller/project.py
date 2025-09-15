@@ -20,7 +20,7 @@ import tempfile
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
 from .robotdata import new_test_case_file, new_test_data_directory
-from ..context import LOG
+from ..context import LOG, SETTINGS_DIRECTORY
 from ..controller.ctrlcommands import NullObserver, SaveFile
 from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged, RideSettingsChanged
 from ..preferences.settings import RideSettings
@@ -85,6 +85,7 @@ class Project(_BaseController, WithNamespace):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         local_settings_dir = os.path.join(default_dir, '.robot')
         old_settings_dir = self.settings_path
+        restore = False
         # print(f"DEBUG: Project.py Project update_project_settings ENTER: path={local_settings_dir}")
         if os.path.isdir(local_settings_dir):
             # old_settings = self.internal_settings.get_without_default('General')
@@ -111,11 +112,21 @@ class Project(_BaseController, WithNamespace):
             #print(f"DEBUG: Project.py Project update_project_settings END after Publish\n{self.internal_settings}"
             #      f" old={old_bkg}, new={new_bkg}")
         else:
+            old_settings = os.getenv('RIDESETTINGS', '')
+            # print(f"DEBUG: Project.py Project update_project_settings BRANCH NOT PROJECT: old_settings={old_settings}"
+            #       f" path={self.settings_path}")
+            if old_settings and '.robot' in old_settings.split(os.path.sep):
+                restore = True
             os.environ['RIDESETTINGS'] = ''
         self._loader = DataLoader(self._name_space, self.internal_settings)
-        # print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
-        if self.settings_path != old_settings_dir:
+        if restore:
+            self.settings_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+            # print(f"DEBUG: Project.py Project update_project_settings RESTORE: path={self.settings_path}")
+            RideSettingsChanged(keys=('General', 'restore', self.settings_path, path), old=None, new=None).publish()
+        if self.settings_path and self.settings_path != old_settings_dir:
+            # print(f"DEBUG: Project.py Project update_project_settings RETURNING: path={self.settings_path}")
             RideSettingsChanged(keys=('General', 'reload', self.settings_path, path), old=None, new=None).publish()
+        # print(f"DEBUG: Project.py Project update_project_settings RETURN: path={self.settings_path}")
         return self.settings_path, self.internal_settings
 
     # DEBUG: in all other controllers data returns a robot data model object.

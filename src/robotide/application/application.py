@@ -61,6 +61,12 @@ BACKGROUND_HELP = 'background help'
 FOREGROUND_TEXT = 'foreground text'
 FONT_SIZE = 'font size'
 FONT_FACE = 'font face'
+SPC = "  "
+FIVE_SPC = SPC*5
+NORMAL_SETTINGS = _('Global Settings')
+NORMAL_SETTINGS_DETECTED = _('Global Settings Detected')
+PROJECT_SETTINGS = _('Project Settings')
+PROJECT_SETTINGS_DETECTED = _('Project Settings Detected')
 
 
 def restart_RIDE(args:list):
@@ -70,7 +76,7 @@ def restart_RIDE(args:list):
     for a in args:
         if a:
             arguments.append(a)
-    print(f"DEBUG: Application.py restart_RIDE arguments={arguments}\n")
+    # print(f"DEBUG: Application.py restart_RIDE arguments={arguments}\n")
     """
     try:
         process = psutil.Process(os.getpid())
@@ -125,7 +131,7 @@ class RIDE(wx.App):
         self.settings = RideSettings(self.settings_path)  # We need this to know the available plugins
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), [RecentFilesPlugin],
                                            silent=True)
-        # print(f"DEBUG: Application.py RIDE OnInit path={self.workspace_path}\n")
+            # print(f"DEBUG: Application.py RIDE OnInit path={self.workspace_path}\n")
         self.workspace_path = self.workspace_path or self._get_latest_path()
         # print(f"DEBUG: Application.py RIDE OnInit AFTER _get_latest_path() path={self.workspace_path}")
         if not self.settings_path:
@@ -197,6 +203,7 @@ class RIDE(wx.App):
 
     def OnExit(self):
         PUBLISHER.unsubscribe_all()
+        self.frame.on_exit(None)
         self.Destroy()
         wx.Exit()
         return True
@@ -206,17 +213,27 @@ class RIDE(wx.App):
             return
         if self.preferences:
            del self.preferences
-        self.settings = RideSettings(self.settings_path)
+        if self.settings_path:
+            self.settings = RideSettings(self.settings_path)
         self.preferences = Preferences(self.settings, self.settings_path)
         try:
-            if message.keys[1] == "reload":
+            if message.keys[1] in ["reload", "restore"]:
                 # reload plugins (was the original idea)
+                if message.keys[1] == "reload":
+                    project_or_normal = PROJECT_SETTINGS
+                    project_or_normal_detected = PROJECT_SETTINGS_DETECTED
+                else:
+                    project_or_normal = NORMAL_SETTINGS
+                    project_or_normal_detected = NORMAL_SETTINGS_DETECTED
+
                 from .updatenotifier import _askyesno
-                SPC = "  "
-                if not _askyesno(_("Restart RIDE?"), f"{SPC}{_('Project Settings Detected')}{SPC}\n{SPC}"
-                                                f"{_('RIDE must be restarted to fully use these Project Settings')}\n"
-                                                f"\n\n{SPC}{_('Click OK to Restart RIDE!')}\n\n", wx.GetActiveWindow(),
-                                 no_default=False):
+                if not _askyesno(_("Restart RIDE?"),
+                                 f"{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"{project_or_normal_detected}{FIVE_SPC}\n\n"
+                                 f"{FIVE_SPC}{_('RIDE must be restarted to fully use these ')}{project_or_normal}"
+                                 f"{FIVE_SPC}\n"f"\n\n{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"{_('Click OK to Restart RIDE!')}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"\n\n", wx.GetActiveWindow(), no_default=False):
                     return False
                 args = [f"{'--noupdatecheck' if not self._updatecheck else ''}",
                         f"--settingspath {message.keys[2]}", f"{message.keys[3]}"]

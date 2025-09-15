@@ -214,7 +214,7 @@ def get_settings_for(language, settings_names):
             inx = 0
             for k, v in zip(settings.keys(), settings.values()):
                 try:
-                    if v.lower() == item.lower():
+                    if item and v.lower() == item.lower():
                         setting = list(settings.keys())[inx]
                         build_table[setting] = item
                         break
