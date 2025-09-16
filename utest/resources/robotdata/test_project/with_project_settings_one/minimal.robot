@@ -1,13 +1,11 @@
-*** Setting ***
-
-*** Variable ***
+*** Variables ***
 ${MY VARIABLE}    Value
 
-*** Test Case ***
+*** Test Cases ***
 Passing Test
     No Operation
 
-*** Keyword ***
+*** Keywords ***
 Logging Keyword
     [Timeout]
     No Operation

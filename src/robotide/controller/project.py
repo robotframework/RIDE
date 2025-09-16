@@ -28,6 +28,9 @@ from .. import spec
 from ..spec.xmlreaders import SpecInitializer
 
 
+PROJECT_SETTINGS_DIR = '.robot'
+
+
 class Project(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None, tasks=False, file_language=None):
@@ -89,7 +92,7 @@ class Project(_BaseController, WithNamespace):
             self._set_project_settings(local_settings_dir)
         else:
             old_settings = os.getenv('RIDESETTINGS', '')
-            if old_settings and '.robot' in old_settings.split(os.path.sep):
+            if old_settings and PROJECT_SETTINGS_DIR in old_settings.split(os.path.sep):
                 restore = True
             os.environ['RIDESETTINGS'] = ''
         self._loader = DataLoader(self._name_space, self.internal_settings)
@@ -103,29 +106,25 @@ class Project(_BaseController, WithNamespace):
     def _locate_local_settings_dir(self, default_dir):
         if not default_dir:
             return None
-        settings_path = os.path.abspath(default_dir) if default_dir.endswith('.robot') else\
-            os.path.abspath(os.path.join(default_dir, '.robot'))
+        settings_path = os.path.abspath(default_dir) if default_dir.endswith(PROJECT_SETTINGS_DIR) else\
+            os.path.abspath(os.path.join(default_dir, PROJECT_SETTINGS_DIR))
         if os.path.isdir(settings_path):
             return settings_path
-        settings_path = os.path.abspath(default_dir) if not default_dir.endswith('.robot') else \
+        settings_path = os.path.abspath(default_dir) if not default_dir.endswith(PROJECT_SETTINGS_DIR) else \
             os.path.abspath(os.path.split(default_dir)[0])
-        head, tail = os.path.splitdrive(settings_path)
+        _, tail = os.path.splitdrive(settings_path)
         root = tail.split(os.path.sep)[0] or os.path.sep
         # print(f"DEBUG: Project.py Project _locate_local_settings_dir ENTER LOOP"
         #       f" separator={os.path.sep} head={head} tail={tail} "
         #       f"root={root} default_dir={default_dir}\n path={settings_path}")
-        while tail != root:
-            if os.path.isdir(os.path.join(settings_path, '.robot')):
-                return os.path.join(settings_path, '.robot')
+        if tail != root:
+            if os.path.isdir(os.path.join(settings_path, PROJECT_SETTINGS_DIR)):
+                return os.path.join(settings_path, PROJECT_SETTINGS_DIR)
             else:
                 settings_path = os.path.abspath(os.path.join(settings_path, '..'))
-                # head, tail = os.path.splitdrive(settings_path)
-                # print(
-                #     f"DEBUG: Project.py Project _locate_local_settings_dir CALL RECURSIVE root={root}"
-                #     f" tail={tail} path={settings_path}")
                 settings_path = self._locate_local_settings_dir(settings_path)
                 if not settings_path:
-                    break
+                    return None
                 else:
                     return settings_path
         return None

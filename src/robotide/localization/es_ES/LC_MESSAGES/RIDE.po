@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-08-29 23:30+0800\n"
+"POT-Creation-Date: 2025-09-16 02:31+0100\n"
 "PO-Revision-Date: 2025-06-21 14:53\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -17,8 +17,40 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:353
-#: src/robotide/application/application.py:358
+#: src/robotide/application/application.py:66
+#, fuzzy
+msgid "Global Settings"
+msgstr "Configuración General"
+
+#: src/robotide/application/application.py:67
+#, fuzzy
+msgid "Global Settings Detected"
+msgstr "Configuración General"
+
+#: src/robotide/application/application.py:68
+#, fuzzy
+msgid "Project Settings"
+msgstr "Ajustes"
+
+#: src/robotide/application/application.py:69
+msgid "Project Settings Detected"
+msgstr ""
+
+#: src/robotide/application/application.py:230
+msgid "Restart RIDE?"
+msgstr ""
+
+#: src/robotide/application/application.py:233
+msgid "RIDE must be restarted to fully use these "
+msgstr ""
+
+#: src/robotide/application/application.py:235
+#, fuzzy
+msgid "Click OK to Restart RIDE!"
+msgstr "¡Haz clic en Aceptar para actualizar ahora!"
+
+#: src/robotide/application/application.py:448
+#: src/robotide/application/application.py:453
 msgid "Found Robot Framework version %s from %s."
 msgstr "Se encontró la versión %s de %s de Robot Framework."
 
@@ -331,40 +363,40 @@ msgstr "Ejecutar las pruebas seleccionadas con Depuración"
 msgid "Stop Test Run"
 msgstr "Detener prueba"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:330
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:334
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:332
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:336
 msgid "[ SENDING STOP SIGNAL ]\n"
 msgstr "[ ENVIANDO STOP SIGNAL ]\n"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:339
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:342
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:341
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING PAUSE SIGNAL ]\n"
 msgstr "[ ENVIANDO PAUSE SIGNAL ]\n"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:347
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:350
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:349
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:352
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
 msgstr "[ ENVIAR CONTINA SIGNAL ]\n"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:355
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:358
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:357
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:360
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr "[ ENVIAR SIGNAL DE STEP ]\n"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:363
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:366
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:365
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:368
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
 msgstr "[ ENVIANDO STEP NUEVO SIGNAL ]\n"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:398
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:400
 msgid "command: %s\n"
 msgstr "comando: %s\n"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:466
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:468
 msgid "Unsaved Modifications"
 msgstr "Modificaciones sin guardar"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:467
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:469
 msgid ""
 "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
@@ -372,11 +404,11 @@ msgstr ""
 "Hay modificaciones sin guardar.\n"
 "        ¿Desea guardar todos los cambios y ejecutar las pruebas?"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:477
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid "No tests selected"
 msgstr "No hay pruebas seleccionadas"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:477
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid ""
 "No tests selected. \n"
 "Continue anyway?"
@@ -384,7 +416,7 @@ msgstr ""
 "No se seleccionaron pruebas. \n"
 "¿Continuar de todos modos?"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:554
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:556
 msgid ""
 "\n"
 "Test finished {}"
@@ -392,159 +424,159 @@ msgstr ""
 "\n"
 "Prueba terminada {}"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:588
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:590
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr ""
 "El registro de mensajes excedió el 80% de la memoria de procesos, "
 "deteniéndose por ahora..."
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:759
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:761
 msgid "Start"
 msgstr "Comenzar"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:760
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:763
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:762
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:765
 msgid "Start robot"
 msgstr "Iniciar robot"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:761
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:763
 msgid "Start running the robot test suite"
 msgstr "Comenzar a ejecutar la suite de pruebas de robot"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:762
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:764
 msgid "Debug"
 msgstr "Debug"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:764
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:766
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Comenzar a ejecutar la suite de pruebas de robot con el loglevel DEBUG"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:766
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:768
 #: src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Parar"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:770
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Pause"
 msgstr "Pausa"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:773
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:775
 msgid "Pause test execution"
 msgstr "Pausar la ejecución de la prueba"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:776
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:777
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:778
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:779
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
 msgid "Continue test execution"
 msgstr "Continuar la ejecución de la prueba"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:779
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Next"
 msgstr "Siguiente"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:782
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:783
 msgid "Step next"
 msgstr "Paso siguiente"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:818
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:820
 msgid "Execution Profile:  "
 msgstr "Perfil de ejecución:  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:821
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:823
 msgid "Choose which method to use for running the tests"
 msgstr "Elegir qué método usar para ejecutar las pruebas"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:828
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:830
 msgid "Open Logs Directory"
 msgstr "Abrir directorio de registros"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:830
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:832
 msgid "View All Logs in Explorer"
 msgstr "Ver todos los registros en el explorador"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:831
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:833
 msgid " Report"
 msgstr " Reporte"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:832
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:834
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Ver Informe de Robot en el navegador (CtrlCmd-R)"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:834
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:836
 msgid " Log"
 msgstr " Logo"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:835
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:837
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Ver registro de robot en el navegador (CtrlCmd-L)"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:842
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:844
 msgid " Autosave  "
 msgstr " Autosave  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:843
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:845
 msgid "Automatically save all changes before running"
 msgstr "Guardar automáticamente todos los cambios antes de ejecutarse"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:848
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:850
 msgid " Pause after failure  "
 msgstr " Pausa tras fallo  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:849
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
 msgid "Automatically pause after failing keyword"
 msgstr "Pausar automáticamente después de una palabra clave fallida"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:853
 #: src/robotide/editor/editors.py:227
-#: src/robotide/editor/texteditor.py:1099
+#: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Ajustes"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:965
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:967
 msgid "Console log"
 msgstr "Registro de consola"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:969
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:971
 msgid "Message log"
 msgstr "Registro de mensajes"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1092
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1094
 msgid "Starting test:"
 msgstr "Comenzando prueba:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1097
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1099
 msgid "Ending test:"
 msgstr "Finalizando prueba:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1107
 msgid "UNKNOWN STATUS:"
 msgstr "ESTADO DESCONOCIDO:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1133
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1135
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1137
 msgid "<<  PAUSED  >>"
 msgstr "<< PAUSADO >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1140
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1142
 msgid "<< CONTINUE >>"
 msgstr "<< CONTINUE >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1142
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1144
 msgid "<<  CONTINUE  >>"
 msgstr "<< CONTINUE >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1187
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1189
 msgid "No logs directory"
 msgstr "No hay directorio de registros"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1187
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1189
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
@@ -552,7 +584,7 @@ msgstr ""
 "No hay directorio de registros. \n"
 "Por favor, ejecuta las pruebas e inténtalo de nuevo"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1199
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1201
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
@@ -560,11 +592,11 @@ msgstr ""
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferencias"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1290
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1292
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "transcurrido tiempo: %s  paso: %s  salto: %s  falla: %s"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1324
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1326
 msgid "  current keyword: "
 msgstr "  palabra clave: "
 
@@ -1273,7 +1305,7 @@ msgstr "Hacer Variable la Lista\tCtrl-2"
 msgid "Make Dict Variable\tCtrl-5"
 msgstr "Hacer que Dict Variable\tCtrl-5"
 
-#: src/robotide/editor/kweditor.py:972
+#: src/robotide/editor/kweditor.py:974
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1306,53 +1338,53 @@ msgstr ""
 "la herramienta libdoc de Robot Framework.</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1128
+#: src/robotide/editor/kweditor.py:1130
 #: src/robotide/ui/mainframe.py:200
 #: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1216
+#: src/robotide/ui/treeplugin.py:1229
 msgid "Validation Error"
 msgstr "Error de validación"
 
-#: src/robotide/editor/kweditor.py:1215
+#: src/robotide/editor/kweditor.py:1217
 msgid "New name"
 msgstr "Nuevo nombre"
 
-#: src/robotide/editor/kweditor.py:1228
+#: src/robotide/editor/kweditor.py:1230
 msgid "Save"
 msgstr "Guardar"
 
-#: src/robotide/editor/kweditor.py:1231
+#: src/robotide/editor/kweditor.py:1233
 #: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/robotide/editor/kweditor.py:1261
+#: src/robotide/editor/kweditor.py:1263
 msgid "Validation Error!"
 msgstr "Error de validación!"
 
-#: src/robotide/editor/kweditor.py:1262
+#: src/robotide/editor/kweditor.py:1264
 msgid "Error in JSON:"
 msgstr "Error en JSON:"
 
-#: src/robotide/editor/kweditor.py:1262
+#: src/robotide/editor/kweditor.py:1264
 msgid "Save anyway?"
 msgstr "¿Guardar de todos modos?"
 
-#: src/robotide/editor/kweditor.py:1438
+#: src/robotide/editor/kweditor.py:1440
 msgid "Please select what you want to check for usage"
 msgstr "Por favor, seleccione lo que desea comprobar para su uso"
 
-#: src/robotide/editor/kweditor.py:1441
+#: src/robotide/editor/kweditor.py:1443
 msgid "Complete cell content"
 msgstr "Contenido completo de la celda"
 
-#: src/robotide/editor/kweditor.py:1442
+#: src/robotide/editor/kweditor.py:1444
 msgid "Variable "
 msgstr "Variable "
 
-#: src/robotide/editor/kweditor.py:1454
-#: src/robotide/editor/texteditor.py:1118
-#: src/robotide/editor/texteditor.py:1120
+#: src/robotide/editor/kweditor.py:1456
+#: src/robotide/editor/texteditor.py:1119
+#: src/robotide/editor/texteditor.py:1121
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
@@ -1489,41 +1521,41 @@ msgid "Text Edit"
 msgstr "Editar texto"
 
 #: src/robotide/editor/texteditor.py:467
-#: src/robotide/editor/texteditor.py:1474
+#: src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Fuente: "
 
-#: src/robotide/editor/texteditor.py:906
+#: src/robotide/editor/texteditor.py:909
 msgid "Can not apply changes from Text Editor"
 msgstr "No se pueden aplicar cambios desde el Editor de Texto"
 
-#: src/robotide/editor/texteditor.py:907
+#: src/robotide/editor/texteditor.py:910
 msgid "ERROR: Data sanity check failed!"
 msgstr "ERROR: Comprobación de la cordura de datos fallida!"
 
-#: src/robotide/editor/texteditor.py:907
+#: src/robotide/editor/texteditor.py:910
 msgid "Error at line"
 msgstr "Error en la línea"
 
-#: src/robotide/editor/texteditor.py:908
+#: src/robotide/editor/texteditor.py:911
 msgid "Reset changes?"
 msgstr "¿Restablecer cambios?"
 
-#: src/robotide/editor/texteditor.py:1095
+#: src/robotide/editor/texteditor.py:1096
 msgid "Apply Changes"
 msgstr "Aplicar cambios"
 
-#: src/robotide/editor/texteditor.py:1130
+#: src/robotide/editor/texteditor.py:1131
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr ""
 "Colorización de sintaxis deshabilitada debido a los requisitos faltantes."
 
-#: src/robotide/editor/texteditor.py:1131
+#: src/robotide/editor/texteditor.py:1132
 msgid "Get help"
 msgstr "Obtener ayuda"
 
-#: src/robotide/editor/texteditor.py:1146
+#: src/robotide/editor/texteditor.py:1147
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1583,11 +1615,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: src/robotide/editor/texteditor.py:1171
+#: src/robotide/editor/texteditor.py:1172
 msgid "Getting syntax colorization"
 msgstr "Obteniendo la coloración de sintaxis"
 
-#: src/robotide/editor/texteditor.py:1272
+#: src/robotide/editor/texteditor.py:1273
 msgid "No matches found."
 msgstr "No se encontraron coincidencias."
 
@@ -1994,30 +2026,30 @@ msgstr "Separando espacios"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "Cantidad de espacios entre celdas al guardar en formato txt"
 
-#: src/robotide/recentfiles/recentfiles.py:41
+#: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
 msgstr "Añadir archivos abiertos recientemente al menú de archivos."
 
-#: src/robotide/recentfiles/recentfiles.py:118
+#: src/robotide/recentfiles/recentfiles.py:120
 msgid "No recent files"
 msgstr "No hay archivos recientes"
 
-#: src/robotide/recentfiles/recentfiles.py:118
-#: src/robotide/recentfiles/recentfiles.py:124
-#: src/robotide/recentfiles/recentfiles.py:151
+#: src/robotide/recentfiles/recentfiles.py:120
+#: src/robotide/recentfiles/recentfiles.py:126
+#: src/robotide/recentfiles/recentfiles.py:157
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
 msgstr "Fichero"
 
-#: src/robotide/recentfiles/recentfiles.py:119
-#: src/robotide/recentfiles/recentfiles.py:125
-#: src/robotide/recentfiles/recentfiles.py:153
+#: src/robotide/recentfiles/recentfiles.py:121
+#: src/robotide/recentfiles/recentfiles.py:127
+#: src/robotide/recentfiles/recentfiles.py:159
 msgid "Exit"
 msgstr "Salir"
 
-#: src/robotide/recentfiles/recentfiles.py:142
+#: src/robotide/recentfiles/recentfiles.py:148
 msgid "Open %s"
 msgstr "Abrir %s"
 
@@ -2493,7 +2525,7 @@ msgid "\"%s\" is read only"
 msgstr "\"%s\" es de solo lectura"
 
 #: src/robotide/ui/mainframe.py:280
-#: src/robotide/ui/treeplugin.py:107
+#: src/robotide/ui/treeplugin.py:108
 msgid "Test Suites"
 msgstr "Probar Suites"
 
@@ -2966,19 +2998,19 @@ msgstr "Copiar\tCtrl-Shift-C"
 msgid "Add Resource"
 msgstr "Añadir Recurso"
 
-#: src/robotide/ui/treeplugin.py:61
+#: src/robotide/ui/treeplugin.py:62
 msgid "Provides a tree view for Test Suites "
 msgstr "Proporciona una vista de árbol para Test Suites "
 
-#: src/robotide/ui/treeplugin.py:213
+#: src/robotide/ui/treeplugin.py:226
 msgid "External Resources"
 msgstr "Recursos externos"
 
-#: src/robotide/ui/treeplugin.py:353
+#: src/robotide/ui/treeplugin.py:366
 msgid "%s (excluded)"
 msgstr "%s (excluido)"
 
-#: src/robotide/ui/treeplugin.py:1217
+#: src/robotide/ui/treeplugin.py:1230
 msgid "Invalid keyword name: "
 msgstr "Nombre de palabra clave no válido: "
 

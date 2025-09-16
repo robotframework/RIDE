@@ -1,14 +1,20 @@
-install root = 'C:\\repo\\oss\\RIDE\\src\\robotide'
-executable = 'C:\\venv\\py313\\Scripts\\python.exe'
 settings_version = 8
-mainframe size = (1367, 919)
-mainframe position = (431, 54)
+mainframe size = (1100, 700)
+mainframe position = (265, 73)
 mainframe maximized = False
-default directory = 'C:\\repo\\oss\\RIDE\\utest\\resources\\robotdata\\test_project\\with_project_settings_one'
+default directory = '/home2/helio/github/RIDE/utest/resources/robotdata/test_project/empty_project_settings'
 list variable columns = 4
 list col min width = 120
 list col max width = 350
+# Auto imports is a list of libraries whose keywords are always visible in keyword completion.
+# If the library needs arguments, they follow the library name with '|' as a separator.
+# Example: auto imports = ['MyLib', 'AnotherLibraryWithArgs|arg1|arg2']
 auto imports = []
+# Locations to add into PYTHONPATH. Non-absolute paths are considered relative
+# to the directory where RIDE starts. Backslashes must be escaped by doubling
+# them (\\). Alternatively it is possible to use forward slash (/) as the path
+# separator regardless the operating systems.
+# Example: pythonpath = ['c:/robot/testlibs', 'd:/project/resources']
 pythonpath = []
 library xml directories = []
 txt number of spaces = 4
@@ -17,37 +23,42 @@ line separator = 'native'
 default file format = 'robot'
 tasks = False
 reformat = False
+# doc language: Test Suites will have sections and parameters in the selected language
+# doc language: Possible values are the ones from Robot Framework >= 6.0.
 doc language = ''
+# the style of the tabs in notebook pages, Edit, Text, Run. Values from 0 to 5.
 notebook theme = 0
-AUI Perspective = 'layout2|name=right_pane;caption=;minimode=1;state=67373052;dir=2;layer=0;row=0;pos=0;prop=100000;bestw=1;besth=1;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=notebook_editors;caption=;minimode=1;state=768;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=0;besth=0;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=maintoolbar;caption=;minimode=1;state=67379964;dir=1;layer=10;row=0;pos=0;prop=100000;bestw=327;besth=26;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=tree_content;caption=Test Suites;minimode=1;state=264188;dir=4;layer=0;row=0;pos=0;prop=100000;bestw=275;besth=250;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=file_manager;caption=Files;minimode=1;state=264188;dir=4;layer=0;row=0;pos=1;prop=100000;bestw=200;besth=225;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|dock_size(2,0,0)=10|dock_size(5,0,0)=10|dock_size(1,10,0)=28|dock_size(4,0,0)=277|'
-AUI NB Perspective = 'panel688b2b890000026800000002=+0,1,2@layout2|name=dummy;caption=;minimode=1;state=67372030;dir=3;layer=0;row=0;pos=0;prop=100000;bestw=522;besth=399;minw=522;minh=399;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=panel688b2b890000026800000002;caption=;minimode=1;state=67371516;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=0;besth=0;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|dock_size(5,0,0)=10|'
+install root = '/home2/helio/github/RIDE/src/robotide'
+executable = '/opt/venv/bin/python'
+AUI Perspective = 'layout2|name=right_pane;caption=;minimode=1;state=67373052;dir=2;layer=0;row=0;pos=0;prop=100000;bestw=1;besth=1;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=notebook_editors;caption=;minimode=1;state=768;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=0;besth=0;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=maintoolbar;caption=;minimode=1;state=67379964;dir=1;layer=10;row=0;pos=331;prop=100000;bestw=327;besth=26;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=tree_content;caption=Test Suites;minimode=1;state=264188;dir=4;layer=0;row=0;pos=0;prop=100000;bestw=275;besth=269;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=124;floaty=415;floatw=275;floath=269;notebookid=-1;transparent=255|name=file_manager;caption=Files;minimode=1;state=264188;dir=4;layer=0;row=0;pos=1;prop=100000;bestw=223;besth=288;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|dock_size(2,0,0)=10|dock_size(5,0,0)=10|dock_size(1,10,0)=28|dock_size(4,0,0)=225|'
+AUI NB Perspective = 'panel689a54ef0000143400000002=+0,1,2@layout2|name=dummy;caption=;minimode=1;state=67372030;dir=3;layer=0;row=0;pos=0;prop=100000;bestw=421;besth=310;minw=421;minh=310;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=panel689a54ef0000143400000002;caption=;minimode=1;state=67371516;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=0;besth=0;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|dock_size(5,0,0)=10|'
 version_shown = 'v2.2dev41'
 check for updates = True
-last update check = 1757934435.6856105
-last_settings_path = 'C:\\repo\\oss\\RIDE\\utest\\resources\\robotdata\\test_project\\with_project_settings_one\\.robot\\ride_settings_3110.cfg'
+last update check = 1757374014.5198472
 robot types = ['robot', 'resource', 'txt', 'tsv']
-user keyword settings open = False
-test case settings open = False
-init file settings open = False
 test case file settings open = False
+init file settings open = False
+last_settings_path = '/home/helio/.robotframework/ride/settings_1961.cfg'
+test case settings open = False
+
 [General]
-font size = 12
-font face = 'Arial Black'
-foreground = '#0EB1A2'
-background = '#CDB4C4'
-secondary foreground = '#FBCABD'
-secondary background = '#3E4D57'
-background help = '#232370'
-foreground text = '#FAF9FF'
+font size = 10
+font face = 'Source Code Pro'
+foreground = '#8FF0A4'
+background = '#008080'
+secondary foreground = '#FFFF00'
+secondary background = '#4A060B'
+background help = '#FFBE6F'
+foreground text = '#613583'
 apply to panels = True
 ui language = 'English'
 # file manager: When set to full path or known command use it to open folders
 ;file manager = None
-last update check = 1743381236.9464602
+
 [Text Edit]
 font size = 10
 zoom factor = 0
-font face = 'Courier New'
+font face = 'Noto Sans'
 # caret style = 'line': or caret style = 'block' (better visibility), it will use the color of 'setting' or better calculated
 caret style = 'block'
 # Fold symbols are as described at wxPython demo:
@@ -72,6 +83,7 @@ tc_kw_name = '#1A5FB4'
 variable = '#008080'
 background = '#F6F5F4'
 enable auto suggestions = True
+
 [Grid]
 font size = 10
 font face = ''
@@ -99,10 +111,11 @@ word wrap = True
 enable auto suggestions = True
 # filter newlines: When enabled, newlines are not shown as \n in the cells. On Windows this may cause a lock.
 filter newlines = False
+
 [Plugins]
 [[Test Runner]]
 font size = 10
-font face = 'Courier New'
+font face = 'Noto Sans'
 foreground = '#F6F5F4'
 background = '#241F31'
 error = 'red'
@@ -119,32 +132,31 @@ show_message_log = True
 active_status_bar = True
 sash_position = 200
 _enabled = True
-browser = 'C:\\Users\\HEDCA\\AppData\\Local\\Mozilla Firefox\\firefox.exe'
-robot_arguments = '--variable MY_VAR:suproject_one'
+robot_arguments = ''
 
 [[File Explorer]]
-font size = 12
-font face = 'Arial Black'
-foreground = '#0EB1A2'
-background = '#CDB4C4'
+font size = 10
+font face = 'Source Code Pro'
+foreground = '#8FF0A4'
+background = '#008080'
 secondary foreground = 'black'
 secondary background = 'light grey'
-background help = '#232370'
-foreground text = '#FAF9FF'
+background help = '#FFBE6F'
+foreground text = '#613583'
 own colors = False
 opened = True
 docked = True
 _enabled = True
 
 [[Tree]]
-font size = 12
-font face = 'Arial Black'
-foreground = '#0EB1A2'
-background = '#CDB4C4'
+font size = 10
+font face = 'Source Code Pro'
+foreground = '#8FF0A4'
+background = '#008080'
 secondary foreground = 'black'
 secondary background = 'light grey'
-background help = '#232370'
-foreground text = '#FAF9FF'
+background help = '#FFBE6F'
+foreground text = '#613583'
 own colors = False
 opened = True
 docked = True
@@ -157,7 +169,6 @@ _enabled = False
 [[Run Anything]]# This is here just because of unit tests
 foreground = 'black'
 brackground = 'light grey'
-background = 'light grey'
 configs = []
 _enabled = True
 
@@ -201,7 +212,7 @@ log_to_console = False
 log_to_file = True
 _enabled = True
 [[Recent Files]]
-recent_files = ['C:\\repo\\oss\\RIDE\\utest\\resources\\robotdata\\test_project\\with_project_settings_one', 'C:\\repo\\oss\\RIDE\\utest\\resources\\robotdata\\test_project\\with_project_settings_two\\subproject_with_project_settings\\minimal.robot', 'C:\\repo\\oss\\RIDE\\utest\\resources\\robotdata\\testsuite\\minimal.robot', 'C:\\repo\\Internal_Tools\\ibas\\img_vobwin\\functional_tests\\07__Verify_that_OpenSSL_Light_is_available_and_check_system_var_was_created\\07__Verify_that_OpenSSL_Light_is_available_and_check_system_var_was_created.robot']
+recent_files = ['/home2/helio/github/RIDE/utest/resources/robotdata/test_project/no_project_settings', '/home/helio/Test/Robot/test_empty', '/home/helio/Test/Robot/pyautogui', '/home2/helio/Test/Robot/optional_embedded_arg.robot']
 max_number_of_files = 4
 _enabled = True
 [[Spec Importer]]
