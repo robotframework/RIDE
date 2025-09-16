@@ -15,7 +15,9 @@
 
 import builtins
 import os
+import psutil
 import subprocess
+import sys
 
 import wx
 
@@ -23,6 +25,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from ..namespace import Namespace
+from ..context import SETTINGS_DIRECTORY
 from ..controller import Project
 from ..spec import librarydatabase
 from ..ui import LoadProgressObserver
@@ -58,6 +61,33 @@ BACKGROUND_HELP = 'background help'
 FOREGROUND_TEXT = 'foreground text'
 FONT_SIZE = 'font size'
 FONT_FACE = 'font face'
+SPC = "  "
+FIVE_SPC = SPC*5
+NORMAL_SETTINGS = _('Global Settings')
+NORMAL_SETTINGS_DETECTED = _('Global Settings Detected')
+PROJECT_SETTINGS = _('Project Settings')
+PROJECT_SETTINGS_DETECTED = _('Project Settings Detected')
+
+
+def restart_RIDE(args:list):
+    script = os.path.abspath(os.path.dirname(__file__) + '/../__init__.py')  # This is probably a different signature
+    python = sys.executable
+    arguments = [python, script]
+    for a in args:
+        if a:
+            arguments.append(a)
+    # print(f"DEBUG: Application.py restart_RIDE arguments={arguments}\n")
+    """
+    try:
+        process = psutil.Process(os.getpid())
+        # process.terminate()
+        for handler in process.open_files() + process.connections():
+            os.close(handler.fd)
+    except Exception as e:
+        pass
+    """
+    str_args = " ".join(arguments)
+    subprocess.Popen(str_args, shell=True)
 
 
 class UnthemableWidgetError(Exception):
@@ -84,8 +114,10 @@ class RIDE(wx.App):
         self._updatecheck = updatecheck
         self.workspace_path = path
         self.changed_workspace = False
+        self.preferences = None
         self.settings_path = settingspath
         context.APP = self
+        # print(f"DEBUG: Application.py RIDE __init__ path={self.workspace_path}\n")
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):  # Overrides wx method
@@ -94,6 +126,16 @@ class RIDE(wx.App):
         self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)  # LANGUAGE_PORTUGUESE
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
+        # Use Project settings if available
+        from ..recentfiles import RecentFilesPlugin
+        self.settings = RideSettings(self.settings_path)  # We need this to know the available plugins
+        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), [RecentFilesPlugin],
+                                           silent=True)
+            # print(f"DEBUG: Application.py RIDE OnInit path={self.workspace_path}\n")
+        self.workspace_path = self.workspace_path or self._get_latest_path()
+        # print(f"DEBUG: Application.py RIDE OnInit AFTER _get_latest_path() path={self.workspace_path}")
+        if not self.settings_path:
+            self.settings_path = self.initialize_project_settings(self.workspace_path)
         self.settings = RideSettings(self.settings_path)
 
         class Message:
@@ -105,7 +147,8 @@ class RIDE(wx.App):
         from ..context import coreplugins, SETTINGS_DIRECTORY
         from ..ui.treeplugin import TreePlugin
         librarydatabase.initialize_database()
-        self.preferences = Preferences(self.settings)
+        # self.preferences = Preferences(self.settings, self.settings_path)
+        self.reload_preferences(Message)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         # Try to get FontInfo as soon as possible
@@ -115,8 +158,7 @@ class RIDE(wx.App):
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
-        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
-                                           coreplugins.get_core_plugins())
+        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
@@ -128,7 +170,7 @@ class RIDE(wx.App):
         except Exception as e:
             print(f"RIDE: There was a problem loading panels position."
                   f" Please delete the definition 'AUI NB Perspective' in "
-                  f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
+                  f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
@@ -155,14 +197,68 @@ class RIDE(wx.App):
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
         RideSettingsChanged(keys=('General', 'ui language'), old=None, new=None).publish()
+        PUBLISHER.subscribe(self.reload_preferences, RideSettingsChanged)
         wx.CallLater(600, ReleaseNotes(self).bring_to_front)
         return True
 
     def OnExit(self):
         PUBLISHER.unsubscribe_all()
+        self.frame.on_exit(None)
         self.Destroy()
         wx.Exit()
         return True
+
+    def reload_preferences(self, message):
+        if message.keys[0] != "General":
+            return
+        if self.preferences:
+           del self.preferences
+        if self.settings_path:
+            self.settings = RideSettings(self.settings_path)
+        self.preferences = Preferences(self.settings, self.settings_path)
+        try:
+            if message.keys[1] in ["reload", "restore"]:
+                # reload plugins (was the original idea)
+                if message.keys[1] == "reload":
+                    project_or_normal = PROJECT_SETTINGS
+                    project_or_normal_detected = PROJECT_SETTINGS_DETECTED
+                else:
+                    project_or_normal = NORMAL_SETTINGS
+                    project_or_normal_detected = NORMAL_SETTINGS_DETECTED
+
+                from .updatenotifier import _askyesno
+                if not _askyesno(_("Restart RIDE?"),
+                                 f"{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"{project_or_normal_detected}{FIVE_SPC}\n\n"
+                                 f"{FIVE_SPC}{_('RIDE must be restarted to fully use these ')}{project_or_normal}"
+                                 f"{FIVE_SPC}\n"f"\n\n{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"{_('Click OK to Restart RIDE!')}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"\n\n", wx.GetActiveWindow(), no_default=False):
+                    return False
+                args = [f"{'--noupdatecheck' if not self._updatecheck else ''}",
+                        f"--settingspath {message.keys[2]}", f"{message.keys[3]}"]
+                restart_RIDE(args)
+                wx.CallLater(1000, self.OnExit)
+                # The next block was an attempt to reload plugins, in particular Test Runner to
+                # load the Arguments for the project. This did not work because the plugins are
+                # loaded at creation of ui/mainframe. For now, we open a new instance of RIDE
+                # with the test suite/project argument.
+                """
+                # print("DEBUG: application.py RELOAD PLUGINS HERE!")
+                from time import sleep
+                for plu in self._plugin_loader.plugins:
+                    # print(f"DEBUG: Application RIDE plugin: {plu} {plu.name}\n"
+                    #       f"Plugin object={plu.conn_plugin}")
+                    if plu.name == 'Editor':
+                        plu.conn_plugin._show_editor()
+                    if plu.name == 'Test Runner':
+                        plu.disable()
+                        sleep(2)
+                        plu.enable()
+                        # plu.conn_plugin._show_notebook_tab()
+                """
+        except IndexError:
+            pass
 
     @staticmethod
     def _ApplyThemeToWidget(widget, fore_color=wx.BLUE, back_color=wx.LIGHT_GREY, theme: (None, dict) = None):
@@ -335,7 +431,6 @@ class RIDE(wx.App):
             theme = self.settings.get_without_default('General')
             background = theme['background']
             foreground = theme['foreground']
-            # print(f"DEBUG: application.py RIDE _load_data CALL PROGRESS {background=} {foreground=}")
             observer = LoadProgressObserver(self.frame, background=background, foreground=foreground)
             self._controller.load_data(self.workspace_path, observer)
 
@@ -363,10 +458,18 @@ class RIDE(wx.App):
             return None
 
     def _get_latest_path(self):
+        last_file = None
+        last_file_path = os.path.join(SETTINGS_DIRECTORY, 'last_file.txt')
+        if os.path.isfile(last_file_path):
+            with open(last_file_path, 'r', encoding='utf-8') as fp:
+                last_file = fp.read()
         recent = self._get_recentfiles_plugin()
         if not recent or not recent.recent_files:
-            return None
-        return recent.recent_files[0]
+            if last_file:
+                return last_file
+            else:
+                return None
+        return last_file if last_file and last_file != recent.recent_files[0] else recent.recent_files[0]
 
     def _get_recentfiles_plugin(self):
         from ..recentfiles import RecentFilesPlugin
@@ -376,6 +479,49 @@ class RIDE(wx.App):
 
     def get_plugins(self):
         return self._plugin_loader.plugins
+
+    def initialize_project_settings(self, path):
+        """ Detects if exists a directory named .robot at project root, and creates ride_settings.cfg
+            if not exists, or returns the path to existing file.
+        """
+        from ..preferences import initialize_settings
+        default_dir = path if os.path.isdir(path) else os.path.dirname(path)
+        local_settings_dir = os.path.join(default_dir, '.robot')
+        old_settings_dir = self.settings_path
+        # print(f"DEBUG: Project.py Project initialize_project_settings ENTER: path={local_settings_dir}")
+        if os.path.isdir(local_settings_dir):
+            # old_settings = self.internal_settings.get_without_default('General')
+            # old_bkg = old_settings['background']
+            local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
+            self.settings_path = local_settings
+            if os.path.isfile(local_settings):
+                # os.putenv('RIDESETTINGS', local_settings)
+                os.environ['RIDESETTINGS'] = local_settings
+                self.settings = RideSettings(local_settings)
+                # print(f"DEBUG: Project.py Project initialize_project_settings EXISTING project settings "
+                #       f"{local_settings=} \nRIDESETTINGS={os.environ['RIDESETTINGS']}"
+                #      f"\nsettings={self.dump_settings()}")
+            else:
+                default = RideSettings()
+                settings_path = default.user_path
+                new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
+                # print(f"DEBUG: Project.py Project initialize_project_settings NEW project settings new_path={new_path}"
+                #       f" local_settings={local_settings}")
+                self.settings = RideSettings(new_path)
+            # new_settings = self.settings.get_without_default('General')
+            # new_bkg = new_settings.get_without_default('background')
+            # RideSettingsChanged(keys=('General', 'background'), old=old_bkg, new=new_bkg).publish()
+        else:
+            os.environ['RIDESETTINGS'] = ''
+        # print(f"DEBUG: Project.py Project initialize_project_settings RETURNING: path={self.settings_path}")
+        if self.settings_path != old_settings_dir:
+            RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
+        return self.settings_path
+
+    def dump_settings(self):
+        keys = [items for items in self.settings]
+        values = [f"{val}={self.settings[val]}" for val in keys]
+        return values
 
     def register_preference_panel(self, panel_class):
         """Add the given panel class to the list of known preference panels"""

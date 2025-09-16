@@ -45,11 +45,12 @@ class Languages:
 
 class Preferences(object):
 
-    def __init__(self, settings):
+    def __init__(self, settings, settings_path=None):
         self.settings = settings
         self._preference_panels = []
         self._add_builtin_preferences()
-        self.settings_path = self.settings._default_path
+        self.settings_path = settings_path or self.settings._default_path
+        # print(f"DEBUG: Preferences settings_path={self.settings_path}")
 
     @property
     def preference_panels(self):

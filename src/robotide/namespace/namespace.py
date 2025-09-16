@@ -73,6 +73,8 @@ class Namespace(object):
         os.environ['RIDE_DOC_PATH'] = ",".join(doc_paths)
 
     def _setting_changed(self, message):
+        if message.keys[0] == "General":
+            return
         section, setting = message.keys
         if section == '' and setting == 'pythonpath':
             for p in set(message.old).difference(message.new):

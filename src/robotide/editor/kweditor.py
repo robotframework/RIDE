@@ -169,7 +169,7 @@ class KeywordEditor(GridEditor, Plugin):
             set_lang = shared_memory.ShareableList(name="language")
             self._language = [set_lang[0]]
             # print(f"DEBUG: settings.py SettingEditor __init__ SHAREDMEM language={self._language}")
-        except AttributeError:
+        except (ValueError, FileNotFoundError):
             try:
                 self._language = self._controller.language
                 # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
@@ -316,6 +316,8 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_settings_changed(self, message):
         """Redraw the colors if the color settings are modified"""
+        if message.keys[0] == "General":
+            return
         section, setting = message.keys
         if section == 'Grid':
             if ZOOM_FACTOR in setting:

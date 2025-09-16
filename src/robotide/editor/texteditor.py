@@ -692,7 +692,10 @@ class DataValidationHandler(object):
         if lang is not None:
             self._doc_language = lang
         else:
-            self._get_shared_doc_lang()
+            try:
+                self._get_shared_doc_lang()
+            except FileNotFoundError:
+                pass
         file = tempfile.NamedTemporaryFile(prefix="model_saved_from_RIDE_",
                                            suffix=".robot", mode="w+", delete=False)
         self.tempfilename=file.name
@@ -1035,10 +1038,8 @@ class SourceEditor(wx.Panel):
         self._doc_language = None
         try:
             set_lang = shared_memory.ShareableList(name="language")
-        except AttributeError:  # Unittests fails here
-            set_lang = []
-        if not set_lang:
-            set_lang[0] = ['en']
+        except (AttributeError, FileNotFoundError):  # Unittests fails here
+            set_lang = [['en']]
         self._doc_language = set_lang[0]
         self._create_ui(title)
         self._data = None
@@ -2611,6 +2612,8 @@ class SourceEditor(wx.Panel):
 
     def on_settings_changed(self, message):
         """Update tab size if txt spaces size setting is modified"""
+        if message.keys[0] == "General":
+            return
         _, setting = message.keys
         if setting == TXT_NUM_SPACES:
             self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
@@ -3079,6 +3082,8 @@ class RobotStylizer(object):
 
     def on_settings_changed(self, message):
         """Redraw the colors if the color settings are modified"""
+        if message.keys[0] == "General":
+            return
         section, _ = message.keys
         if section == PLUGIN_NAME:
             self.set_styles(self._readonly)  # DEBUG: When on read-only file changing background color ignores flag

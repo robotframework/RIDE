@@ -20,11 +20,15 @@ import tempfile
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
 from .robotdata import new_test_case_file, new_test_data_directory
-from ..context import LOG
+from ..context import LOG, SETTINGS_DIRECTORY
 from ..controller.ctrlcommands import NullObserver, SaveFile
-from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
+from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged, RideSettingsChanged
+from ..preferences.settings import RideSettings
 from .. import spec
 from ..spec.xmlreaders import SpecInitializer
+
+
+PROJECT_SETTINGS_DIR = '.robot'
 
 
 class Project(_BaseController, WithNamespace):
@@ -37,8 +41,9 @@ class Project(_BaseController, WithNamespace):
         self._name_space = namespace
         self._set_namespace(self._name_space)
         self.tasks = tasks
+        self.settings_path = None
         self.internal_settings = settings
-        self._loader = DataLoader(self._name_space, settings)
+        self._loader = DataLoader(self._name_space, self.internal_settings)
         self.controller = None
         self.name = None
         self.external_resources = []
@@ -74,8 +79,69 @@ class Project(_BaseController, WithNamespace):
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         self.internal_settings.set('default directory', default_dir)
+        self.update_project_settings(path)
         self._name_space.update_exec_dir_global_var(default_dir)
         self._name_space.update_cur_dir_global_var(default_dir)
+
+    def update_project_settings(self, path):
+        default_dir = path if os.path.isdir(path) else os.path.dirname(path)
+        local_settings_dir = self._locate_local_settings_dir(default_dir)
+        old_settings_dir = self.settings_path
+        restore = False
+        if local_settings_dir:
+            self._set_project_settings(local_settings_dir)
+        else:
+            old_settings = os.getenv('RIDESETTINGS', '')
+            if old_settings and PROJECT_SETTINGS_DIR in old_settings.split(os.path.sep):
+                restore = True
+            os.environ['RIDESETTINGS'] = ''
+        self._loader = DataLoader(self._name_space, self.internal_settings)
+        if restore:
+            self.settings_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+            RideSettingsChanged(keys=('General', 'restore', self.settings_path, path), old=None, new=None).publish()
+        if self.settings_path and self.settings_path != old_settings_dir:
+            RideSettingsChanged(keys=('General', 'reload', self.settings_path, path), old=None, new=None).publish()
+        return self.settings_path, self.internal_settings
+
+    def _locate_local_settings_dir(self, default_dir):
+        if not default_dir:
+            return None
+        settings_path = os.path.abspath(default_dir) if default_dir.endswith(PROJECT_SETTINGS_DIR) else\
+            os.path.abspath(os.path.join(default_dir, PROJECT_SETTINGS_DIR))
+        if os.path.isdir(settings_path):
+            return settings_path
+        settings_path = os.path.abspath(default_dir) if not default_dir.endswith(PROJECT_SETTINGS_DIR) else \
+            os.path.abspath(os.path.split(default_dir)[0])
+        _, tail = os.path.splitdrive(settings_path)
+        root = tail.split(os.path.sep)[0] or os.path.sep
+        # print(f"DEBUG: Project.py Project _locate_local_settings_dir ENTER LOOP"
+        #       f" separator={os.path.sep} head={head} tail={tail} "
+        #       f"root={root} default_dir={default_dir}\n path={settings_path}")
+        if tail != root:
+            if os.path.isdir(os.path.join(settings_path, PROJECT_SETTINGS_DIR)):
+                return os.path.join(settings_path, PROJECT_SETTINGS_DIR)
+            else:
+                settings_path = os.path.abspath(os.path.join(settings_path, '..'))
+                settings_path = self._locate_local_settings_dir(settings_path)
+                if not settings_path:
+                    return None
+                else:
+                    return settings_path
+        return None
+
+    def _set_project_settings(self, local_settings_dir):
+        from ..preferences import initialize_settings
+        local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
+        self.settings_path = local_settings
+        if os.path.isfile(local_settings):
+            os.environ['RIDESETTINGS'] = local_settings
+            self.internal_settings = RideSettings(local_settings)
+        else:
+            default = RideSettings()
+            settings_path = default.user_path
+            new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
+            os.environ['RIDESETTINGS'] = local_settings
+            self.internal_settings = RideSettings(new_path)
 
     # DEBUG: in all other controllers data returns a robot data model object.
     @property
@@ -159,6 +225,7 @@ class Project(_BaseController, WithNamespace):
     def _load_initfile(self, path, load_observer, language=None):
         if os.path.splitext(os.path.split(path)[1])[0] != '__init__':
             return None
+        self.update_project_settings(path)
         initfile = self._loader.load_initfile(path, load_observer, language)
         if not initfile:
             return None
@@ -166,6 +233,7 @@ class Project(_BaseController, WithNamespace):
         return initfile
 
     def load_datafile(self, path, load_observer, language=None):
+        self.update_project_settings(path)
         datafile = self._load_datafile(path, load_observer, language)
         if datafile:
             return datafile

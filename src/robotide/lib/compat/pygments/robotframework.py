@@ -98,7 +98,10 @@ class RobotFrameworkLexer(Lexer):
         options['encoding'] = 'UTF-8'
         Lexer.__init__(self, **options)
         self.language = options.get('doc language', None)
-        set_lang = shared_memory.ShareableList(name="language")
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except FileNotFoundError:
+            set_lang = ['']
         if not self.language:
             # DEBUG self.new_lang = Language.from_name('en')
             shared_lang = set_lang[0].replace('_', '-') or 'en'
@@ -236,10 +239,10 @@ class Tokenizer:
     def __init__(self, new_lang=None):
         if self.new_lang is None:
             if new_lang is None:
-                set_lang = shared_memory.ShareableList(name="language")
                 try:
+                    set_lang = shared_memory.ShareableList(name="language")
                     self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
-                except ValueError:
+                except (ValueError, FileNotFoundError):
                     self.new_lang = ['En']
             else:
                 self.new_lang = new_lang
@@ -288,10 +291,10 @@ class Setting(Tokenizer):
         self._template_setter = template_setter
         if self.new_lang is None:
             if new_lang is None:
-                set_lang = shared_memory.ShareableList(name="language")
                 try:
+                    set_lang = shared_memory.ShareableList(name="language")
                     self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
-                except ValueError:
+                except (ValueError, FileNotFoundError):
                     pass
             else:
                 self.new_lang = new_lang
@@ -361,10 +364,10 @@ class ImportSetting(Tokenizer):
     def __init__(self, new_lang=None):
         if self.new_lang is None:
             if new_lang is None:
-                set_lang = shared_memory.ShareableList(name="language")
                 try:
+                    set_lang = shared_memory.ShareableList(name="language")
                     self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
-                except ValueError:
+                except (ValueError, FileNotFoundError):
                     self.new_lang = None
             else:
                 self.new_lang = new_lang
@@ -479,10 +482,10 @@ class KeywordCall(Tokenizer):
     def __init__(self, support_assign=True, new_lang=None):
         if self.new_lang is None:
             if new_lang is None:
-                set_lang = shared_memory.ShareableList(name="language")
                 try:
+                    set_lang = shared_memory.ShareableList(name="language")
                     self.new_lang = Language.from_name(set_lang[0].replace('_', '-'))
-                except ValueError:
+                except (ValueError, FileNotFoundError):
                     self.new_lang = None
             else:
                 self.new_lang = new_lang
