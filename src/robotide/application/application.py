@@ -485,11 +485,14 @@ class RIDE(wx.App):
             if not exists, or returns the path to existing file.
         """
         from ..preferences import initialize_settings
-        default_dir = path if os.path.isdir(path) else os.path.dirname(path)
-        local_settings_dir = os.path.join(default_dir, '.robot')
+        if path:
+            default_dir = path if os.path.isdir(path) else os.path.dirname(path)
+            local_settings_dir = os.path.join(default_dir, '.robot')
+        else:
+            local_settings_dir = None
         old_settings_dir = self.settings_path
         # print(f"DEBUG: Project.py Project initialize_project_settings ENTER: path={local_settings_dir}")
-        if os.path.isdir(local_settings_dir):
+        if local_settings_dir and os.path.isdir(local_settings_dir):
             # old_settings = self.internal_settings.get_without_default('General')
             # old_bkg = old_settings['background']
             local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
