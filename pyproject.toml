@@ -77,12 +77,13 @@ packages = ["src/robotide"]
 content-type = 'text/markdown'
 fragments = [
     {path = 'README.md'},
-    {text = '\n## License\n\n'},
+    {text = '## License'},
     {path = 'LICENSE.txt'},
 ]
 
 [project.scripts]
 ride_postinstall = "robotide.postinstall:main"
+ride = "robotide:main"
 
 [project.gui-scripts]
 ride = "robotide:main"
@@ -95,11 +96,11 @@ dependencies = [
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.13"]
-version = ["2.1.5.1"]
+version = ["2.2"]
 
 [tool.poetry]
 name = "robotframework-ride"
-version = "2.1.5.1"
+version = "2.2"
 description = "RIDE :: Robot Framework Test Data Editor"
 authors = ["Robot Framework Developers <robotframework@gmail.com>"]
 license = "Apache-2.0 license"

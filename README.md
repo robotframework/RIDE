@@ -44,6 +44,10 @@ Likewise, the current version of wxPython, is 4.2.3, but RIDE is known to work w
 
 `pip install -U https://github.com/robotframework/RIDE/archive/develop.zip`
 
+(3.8 &lt;= python &lt;=  3.14) Install current Release Candidate version (*2.2rc1*) with:
+
+`pip install -U --pre robotframework-ride`
+
 **See the [FAQ](https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e) at [Wiki](https://github.com/robotframework/RIDE/wiki)**
 
 
