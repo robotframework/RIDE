@@ -1212,10 +1212,10 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: src/robotide/editor/kweditor.py:1130
-#: src/robotide/ui/mainframe.py:200
-#: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1235
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1102
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:234
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1216
 msgid "Validation Error"
 msgstr ""
 
@@ -2750,7 +2750,7 @@ msgstr ""
 msgid "%s (excluded)"
 msgstr ""
 
-#: src/robotide/ui/treeplugin.py:1236
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:1217
 msgid "Invalid keyword name: "
 msgstr ""
 
