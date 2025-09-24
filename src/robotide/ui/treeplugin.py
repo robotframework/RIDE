@@ -20,7 +20,7 @@ import wx
 from wx import Colour, Point
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
-from wx.lib.agw.customtreectrl import GenericTreeItem
+from wx.lib.agw.customtreectrl import GenericTreeItem, TreeEvent
 from wx.lib.mixins import treemixin
 
 from ..context import IS_WINDOWS
@@ -34,7 +34,8 @@ from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideIt
                        RideTestCaseAdded, RideUserKeywordRemoved, RideUserKeywordRenamed,  RideTestCaseRemoved,
                        RideDataFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,
                        RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
-                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged)
+                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged,
+                       RideSettingsChanged)
 from ..controller.ctrlcommands import MoveTo
 from ..pluginapi import Plugin
 from ..action import ActionInfo
@@ -117,6 +118,7 @@ class TreePlugin(Plugin):
                                         position=1))
         """
         self.subscribe(self.on_tree_selection, RideTreeSelection)
+        self.subscribe(self.reload_tree, RideSettingsChanged)
         # self.save_setting('opened', True)
         # DEBUG: Add toggle checkbox to menu View/Hide Tree
         if self.opened:
@@ -145,6 +147,17 @@ class TreePlugin(Plugin):
 
     def set_editor(self, editor):
         self._tree.set_editor(editor)
+
+    def reload_tree(self, message):
+        if message.keys[0] != "General":
+            return
+        try:
+            if message.keys[1] == "reload":
+                # reload style
+                wx.CallLater(50000, self.on_show_tree, None)
+                # print("DEBUG: treeplugin.py TreePlugin reload_tree RELOADED TREE")
+        except IndexError:
+            pass
 
     def on_show_tree(self, event):
         __ = event
@@ -1285,9 +1298,12 @@ class TreeLabelEditListener(object):
                 self._editing_label = False
 
     def on_label_edited(self, event):
+        if not self._editing_label:
+            return
         self._editing_label = False
         self._on_label_edit_called = False
-        self._tree.controller.get_handler(event.GetItem()).end_label_edit(event)
+        if isinstance(event, TreeEvent):
+            self._tree.controller.get_handler(event.GetItem()).end_label_edit(event)
 
         # Reset edit control as it doesn't seem to reset it in case the focus
         # goes directly away from the tree control
@@ -1300,7 +1316,7 @@ class TreeLabelEditListener(object):
 
     def _stop_editing(self):
         control = self._tree.GetEditControl()
-        if control and wx.Window.FindFocus():
+        if control:  # and wx.Window.FindFocus():
             control.StopEditing()
 
     def on_delete(self, event):

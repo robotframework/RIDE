@@ -66,8 +66,8 @@ class SettingEditor(wx.Panel):
             set_lang = shared_memory.ShareableList(name="language")
             self._language = [set_lang[0]]
             # print(f"DEBUG: settings.py SettingEditor __init__ SHAREDMEM language={self._language}")
-        except AttributeError:
-            print("DEBUG: settings.py SettingEditor __init__ AttributeError")
+        except (ValueError, FileNotFoundError):
+            # print("DEBUG: settings.py SettingEditor __init__ AttributeError")
             try:
                 self._language = self._controller.language
                 # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
@@ -299,7 +299,9 @@ class SettingValueDisplay(wx.TextCtrl, HtmlPopupWindow):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         self.color_secondary_background = parent.color_secondary_background
+        self.color_secondary_foreground = parent.color_secondary_foreground
         self.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])

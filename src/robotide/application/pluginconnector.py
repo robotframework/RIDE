@@ -17,13 +17,14 @@ from .. import utils
 from ..context import LOG
 
 
-def plugin_factory(application, plugin_class):
+def plugin_factory(application, plugin_class, silent=False):
     try:
         plugin = plugin_class(application)
     except Exception as e:
         print(e)
         msg, traceback = utils.get_error_details()
-        return BrokenPlugin(msg, traceback, plugin_class)
+        if not silent:
+            return BrokenPlugin(msg, traceback, plugin_class)
     else:
         return PluginConnector(plugin, application)
 

@@ -79,6 +79,7 @@ jobs:
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
         # sudo dnf downgrade -y mesa* --refresh
         git submodule update --init --recursive
+        python -m pip install -U pip
         pip install -r requirements-dev.txt
         pip install robotframework
     - name: Run tests
@@ -115,6 +116,7 @@ jobs:
         sudo apt update -y
         sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4 wxpython-tools
         git submodule update --init --recursive
+        python -m pip install -U pip
         pip install -r requirements-dev.txt
         pip install robotframework
     - name: Run tests

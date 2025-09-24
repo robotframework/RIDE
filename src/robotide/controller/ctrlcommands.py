@@ -375,13 +375,15 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 class RenameTest(_ReversibleCommand):
 
     def __init__(self, new_name):
-        self._new_name = new_name
+        self._new_name = new_name.strip()
 
     def _params(self):
         return self._new_name
 
     def _execute(self, context):
         old_name = context.name
+        if old_name == self._new_name:
+            return
         context.test_name.rename(self._new_name)
         context.test_name._item.notify_name_changed(old_name=old_name, new_name=self._new_name)
 
@@ -393,7 +395,7 @@ class RenameFile(_Command):
 
     def __init__(self, new_basename):
         self._new_basename = new_basename
-        self._validator = validators.BaseNameValidator(new_basename)
+        self._validator = validators.BaseNameValidator(new_basename.strip())
 
     def execute(self, context):
         validation_result = self._validator.validate(context)
@@ -424,7 +426,7 @@ class Exclude(_Command):
 class RenameResourceFile(_Command):
 
     def __init__(self, new_basename, get_should_modify_imports):
-        self._new_basename = new_basename
+        self._new_basename = new_basename.strip()
         self._should_modify_imports = get_should_modify_imports
 
     def execute(self, context):

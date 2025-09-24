@@ -198,6 +198,8 @@ class _ActionHandler:
 
 
 class _CanBeRenamed(object):
+    _node = None
+    _old_label = None
 
     def on_rename(self, event):
         __ = event
@@ -206,13 +208,15 @@ class _CanBeRenamed(object):
     def begin_label_edit(self):
         def label_edit():
             # DEBUG: fixme yep.yep.yep.yep.yep
-            node = self._tree.controller.find_node_by_controller(self.controller)
-            if node:
-                self._tree.EditLabel(node)
+            self._node = self._tree.controller.find_node_by_controller(self.controller)
+            if self._node:
+                self._old_label = self._tree.GetItemText(self._node)
+                self._tree.EditLabel(self._node)
         # Must handle pending events before label edit
         # This is a fix for situations where there is a pending action
         # that will change this label (Text Editor all changing actions)
-        wx.CallAfter(label_edit)
+        # wx.CallAfter(label_edit)
+        label_edit()
         return True
 
     def end_label_edit(self, event):
@@ -221,6 +225,11 @@ class _CanBeRenamed(object):
                 self.rename(event.GetLabel())
             else:
                 event.Veto()
+        else:
+            self._set_node_label(self._old_label)
+
+    def _set_node_label(self, label):
+        self._tree.SetItemText(self._node, label)
 
     def _is_valid_rename(self, label):
         validation = self.controller.validate_name(label)

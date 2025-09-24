@@ -30,6 +30,7 @@ jobs:
       - name: Install RIDE dependencies
         run: |
              git submodule update --init --recursive
+             python -m pip install -U pip
              pip install -r requirements-dev.txt
              pip install robotframework
       - name: Run Xvfb
@@ -46,7 +47,7 @@ jobs:
           git submodule update --init --recursive
           invoke test-ci
       - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: ${{ github.workspace }}
         env:

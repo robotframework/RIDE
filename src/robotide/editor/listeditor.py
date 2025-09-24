@@ -205,10 +205,10 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def set_language(self):
         try:
             set_lang = shared_memory.ShareableList(name="language")
-        except AttributeError:  # Unittests fails here
-            set_lang = []
-        if not set_lang:
-            set_lang[0] = ['en']
+        except (AttributeError, FileNotFoundError):  # Unittests fails here
+            set_lang = [['en']]
+        # if not set_lang:
+        #    set_lang[0] = ['en']
         self._doc_language = set_lang[0]
 
     def populate(self, columns, data):

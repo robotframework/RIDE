@@ -276,6 +276,8 @@ class TestRunnerPlugin(Plugin):
 
     def on_settings_changed(self, message):
         """Updates settings"""
+        if message.keys[0] == "General":
+            return
         section, setting = message.keys
         # print("DEBUG: enter OnSettingsChanged section %s" % (section))
         if section == 'Test Run':  # DEBUG temporarily we have two sections
@@ -1383,6 +1385,8 @@ class OutputStylizer(object):
 
     def on_settings_changed(self, message):
         """Redraw colors and font if settings are modified"""
+        if message.keys[0] == "General":
+            return
         section, _ = message.keys
         if section == 'Test Runner':
             self._set_styles()

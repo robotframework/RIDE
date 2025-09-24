@@ -32,8 +32,7 @@ def initialize_settings(path, dest_file_name=None):
         os.makedirs(SETTINGS_DIRECTORY)
     if not os.path.exists(path):
         path = os.path.join(SETTINGS_DIRECTORY, path)
-    (path, error) = _copy_or_migrate_user_settings(
-        SETTINGS_DIRECTORY, path, dest_file_name)
+    (path, error) = _copy_or_migrate_user_settings(SETTINGS_DIRECTORY, path, dest_file_name)
     if error:
         raise ConfigurationError(error)
     return path
@@ -359,15 +358,18 @@ class Settings(_Section):
 class RideSettings(Settings):
 
     def __init__(self, path=None):
-        if path:
+        self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+        if path is not None and path != '':
             self._default_path = path
         else:
             path = os.getenv('RIDESETTINGS', 'user')
-            if path == 'user':
+            if path == 'user' and not os.path.exists(self._default_path):
                 self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
             elif path.endswith('.cfg') and os.path.exists(path):
                 self._default_path = path
-        # print(f"DEBUG: settings.py RideSettings SETTINGS {self._default_path=}")
+            os.environ['RIDESETTINGS'] = self._default_path
+        # print(f"DEBUG: settings.py RideSettings SETTINGS {self._default_path=} ")
+        #      f"RIDESETTINGS={os.environ['RIDESETTINGS']}")
         self.user_path = initialize_settings(self._default_path)
         Settings.__init__(self, self.user_path)
         self._settings_dir = os.path.dirname(self.user_path)
@@ -378,7 +380,7 @@ class RideSettings(Settings):
             digest = 0
             for c in EXECUTABLE:
                 digest += ord(c)
-            new_user_path = self.user_path.replace("settings.cfg", f"settings_{digest}.cfg")
+            new_user_path = self._default_path.replace("settings.cfg", f"settings_{digest}.cfg")
             new_user_path = initialize_settings(self.user_path, new_user_path)
             Settings.__init__(self, new_user_path)
             self._settings_dir = os.path.dirname(new_user_path)
@@ -386,6 +388,9 @@ class RideSettings(Settings):
             self.set('executable', EXECUTABLE)
             self.set('last_settings_path', new_user_path)
             self.user_path = new_user_path
+            os.environ['RIDESETTINGS'] = self.user_path
+            # print(f"DEBUG: settings.py RideSettings SETTINGS MODIFIED BASED ON EXECUTABLE{self._default_path=} "
+            #       f" {self.user_path=} ")
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""
