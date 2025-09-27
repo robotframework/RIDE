@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-09-16 02:31+0100\n"
+"POT-Creation-Date: 2025-09-27 00:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: src/robotide/application/application.py:66
+#: src/robotide/application/application.py:210
 msgid "Global Settings"
 msgstr ""
 
-#: src/robotide/application/application.py:67
+#: src/robotide/application/application.py:211
 msgid "Global Settings Detected"
 msgstr ""
 
-#: src/robotide/application/application.py:68
+#: src/robotide/application/application.py:212
 msgid "Project Settings"
 msgstr ""
 
-#: src/robotide/application/application.py:69
+#: src/robotide/application/application.py:213
 msgid "Project Settings Detected"
 msgstr ""
 

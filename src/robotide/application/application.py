@@ -63,10 +63,6 @@ FONT_SIZE = 'font size'
 FONT_FACE = 'font face'
 SPC = "  "
 FIVE_SPC = SPC*5
-NORMAL_SETTINGS = _('Global Settings')
-NORMAL_SETTINGS_DETECTED = _('Global Settings Detected')
-PROJECT_SETTINGS = _('Project Settings')
-PROJECT_SETTINGS_DETECTED = _('Project Settings Detected')
 
 
 def restart_RIDE(args:list):
@@ -211,6 +207,10 @@ class RIDE(wx.App):
     def reload_preferences(self, message):
         if message.keys[0] != "General":
             return
+        NORMAL_SETTINGS = _('Global Settings')
+        NORMAL_SETTINGS_DETECTED = _('Global Settings Detected')
+        PROJECT_SETTINGS = _('Project Settings')
+        PROJECT_SETTINGS_DETECTED = _('Project Settings Detected')
         if self.preferences:
            del self.preferences
         if self.settings_path:
