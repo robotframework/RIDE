@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-09-16 02:31+0100\n"
+"POT-Creation-Date: 2025-09-27 00:21+0100\n"
 "PO-Revision-Date: 2025-06-21 14:53\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
@@ -17,19 +17,19 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:66
+#: src/robotide/application/application.py:210
 msgid "Global Settings"
 msgstr ""
 
-#: src/robotide/application/application.py:67
+#: src/robotide/application/application.py:211
 msgid "Global Settings Detected"
 msgstr ""
 
-#: src/robotide/application/application.py:68
+#: src/robotide/application/application.py:212
 msgid "Project Settings"
 msgstr ""
 
-#: src/robotide/application/application.py:69
+#: src/robotide/application/application.py:213
 msgid "Project Settings Detected"
 msgstr ""
 
