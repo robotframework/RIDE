@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-09-27 00:21+0100\n"
+"POT-Creation-Date: 2025-10-05 17:28+0100\n"
 "PO-Revision-Date: 2025-09-26 23:44+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
@@ -1344,7 +1344,7 @@ msgstr ""
 #: src/robotide/editor/kweditor.py:1130
 #: src/robotide/ui/mainframe.py:200
 #: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1229
+#: src/robotide/ui/treeplugin.py:1235
 msgid "Validation Error"
 msgstr "Erro de Validação"
 
@@ -3021,7 +3021,7 @@ msgstr "Recursos Externos"
 msgid "%s (excluded)"
 msgstr "%s (excluído)"
 
-#: src/robotide/ui/treeplugin.py:1230
+#: src/robotide/ui/treeplugin.py:1236
 msgid "Invalid keyword name: "
 msgstr "Nome de palavra-chave inválido: "
 
