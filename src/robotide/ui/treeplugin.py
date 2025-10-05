@@ -248,7 +248,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
-        self._resources = []
+        self._resources = set()
         self._right_click = False
         self.dirty = False
         # DEBUG: This menu is not working because is being attached to main frame
@@ -480,7 +480,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self.root = self.AddRoot('')
         self._resource_root = self._create_resource_root()
         self.datafile_nodes = []
-        self._resources = []
+        self._resources = set()
         self.controller.clear_history()
 
     def _create_resource_root(self):
@@ -544,13 +544,19 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         node = self._create_node_with_handler(parent_node, controller, index)
         if not node:
             return None
+        # avoid repeated resources
+        if hasattr(controller, 'source') and os.path.isfile(self._normalize(controller.source)):
+            if not self._normalize(controller.source) in self._resources:
+                self._resources.add(self._normalize(controller.source))
+
         if controller.dirty:
             self.controller.mark_node_dirty(node)
         self.datafile_nodes.append(node)
         self.SetItemHasChildren(node, True)
 
         for child in controller.children:
-            self._render_datafile(node, child)
+            if not self._normalize(child.source) in self._resources:
+                self._render_datafile(node, child)
         return node
 
     @staticmethod
