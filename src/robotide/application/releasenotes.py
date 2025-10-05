@@ -153,7 +153,7 @@ RELEASE_NOTES = f"""
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.b2 with wxPython 4.2.3).</li>
+<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.rc3 with wxPython 4.2.3).</li>
 <li>There are some changes, or known issues:<ul>
 <!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
@@ -175,6 +175,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed duplicated resources in Tree (Project Explorer).</li>
 <li>Added Project Settings concept. The Project Settings is a  file named <b>ride_settings.cfg</b> inside a directory 
 named <b>.robot</b> located in the Test Suite directory.</li>
 <li>Fixed crash when renaming test cases names on Tree (Project Explorer), by cancelling with Escape or by adding a Space
@@ -214,7 +215,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.1.5.2
+pip install --upgrade robotframework-ride==2.2
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -245,7 +246,12 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 24/September/2025.</p>
+<p>RIDE {VERSION} was released on 05/October/2025.</p>
+
+<br/>
+<h3>Celebrate the bank holiday, 5th October, Implantation of the Republic in Portugal</h3>
+<h4>Happy 115th bithday! Long live the Republic!</h4>
+<h3 align='center'>🇵🇹</h3>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
