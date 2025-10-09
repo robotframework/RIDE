@@ -175,23 +175,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Fixed duplicated resources in Tree (Project Explorer).</li>
-<li>Added Project Settings concept. The Project Settings is a  file named <b>ride_settings.cfg</b> inside a directory 
-named <b>.robot</b> located in the Test Suite directory.</li>
-<li>Fixed crash when renaming test cases names on Tree (Project Explorer), by cancelling with Escape or by adding a Space
- in the end.</li>
-<li>Fixed missing text colorization in suites and test settings on Grid Editor.</li>
-<li>Restored init and main scripts and texteditor, because some changes in Grid Editor were not being saved in Text 
-Editor and would be lost.</li>
-<li>Fix faulty cell editor in settings of Grid Editor which would prevent to change to Text Editor and Run tabs.</li>
-<li>Added indication of <b>private</b> keywords in Grid Editor, keywords will show in <em>Italic</em>, and with error
- background, when they are used outside of Keywords section, or from different files.</li>
-<li>Added indication of <b>private</b> keywords in Details pop-up for keywords with tag <b>robot:private</b> or name starting
- with underscore, <b>'_'</b> in Grid Editor.</li>
-<li>Modified the action of key TAB when selecting from auto-suggestions list in Grid Editor. Pressing TAB, selects the
- item and continues in cell editor.</li>
-<li>Fix cursor position when editing cells in Grid Editor.</li>
-<li>Added parsing of option <b>--name</b> or <b>-N</b> and <b>Name</b> setting, to allow running tests with them set.</li>
+<li>Fixed Cut (Ctrl-X) when editing the content of a cell in Grid Editor, before was deleting all content.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
@@ -246,13 +230,13 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 05/October/2025.</p>
-
+<p>RIDE {VERSION} was released on 09/October/2025.</p>
+<!-- 
 <br/>
 <h3>Celebrate the bank holiday, 5th October, Implantation of the Republic in Portugal</h3>
 <h4>Happy 115th bithday! Long live the Republic!</h4>
 <h3 align='center'>🇵🇹</h3>
-<!-- <br/>
+<br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
 <h3 align='center'>🇵🇹</h3>

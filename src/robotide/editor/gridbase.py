@@ -129,10 +129,10 @@ class GridEditor(grid.Grid):
         self.MakeCellVisible(row, column)
 
     def copy(self):
-        print("DEBUG: GridBase copy() called\n")
+        # print("DEBUG: GridBase copy() called\n")
         self._clipboard_handler.clear()
         data = self._clipboard_handler.clipboard_content()
-        print(f"DEBUG: GridBase copy() clipboard_content =={data}\n")
+        # print(f"DEBUG: GridBase copy() clipboard_content =={data}\n")
         self._clipboard_handler.copy()
 
     def cut(self):
