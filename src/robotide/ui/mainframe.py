@@ -24,7 +24,7 @@ from multiprocessing import shared_memory
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
-from .fileexplorerplugin import FileExplorer
+from .fileexplorerplugin import FileExplorerPlugin, FileExplorer
 from .notebook import NoteBook
 from .pluginmanager import PluginManager
 from .progress import LoadProgressObserver
@@ -285,7 +285,10 @@ class RideFrame(wx.Frame):
                                                              container=self.tree))
         if new_ui:  # Only when creating UI we add panes
             # ##### File explorer panel is always created here
-            self.filemgr = FileExplorer(self, self.controller)
+            # self.filemgr = FileExplorerPlugin(self._application, self.controller)._filemgr
+            # self.filemgr = None
+            self.fileexp = FileExplorerPlugin(self._application, self.controller)
+            self.filemgr = FileExplorer(self, self.controller, self.fileexp)
             self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.SetMinSize(wx.Size(275, 250))
             # DEBUG: Next was already called from application.py
@@ -442,13 +445,14 @@ class RideFrame(wx.Frame):
                                                                     'resource',
                                                                     'txt',
                                                                     'tsv'])  # Removed 'html'
-        path = self.filemgr.GetFilePath()
+        # path = self.filemgr.current_path  # .GetFilePath()
+        path = self.filemgr.GetPath()
         ext = ''
         if len(path) > 0:
             ext = splitext(path)
             ext = ext[1].replace('.', '')
             # print("DEBUG: path %s ext %s" % (path, ext))
-        if len(ext) > 0 and ext in robottypes:
+        if os.path.isdir(path) or (len(ext) > 0 and ext in robottypes):
             if not self.check_unsaved_modifications():
                 return
             if self.open_suite(path):

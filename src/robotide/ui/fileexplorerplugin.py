@@ -17,12 +17,19 @@ import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
 
+from ..controller import ctrlcommands
+from ..controller.filecontrollers import start_filemanager
 from ..controller.project import Project
 from ..pluginapi import Plugin
 from ..pluginapi.plugin import ActionInfo
+from ..widgets import PopupCreator, PopupMenuItems
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
+
+FILE_MANAGER = 'file manager'
+LABEL_OPEN = 'Open'
+LABEL_OPEN_FOLDER = 'Open Containing Folder'
 
 
 class FileExplorerPlugin(Plugin):
@@ -39,14 +46,29 @@ class FileExplorerPlugin(Plugin):
         self._app = application
         self.settings = self._app.settings.config_obj['Plugins']['File Explorer']
         self._parent = wx.App.Get().GetTopWindow()
-        self._filemgr = self.filemgr
+        self._controller = controller
+        # if self.filemgr is None:
+        self._filemgr = FileExplorer(self._parent, self._controller, self)
+        # self.__setattr__('filemgr', self._filemgr)
+        # else:
+        # self._filemgr = self.filemgr
         self._filemgr.SetThemeEnabled(True)
         self._mgr = GetManager(self._filemgr)
-        self._controller = controller
         self._pane = None
         self._filetreectrl = None
         self.opened = self.settings['opened']
         self.font = self._filemgr.GetFont()
+        self._popup_creator = PopupCreator()
+        self._actions = [
+            _('Open'),
+            '---',
+            _('Open Containing Folder')
+        ]
+        self._actions_nt = [
+            LABEL_OPEN,
+            '---',
+            LABEL_OPEN_FOLDER
+        ]
 
     def register_frame(self, parent=None):
         if parent:
@@ -94,7 +116,7 @@ class FileExplorerPlugin(Plugin):
         if not self._parent:
             self._parent = wx.App.Get().GetWindow()  # self.frame
         if not self._filemgr:  # This is not needed because file explorer is always created
-            self._filemgr = FileExplorer(self._parent, self._controller)
+            self._filemgr = FileExplorer(self._parent, self._controller, self)
 
         self._pane = self._mgr.GetPane(self._filemgr)
         global_settings = self._app.settings.config_obj['General']
@@ -137,12 +159,37 @@ class FileExplorerPlugin(Plugin):
             return
         self._filemgr.update_tree()
 
+    def show_popup(self):
+        self._popup_creator.show(self._filemgr, PopupMenuItems(self, self._actions, self._actions_nt), self._controller)
+
+    def on_open(self, event):
+        # __ = event
+        print(f"DEBUG: FileExplorerPlugin call on_open_file={event}")
+        # self._controller.execute(
+        self._parent.on_open_file(event)
+
+    def on_open_containing_folder(self, event):
+        __ = event
+        print(f"DEBUG: FileExplorerPlugin call on_open_containing_folder={event}")
+        try:
+            file_manager = self.settings['General'][FILE_MANAGER]
+        except KeyError:
+            file_manager = None
+        #  self._controller.execute(
+        # ctrlcommands.OpenContainingFolder(file_manager, self._filemgr.current_path)
+        start_filemanager(self._filemgr.current_path, file_manager)
+
 
 class FileExplorer(wx.GenericDirCtrl):
 
-    def __init__(self, parent, controller=None):
+    def __init__(self, parent, controller=None, plugin=None):
         wx.GenericDirCtrl.__init__(self, parent, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         self._controller = controller
+        self.plugin = plugin or self
+        self._right_click = False
+        self.current_path = None
+        # self.Bind(wx.EVT_RIGHT_DOWN, self.on_right_click)
+        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_right_click)
         self.SetThemeEnabled(True)
         self.Refresh()
 
@@ -156,3 +203,25 @@ class FileExplorer(wx.GenericDirCtrl):
                     pass
                 self.Refresh()
                 self.Update()
+
+    def on_right_click(self, event):
+        # __ = event
+        # event.Skip()
+        print(f"DEBUG: FileExplorer mouse RightClick event={event} controller={self._controller}")
+        if not self._right_click:
+            self._right_click = True
+        handler = None
+        # item = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))  #  wx.TREE_HITTEST_ONITEMLABEL)
+        tc = self.GetTreeCtrl()
+        item, _ = tc.HitTest(self.ScreenToClient(wx.GetMousePosition()))
+        if item:
+            print(f"DEBUG: FileExplorer mouse RightClick item={item} type={type(item)}")
+            # id=self.GetPopupMenuSelectionFromUser()
+            handler = self.GetPath(item)  # self.GetItemData(item)
+        if handler:
+            # handler.show_popup()
+            self.current_path = handler
+            print(f"DEBUG: FileExplorer PATH={handler}")
+            if self.plugin:
+                self.plugin.show_popup()
+            self._right_click = False
