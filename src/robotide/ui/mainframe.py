@@ -288,11 +288,12 @@ class RideFrame(wx.Frame):
             # self.filemgr = FileExplorerPlugin(self._application, self.controller)._filemgr
             # self.filemgr = None
             self.fileexp = FileExplorerPlugin(self._application, self.controller)
-            self.filemgr = FileExplorer(self, self.controller, self.fileexp)
+            # self.filemgr = FileExplorer(self, plugin=self.fileexp, controller=self.controller)
+            self.filemgr = self.fileexp.file_explorer
             self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.SetMinSize(wx.Size(275, 250))
             # DEBUG: Next was already called from application.py
-            self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
+            # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 
         # self.main_menu.take_menu_bar_into_use()
         if new_ui:  # Only when creating UI we add panes
