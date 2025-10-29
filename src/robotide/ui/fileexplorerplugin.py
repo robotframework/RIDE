@@ -46,8 +46,9 @@ class FileExplorerPlugin(Plugin):
         Plugin.__init__(self, application, default_settings=self.defaults)
         self.app = application
         self.settings = self.app.settings.config_obj['Plugins']['File Explorer']
-        self._parent = wx.App.Get().GetTopWindow()
+        self._parent = wx.App.Get().GetTopWindow()  # self.frame
         self._mgr = GetManager(self._parent)
+        print(f"DEBUG: FileExplorerPlugin INIT parent={self._parent} mgr={self._mgr}")
         self._controller = controller
         self.general_settings = self.global_settings.config_obj['General']
         self.html_font_size = self.general_settings.get('font size', 11)
@@ -118,8 +119,9 @@ class FileExplorerPlugin(Plugin):
 
     def show_file_explorer(self):
         if not self._parent:
-            self._parent = wx.App.Get().GetWindow()  # self.frame
+            self._parent = self.frame  # wx.App.Get().GetWindow()  # self.frame
         if not self.file_explorer:  # This is not needed because file explorer is always created
+            print(f"DEBUG: FileExplorerPlugin call show_file_explorer CREATE parent={self._parent} ")
             self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
 
         self._pane = self._mgr.GetPane(self.file_explorer)
@@ -205,11 +207,12 @@ class FileExplorer(wx.GenericDirCtrl, wx.Panel):
         self.SetBackgroundColour(Colour(self.dlg.color_background))
         self.SetForegroundColour(Colour(self.dlg.color_foreground))
         self.sizer = VerticalSizer()
+        print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
-        # self.tree_ctrl =
-        wx.GenericDirCtrl.__init__(self, self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
-        # self.Sizer.Add(self.tree_ctrl)
+        self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
+        # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
+        self.sizer.Add(self.tree_ctrl)
         self._right_click = False
         self.current_path = None
         # self.Bind(wx.EVT_RIGHT_DOWN, self.on_right_click)
@@ -266,7 +269,7 @@ class FileExplorer(wx.GenericDirCtrl, wx.Panel):
         # text about syntax colorization
         self.pane_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        dummy = wx.StaticText(self, label="")  # DEBUG To use later if needed
+        dummy = wx.StaticText(self, label="Add Tool Here")  # DEBUG To use later if needed
         dummy.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         dummy.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench.png', fsize=self._plugin.html_font_size,
