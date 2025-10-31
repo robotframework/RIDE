@@ -169,12 +169,16 @@ class RIDE(wx.App):
                   f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
-        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
+        self.fileexplorerplugin = self.frame.fileexplorerplugin  # FileExplorerPlugin(self, self._controller)
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
+        if self.fileexplorerplugin.settings['_enabled']:
+            self.fileexplorerplugin.register_frame(self.frame)
+        if not self.fileexplorerplugin.opened:
+            self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
         self.robot_version = self._find_robot_installation()
         self._load_data()

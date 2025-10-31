@@ -287,11 +287,12 @@ class RideFrame(wx.Frame):
             # ##### File explorer panel is always created here
             # self.filemgr = FileExplorerPlugin(self._application, self.controller)._filemgr
             # self.filemgr = None
-            self.fileexp = FileExplorerPlugin(self._application, self.controller)
+            self.fileexplorerplugin = FileExplorerPlugin(self._application, self.controller)
+            # self.fileexp = FileExplorerPlugin(self._application, self.controller)
             # self.filemgr = FileExplorer(self, plugin=self.fileexp, controller=self.controller)
-            self.filemgr = self.fileexp.file_explorer
+            self.filemgr = self.fileexplorerplugin.file_explorer
             self.filemgr.SetFont(wx.Font(self.fontinfo))
-            self.filemgr.SetMinSize(wx.Size(275, 250))
+            self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
             # DEBUG: Next was already called from application.py
             # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 
@@ -447,7 +448,9 @@ class RideFrame(wx.Frame):
                                                                     'txt',
                                                                     'tsv'])  # Removed 'html'
         # path = self.filemgr.current_path  # .GetFilePath()
-        path = self.filemgr.GetPath()
+        # print(f"DEBUG: mainframe.py RideFrame on_open_file 1 path={path}")
+        path = self.filemgr.tree_ctrl.GetPath()
+        print(f"DEBUG: mainframe.py RideFrame on_open_file 2 path={path}")
         ext = ''
         if len(path) > 0:
             ext = splitext(path)
@@ -464,11 +467,11 @@ class RideFrame(wx.Frame):
         if not self.filemgr:
             return
         # DEBUG: Use widgets/popupmenu tools
-        path = self.filemgr.GetFilePath()
+        path = self.filemgr.tree_ctrl.GetFilePath()
         if len(path) > 0:
             self.on_open_file(event)
         else:
-            path = self.filemgr.GetPath()
+            path = self.filemgr.tree_ctrl.GetPath()
             if not self.check_unsaved_modifications():
                 return
             self.open_suite(path)  # It is a directory, do not edit
@@ -549,7 +552,7 @@ class RideFrame(wx.Frame):
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
         if self.filemgr:
-            self.filemgr.ReCreateTree()
+            self.filemgr.tree_ctrl.ReCreateTree()
 
     def on_open_directory(self, event):
         __ = event

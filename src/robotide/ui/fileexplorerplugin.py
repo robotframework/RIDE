@@ -120,9 +120,9 @@ class FileExplorerPlugin(Plugin):
     def show_file_explorer(self):
         if not self._parent:
             self._parent = self.frame  # wx.App.Get().GetWindow()  # self.frame
-        if not self.file_explorer:  # This is not needed because file explorer is always created
-            print(f"DEBUG: FileExplorerPlugin call show_file_explorer CREATE parent={self._parent} ")
-            self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
+        # if not self.file_explorer:  # This is not needed because file explorer is always created
+        #     print(f"DEBUG: FileExplorerPlugin call show_file_explorer CREATE parent={self._parent} ")
+        #     self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
 
         self._pane = self._mgr.GetPane(self.file_explorer)
         apply_global = self.general_settings['apply to panels']
@@ -135,14 +135,16 @@ class FileExplorerPlugin(Plugin):
             html_foreground = self.settings.get('foreground', (7, 0, 70))
         html_font_face = self.general_settings.get('font face', '')
         self.html_font_size = self.general_settings.get('font size', 11)
-        self._filetreectrl = self.file_explorer.GetTreeCtrl()
+        self._filetreectrl = self.file_explorer.tree_ctrl.GetTreeCtrl()
         self.file_explorer.Show(True)
         self.file_explorer.SetMinSize(wx.Size(200, 225))
-        self._mgr.DetachPane(self.file_explorer)
-        self._mgr.AddPane(self.file_explorer,
-                          wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                          Caption(_("Files")).LeftDockable(True).
-                          CloseButton(True))
+        # if self._controller:
+        # self._mgr.DetachPane(self.file_explorer)
+        # print(f"DEBUG: FileExplorer show_file_explorer ADDING TO PANE controller={self._controller}")
+        # self._mgr.AddPane(self.file_explorer,
+        #                   wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
+        #                   Caption(_("Files")).LeftDockable(True).
+        #                   CloseButton(True))
         self.file_explorer.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
         self.file_explorer.SetBackgroundColour(html_background)
         self.file_explorer.SetForegroundColour(html_foreground)
@@ -154,6 +156,7 @@ class FileExplorerPlugin(Plugin):
         self._filetreectrl.SetBackgroundColour(html_background)
         self._filetreectrl.SetForegroundColour(html_foreground)
         self._filetreectrl.SetFont(self.font)
+        self._filetreectrl.Fit()
         self._filetreectrl.Refresh()
         self.file_explorer.Raise()
         self._mgr.Update()
@@ -169,8 +172,10 @@ class FileExplorerPlugin(Plugin):
 
     def on_open(self, event):
         # __ = event
-        print(f"DEBUG: FileExplorerPlugin call on_open_file={event}")
+        print(f"DEBUG: FileExplorerPlugin call on_open_file={event}\n"
+              f"{self.file_explorer.current_path}")
         # self._controller.execute(
+
         self._parent.on_open_file(event)
 
     def on_open_containing_folder(self, event):
@@ -192,12 +197,12 @@ class FileExplorerPlugin(Plugin):
         __ = parent
         _parent = wx.GetTopLevelWindows()
         dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
-                               self.application.preferences, style='single', index=4)  # DEBUG This is TextEditor
+                               self.app.preferences, style='single', index=4)  # DEBUG This is TextEditor
         dlg.Show(False)
         return dlg
 
 
-class FileExplorer(wx.GenericDirCtrl, wx.Panel):
+class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
 
     def __init__(self, parent, plugin, controller=None):
         wx.Panel.__init__(self, parent)
@@ -212,7 +217,7 @@ class FileExplorer(wx.GenericDirCtrl, wx.Panel):
         self._create_pane_toolbar()
         self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
-        self.sizer.Add(self.tree_ctrl)
+        self.sizer.Add(self.tree_ctrl, proportion=1)
         self._right_click = False
         self.current_path = None
         # self.Bind(wx.EVT_RIGHT_DOWN, self.on_right_click)
@@ -224,9 +229,9 @@ class FileExplorer(wx.GenericDirCtrl, wx.Panel):
     def update_tree(self):
         if isinstance(self._controller, Project):
             if self._controller.data and len(self._controller.data.directory) > 1:
-                self.SelectPath(self._controller.data.source)
+                self.tree_ctrl.SelectPath(self._controller.data.source)
                 try:
-                    self.ExpandPath(self._controller.data.source)
+                    self.tree_ctrl.ExpandPath(self._controller.data.source)
                 except Exception:
                     pass
                 self.Refresh()
@@ -245,12 +250,12 @@ class FileExplorer(wx.GenericDirCtrl, wx.Panel):
             self._right_click = True
         handler = None
         # item = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))  #  wx.TREE_HITTEST_ONITEMLABEL)
-        tc = self.GetTreeCtrl()
+        tc = self.tree_ctrl.GetTreeCtrl()
         item, _ = tc.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         if item:
             print(f"DEBUG: FileExplorer mouse RightClick item={item} type={type(item)}")
             # id=self.GetPopupMenuSelectionFromUser()
-            handler = self.GetPath(item)  # self.GetItemData(item)
+            handler = self.tree_ctrl.GetPath(item)  # self.GetItemData(item)
         if handler:
             # handler.show_popup()
             self.current_path = handler
