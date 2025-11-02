@@ -46,23 +46,29 @@ class FileExplorerPlugin(Plugin):
         Plugin.__init__(self, application, default_settings=self.defaults)
         self.app = application
         self.settings = self.app.settings.config_obj['Plugins']['File Explorer']
-        self._parent = wx.App.Get().GetTopWindow()  # self.frame
-        self._mgr = GetManager(self._parent)
-        print(f"DEBUG: FileExplorerPlugin INIT parent={self._parent} mgr={self._mgr}")
+        # self._parent = self.app.GetTopWindow()  # self._parent = self.frame wx.App.Get()
+        # self._parent = self.app.frame
+        self._parent = None
+        self._mgr = None
+        # self._mgr = GetManager(self._parent)
+        # print(f"DEBUG: FileExplorerPlugin INIT parent={self._parent} mgr={self._mgr}")
         self._controller = controller
         self.general_settings = self.global_settings.config_obj['General']
         self.html_font_size = self.general_settings.get('font size', 11)
         # if self.file_explorer is None:
-        self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
+        ## self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
+        # self.file_explorer = self.app.frame.filemgr
+        self.file_explorer = None
         # self.__setattr__('file_explorer', self.file_explorer)
         # else:
         # self.file_explorer = self.file_explorer
-        self.file_explorer.SetThemeEnabled(True)
+        # self.file_explorer.SetThemeEnabled(True)
         # self._mgr = GetManager(self.file_explorer)
         self._pane = None
         self._filetreectrl = None
         self.opened = self.settings['opened']
-        self.font = self.file_explorer.GetFont()
+        # self.font = self.file_explorer.GetFont()
+        self.font = None
         self._popup_creator = PopupCreator()
         self._actions = [
             _('Open'),
@@ -78,7 +84,12 @@ class FileExplorerPlugin(Plugin):
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
-
+            self._mgr = GetManager(self._parent)
+            # self._mgr = self.frame.aui_mgr
+            self.file_explorer = self._parent.filemgr
+            self.file_explorer.SetThemeEnabled(True)
+            self.font = self.file_explorer.GetFont()
+            print(f"DEBUG: FileExplorerPlugin INIT parent={self._parent} mgr={self._mgr}")
             if self._mgr.GetPane("file_manager") in self._mgr._panes:
                 register = self._mgr.InsertPane
             else:
@@ -94,14 +105,19 @@ class FileExplorerPlugin(Plugin):
                                         shortcut='F11',
                                         doc=_('Show File Explorer panel'),
                                         position=1))
-        self.show_file_explorer()
+        if self.file_explorer:
+            self.show_file_explorer()
         if not self.opened:
             self.close_tree()
 
     def close_tree(self):
         # self.save_setting('opened', False)
         self.opened = False
-        self._mgr.DetachPane(self.file_explorer)
+        # self._mgr = GetManager(self.app.frame)
+        self._mgr = self.app.frame.aui_mgr
+        if not self.file_explorer:
+            self.file_explorer = self.frame.filemgr
+        # self._mgr.DetachPane(self.file_explorer)
         self.file_explorer.Hide()
         self._mgr.Update()
 
@@ -113,6 +129,7 @@ class FileExplorerPlugin(Plugin):
         self.save_setting('opened', not self.opened)
         if not self.opened:
             self.opened = True
+            self.file_explorer.Raise()
             self.show_file_explorer()
         else:
             self.close_tree()
@@ -123,8 +140,12 @@ class FileExplorerPlugin(Plugin):
         # if not self.file_explorer:  # This is not needed because file explorer is always created
         #     print(f"DEBUG: FileExplorerPlugin call show_file_explorer CREATE parent={self._parent} ")
         #     self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
-
-        self._pane = self._mgr.GetPane(self.file_explorer)
+        if not self.file_explorer:
+            self.file_explorer = self.app.frame.filemgr
+            # self.file_explorer = self._mgr.GetPane("file_manager")  # .AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager")
+        self._pane = self._mgr.GetPane("file_manager")  # .GetPane(self.file_explorer)
+        print(f"DEBUG: FileExplorer show_file_explorer file_explorer={self.file_explorer}"
+              f"panel={self._pane}")
         apply_global = self.general_settings['apply to panels']
         use_own = self.settings['own colors']
         if apply_global or not use_own:
@@ -139,12 +160,10 @@ class FileExplorerPlugin(Plugin):
         self.file_explorer.Show(True)
         self.file_explorer.SetMinSize(wx.Size(200, 225))
         # if self._controller:
-        # self._mgr.DetachPane(self.file_explorer)
-        # print(f"DEBUG: FileExplorer show_file_explorer ADDING TO PANE controller={self._controller}")
-        # self._mgr.AddPane(self.file_explorer,
-        #                   wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-        #                   Caption(_("Files")).LeftDockable(True).
-        #                   CloseButton(True))
+        #     self._mgr.DetachPane(self.file_explorer)
+        #     print(f"DEBUG: FileExplorer show_file_explorer ADDING TO PANE controller={self._controller}")
+        #     self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
+        #                       Caption(_("Files")).LeftDockable(True).CloseButton(True))
         self.file_explorer.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
         self.file_explorer.SetBackgroundColour(html_background)
         self.file_explorer.SetForegroundColour(html_foreground)
@@ -159,6 +178,18 @@ class FileExplorerPlugin(Plugin):
         self._filetreectrl.Fit()
         self._filetreectrl.Refresh()
         self.file_explorer.Raise()
+        """
+        if not self.__getattr__('docked'):
+            # self._mgr.DetachPane(self.file_explorer)
+            self._pane.Float()
+            self.save_setting('docked', False)
+            print(f"DEBUG: FileExplorer show_file_explorer Making Float")
+        else:
+            self._pane.Dock()
+            self.save_setting('docked', True)
+            print(f"DEBUG: FileExplorer show_file_explorer Making Docking")
+        """
+        self._filetreectrl.Fit()
         self._mgr.Update()
         self.update_tree()
 
@@ -174,8 +205,6 @@ class FileExplorerPlugin(Plugin):
         # __ = event
         print(f"DEBUG: FileExplorerPlugin call on_open_file={event}\n"
               f"{self.file_explorer.current_path}")
-        # self._controller.execute(
-
         self._parent.on_open_file(event)
 
     def on_open_containing_folder(self, event):
@@ -215,13 +244,17 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
-        self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
+        self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, size=(200, 205), style=wx.DIRCTRL_3D_INTERNAL)
+        # wx.BORDER_NONE
         # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
-        self.sizer.Add(self.tree_ctrl, proportion=1)
+        tsizer = VerticalSizer()
+        tsizer.Add(self.tree_ctrl, proportion=1)
+        self.sizer.Add(tsizer, proportion=1)
         self._right_click = False
         self.current_path = None
-        # self.Bind(wx.EVT_RIGHT_DOWN, self.on_right_click)
         self.Bind(wx.EVT_CLOSE, self.on_close)
+        # self.Bind(wx.EVT_SIZE, self.on_size)  # DEBUG With this activated, the "toolbar" is hidden
+        self.Bind(wx.EVT_MOVE, self.on_size)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_right_click)
         self.SetThemeEnabled(True)
         self.Refresh()
@@ -241,6 +274,13 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         __ = event
         print("DEBUG: FileExplorer OnClose hidding")
         self._plugin.close_tree()
+
+    def on_size(self, event):
+        __ = event
+        print("DEBUG: FileExplorer On size refreshing.")
+        # self.tree_ctrl.Fit()
+        self.update_tree()
+        #  self.Update()
 
     def on_right_click(self, event):
         # __ = event
@@ -287,3 +327,4 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.pane_toolbar.add_expanding(default_components)
         self.pane_toolbar.add_with_padding(config_button)
         self.sizer.add_expanding(self.pane_toolbar, propotion=0)
+        # self.sizer.Add(self.pane_toolbar, proportion=0)

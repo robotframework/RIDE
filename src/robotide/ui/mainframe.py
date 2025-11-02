@@ -287,12 +287,15 @@ class RideFrame(wx.Frame):
             # ##### File explorer panel is always created here
             # self.filemgr = FileExplorerPlugin(self._application, self.controller)._filemgr
             # self.filemgr = None
-            self.fileexplorerplugin = FileExplorerPlugin(self._application, self.controller)
+            # self.fileexplorerplugin = FileExplorerPlugin(self._application, self.controller)
             # self.fileexp = FileExplorerPlugin(self._application, self.controller)
-            # self.filemgr = FileExplorer(self, plugin=self.fileexp, controller=self.controller)
-            self.filemgr = self.fileexplorerplugin.file_explorer
+            self.filemgr = FileExplorer(self, plugin=self._application.fileexplorerplugin, controller=self.controller)
+            # self.filemgr = self.fileexplorerplugin.file_explorer
             self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
+            self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").
+                              Caption(_("Files")).LeftDockable(True).CloseButton(True))
+            print(f"DEBUG: mainframe.py RideFrame created fileexplore={self.filemgr}")
             # DEBUG: Next was already called from application.py
             # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 

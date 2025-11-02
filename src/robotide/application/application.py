@@ -151,6 +151,7 @@ class RIDE(wx.App):
         font_size = self.settings['General'].get('font size', 12)
         font_face = self.settings['General'].get('font face', 'Helvetica')
         self.fontinfo = wx.FontInfo(font_size).FaceName(font_face).Bold(False)
+        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
@@ -169,7 +170,8 @@ class RIDE(wx.App):
                   f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
-        self.fileexplorerplugin = self.frame.fileexplorerplugin  # FileExplorerPlugin(self, self._controller)
+        # self.fileexplorerplugin = self.frame.fileexplorerplugin  # FileExplorerPlugin(self, self._controller)
+
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)
