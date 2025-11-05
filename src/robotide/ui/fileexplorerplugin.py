@@ -96,7 +96,7 @@ class FileExplorerPlugin(Plugin):
                 register = self._mgr.AddPane
 
             register(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                     Caption(_("Files")).LeftDockable(True).CloseButton(True))
+                     Caption(_("Files")).LeftDockable(True).CloseButton(False))
 
             self._mgr.Update()
 
@@ -156,15 +156,9 @@ class FileExplorerPlugin(Plugin):
 
     def show_file_explorer(self):
         if not self._parent:
-            self._parent = self.frame  # wx.App.Get().GetWindow()  # self.frame
-        # if not self.file_explorer:  # This is not needed because file explorer is always created
-        #     print(f"DEBUG: FileExplorerPlugin call show_file_explorer CREATE parent={self._parent} ")
-        #     self.file_explorer = FileExplorer(self._parent, plugin=self, controller=self._controller)
+            self._parent = self.frame
         if not self.file_explorer:
             self.file_explorer = self.app.frame.filemgr
-            # self.file_explorer = self._mgr.GetPane("file_manager")  # .AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager")
-        # print(f"DEBUG: FileExplorer show_file_explorer file_explorer={self.file_explorer}"
-        #       f"panel={self._pane}")
         self._mgr = GetManager(self.app.frame)
         apply_global = self.general_settings['apply to panels']
         use_own = self.settings['own colors']
@@ -194,12 +188,26 @@ class FileExplorerPlugin(Plugin):
         self._filetreectrl.Fit()
         self._filetreectrl.Refresh()
         self.file_explorer.Raise()
+        if not self._controller:
+            self._controller = self.app._controller  # Ugly but better than nothing
         if self._controller:
-            # self._mgr.DetachPane(self.file_explorer)
-            self._pane = self._mgr.GetPane("file_manager")  # .GetPane(self.file_explorer)
-            # self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-            #                   Caption(_("Files")).LeftDockable(True).CloseButton(True))
+            self._pane = self._mgr.GetPane("file_manager")
+            if not self._pane.IsOk():
+                self._mgr.DetachPane("file_manager")
+                if not self.__getattr__('docked'):
+                    self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
+                                      Caption(_("Files")).LeftDockable(True).CloseButton(False).Float())
+                else:
+                    self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
+                                      Caption(_("Files")).LeftDockable(True).CloseButton(False).Dock())
+                self._pane = self._mgr.GetPane("file_manager")
+        if self._pane:
             self._pane.Show(True)
+            if not self.__getattr__('docked'):
+                self._pane.Float()
+            else:
+                self._pane.Dock()
+            self._mgr.RestorePane(self._pane)
             """
             try:
                 perspective = self.settings['perspective']
@@ -210,23 +218,6 @@ class FileExplorerPlugin(Plugin):
                       f"type={type(perspective)}")
                 self._mgr.LoadPaneInfo("file_manager", perspective)
             """
-            self._mgr.RestorePane(self._pane)
-            # print(f"DEBUG: FileExplorer show_file_explorer ADDING TO PANE controller={self._controller}")
-            # self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-            #                   Caption(_("Files")).LeftDockable(True).CloseButton(True))
-        # sz = self.file_explorer.GetWindowSize()
-        # self._filetreectrl.SetSize(wx.Rect(sz))
-        # self._filetreectrl.Fit()
-        if self._pane:
-            if not self.__getattr__('docked'):
-                # self._mgr.DetachPane(self.file_explorer)
-                self._pane.Float()
-                self.save_setting('docked', False)
-                print(f"DEBUG: FileExplorer show_file_explorer Making Float")
-            else:
-                self._pane.Dock()  # Reverted logic
-                self.save_setting('docked', True)
-                print(f"DEBUG: FileExplorer show_file_explorer Making Docking")
         self._mgr.Update()
         self.update_tree()
 
