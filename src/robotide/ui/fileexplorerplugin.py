@@ -254,7 +254,7 @@ class FileExplorerPlugin(Plugin):
         __ = parent
         _parent = wx.GetTopLevelWindows()
         dlg = PreferenceEditor(_parent[0], _("RIDE - Preferences"),
-                               self.app.preferences, style='single', index=4)  # DEBUG This is TextEditor
+                               self.app.preferences, style='single', index=7)
         dlg.Show(False)
         return dlg
 
