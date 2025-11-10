@@ -276,7 +276,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         # wx.BORDER_NONE
         # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         tsizer = VerticalSizer()
-        tsizer.Add(self.tree_ctrl, proportion=1)
+        tsizer.Add(self.tree_ctrl, proportion=1, flag=wx.EXPAND)
         self.sizer.Add(tsizer, proportion=1)
         self._right_click = False
         self.current_path = None
