@@ -39,7 +39,9 @@ class FileExplorerPlugin(Plugin):
     datafile = property(lambda self: self.get_selected_datafile())
     defaults = {"opened": True,
                 "docked": True,
-                "own colors": False
+                "own colors": False,
+                "file explorer": None,
+                "system file explorer": True
                 }
 
     def __init__(self, application, controller=None):
@@ -169,7 +171,9 @@ class FileExplorerPlugin(Plugin):
             html_background = self.settings.get('background', (240, 242, 80))
             html_foreground = self.settings.get('foreground', (7, 0, 70))
         html_font_face = self.general_settings.get('font face', '')
-        self.html_font_size = self.general_settings.get('font size', 11)
+        html_font_size = self.general_settings.get('font size', 11)
+        self.html_font_face = self.settings.get('font face', html_font_face)
+        self.html_font_size = self.settings.get('font size', html_font_size)
         self._filetreectrl = self.file_explorer.tree_ctrl.GetTreeCtrl()
         self.file_explorer.Show(True)
         # self.file_explorer.Raise()
@@ -178,7 +182,7 @@ class FileExplorerPlugin(Plugin):
         self.file_explorer.SetBackgroundColour(html_background)
         self.file_explorer.SetForegroundColour(html_foreground)
         self.font = self.file_explorer.GetFont()
-        self.font.SetFaceName(html_font_face)
+        self.font.SetFaceName(self.html_font_face)
         self.font.SetPointSize(self.html_font_size)
         self.file_explorer.SetFont(self.font)
         self.file_explorer.Refresh()
@@ -260,6 +264,7 @@ class FileExplorerPlugin(Plugin):
 
 
 class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
+    name = 'files_explorer'
 
     def __init__(self, parent, plugin, controller=None):
         wx.Panel.__init__(self, parent)

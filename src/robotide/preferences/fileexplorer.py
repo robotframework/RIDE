@@ -17,7 +17,7 @@ from os.path import abspath, dirname, join
 import builtins
 import wx
 
-from .editors import EditorPreferences, read_fonts, set_colors
+from .editors import EditorPreferences, read_fonts, set_colors, ID_SAVELOADSETTINGS
 from ..ui import preferences_dialogs as pdiag
 from ..ui.preferences_dialogs import (boolean_editor, IntegerChoiceEditor, SpinChoiceEditor,
                                       StringChoiceEditor, PreferencesColorPicker)
@@ -33,8 +33,6 @@ builtins.__dict__['_'] = wx.GetTranslation
 ID_DEFAULT_FILE_EXPLORER = wx.NewIdRef()
 ID_TXT_FILE_EXPLORER = wx.NewIdRef()
 ID_USE_OWN_COLORS = wx.NewIdRef()
-ID_RESET = wx.NewIdRef()
-ID_SAVELOADSETTINGS = wx.NewIdRef()
 ID_LOAD = 5551
 ID_SAVE = 5552
 ID_CANCEL = -1
@@ -121,7 +119,7 @@ class FileExplorerPreferences(EditorPreferences):
         self.Bind(wx.EVT_CHECKBOX, self.on_check_box, self.cb_default_file_explorer)
         self.txt_file_explorer.Bind(wx.EVT_KILL_FOCUS, lambda evt: self.set_txt_value(evt))
         sizer.AddMany([l_usecolor, own_colors])
-        sizer.Add(wx.StaticText())
+        # sizer.Add(wx.StaticText())
         sizer.AddMany([l_confirm, self.cb_default_file_explorer, self.txt_file_explorer])
         return sizer
 
@@ -174,10 +172,9 @@ class FileExplorerPreferences(EditorPreferences):
                 self.txt_file_explorer.Disable()
 
     def on_reset(self, event):
-        if event.GetId() != ID_RESET:
-            event.Skip()
-            return
-        defaults = self._read_defaults()
+        if not self.name:
+            self.name = "File Explorer"
+        defaults = self._read_defaults(plugin=True)
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
 
@@ -185,9 +182,17 @@ class FileExplorerPreferences(EditorPreferences):
         if event.GetId() != ID_SAVELOADSETTINGS:
             event.Skip()
             return
-        save_settings_dialog = SaveLoadSettings(self, self._settings)  # DEBUG self.__class__.__name__
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
         save_settings_dialog.CenterOnParent()
-        save_settings_dialog.ShowModal()
+        result = save_settings_dialog.ShowModal()
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
+        print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings check {ID_LOAD}=={result=}")
+        if result == 5101:  # DEBUG Should be ID_LOAD: ut is always 5101
+            print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings {result=}")
+            self._reload_settings()  # Force reload on File explorer pane
+            wx.FindWindowByName('files_explorer').Update()
+            self.Update()
 
     def _reload_settings(self):
         import os
