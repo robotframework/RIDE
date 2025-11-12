@@ -23,6 +23,7 @@ from ..controller.project import Project
 from ..pluginapi import Plugin
 from ..pluginapi.plugin import ActionInfo
 from ..preferences import PreferenceEditor
+from ..publish import RideSettingsChanged, PUBLISHER
 from ..widgets import PopupCreator, PopupMenuItems, VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
@@ -31,6 +32,7 @@ builtins.__dict__['_'] = wx.GetTranslation
 FILE_MANAGER = 'file manager'
 LABEL_OPEN = 'Open'
 LABEL_OPEN_FOLDER = 'Open Containing Folder'
+PLUGIN_NAME = 'File Explorer'
 
 
 class FileExplorerPlugin(Plugin):
@@ -243,11 +245,17 @@ class FileExplorerPlugin(Plugin):
         __ = event
         print(f"DEBUG: FileExplorerPlugin call on_open_containing_folder={event}")
         try:
-            file_manager = self.settings['General'][FILE_MANAGER]
+            use_sys_file_explorer = self.settings['system file explorer']
+            own_file_manager = self.settings[FILE_MANAGER]
+            if not use_sys_file_explorer and own_file_manager:
+                file_manager = self.settings[FILE_MANAGER]
+            else:
+                file_manager = self.global_settings[FILE_MANAGER]
         except KeyError:
             file_manager = None
         #  self._controller.execute(
-        # ctrlcommands.OpenContainingFolder(file_manager, self.file_explorer.current_path)
+        #  ctrlcommands.OpenContainingFolder(file_manager, self.file_explorer.current_path)
+        print(f"DEBUG: FileExplorerPlugin call file manager={file_manager}")
         start_filemanager(self.file_explorer.current_path, file_manager)
 
     def on_config_panel(self):
@@ -289,6 +297,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         # self.Bind(wx.EVT_SIZE, self.on_size)  # DEBUG With this activated, the "toolbar" is hidden
         self.Bind(wx.EVT_MOVE, self.on_size)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_right_click)
+        PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         self.SetThemeEnabled(True)
         self.Refresh()
 
@@ -337,6 +346,27 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
             if self._plugin:
                 self._plugin.show_popup()
             self._right_click = False
+
+    def on_settings_changed(self, message):
+        """Redraw the colors if the color settings are modified"""
+        if message.keys[0] == "General":
+            print(f"DEBUG: FileExplorer on_settings_changed GENERAL={message.keys}\n"
+                  f"settings={self._plugin.general_settings}")
+            return
+        section, _ = message.keys
+        if section == PLUGIN_NAME:
+            print(f"DEBUG: FileExplorer on_settings_changed SECTION={message.keys}\n"
+                  f"settings={self._plugin.settings}")
+            self.update_tree()
+            """
+            self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
+            caret_colour = self.settings[PLUGIN_NAME].get('setting', 'black')
+            caret_colour = self.editor.get_visible_color(caret_colour)
+            self.editor.SetCaretForeground(Colour(caret_colour))
+            caret_style = self.settings[PLUGIN_NAME].get('caret style', 'block')
+            caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
+            self.editor.SetCaretStyle(caret_style)
+            """
 
     def general_font_size(self) -> int:
         fsize = self.dlg.font_size
