@@ -272,10 +272,10 @@ class FileExplorerPlugin(Plugin):
 
 
 class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
-    name = 'files_explorer'
 
     def __init__(self, parent, plugin, controller=None):
         wx.Panel.__init__(self, parent)
+        self.name = 'files_explorer'
         self._plugin = plugin
         self._controller = controller
         self.dlg = RIDEDialog()
@@ -285,8 +285,8 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
-        self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, size=(200, 205), style=wx.DIRCTRL_3D_INTERNAL)
-        # wx.BORDER_NONE
+        self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, style=wx.DIRCTRL_3D_INTERNAL)
+        # wx.BORDER_NONE   size=(200, 205),
         # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         tsizer = VerticalSizer()
         tsizer.Add(self.tree_ctrl, proportion=1, flag=wx.EXPAND)
@@ -302,8 +302,10 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.Refresh()
 
     def update_tree(self):
+        print(f"DEBUG: FileExplorer update_tree ENTER {self._controller}\n")
         if isinstance(self._controller, Project):
             if self._controller.data and len(self._controller.data.directory) > 1:
+                print(f"DEBUG: FileExplorer update_tree VALID {self._controller.data.directory}\n")
                 self.tree_ctrl.SelectPath(self._controller.data.source)
                 try:
                     self.tree_ctrl.ExpandPath(self._controller.data.source)
@@ -355,8 +357,8 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
             return
         section, _ = message.keys
         if section == PLUGIN_NAME:
-            print(f"DEBUG: FileExplorer on_settings_changed SECTION={message.keys}\n"
-                  f"settings={self._plugin.settings}")
+            # print(f"DEBUG: FileExplorer on_settings_changed SECTION={message.keys}\n"
+            #      f"settings={self._plugin.settings}")
             self.update_tree()
             """
             self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)

@@ -90,19 +90,19 @@ class FileExplorerPreferences(EditorPreferences):
 
     def set_txt_value(self, evt):
         new_value = self.txt_file_explorer.GetValue()
-        self._settings.set('file explorer', new_value)
+        self._settings.set('file manager', new_value)
         evt.Skip()
 
     def _create_file_explorer_config_editor(self):
         # self._settings.get('confirm run', True)
         # self._settings.get('use colors', False)
         self._settings.get('own colors', False)
-        self._settings.get('file explorer', None)
+        self._settings.get('file manager', None)
         self._settings.get('system file explorer', True)
         settings = self._settings
-        self.txt_file_explorer = wx.TextCtrl(self, id=ID_TXT_FILE_EXPLORER, name='file_explorer')
-        if settings['file explorer'] is not None:
-            self.txt_file_explorer.SetValue(settings['file explorer'])
+        self.txt_file_explorer = wx.TextCtrl(self, id=ID_TXT_FILE_EXPLORER, size=wx.Size(150, 20), name='file_manager')
+        if settings['file manager'] is not None:
+            self.txt_file_explorer.SetValue(settings['file manager'])
         # self.cb_default_file_explorer = wx.CheckBox(self, ID_DEFAULT_FILE_EXPLORER, label=_("Use System File Explorer"))
         # set_colors(self.cb_default_file_explorer, self.background_color, self.foreground_color)
         # self.Sizer.Add(self.cb_default_file_explorer)
@@ -112,6 +112,7 @@ class FileExplorerPreferences(EditorPreferences):
         l_confirm, self.cb_default_file_explorer = pdiag.boolean_editor(self, settings, 'system file explorer',
                                                    f"{_('Use operating system file explorer')}")
         own_colors.SetId(ID_USE_OWN_COLORS)
+        m_sizer = wx.FlexGridSizer(cols=3, gap=wx.Size(10, 10))
         self.cb_default_file_explorer.SetId(ID_DEFAULT_FILE_EXPLORER)
         set_colors(l_confirm, self.background_color, self.foreground_color)
         set_colors(l_usecolor, self.background_color, self.foreground_color)
@@ -120,7 +121,8 @@ class FileExplorerPreferences(EditorPreferences):
         self.txt_file_explorer.Bind(wx.EVT_KILL_FOCUS, lambda evt: self.set_txt_value(evt))
         sizer.AddMany([l_usecolor, own_colors])
         # sizer.Add(wx.StaticText())
-        sizer.AddMany([l_confirm, self.cb_default_file_explorer, self.txt_file_explorer])
+        m_sizer.AddMany([l_confirm, self.cb_default_file_explorer, self.txt_file_explorer])
+        sizer.Add(m_sizer)
         return sizer
 
     def create_colors_sizer(self):
@@ -156,7 +158,7 @@ class FileExplorerPreferences(EditorPreferences):
 
     def on_check_box(self, event):
         print(f"DEBUG: Preferences on_check_box ENTER {event}")
-        event.Skip()
+        # event.Skip()
         if event.GetId() == ID_USE_OWN_COLORS:
             self._own_colors = event.IsChecked()
             self._settings.set('own colors', self._own_colors)
@@ -165,11 +167,12 @@ class FileExplorerPreferences(EditorPreferences):
             else:
                 self.set_global_colors()
         if event.GetId() == ID_DEFAULT_FILE_EXPLORER:
-            self.cb_default_file_explorer = event.IsChecked()
-            if not self.cb_default_file_explorer:
-                self.txt_file_explorer.Enable()
+            print(f"DEBUG: Preferences on_check_box ID_DEFAULT_FILE_EXPLORER {event.IsChecked()}")
+            if not event.IsChecked():
+                self.txt_file_explorer.SetEditable(True)
             else:
-                self.txt_file_explorer.Disable()
+                self.txt_file_explorer.SetEditable(False)
+            self.Update()
 
     def on_reset(self, event):
         if not self.name:
@@ -191,7 +194,10 @@ class FileExplorerPreferences(EditorPreferences):
         if result == 5101:  # DEBUG Should be ID_LOAD: ut is always 5101
             print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings {result=}")
             self._reload_settings()  # Force reload on File explorer pane
-            wx.FindWindowByName('files_explorer').Update()
+            # wnd_handle = wx.FindWindowByName('files_explorer')
+            # print(f"DEBUG: Preferences FILE_EXPLORER WINDOW IS {wnd_handle=}")
+            # if wnd_handle:
+            #     wnd_handle.Update()
             self.Update()
 
     def _reload_settings(self):
@@ -199,7 +205,7 @@ class FileExplorerPreferences(EditorPreferences):
         from ..context import SETTINGS_DIRECTORY
         from .settings import RideSettings
         self._settings = RideSettings()
-        self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+        # self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
         self._default_path = self._settings.user_path
         settings = [s.strip() for s in open(self._default_path, 'r').readlines()]
         name = '[[File Explorer]]'
