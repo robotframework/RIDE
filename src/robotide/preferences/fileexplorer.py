@@ -103,6 +103,16 @@ class FileExplorerPreferences(EditorPreferences):
         self.txt_file_explorer = wx.TextCtrl(self, id=ID_TXT_FILE_EXPLORER, size=wx.Size(150, 20), name='file_manager')
         if settings['file manager'] is not None:
             self.txt_file_explorer.SetValue(settings['file manager'])
+        if settings['system file explorer']:
+            self.txt_file_explorer.SetEditable(False)
+            self.txt_file_explorer.Disable()
+            print(f"DEBUG: Preferences _create_file_explorer_config_editor DISABLE settings['system file explorer']="
+                  f"{settings['system file explorer']}")
+        else:
+            self.txt_file_explorer.Enable()
+            self.txt_file_explorer.SetEditable(True)
+            print(f"DEBUG: Preferences _create_file_explorer_config_editor ENABLE settings['system file explorer']="
+                  f"{settings['system file explorer']}")
         # self.cb_default_file_explorer = wx.CheckBox(self, ID_DEFAULT_FILE_EXPLORER, label=_("Use System File Explorer"))
         # set_colors(self.cb_default_file_explorer, self.background_color, self.foreground_color)
         # self.Sizer.Add(self.cb_default_file_explorer)
