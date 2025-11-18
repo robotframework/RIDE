@@ -328,15 +328,18 @@ class RIDE(wx.App):
         font.SetPointSize(font_size)
         _root.SetFont(font)
         self._WalkWidgets(_root, theme=theme)
-        if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
-            self.fileexplorerplugin.settings['background'] = theme['background']
-            self.fileexplorerplugin.settings['foreground'] = theme['foreground']
-            self.fileexplorerplugin.settings[FOREGROUND_TEXT] = theme[FOREGROUND_TEXT]
-            self.fileexplorerplugin.settings[BACKGROUND_HELP] = theme[BACKGROUND_HELP]
-            self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
-            self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
-            if self.fileexplorerplugin.settings['opened']:
-                self.fileexplorerplugin.show_file_explorer()
+        if self.fileexplorerplugin.settings['_enabled']:
+            if theme['apply to panels'] and not self.fileexplorerplugin.settings['own colors']:
+                self.fileexplorerplugin.settings['background'] = theme['background']
+                self.fileexplorerplugin.settings['foreground'] = theme['foreground']
+                self.fileexplorerplugin.settings[FOREGROUND_TEXT] = theme[FOREGROUND_TEXT]
+                self.fileexplorerplugin.settings[BACKGROUND_HELP] = theme[BACKGROUND_HELP]
+                self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
+                self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
+                if self.fileexplorerplugin.settings['opened']:
+                    self.fileexplorerplugin.show_file_explorer()
+            else:
+                self.fileexplorerplugin.update_tree()
         if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
             self.treeplugin.settings['background'] = theme['background']
             self.treeplugin.settings['foreground'] = theme['foreground']

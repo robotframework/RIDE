@@ -42,7 +42,7 @@ class FileExplorerPlugin(Plugin):
     defaults = {"opened": True,
                 "docked": True,
                 "own colors": False,
-                "file explorer": None,
+                "file manager": None,
                 "system file explorer": True
                 }
 
@@ -94,7 +94,7 @@ class FileExplorerPlugin(Plugin):
             self.file_explorer = self._parent.filemgr
             self.file_explorer.SetThemeEnabled(True)
             self.font = self.file_explorer.GetFont()
-            print(f"DEBUG: FileExplorerPlugin INIT parent={self._parent} mgr={self._mgr}")
+            # print(f"DEBUG: FileExplorerPlugin INIT parent={self._parent} mgr={self._mgr}")
             if self._mgr.GetPane("file_manager") in self._mgr._panes:
                 register = self._mgr.InsertPane
             else:
@@ -124,7 +124,7 @@ class FileExplorerPlugin(Plugin):
         # self._mgr = self.app.frame.aui_mgr
         if not self.file_explorer:
             self.file_explorer = self.frame.filemgr
-        print(f"DEBUG: FileExplorerPlugin ENTER close_tree file_explorer={self.file_explorer}")
+        # print(f"DEBUG: FileExplorerPlugin ENTER close_tree file_explorer={self.file_explorer}")
         # self._mgr.DetachPane(self.file_explorer) DestroyOnClose()
         pane_info = self._mgr.GetPane("file_manager")
         if pane_info.IsOk():
@@ -167,7 +167,7 @@ class FileExplorerPlugin(Plugin):
         self._mgr = GetManager(self.app.frame)
         apply_global = self.general_settings['apply to panels']
         use_own = self.settings['own colors']
-        if apply_global or not use_own:
+        if apply_global and not use_own:
             html_background = self.general_settings.get('background help', (240, 242, 80))
             html_foreground = self.general_settings.get('foreground text', (7, 0, 70))
         else:
@@ -364,6 +364,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.font.SetPointSize(self._plugin.settings['font size'])
         self.SetFont(self.font)
         self.tree_ctrl.SetFont(self.font)
+        self.tree_ctrl.Fit()
         self.tool_bar_txt.SetFont(self.font)
         self.tree_ctrl.Refresh()
 
