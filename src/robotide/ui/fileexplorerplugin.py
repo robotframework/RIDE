@@ -284,7 +284,8 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.dlg = RIDEDialog()
         self.SetBackgroundColour(Colour(self.dlg.color_background))
         self.SetForegroundColour(Colour(self.dlg.color_foreground))
-        self.sizer = VerticalSizer()
+        # self.sizer = VerticalSizer()
+        self.sizer = wx.FlexGridSizer(cols=1, hgap=5, vgap=5)
         print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
@@ -293,7 +294,8 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         tsizer = VerticalSizer()
         tsizer.Add(self.tree_ctrl, proportion=1, flag=wx.EXPAND)
-        self.sizer.Add(tsizer, proportion=1)
+        self.sizer.Add(wx.Size(35, 35))
+        self.sizer.Add(tsizer, proportion=1, flag=wx.EXPAND)
         self._right_click = False
         self.current_path = None
         self._apply_settings()
@@ -303,6 +305,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_right_click)
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         self.SetThemeEnabled(True)
+        self.SetAutoLayout(True)
         self.Refresh()
 
     def update_tree(self):
@@ -332,6 +335,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                     self.tree_ctrl.ExpandPath(self._controller.data.source)
                 except Exception:
                     pass
+                # self.on_size(None)
                 self.Refresh()
                 self.Update()
                 self.tree_ctrl.Update()
@@ -339,17 +343,22 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
     def _apply_settings(self):
         apply_to_panels = self._plugin.general_settings['apply to panels']
         own_colors = self._plugin.settings['own colors']
+        tc = self.tree_ctrl.GetTreeCtrl()
         if not own_colors:
             if apply_to_panels:  # Missing toolbar colors
                 self.SetBackgroundColour(Colour(self._plugin.general_settings['background help']))
                 self.SetForegroundColour(Colour(self._plugin.general_settings['foreground text']))
                 self.tree_ctrl.SetBackgroundColour(Colour(self._plugin.general_settings['background help']))
                 self.tree_ctrl.SetForegroundColour(Colour(self._plugin.general_settings['foreground text']))
+                tc.SetBackgroundColour(Colour(self._plugin.general_settings['background help']))
+                tc.SetForegroundColour(Colour(self._plugin.general_settings['foreground text']))
             else:
                 self.SetBackgroundColour(Colour(self._plugin.general_settings['background']))
                 self.SetForegroundColour(Colour(self._plugin.general_settings['foreground']))
                 self.tree_ctrl.SetBackgroundColour(Colour(self._plugin.general_settings['background']))
                 self.tree_ctrl.SetForegroundColour(Colour(self._plugin.general_settings['foreground']))
+                tc.SetBackgroundColour(Colour(self._plugin.general_settings['background']))
+                tc.SetForegroundColour(Colour(self._plugin.general_settings['foreground']))
             self.tool_bar_txt.SetBackgroundColour(Colour(self._plugin.general_settings['secondary background']))
             self.tool_bar_txt.SetForegroundColour(Colour(self._plugin.general_settings['secondary foreground']))
         else:
@@ -357,12 +366,17 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
             self.SetForegroundColour(Colour(self._plugin.settings['foreground']))
             self.tree_ctrl.SetBackgroundColour(Colour(self._plugin.settings['background']))
             self.tree_ctrl.SetForegroundColour(Colour(self._plugin.settings['foreground']))
+            tc.SetBackgroundColour(Colour(self._plugin.settings['background']))
+            tc.SetForegroundColour(Colour(self._plugin.settings['foreground']))
             self.tool_bar_txt.SetBackgroundColour(Colour(self._plugin.settings['secondary background']))
             self.tool_bar_txt.SetForegroundColour(Colour(self._plugin.settings['secondary foreground']))
         self.font = self.GetFont()
         self.font.SetFaceName(self._plugin.settings['font face'])
         self.font.SetPointSize(self._plugin.settings['font size'])
         self.SetFont(self.font)
+        tc.Fit()
+        tc.Refresh()
+        tc.Update()
         self.tree_ctrl.SetFont(self.font)
         self.tree_ctrl.Fit()
         self.tool_bar_txt.SetFont(self.font)
@@ -375,9 +389,15 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
 
     def on_size(self, event):
         __ = event
-        print("DEBUG: FileExplorer On size refreshing.")
         self.update_tree()
+        sz = self.GetSize()  # + wx.Size(-5, -5)
+        print(f"DEBUG: FileExplorer On size refreshing. sz={sz}")
+        tc = self.tree_ctrl.GetTreeCtrl()
+        tc.SetSize(sz)
+        tc.Fit()
+        tc.Refresh()
         self.tree_ctrl.Fit()
+        self.tree_ctrl.Refresh()
         self.tree_ctrl.Update()
 
     def on_right_click(self, event):
@@ -447,6 +467,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         default_components.add_with_padding(self.tool_bar_txt)
         # self._create_search(default_components)
         self.pane_toolbar.add_expanding(default_components)
+        self.pane_toolbar.AddStretchSpacer()
         self.pane_toolbar.add_with_padding(self.config_button)
-        self.sizer.add_expanding(self.pane_toolbar, propotion=0)
-        # self.sizer.Add(self.pane_toolbar, proportion=0)
+        # self.sizer.add_expanding(self.pane_toolbar, propotion=0)
+        self.sizer.Add(self.pane_toolbar, proportion=0)
