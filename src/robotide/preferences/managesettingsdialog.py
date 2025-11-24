@@ -69,52 +69,62 @@ class SaveLoadSettings(RIDEDialog):
         # print(f"DEBUG: SaveLoad init returncode {self.GetReturnCode()}")
 
     def on_load(self, event):
-        if event.GetId() != ID_LOAD:
+        if event.GetId() == ID_LOAD:
+            # event.Skip()
+            # self.SetReturnCode(ID_CANCEL)
+            # return ID_CANCEL
+            load_dlg = wx.FileDialog(self, message=_("File with Settings to Load"),
+                                     defaultDir=SETTINGS_DIRECTORY, wildcard="*.cfg")
+            if load_dlg.ShowModal() == wx.ID_CANCEL:
+                self.SetReturnCode(ID_CANCEL)
+                return ID_CANCEL
+            file = load_dlg.GetPath()
+            if os.path.isfile(file):  # Test validity settings
+                self.Freeze()
+                self.load_and_merge(file)
+                self.Thaw()
+                self._parent.Refresh()
+                self._parent.GetParent().Refresh()
+                self.SetReturnCode(ID_LOAD)
+                self.Close()
+                return ID_LOAD
+        elif event.GetId() == ID_SAVE:
             event.Skip()
-            self.SetReturnCode(ID_CANCEL)
-            return ID_CANCEL
-        load_dlg = wx.FileDialog(self, message=_("File with Settings to Load"),
-                                 defaultDir=SETTINGS_DIRECTORY, wildcard="*.cfg")
-        if load_dlg.ShowModal() == wx.ID_CANCEL:
-            self.SetReturnCode(ID_CANCEL)
-            return ID_CANCEL
-        file = load_dlg.GetPath()
-        if os.path.isfile(file):  # Test validity settings
-            self.Freeze()
-            self.load_and_merge(file)
-            self.Thaw()
-            self._parent.Refresh()
-            self._parent.GetParent().Refresh()
-            self.SetReturnCode(ID_LOAD)
-            self.Close()
-            return ID_LOAD
+            return ID_SAVE
+        self.SetReturnCode(ID_CANCEL)
+        return ID_CANCEL
 
     def on_close(self):
         return self.GetReturnCode()
 
     def on_save(self, event):
-        if event.GetId() != ID_SAVE:
-            event.Skip()
-            self.SetReturnCode(ID_CANCEL)
-            return ID_CANCEL
+        if event.GetId() == ID_SAVE:
+            # event.Skip()
+            # self.SetReturnCode(ID_CANCEL)
+            # return ID_CANCEL
 
-        with wx.FileDialog(self, message=_("Save Settings to file"), defaultDir=SETTINGS_DIRECTORY,
-                           wildcard="*.cfg", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as save_dlg:
-            if save_dlg.ShowModal() == wx.ID_CANCEL:
-                self.SetReturnCode(ID_CANCEL)
-                return ID_CANCEL
-            pathname = save_dlg.GetPath()
-            """
-            filename = os.path.basename(pathname)
-            dirname = os.path.dirname(pathname)
-            """
-            try:
-                initialize_settings(self._default_path, pathname)
-            except IOError:
-                raise RuntimeError(_('Could not open settings file "%s" for writing') % pathname)
-        self.SetReturnCode(ID_SAVE)
-        self.Close()
-        return ID_SAVE
+            with wx.FileDialog(self, message=_("Save Settings to file"), defaultDir=SETTINGS_DIRECTORY,
+                               wildcard="*.cfg", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as save_dlg:
+                if save_dlg.ShowModal() == wx.ID_CANCEL:
+                    self.SetReturnCode(ID_CANCEL)
+                    return ID_CANCEL
+                pathname = save_dlg.GetPath()
+                """
+                filename = os.path.basename(pathname)
+                dirname = os.path.dirname(pathname)
+                """
+                try:
+                    initialize_settings(self._default_path, pathname)
+                except IOError:
+                    raise RuntimeError(_('Could not open settings file "%s" for writing') % pathname)
+            self.SetReturnCode(ID_SAVE)
+            self.Close()
+            return ID_SAVE
+        elif event.GetId() == ID_LOAD:
+            event.Skip()
+            return ID_LOAD
+        self.SetReturnCode(ID_CANCEL)
+        return ID_CANCEL
 
     def load_and_merge(self, user_path):
         try:

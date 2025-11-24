@@ -333,6 +333,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                 self.tree_ctrl.SelectPath(self._controller.data.source)
                 try:
                     self.tree_ctrl.ExpandPath(self._controller.data.source)
+                    self.tree_ctrl.TreeCtrl.EnsureVisible(self.tree_ctrl.TreeCtrl.GetSelection())
                 except Exception:
                     pass
                 # self.on_size(None)

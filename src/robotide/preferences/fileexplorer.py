@@ -46,10 +46,10 @@ class FileExplorerPreferences(EditorPreferences):
     def __init__(self, settings, *args, **kwargs):
         # self._settings = settings
         self.location = (_("File Explorer"),)
-        self.name = 'File Explorer'
         self.title = _("File Explorer Settings")
         self.cb_default_file_explorer = None
-        super(FileExplorerPreferences, self).__init__(settings['Plugins'][self.name], *args, **kwargs)
+        super(FileExplorerPreferences, self).__init__(settings['Plugins']['File Explorer'], *args, **kwargs)
+        self.name = 'File Explorer'
         # print(f"DEBUG: Preferences File Explorer init type settings={type(self._settings)}")
         # self.Sizer.Add(self.txt_file_explorer)
         self.Sizer.Add(self._create_file_explorer_config_editor())
@@ -192,7 +192,10 @@ class FileExplorerPreferences(EditorPreferences):
             picker.SetColour(defaults[picker.key])
 
     def on_save_load_settings(self, event):
+        print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings ENTER {event=}")
         if event.GetId() != ID_SAVELOADSETTINGS:
+            print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings CONDITION event.GetId() != ID_SAVELOADSETTINGS "
+                  f"{event.GetId()} {ID_SAVELOADSETTINGS=}")
             event.Skip()
             return
         save_settings_dialog = SaveLoadSettings(self, self._settings)
@@ -201,9 +204,9 @@ class FileExplorerPreferences(EditorPreferences):
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
         print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings check {ID_LOAD}=={result=}")
-        if result == 5101:  # DEBUG Should be ID_LOAD: ut is always 5101
+        if result == 5101:  # DEBUG Should be ID_LOAD: but is always 5101
             print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings {result=}")
-            self._reload_settings()  # Force reload on File explorer pane
+            # self._reload_settings()  # Force reload on File explorer pane
             # wnd_handle = wx.FindWindowByName('files_explorer')
             # print(f"DEBUG: Preferences FILE_EXPLORER WINDOW IS {wnd_handle=}")
             # if wnd_handle:
