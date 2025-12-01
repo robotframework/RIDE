@@ -2,21 +2,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-10-09 10:52+0100\n"
-"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
+"PO-Revision-Date: 2025-12-01 19:48\n"
+"Last-Translator: \n"
 "Language-Team: Dutch\n"
-"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: nl\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"X-Generator: Poedit 3.7\n"
+"Language: nl_NL\n"
 
 #: src/robotide/application/application.py:217
 msgid "Global Settings"
@@ -24,11 +23,11 @@ msgstr "Algemene instellingen"
 
 #: src/robotide/application/application.py:218
 msgid "Global Settings Detected"
-msgstr "Algemene Instellingen Gedetecteerd"
+msgstr "Algemene instellingen gedetecteerd"
 
 #: src/robotide/application/application.py:219
 msgid "Project Settings"
-msgstr "Project Instellingen"
+msgstr "Projectinstellingen"
 
 #: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
@@ -44,7 +43,7 @@ msgstr "RIDE moet opnieuw worden gestart om deze te kunnen gebruiken "
 
 #: src/robotide/application/application.py:242
 msgid "Click OK to Restart RIDE!"
-msgstr "Klik op OK om de RIDE-app opnieuw te starten!"
+msgstr "Klik op OK om RIDE opnieuw te starten!"
 
 #: src/robotide/application/application.py:458
 #: src/robotide/application/application.py:463
@@ -122,12 +121,8 @@ msgstr "Klik op OK om RIDE nu bij te werken!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om "
-"dit RIDE-venster te sluiten."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om dit RIDE-venster te sluiten."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
@@ -182,11 +177,9 @@ msgid "See the latest development "
 msgstr "Bekijk de laatste ontwikkelingen in de "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"Ik gebruik een andere methode om RIDE bij te werken\n"
+msgstr "Ik gebruik een andere methode om RIDE bij te werken\n"
 " en heb geen automatische update controles nodig"
 
 #: src/robotide/application/updatenotifier.py:252
@@ -199,9 +192,7 @@ msgstr "Nu bijwerken"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
-"RIDE versie %s opgestart met Python versie %s and wxPython versie %s onder "
-"%s."
+msgstr "RIDE versie %s opgestart met Python versie %s and wxPython versie %s onder %s."
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
@@ -228,21 +219,12 @@ msgid "Some of the icons are from %s."
 msgstr "Enkele van de gebruikte pictogrammen komen van %s."
 
 #: src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s, de beheerder van dit project, bedankt de oorspronkelijke auteurs, alle "
-"gebruikers en iedereen die heeft bijgedragen."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s, de beheerder van dit project, bedankt de oorspronkelijke auteurs, alle gebruikers en iedereen die heeft bijgedragen."
 
 #: src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"Een bijzonder dankjewel aan de %s voor het sponsoren van de ontwikkeling "
-"voor de ondersteuning van vertaalde inhoud voor %s versie 6.1, als onderdeel "
-"van de %s."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "Een bijzonder dankjewel aan de %s voor het sponsoren van de ontwikkeling voor de ondersteuning van vertaalde inhoud voor %s versie 6.1, als onderdeel van de %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -392,11 +374,9 @@ msgid "Unsaved Modifications"
 msgstr "Niet-opgeslagen wijzigingen"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"Er zijn niet-opgeslagen wijzigingen.\n"
+msgstr "Er zijn niet-opgeslagen wijzigingen.\n"
 "        Wilt u alle wijzigingen opslaan en de tests uitvoeren?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -404,26 +384,20 @@ msgid "No tests selected"
 msgstr "Geen testgevallen geselecteerd"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
-msgstr ""
-"Je hebt geen enkele test geselecteerd. \n"
+msgstr "Je hebt geen enkele test geselecteerd. \n"
 "Wil je alle tests uitvoeren?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "Testrun is beëindigd {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr ""
-"De Berichten log gebruikt meer dan 80% van het procesgeheugen. Voorlopig "
-"gestopt..."
+msgstr "De Berichten log gebruikt meer dan 80% van het procesgeheugen. Voorlopig gestopt..."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
@@ -573,11 +547,9 @@ msgid "No logs directory"
 msgstr "Logboek map ontbreekt"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"Er is geen logboekmap. \n"
+msgstr "Er is geen logboekmap. \n"
 "Voer de tests uit en probeer opnieuw"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
@@ -598,19 +570,13 @@ msgid "  current keyword: "
 msgstr "  huidig actiewoord: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgid "[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[Navigatie]\n"
-"        !&Terug | Ga terug naar de vorige locatie in testsuite | Alt-%s | "
-"ART_GO_BACK\n"
-"        !&Vooruit | Ga vooruit naar de volgende locatie in testsuite | Alt-"
-"%s | ART_GO_FORWARD\n"
+msgstr "[Navigatie]\n"
+"        !&Terug | Ga terug naar de vorige locatie in testsuite | Alt-%s | ART_GO_BACK\n"
+"        !&Vooruit | Ga vooruit naar de volgende locatie in testsuite | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
@@ -672,27 +638,19 @@ msgstr "&Verwijderen | Verwijderen | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr ""
-"Rijen &uitcommentariëren | Geselecteerde rijen als commentaar markeren | "
-"Ctrlcmd-3\n"
+msgstr "Rijen &uitcommentariëren | Geselecteerde rijen als commentaar markeren | Ctrlcmd-3\n"
 
 #: src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
-"&Cellen uitcommentariëren | Cell met # als commentaar markeren | Ctrlcmd-"
-"Shift-3\n"
+msgstr "&Cellen uitcommentariëren | Cell met # als commentaar markeren | Ctrlcmd-Shift-3\n"
 
 #: src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
-"Rijen &oncommentariëren | Commentaarmarkering verwijderen van geselecteerde "
-"rijen | Ctrlcmd-4\n"
+msgstr "Rijen &oncommentariëren | Commentaarmarkering verwijderen van geselecteerde rijen | Ctrlcmd-4\n"
 
 #: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
-"Cellen onco&mmentariëren | Commentaarmarkering verwijderen van cellen met "
-"een # | Ctrlcmd-Shift-4\n"
+msgstr "Cellen onco&mmentariëren | Commentaarmarkering verwijderen van cellen met een # | Ctrlcmd-Shift-4\n"
 
 #: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
@@ -712,15 +670,11 @@ msgstr "Rijen verwij&deren | Rijen verwijderen | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
-"Rijen omhoog verplaatsen (Alt-Up of Ctrl-Shift-Up) | Rijen omhoog "
-"verplaatsen\n"
+msgstr "Rijen omhoog verplaatsen (Alt-Up of Ctrl-Shift-Up) | Rijen omhoog verplaatsen\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
-"Rijen omlaag verplaatsen (Alt-Up of Ctrl-Shift-Up) | Rijen omlaag "
-"verplaatsen\n"
+msgstr "Rijen omlaag verplaatsen (Alt-Up of Ctrl-Shift-Up) | Rijen omlaag verplaatsen\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:66
@@ -728,25 +682,16 @@ msgid "[Tools]\n"
 msgstr "[Hulpmiddelen]\n"
 
 #: src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Conte&xt assistent (Ctrl-Space or Ctrl-Alt-Space) | Toon suggesties voor "
-"actiewoorden en variabelen | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Conte&xt assistent (Ctrl-Space or Ctrl-Alt-Space) | Toon suggesties voor actiewoorden en variabelen | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"De standaard editor plugin. Ook wel Grid- of Celeditor genoemd.\n"
-"\n"
-"    Deze plugin ondersteunt bij het creëren van de diverse typen inhoud voor "
-"Robot Framework\n"
+msgstr "De standaard editor plugin. Ook wel Grid- of Celeditor genoemd.\n\n"
+"    Deze plugin ondersteunt bij het creëren van de diverse typen inhoud voor Robot Framework\n"
 "    "
 
 #: src/robotide/editor/__init__.py:95
@@ -754,119 +699,75 @@ msgid "Editor"
 msgstr "Editor"
 
 #: src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
-"Indien de waarde pipe-tekens bevat moeten deze geëscaped worden met een "
-"backslash: '\\|'."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgstr "Indien de waarde pipe-tekens bevat moeten deze geëscaped worden met een backslash: '\\|'."
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
-"Scheid labels met een pipe-teken. Voorbeeld: \"label één | tweede label | "
-"3e”."
+msgstr "Scheid labels met een pipe-teken. Voorbeeld: \"label één | tweede label | 3e”."
 
 #: src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
-msgstr ""
-"Scheid parameters met pipe-tekens. Voorbeeld: 'Mijn actiewoord | par 1 | par "
-"2'."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
+msgstr "Scheid parameters met pipe-tekens. Voorbeeld: 'Mijn actiewoord | par 1 | par 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
-msgstr ""
-"Gebruik Robot's tijdsyntax zoals bijvoorbeeld '1min 10s', '2 hours' of een "
-"los getal voor seconden.\n"
-"Vóór Robot v3.0.1 kon een extra tekst meegegeven worden: '3 minutes | Eigen "
-"foutmelding'."
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
+msgstr "Gebruik Robot's tijdsyntax zoals bijvoorbeeld '1min 10s', '2 hours' of een los getal voor seconden.\n"
+"Vóór Robot v3.0.1 kon een extra tekst meegegeven worden: '3 minutes | Eigen foutmelding'."
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"Specificeer parameters gescheiden door een pipe-teken. Voorbeeld: '${par1} | "
-"${par2}'.\n"
-"Standaardwaarden worden gespecificeerd door middel van een is-gelijk-aan-"
-"teken (=). De laatste parameter kan een lijstvariabele zijn.\n"
+msgstr "Specificeer parameters gescheiden door een pipe-teken. Voorbeeld: '${par1} | ${par2}'.\n"
+"Standaardwaarden worden gespecificeerd door middel van een is-gelijk-aan-teken (=). De laatste parameter kan een lijstvariabele zijn.\n"
 "Voorbeeld: '${par1} | ${par2}=standaardwaarde | @{rest}'.\n"
 "Merk op dat variabele snelkoppelingen toegestaan zijn in dit veld."
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"Een alias kan worden gebruikt om dezelfde bibliotheek meerdere keren te "
-"importeren met verschillende namen.\n"
+msgstr "Een alias kan worden gebruikt om dezelfde bibliotheek meerdere keren te importeren met verschillende namen.\n"
 "De alias wordt aangeduid met: "
 
 #: src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" . Merk op dat sinds Robot v6.0 imports die voorheen WITH NAME gebruikten nu "
-"AS gebruiken."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " . Merk op dat sinds Robot v6.0 imports die voorheen WITH NAME gebruikten nu AS gebruiken."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Geef de variabele een naam en waarde."
 
 #: src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Geef de variabele een naam en waarden. Zet elke waarde in zijn eigen cel."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Geef de variabele een naam en waarden. Zet elke waarde in zijn eigen cel."
 
 #: src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
-msgstr ""
-"Geef de variabele een naam en waarden. Zet elk sleutel-waarde paar in zijn "
-"eigen cel."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
+msgstr "Geef de variabele een naam en waarden. Zet elk sleutel-waarde paar in zijn eigen cel."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Elke cel moet de vorm `sleutel=waarde` hebben."
 
 #: src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Geef de naam, optioneel de parameters en indien gewenst een alias voor de te "
-"importeren bibliotheek."
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Geef de naam, optioneel de parameters en indien gewenst een alias voor de te importeren bibliotheek."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr ""
-"Scheid meerdere parameters met een pipe-teken. Voorbeeld: 'par 1 | par 2'."
+msgstr "Scheid meerdere parameters met een pipe-teken. Voorbeeld: 'par 1 | par 2'."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
-"Geef bibliotheeknaam, bibliotheekdocumentatie-URL en commando om te "
-"installeren."
+msgstr "Geef bibliotheeknaam, bibliotheekdocumentatie-URL en commando om te installeren."
 
 #: src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
-"In het commando kan je `%%uitvoerbaar ` gebruiken als een placeholder die "
-"vervangen wordt door het werkelijke pad"
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "In het commando kan je `%%uitvoerbaar ` gebruiken als een placeholder die vervangen wordt door het werkelijke pad"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -874,9 +775,7 @@ msgstr " naar Python uitvoerbaar."
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
-"Geef de bestandslocatie en optioneel de parameters van het te importeren "
-"variabelenbestand."
+msgstr "Geef de bestandslocatie en optioneel de parameters van het te importeren variabelenbestand."
 
 #: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
@@ -884,8 +783,7 @@ msgstr "Geef de bestandslocatie van het te importeren resourcebestand."
 
 #: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
-"Bestaande resources worden automatisch toegevoegd in de suiteverkenner."
+msgstr "Bestaande resources worden automatisch toegevoegd in de suiteverkenner."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
@@ -908,152 +806,88 @@ msgid "These tags are set to all test cases in this test suite."
 msgstr "Deze labels worden toegepast op alle testgevallen in deze suite."
 
 #: src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Deze labels worden toegepast op alle testgevallen in deze testsuite, tenzij "
-"testgevallen hun eigen tags hebben."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Deze labels worden toegepast op alle testgevallen in deze testsuite, tenzij testgevallen hun eigen tags hebben."
 
 #: src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Deze labels worden toegepast op alle testgevallen in deze suite. Dit veld is "
-"nieuw sinds Robot Framework 6. Vanaf Robot Framework 7 vervangt deze "
-"instelling de 'Forceer Labels' en 'Standaard Labels' instellingen."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Deze labels worden toegepast op alle testgevallen in deze suite. Dit veld is nieuw sinds Robot Framework 6. Vanaf Robot Framework 7 vervangt deze instelling de 'Forceer Labels' en 'Standaard Labels' instellingen."
 
 #: src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Deze labels worden toegepast op dit testgeval naast de labels van Forceer "
-"Labels. Ze overschrijven mogelijke Standaardlabels."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Deze labels worden toegepast op dit testgeval naast de labels van Forceer Labels. Ze overschrijven mogelijke Standaardlabels."
 
 #: src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Dit actiewoord wordt uitgevoerd vóór het starten van de tests of "
-"onderliggende suites."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Dit actiewoord wordt uitgevoerd vóór het starten van de tests of onderliggende suites."
 
 #: src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Dit actiewoord wordt uitgevoerd na beëindiging van alle tests en "
-"onderliggende suites."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Dit actiewoord wordt uitgevoerd na beëindiging van alle tests en onderliggende suites."
 
 #: src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Dit actiewoord wordt uitgevoerd vóór elke test in deze suite, tenzij de test "
-"een eigen testvoorbereiding heeft."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Dit actiewoord wordt uitgevoerd vóór elke test in deze suite, tenzij de test een eigen testvoorbereiding heeft."
 
 #: src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Dit actiewoord wordt uitgevoerd na elke test in deze suite, tenzij de test "
-"een eigen testafronding heeft."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Dit actiewoord wordt uitgevoerd na elke test in deze suite, tenzij de test een eigen testafronding heeft."
 
 #: src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"Dit actiewoord wordt uitgevoerd vóór de start van deze test of dit "
-"actiewoord."
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "Dit actiewoord wordt uitgevoerd vóór de start van deze test of dit actiewoord."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
-"Bij testgevallen overschrijft deze voorbereiding een eventuele "
-"testvoorbereiding op suite-niveau."
+msgstr "Bij testgevallen overschrijft deze voorbereiding een eventuele testvoorbereiding op suite-niveau."
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Actiewoordvoorbereiding is nieuw sinds Robot Framework v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Dit actiewoord wordt uitgevoerd na het beëindigen van deze test of dit "
-"actiewoord, zelfs als de test of het actiewoord is gefaald."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Dit actiewoord wordt uitgevoerd na het beëindigen van deze test of dit actiewoord, zelfs als de test of het actiewoord is gefaald."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
-"Bij testgevallen overschrijft deze afronding een eventuele testafronding op "
-"suite-niveau."
+msgstr "Bij testgevallen overschrijft deze afronding een eventuele testafronding op suite-niveau."
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
-"Specificeert het actiewoord dat voor tests in deze suite als sjabloon wordt "
-"gebruikt."
+msgstr "Specificeert het actiewoord dat voor tests in deze suite als sjabloon wordt gebruikt."
 
 #: src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). "
-"Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Specificeer het actiewoord dat als sjabloon moet worden gebruikt."
 
 #: src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). "
-"Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "De testgevallen hebben de vorm van een gegevenstabel (data-driven testen). Elke rij is één testgeval en bevat de parameters voor het sjabloonactiewoord."
 
 #: src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
-"Geef de returnwaarde. Gebruik een pipe-teken om meerdere waarden te scheiden."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
+msgstr "Geef de returnwaarde. Gebruik een pipe-teken om meerdere waarden te scheiden."
 
 #: src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Maximaal toegestane tijdsduur per testgeval in deze suite. Bij "
-"overschrijding wordt de test afgebroken."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Maximaal toegestane tijdsduur per testgeval in deze suite. Bij overschrijding wordt de test afgebroken."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
-"Kan worden overschreven voor individuele testgevallen met de "
-"tijdslimietinstelling van die test."
+msgstr "Kan worden overschreven voor individuele testgevallen met de tijdslimietinstelling van die test."
 
 #: src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
-msgstr ""
-"Maximaal toegestane tijdsduur voor dit testgeval/actiewoord. Bij "
-"overschrijding wordt deze afgebroken."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
+msgstr "Maximaal toegestane tijdsduur voor dit testgeval/actiewoord. Bij overschrijding wordt deze afgebroken."
 
 #: src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"Bij testgevallen overschrijft deze instelling een eventuele testtijdslimiet "
-"op suite-niveau."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "Bij testgevallen overschrijft deze instelling een eventuele testtijdslimiet op suite-niveau."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1234,12 +1068,8 @@ msgid "Columns"
 msgstr "Kolommen"
 
 #: src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Het aantal kolommen dat wordt getoond in deze editor. Dit is één instelling "
-"voor alle lijsten."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Het aantal kolommen dat wordt getoond in deze editor. Dit is één instelling voor alle lijsten."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1318,39 +1148,27 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Nieuwe dictvariabele maken\tCtrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>Actiewoord niet gevonden door RIDE</b>\n"
+msgstr "<b>Actiewoord niet gevonden door RIDE</b>\n"
 "        <br>Mogelijke oplossingen:<br>\n"
 "        <ul>\n"
-"            <li>Importeer de bibliotheek of resource met het actiewoord.</"
-"li>\n"
-"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de "
-"bibliotheek te importeren als Spec \n"
-"            XML (Zie Hulpmiddelen -> Importeer bibliotheek als Spec XML of "
-"door\n"
-"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) "
-"om actiewoord voltooiing\n"
+"            <li>Importeer de bibliotheek of resource met het actiewoord.</li>\n"
+"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de bibliotheek te importeren als Spec \n"
+"            XML (Zie Hulpmiddelen -> Importeer bibliotheek als Spec XML of door\n"
+"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) om actiewoord voltooiing\n"
 "            mogelijk te maken. Voor bijvoorbeeld Java bibliotheken.\n"
-"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de "
-"Libdoc tool van Robot Framework.\n"
+"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de Libdoc tool van Robot Framework.\n"
 "            Voor meer informatie zie de \n"
-"            <a href=\\\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-\n"
+"            <a href=\\\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-\n"
 "            specs\\\">wiki</a>.</li>\n"
 "        </ul>"
 
@@ -1481,49 +1299,32 @@ msgid "Import Library Spec XML"
 msgstr "Importeer Bibliotheek als Spec XML"
 
 #: src/robotide/editor/settingeditors.py:687
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>Notities en mogelijke oplossingen:<br>\n"
+msgstr "<br>Notities en mogelijke oplossingen:<br>\n"
 "        <ul>\n"
-"            <li>Een fout bij importeren wordt getoond met een rode kleur.</"
-"li>\n"
-"            <li>Bekijk het RIDE Logboek onder Hulpmiddelen voor meer "
-"informatie over de fout.</li>\n"
-"            <li>Als de import een variabele bevat die RIDE nog niet kent, "
-"overweeg dan om de variabele\n"
-"            toe te voegen aan de tabel met variabelen met een "
-"standaardwaarde.</li>\n"
-"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de "
-"bibliotheek te importeren als Spec XML (Zie Hulpmiddelen -> Importeer "
-"bibliotheek als Spec XML of door\n"
-"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) "
-"om actiewoord voltooiing\n"
+"            <li>Een fout bij importeren wordt getoond met een rode kleur.</li>\n"
+"            <li>Bekijk het RIDE Logboek onder Hulpmiddelen voor meer informatie over de fout.</li>\n"
+"            <li>Als de import een variabele bevat die RIDE nog niet kent, overweeg dan om de variabele\n"
+"            toe te voegen aan de tabel met variabelen met een standaardwaarde.</li>\n"
+"            <li>Bij importeerfouten van een bibliotheek: Overweeg om de bibliotheek te importeren als Spec XML (Zie Hulpmiddelen -> Importeer bibliotheek als Spec XML of door\n"
+"            het XML-bestand met de juiste naam aan PYTHONPATH toe te voegen) om actiewoord voltooiing\n"
 "            mogelijk te maken. Voor bijvoorbeeld Java bibliotheken.\n"
-"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de "
-"Libdoc tool van Robot Framework.\n"
+"            Een Spec XML bibliotheek kan worden gemaakt met behulp van de Libdoc tool van Robot Framework.\n"
 "            Voor meer informatie zie de \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1574,11 +1375,9 @@ msgid "Get help"
 msgstr "Hulp tonen"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1594,20 +1393,16 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>Syntaxkleuring</h1>\n"
+msgstr "<h1>Syntaxkleuring</h1>\n"
 "        <p>\n"
-"        Syntaxkleuring voor de Teksteditor maakt gebruik van <a "
-"href='https://pygments.org/'>Pygments</a> Syntaxkleuring.\n"
+"        Syntaxkleuring voor de Teksteditor maakt gebruik van <a href='https://pygments.org/'>Pygments</a> Syntaxkleuring.\n"
 "        </p>\n"
 "        <p>\n"
 "        Installeer Pygments via de opdrachtprompt met:\n"
@@ -1623,13 +1418,11 @@ msgstr ""
 "        <p>\n"
 "        Beschik je niet over pip of easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >doorloop dan deze instructies</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Bekijk voor meer informatie over het installeren de <a href='https://"
-"pygments.org/download/'>Pygments website</a>.\n"
+"        Bekijk voor meer informatie over het installeren de <a href='https://pygments.org/download/'>Pygments website</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1785,11 +1578,9 @@ msgid "Auto size columns"
 msgstr "Automatische kolombreedte"
 
 #: src/robotide/preferences/editors.py:258
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"Maximale kolombreedte\n"
+msgstr "Maximale kolombreedte\n"
 "(bij automatische kolombreedte)"
 
 #: src/robotide/preferences/editors.py:262
@@ -1875,9 +1666,7 @@ msgstr "Consolekleuren tonen volgens optie"
 
 #: src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
-"Bevestiging vragen om alle tests uit te voeren wanneer er geen geselecteerd "
-"zijn "
+msgstr "Bevestiging vragen om alle tests uit te voeren wanneer er geen geselecteerd zijn "
 
 #: src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
@@ -1893,23 +1682,20 @@ msgstr "Voorgrond bij overslaan"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "Toon bestandsverkenner"
+msgstr "Bestand verkenner"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "Instellingen voor teksteditor"
+msgstr "Instellingen voor bestandsverkenner"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "Open definitie"
+msgstr "Gebruik deze kleuren definities"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Gebruik besturingssysteem bestandsverkenner"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -1972,17 +1758,12 @@ msgid "Comma separated list of libraries to be automatically imported."
 msgstr "Kommagescheiden lijst van bibliotheken om automatisch te laden."
 
 #: src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Kommagescheiden lijst van mappen om toe te voegen aan PYTHONPATH wanneer "
-"naar bibliotheken gezocht wordt."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Kommagescheiden lijst van mappen om toe te voegen aan PYTHONPATH wanneer naar bibliotheken gezocht wordt."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
-"Kommagescheiden lijst van mappen met Spec XML bestanden van bibliotheken."
+msgstr "Kommagescheiden lijst van mappen met Spec XML bestanden van bibliotheken."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
@@ -2058,11 +1839,8 @@ msgid "Line separator:"
 msgstr "Regelscheidingsteken:"
 
 #: src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
-"Beschikbare opties zijn: CRLF (Windows), LF (Unix) of native (op basis van "
-"het huidige besturingssysteem)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr "Beschikbare opties zijn: CRLF (Windows), LF (Unix) of native (op basis van het huidige besturingssysteem)"
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
@@ -2100,46 +1878,30 @@ msgid "Open %s"
 msgstr "Open %s"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
-"command does not work.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr ""
-"De opdracht in opdrachtveld wordt door middel van spaties gesplitst in een "
-"opdracht\n"
-"en haar parameters. Als het commando, of een van de parameters, zelf spaties "
-"bevatten,\n"
-"schrijf deze dan uit door ze te vervangen met '<SPACE>'.\n"
-"\n"
-"Het commando wordt direct op het systeem uitgevoerd zonder een "
-"opdrachtprompt te\n"
-"openen. Dit betekent dat commando's en extensies van de opdrachtprompt niet "
-"beschikbaar\n"
-"zijn. Om bijvoorbeeld Windows batchbestanden uit te voeren moet deze de "
-"'.bat' extensie\n"
-"bevatten en ook het standaard 'dir'-commando zal niet werken.\n"
-"\n"
+msgstr "De opdracht in opdrachtveld wordt door middel van spaties gesplitst in een opdracht\n"
+"en haar parameters. Als het commando, of een van de parameters, zelf spaties bevatten,\n"
+"schrijf deze dan uit door ze te vervangen met '<SPACE>'.\n\n"
+"Het commando wordt direct op het systeem uitgevoerd zonder een opdrachtprompt te\n"
+"openen. Dit betekent dat commando's en extensies van de opdrachtprompt niet beschikbaar\n"
+"zijn. Om bijvoorbeeld Windows batchbestanden uit te voeren moet deze de '.bat' extensie\n"
+"bevatten en ook het standaard 'dir'-commando zal niet werken.\n\n"
 "Voorbeelden:\n"
 "    robot.bat --loglevel debug C:\\mijn_tests\n"
 "    svn update /home/robot\n"
-"    C:\\Program<SPACE>Files\\App\\prg.exe parameter<SPACE>met<SPACE>spatie.\n"
-"\n"
-"Macroconfiguraties worden opgeslagen als onderdeel van de RIDE "
-"instellingen.\n"
+"    C:\\Program<SPACE>Files\\App\\prg.exe parameter<SPACE>met<SPACE>spatie.\n\n"
+"Macroconfiguraties worden opgeslagen als onderdeel van de RIDE instellingen.\n"
 
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
@@ -2155,18 +1917,13 @@ msgid "Remove"
 msgstr "Verwijderen"
 
 #: src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"Een plugin voor het uitvoeren van opdrachten op het systeem.\n"
-"\n"
+msgstr "Een plugin voor het uitvoeren van opdrachten op het systeem.\n\n"
 "    Met deze plugin maak je Macros voor het uitvoeren van opdrachten op het\n"
-"    besturingssysteem van de computer. Uitvoer van de uitgevoerde "
-"opdrachten\n"
+"    besturingssysteem van de computer. Uitvoer van de uitgevoerde opdrachten\n"
 "    wordt weergegeven in een apart tabblad."
 
 #: src/robotide/run/runanything.py:55
@@ -2207,12 +1964,8 @@ msgid "Results: "
 msgstr "Resultaten: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Vind overeenkomsten met labelpatronen. Zie de Robot Framework "
-"gebruikershandleiding of gebruik 'robot --help' voor meer informatie."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Vind overeenkomsten met labelpatronen. Zie de Robot Framework gebruikershandleiding of gebruik 'robot --help' voor meer informatie."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
@@ -2252,34 +2005,20 @@ msgstr "Zoekterm"
 
 #: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
-"Een plugin voor het zoeken van testgevallen gebaseerd op naam, labels en "
-"documentatie"
+msgstr "Een plugin voor het zoeken van testgevallen gebaseerd op naam, labels en documentatie"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+msgid "Install missing libraries and open documentation.\n\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
-"Installeer ontbrekende bibliotheken en open de documentatie.\n"
-"\n"
-"    U kunt settings.cfg bewerken om URL toe te voegen voor documentatie en "
-"commando om te installeren.\n"
-"    Je kunt met de rechtermuisknop klikken op een naam van een bibliotheek, "
-"en Documentatie openen of Bibliotheek installeren.\n"
-"    Van Tools->Bibliotheek zoeken... of Help->Open Bibliotheek "
-"Documentatie... je krijgt\n"
-"    een dialoogvenster voor de installatie van het commando of de URL voor "
-"de documentatie.\n"
+msgstr "Installeer ontbrekende bibliotheken en open de documentatie.\n\n"
+"    U kunt settings.cfg bewerken om URL toe te voegen voor documentatie en commando om te installeren.\n"
+"    Je kunt met de rechtermuisknop klikken op een naam van een bibliotheek, en Documentatie openen of Bibliotheek installeren.\n"
+"    Van Tools->Bibliotheek zoeken... of Help->Open Bibliotheek Documentatie... je krijgt\n"
+"    een dialoogvenster voor de installatie van het commando of de URL voor de documentatie.\n"
 "    "
 
 #: src/robotide/spec/libraryfinder.py:39
@@ -2311,12 +2050,10 @@ msgid "Info"
 msgstr "Info"
 
 #: src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"Bibliotheek \"%s\" geïmporteerd\n"
+msgstr "Bibliotheek \"%s\" geïmporteerd\n"
 "uit \"%s\"\n"
 "Vereist herstart van RIDE."
 
@@ -2381,11 +2118,9 @@ msgid "Change recursively"
 msgstr "Pas recursief toe"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"Geef het formaat voor het initialisatiebestand in map\n"
+msgstr "Geef het formaat voor het initialisatiebestand in map\n"
 "\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2414,12 +2149,8 @@ msgid "All files|*.*"
 msgstr "Alle bestanden|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"Toont een boomweergave voor bestanden en mappen. Opent het geselecteerde "
-"item met een rechtermuisklik."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "Toont een boomweergave voor bestanden en mappen. Opent het geselecteerde item met een rechtermuisklik."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
@@ -2466,9 +2197,7 @@ msgstr "Actiewoorden zoeken"
 
 #: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
-"Een plugin voor het zoeken van actiewoorden op basis van naam of "
-"documentatie."
+msgstr "Een plugin voor het zoeken van actiewoorden op basis van naam of documentatie."
 
 #: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -2492,27 +2221,19 @@ msgstr "[Bestand]\n"
 
 #: src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&Nieuw Project | Creëert een nieuw topniveau suite | Ctrlcmd-N | ART_NEW\n"
+msgstr "!&Nieuw Project | Creëert een nieuw topniveau suite | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:60
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!&Open Test Suite | Open bestand met tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&Open Test Suite | Open bestand met tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:61
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Open &map | Open map met robotbestanden | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Open &map | Open map met robotbestanden | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!Open e&xtern bestand | Open bestand in los venster | | ART_NORMAL_FILE\n"
+msgstr "!Open e&xtern bestand | Open bestand in los venster | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
@@ -2520,9 +2241,7 @@ msgstr "!&Opslaan | Geselecteerd bestand opslaan | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!&Alles opslaan | Sla alle wijzigingen op | Ctrlcmd-Shift-S | "
-"ART_FILE_SAVE_AS\n"
+msgstr "!&Alles opslaan | Sla alle wijzigingen op | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2570,9 +2289,7 @@ msgstr "!Over RIDE | Informatie over RIDE\n"
 
 #: src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
-"!Controleer op upgrades | Gebruikt PyPi om te controleren of er een nieuwe "
-"versie beschikbaar is\n"
+msgstr "!Controleer op upgrades | Gebruikt PyPi om te controleren of er een nieuwe versie beschikbaar is\n"
 
 #: src/robotide/ui/mainframe.py:176
 msgid "Saved %s"
@@ -2596,11 +2313,9 @@ msgid "Test Suites"
 msgstr "Testsuites"
 
 #: src/robotide/ui/mainframe.py:419
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"Er zijn niet-opgeslagen wijzigingen.\n"
+msgstr "Er zijn niet-opgeslagen wijzigingen.\n"
 "Wilt u de wijzigingen opslaan voordat u afsluit?"
 
 #: src/robotide/ui/mainframe.py:419
@@ -2609,11 +2324,9 @@ msgid "Warning"
 msgstr "Waarschuwing"
 
 #: src/robotide/ui/mainframe.py:512
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"Er zijn niet-opgeslagen wijzigingen.\n"
+msgstr "Er zijn niet-opgeslagen wijzigingen.\n"
 "Wilt u doorgaan zonder op te slaan?"
 
 #: src/robotide/ui/mainframe.py:563
@@ -2693,19 +2406,12 @@ msgid "Plugin"
 msgstr "Plugin"
 
 #: src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Merk op: Het in- en uitschakelen van plugins kan een herstart van RIDE "
-"vereisen om toe te passen."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Merk op: Het in- en uitschakelen van plugins kan een herstart van RIDE vereisen om toe te passen."
 
 #: src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
-"(verouderd) Geeft een voorbeeld van de robotbestanden in HTML, TSV en TXT "
-"formaten."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(verouderd) Geeft een voorbeeld van de robotbestanden in HTML, TSV en TXT formaten."
 
 #: src/robotide/ui/preview.py:41
 #: src/robotide/ui/preview.py:100
@@ -2733,14 +2439,10 @@ msgid "Search unused keywords"
 msgstr "Zoek ongebruikte actiewoorden"
 
 #: src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"Dit dialoogvenster helpt je ongebruikte actiewoorden in het geopende project "
-"te vinden.\n"
-"Als je wilt, kun je het zoeken beperken tot bepaalde bestanden door een "
-"filter in te stellen."
+msgstr "Dit dialoogvenster helpt je ongebruikte actiewoorden in het geopende project te vinden.\n"
+"Als je wilt, kun je het zoeken beperken tot bepaalde bestanden door een filter in te stellen."
 
 #: src/robotide/ui/review.py:70
 msgid "Filter is"
@@ -2760,16 +2462,11 @@ msgid "Use RegEx"
 msgstr "Gebruik RegEx"
 
 #: src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"Hier kunt u een of meer zoektermen definiëren gescheiden door een komma "
-"(bijv. appel,abc,123).\n"
-"Het filter komt overeen als ten minste één zoekterm deel uitmaakt van de "
-"bestandsnaam.\n"
+msgstr "Hier kunt u een of meer zoektermen definiëren gescheiden door een komma (bijv. appel,abc,123).\n"
+"Het filter komt overeen als ten minste één zoekterm deel uitmaakt van de bestandsnaam.\n"
 "Als je geen tekenreeksen invoert, worden alle geopende bestanden meegenomen."
 
 #: src/robotide/ui/review.py:101
@@ -2827,13 +2524,8 @@ msgid "(None)"
 msgstr "(Geen)"
 
 #: src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"Actiewoorden van de volgende bestanden zullen worden meegenomen in de "
-"zoekopdracht:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "Actiewoorden van de volgende bestanden zullen worden meegenomen in de zoekopdracht:\n\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2884,11 +2576,9 @@ msgid "Excluded Tag Search"
 msgstr "Label-exclusief zoeken"
 
 #: src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"Totaal aantal tests: %d, Tests met labels: %d, Unieke tags: %d\n"
+msgstr "Totaal aantal tests: %d, Tests met labels: %d, Unieke tags: %d\n"
 "Momenteel geselecteerd: %d tests"
 
 #: src/robotide/ui/tagdialogs.py:233
@@ -2993,11 +2683,9 @@ msgid "Expand all"
 msgstr "Alles uitvouwen"
 
 #: src/robotide/ui/treenodehandlers.py:444
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Map bevat niet-opgeslagen gegevens!\n"
+msgstr "Map bevat niet-opgeslagen gegevens!\n"
 "Sla de gegevens op alvorens de map uit te sluiten."
 
 #: src/robotide/ui/treenodehandlers.py:490
@@ -3031,11 +2719,9 @@ msgstr "Alleen-lezen opheffen"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Bestand bevat niet-opgeslagen gegevens!\n"
+msgstr "Bestand bevat niet-opgeslagen gegevens!\n"
 "Sla het bestand op alvorens deze uit te sluiten."
 
 #: src/robotide/ui/treenodehandlers.py:572
@@ -3125,3 +2811,4 @@ msgstr "OK"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "ja"
+
