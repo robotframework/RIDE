@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-06-21 14:53\n"
+"PO-Revision-Date: 2025-12-01 19:48\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
-"Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,38 +15,35 @@ msgstr ""
 "X-Crowdin-Language: cs\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"Language: cs_CZ\n"
 
 #: src/robotide/application/application.py:217
-#, fuzzy
 msgid "Global Settings"
-msgstr "Obecná nastavení"
+msgstr "Globální nastavení"
 
 #: src/robotide/application/application.py:218
-#, fuzzy
 msgid "Global Settings Detected"
-msgstr "Obecná nastavení"
+msgstr "Zjištěna globální nastavení"
 
 #: src/robotide/application/application.py:219
-#, fuzzy
 msgid "Project Settings"
-msgstr "Nastavení"
+msgstr "Nastavení projektu"
 
 #: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Detekována nastavení projektu"
 
 #: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "Restartovat RIDE?"
 
 #: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "RIDE musí být restartován pro plné použití "
 
 #: src/robotide/application/application.py:242
-#, fuzzy
 msgid "Click OK to Restart RIDE!"
-msgstr "Klepněte na tlačítko OK pro aktualizaci nyní!"
+msgstr "Klepnutím na tlačítko OK restartujte RIDE!"
 
 #: src/robotide/application/application.py:458
 #: src/robotide/application/application.py:463
@@ -125,11 +121,8 @@ msgstr "Klepněte na tlačítko OK pro aktualizaci nyní!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Po aktualizaci uvidíte další dialogové okno pro uzavření této instance RIDE."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Po aktualizaci uvidíte další dialogové okno pro uzavření této instance RIDE."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
@@ -184,11 +177,9 @@ msgid "See the latest development "
 msgstr "Zobrazit nejnovější vývoj "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"Používám jinou metodu pro RIDE aktualizace\n"
+msgstr "Používám jinou metodu pro RIDE aktualizace\n"
 " a nepotřebuji automatické kontroly aktualizací"
 
 #: src/robotide/application/updatenotifier.py:252
@@ -228,20 +219,12 @@ msgid "Some of the icons are from %s."
 msgstr "Některé ikony jsou od %s."
 
 #: src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s správce projektu děkuje původním autorům a všem uživatelům a "
-"spolupracovníkům."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s správce projektu děkuje původním autorům a všem uživatelům a spolupracovníkům."
 
 #: src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"Zvláštní poděkování %s za to, že sponzoroval vývoj přeložené kompatibility "
-"testovacích suites s %s verzí 6.1 v jejich %s."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "Zvláštní poděkování %s za to, že sponzoroval vývoj přeložené kompatibility testovacích suites s %s verzí 6.1 v jejich %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -391,11 +374,9 @@ msgid "Unsaved Modifications"
 msgstr "Neuložené úpravy"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"Existují neuložené úpravy.\n"
+msgstr "Existují neuložené úpravy.\n"
 "        Chcete uložit všechny změny a spustit testy?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -403,17 +384,14 @@ msgid "No tests selected"
 msgstr "Nebyly vybrány žádné testy"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
 msgstr ""
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "Test dokončen {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -568,11 +546,9 @@ msgid "No logs directory"
 msgstr "Adresář bez logů"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"Neexistuje adresář se záznamy. \n"
+msgstr "Neexistuje adresář se záznamy. \n"
 "Prosím, spusťte testy a zkuste to znovu"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
@@ -593,19 +569,13 @@ msgid "  current keyword: "
 msgstr "  aktuální klíčové slovo: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgid "[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[Navigate]\n"
-"        ! o &Zpět | Vraťte se zpět na předchozí místo ve stromu | Alt-%s | "
-"ART_GO_BACK\n"
-"        ! o &Předem | Přejít vpřed na další místo ve stromu | Alt-%s | "
-"ART_GO_FORWARD\n"
+msgstr "[Navigate]\n"
+"        ! o &Zpět | Vraťte se zpět na předchozí místo ve stromu | Alt-%s | ART_GO_BACK\n"
+"        ! o &Předem | Přejít vpřed na další místo ve stromu | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
@@ -699,8 +669,7 @@ msgstr "Odstranit řádky | Odstranit řádky | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
-"Přesunout řádky nahoru (Alt-Up nebo Ctrl-Shift-Up) | Přesunout řádky nahoru\n"
+msgstr "Přesunout řádky nahoru (Alt-Up nebo Ctrl-Shift-Up) | Přesunout řádky nahoru\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
@@ -712,25 +681,16 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Pomoc s obsahem (Ctrl-Space nebo Ctrl-Alt-Space) | Zobrazit možné klíčové "
-"slovo a dokončení proměnné | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Pomoc s obsahem (Ctrl-Space nebo Ctrl-Alt-Space) | Zobrazit možné klíčové slovo a dokončení proměnné | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"Výchozí editor pluginu. Také známý jako Grid nebo Editor článků.\n"
-"\n"
-"    Tento plugin implementuje editory pro různé položky testovacích dat "
-"Robot Framework\n"
+msgstr "Výchozí editor pluginu. Také známý jako Grid nebo Editor článků.\n\n"
+"    Tento plugin implementuje editory pro různé položky testovacích dat Robot Framework\n"
 "    .\n"
 "    "
 
@@ -739,8 +699,7 @@ msgid "Editor"
 msgstr "Editor"
 
 #: src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
 msgstr "Možné potrubí v hodnotě musí být uniknuto zpětným lomítkem jako '\\|'."
 
 #: src/robotide/editor/dialoghelps.py:32
@@ -748,82 +707,54 @@ msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
 msgstr "Oddělte značky znakem potrubí jako 'tag | druhá značka | 3rd'."
 
 #: src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
 msgstr "Oddělte možné argumenty znakem \"Mé klíčové slovo | arg 1 | arg 2\"."
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
-msgstr ""
-"Použij syntaxi času jako '1min 10' nebo '2 hodiny' nebo zadej hodnotu jako "
-"sekundy.\n"
-"Před robotem v3. .1 volitelná zpráva mohla být zadána jako '3 minuty | Moje "
-"zpráva zde'."
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
+msgstr "Použij syntaxi času jako '1min 10' nebo '2 hodiny' nebo zadej hodnotu jako sekundy.\n"
+"Před robotem v3. .1 volitelná zpráva mohla být zadána jako '3 minuty | Moje zpráva zde'."
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"Zadejte argumenty oddělené znakem potrubí jako '${arg1} | ${arg2}'.\n"
-"Výchozí hodnoty jsou uvedeny pomocí stejného znaménka a posledním argumentem "
-"může být proměnná seznamu.\n"
+msgstr "Zadejte argumenty oddělené znakem potrubí jako '${arg1} | ${arg2}'.\n"
+"Výchozí hodnoty jsou uvedeny pomocí stejného znaménka a posledním argumentem může být proměnná seznamu.\n"
 "Příklad: '${arg1} | ${arg2}=výchozí hodnota | @{rest}'.\n"
 "Poznámka. V tomto poli můžete použít zkratky proměnných."
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"Alias může být použit k importu stejné knihovny vícekrát s různými jmény.\n"
+msgstr "Alias může být použit k importu stejné knihovny vícekrát s různými jmény.\n"
 "Alias je předveden: "
 
 #: src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" . Všimněte si, že od Robota v6.0, importy se starým S NÁZEV jsou nahrazeny "
-"AS."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " . Všimněte si, že od Robota v6.0, importy se starým S NÁZEV jsou nahrazeny AS."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Uveďte název a hodnotu proměnné."
 
 #: src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Uveďte název a hodnotu proměnné. Vložte proměnné položky do samostatných "
-"buněk."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Uveďte název a hodnotu proměnné. Vložte proměnné položky do samostatných buněk."
 
 #: src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
-msgstr ""
-"Zadejte název a hodnotu proměnné. Vložte položky ve slovníku do samostatných "
-"buněk."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
+msgstr "Zadejte název a hodnotu proměnné. Vložte položky ve slovníku do samostatných buněk."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Jednotlivé položky musí být ve formátu `key=value`"
 
 #: src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Uveďte název, volitelné argumenty a volitelný alias knihovny pro import."
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Uveďte název, volitelné argumenty a volitelný alias knihovny pro import."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
@@ -835,12 +766,8 @@ msgid "Give library name, library documentation URL and command to install."
 msgstr "Dejte jméno knihovny, URL knihovny dokumentaci a příkaz k instalaci."
 
 #: src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
-"V příkazu můžete použít `%%spustitelný soubor, který bude nahrazen skutečnou "
-"cestou."
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "V příkazu můžete použít `%%spustitelný soubor, který bude nahrazen skutečnou cestou."
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -876,154 +803,91 @@ msgstr "Kromě toho jsou URL převedeny na klikatelné odkazy."
 
 #: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
-"Tyto značky jsou v této zkušební sadě nastaveny na všechny zkušební případy."
+msgstr "Tyto značky jsou v této zkušební sadě nastaveny na všechny zkušební případy."
 
 #: src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Tyto značky jsou nastaveny na všechny zkušební případy v této zkušební sadě, "
-"pokud zkušební případy nemají vlastní značky."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Tyto značky jsou nastaveny na všechny zkušební případy v této zkušební sadě, pokud zkušební případy nemají vlastní značky."
 
 #: src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Tyto značky jsou aplikovány na všechny zkušební případy v tomto testovacím "
-"balíku. Toto pole existuje od Robot Framework 6. a nahradí Vynucený a "
-"výchozí štítky po verzi 7.0."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Tyto značky jsou aplikovány na všechny zkušební případy v tomto testovacím balíku. Toto pole existuje od Robot Framework 6. a nahradí Vynucený a výchozí štítky po verzi 7.0."
 
 #: src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Tyto štítky jsou kromě vynucené značky nastaveny na tento zkušební případ a "
-"přepíší možné výchozí štítky."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Tyto štítky jsou kromě vynucené značky nastaveny na tento zkušební případ a přepíší možné výchozí štítky."
 
 #: src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Toto klíčové slovo se provede před provedením některého ze zkušebních "
-"případů nebo méně úrovňových souprav."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Toto klíčové slovo se provede před provedením některého ze zkušebních případů nebo méně úrovňových souprav."
 
 #: src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Toto klíčové slovo se provede po provedení všech testovacích případů a "
-"balíků s nižší úrovní."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Toto klíčové slovo se provede po provedení všech testovacích případů a balíků s nižší úrovní."
 
 #: src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Toto klíčové slovo se provede před každým testovacím případem v této sadě, "
-"pokud ho nepřevezmou testovací případy."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Toto klíčové slovo se provede před každým testovacím případem v této sadě, pokud ho nepřevezmou testovací případy."
 
 #: src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Toto klíčové slovo se spustí po každém testovacím případu v této sadě, pokud "
-"jej nepřevezmou testovací případy."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Toto klíčové slovo se spustí po každém testovacím případu v této sadě, pokud jej nepřevezmou testovací případy."
 
 #: src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"Toto klíčové slovo se spustí před jinými klíčovými slovy v tomto testovacím "
-"případě nebo klíčovým slovem."
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "Toto klíčové slovo se spustí před jinými klíčovými slovy v tomto testovacím případě nebo klíčovým slovem."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
-"Ve zkušebních případech přepíše možné nastavení zkoušky nastavené na úrovni "
-"apartmá."
+msgstr "Ve zkušebních případech přepíše možné nastavení zkoušky nastavené na úrovni apartmá."
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Nastavení v klíčových slovech existuje od robota v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Toto klíčové slovo se spustí po jiných klíčových slovech v tomto testovacím "
-"případě nebo klíčovém slově, i když test nebo klíčové slovo selže."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Toto klíčové slovo se spustí po jiných klíčových slovech v tomto testovacím případě nebo klíčovém slově, i když test nebo klíčové slovo selže."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
-"Ve zkušebních případech přepíše možné rozebrání ze zkoušky nastavené na "
-"úrovni apartmá."
+msgstr "Ve zkušebních případech přepíše možné rozebrání ze zkoušky nastavené na úrovni apartmá."
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
 msgstr "Určuje výchozí klíčové slovo šablony používané testy v tomto balíku."
 
 #: src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"Testovací případy budou obsahovat pouze data, která budou použita jako "
-"argumenty pro toto klíčové slovo."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "Testovací případy budou obsahovat pouze data, která budou použita jako argumenty pro toto klíčové slovo."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Určuje klíčové slovo šablony."
 
 #: src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"Samotný test bude obsahovat pouze data, která budou použita jako argumenty "
-"pro toto klíčové slovo."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "Samotný test bude obsahovat pouze data, která budou použita jako argumenty pro toto klíčové slovo."
 
 #: src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
-"Zadejte hodnotu návratu. Použijte znak potrubí pro oddělení více hodnot."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
+msgstr "Zadejte hodnotu návratu. Použijte znak potrubí pro oddělení více hodnot."
 
 #: src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Maximální doba trvání zkoušky v této sadě může běžet před tím, než je rázně "
-"přeruší."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Maximální doba trvání zkoušky v této sadě může běžet před tím, než je rázně přeruší."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
-"Může být přepsáno jednotlivými zkušebními případy pomocí nastavení časového "
-"limitu."
+msgstr "Může být přepsáno jednotlivými zkušebními případy pomocí nastavení časového limitu."
 
 #: src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
-msgstr ""
-"Maximální doba, po kterou může toto test/klíčové slovo spustit před jeho "
-"rázným přerušením."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
+msgstr "Maximální doba, po kterou může toto test/klíčové slovo spustit před jeho rázným přerušením."
 
 #: src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"U zkušebních případů toto nastavení přepíše časový limit testu nastavený na "
-"úrovni instalace."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "U zkušebních případů toto nastavení přepíše časový limit testu nastavený na úrovni instalace."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1204,12 +1068,8 @@ msgid "Columns"
 msgstr "Sloupce"
 
 #: src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Počet sloupců zobrazených v tomto editoru. Vybraná hodnota je uložena a "
-"používána globálně."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Počet sloupců zobrazených v tomto editoru. Vybraná hodnota je uložena a používána globálně."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1288,35 +1148,25 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Vytvořit Dict proměnnou Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>Klíčové slovo nebylo zjištěno RIDE</b>\n"
+msgstr "<b>Klíčové slovo nebylo zjištěno RIDE</b>\n"
 "        <br>Možné opravy:<br>\n"
 "        <ul>\n"
-"            <li>Importovat knihovnu nebo zdrojový soubor obsahující klíčové "
-"slovo.</li>\n"
+"            <li>Importovat knihovnu nebo zdrojový soubor obsahující klíčové slovo.</li>\n"
 "            <li>Pro chyby při importu knihovny: Zvažte import spec XML\n"
-"            (Nástroje / Importovat XML Spec knihovny nebo přidáním XML "
-"souboru s\n"
-"            správným názvem do PYTHONPATH) pro povolení dokončení klíčových "
-"slov\n"
+"            (Nástroje / Importovat XML Spec knihovny nebo přidáním XML souboru s\n"
+"            správným názvem do PYTHONPATH) pro povolení dokončení klíčových slov\n"
 "            například pro knihovny Java.\n"
-"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot "
-"Framework.</li>\n"
+"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot Framework.</li>\n"
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
@@ -1446,46 +1296,32 @@ msgid "Import Library Spec XML"
 msgstr "Importovat XML Spec knihovny"
 
 #: src/robotide/editor/settingeditors.py:687
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>Možné opravy a poznámky:<br>\n"
+msgstr "<br>Možné opravy a poznámky:<br>\n"
 "        <ul>\n"
 "            <li>Chyba importu je zobrazena červenou barvou.</li>\n"
-"            <li>Viz nástroje / Zobrazit RIDE log pro detailní informace o "
-"selhání.</li>\n"
-"            <li>Pokud import obsahuje proměnnou, kterou RIDE "
-"neinicializoval, zvažte přidání proměnné\n"
+"            <li>Viz nástroje / Zobrazit RIDE log pro detailní informace o selhání.</li>\n"
+"            <li>Pokud import obsahuje proměnnou, kterou RIDE neinicializoval, zvažte přidání proměnné\n"
 "            do proměnné tabulky s výchozí hodnotou.</li>\n"
-"            <li>V případě selhání importu knihovny: Zvažte import spec XML "
-"(Nástroje / Importovat XML Spec knihovny nebo\n"
-"            přidáním XML souboru se správným názvem do PYTHONPATH) pro "
-"povolení dokončení klíčových slov\n"
+"            <li>V případě selhání importu knihovny: Zvažte import spec XML (Nástroje / Importovat XML Spec knihovny nebo\n"
+"            přidáním XML souboru se správným názvem do PYTHONPATH) pro povolení dokončení klíčových slov\n"
 "            například v knihovnách Java.\n"
-"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot "
-"Framework.\n"
+"            Library spec XML lze vytvořit pomocí nástroje libdoc z Robot Framework.\n"
 "            Další informace naleznete v \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1536,11 +1372,9 @@ msgid "Get help"
 msgstr "Získat pomoc"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1556,21 +1390,17 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>Barvení syntaxe</h1>\n"
+msgstr "<h1>Barvení syntaxe</h1>\n"
 "        <p>\n"
 "        \n"
-" colorization syntaxe pro Textové editaci používá <a href='https://"
-"pygments.org/'>Pygments</a> zvýraznění syntaxe.\n"
+" colorization syntaxe pro Textové editaci používá <a href='https://pygments.org/'>Pygments</a> zvýraznění syntaxe.\n"
 "        </p>\n"
 "        <p>\n"
 "        Nainstalujte z příkazové řádky Pygments s:\n"
@@ -1586,13 +1416,11 @@ msgstr ""
 "        <p>\n"
 "        Pokud nemáte pip nebo easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >postupujte podle pokynů</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Pro více informací o instalaci Pygions <a href='https://pygments.org/"
-"download/'>viz stránka</a>.\n"
+"        Pro více informací o instalaci Pygions <a href='https://pygments.org/download/'>viz stránka</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1748,11 +1576,9 @@ msgid "Auto size columns"
 msgstr "Auto size columns"
 
 #: src/robotide/preferences/editors.py:258
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"Maximální velikost sloupce\n"
+msgstr "Maximální velikost sloupce\n"
 "(použije se při zapnuté auto velikosti)"
 
 #: src/robotide/preferences/editors.py:262
@@ -1854,23 +1680,20 @@ msgstr "Přeskočit v popředí"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "Zobrazit Průzkumník souborů"
+msgstr "Průzkumník souborů"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "Nastavení textového editoru"
+msgstr "Nastavení Průzkumníku souborů"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "Přejít na definici"
+msgstr "Použít definice těchto barev"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Použít Průzkumník operačních souborů"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -1930,16 +1753,11 @@ msgstr "Import knihovny a PYTHONPATH"
 
 #: src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
-"Čárkami oddělený seznam knihoven, které mají být automaticky importovány."
+msgstr "Čárkami oddělený seznam knihoven, které mají být automaticky importovány."
 
 #: src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Čárkami oddělený seznam adresářů, které mají být přidány do PYTHONPATH při "
-"hledání knihoven."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Čárkami oddělený seznam adresářů, které mají být přidány do PYTHONPATH při hledání knihoven."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
@@ -2019,8 +1837,7 @@ msgid "Line separator:"
 msgstr "Oddělovač řádků:"
 
 #: src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
 msgstr "Možné hodnoty jsou původní (současné OS) CRLF (Windows) a LF (Unixy)"
 
 #: src/robotide/preferences/saving.py:68
@@ -2059,35 +1876,25 @@ msgid "Open %s"
 msgstr "Otevřít %s"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
-"command does not work.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr ""
-"Zadaný řetězec příkazu bude rozdělen od mezery na příkaz\n"
+msgstr "Zadaný řetězec příkazu bude rozdělen od mezery na příkaz\n"
 "a jeho argumenty. Pokud příkaz nebo některý z argumentů vyžaduje\n"
-"interní prostory, musí být napsány jako '<SPACE>'.\n"
-"\n"
+"interní prostory, musí být napsány jako '<SPACE>'.\n\n"
 "Příkaz bude proveden v systému přímo bez otevření skořápky.\n"
 "To znamená, že příkazy shell a rozšíření nejsou k dispozici. Například,\n"
-"ve Windows dávkových souborech, které mají být provedeny, musí obsahovat '. "
-"Rozšíření a příkaz 'dir'\n"
-"nefunguje.\n"
-"\n"
+"ve Windows dávkových souborech, které mají být provedeny, musí obsahovat '. Rozšíření a příkaz 'dir'\n"
+"nefunguje.\n\n"
 "Příklady:\n"
 "    robot. at --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -2108,18 +1915,13 @@ msgid "Remove"
 msgstr "Odebrat"
 
 #: src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"Plugin pro provádění příkazů v systému.\n"
-"\n"
+msgstr "Plugin pro provádění příkazů v systému.\n\n"
 "    Tento modul umožňuje vytváření trvalých konfigurací spouštění a\n"
-"    jejich spuštění. Výstup provedeného příkazu je zobrazen na samostatné "
-"kartě\n"
+"    jejich spuštění. Výstup provedeného příkazu je zobrazen na samostatné kartě\n"
 "."
 
 #: src/robotide/run/runanything.py:55
@@ -2160,12 +1962,8 @@ msgid "Results: "
 msgstr "Výsledky: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Najděte shody pomocí vzorců značek. Další informace naleznete v uživatelské "
-"příručce RF nebo 'robot --help'."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Najděte shody pomocí vzorců značek. Další informace naleznete v uživatelské příručce RF nebo 'robot --help'."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
@@ -2208,29 +2006,17 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "Plugin pro vyhledávání na základě jména, značek a dokumentace"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+msgid "Install missing libraries and open documentation.\n\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
-"Nainstalujte chybějící knihovny a otevřete dokumentaci.\n"
-"\n"
-"    Můžete upravit settings.cfg pro přidání URL dokumentace a příkazu k "
-"instalaci.\n"
-"    Můžete kliknout pravým tlačítkem myši na název knihovny a otevřít "
-"dokumentaci nebo instalovat knihovnu.\n"
-"    Z Nástroje->Library Finder... nebo Nápověda >Otevřít dokumentaci "
-"knihovny... budete mít\n"
-"    dialogové okno pro vyplnění příkazu k instalaci nebo URL pro "
-"dokumentaci.\n"
+msgstr "Nainstalujte chybějící knihovny a otevřete dokumentaci.\n\n"
+"    Můžete upravit settings.cfg pro přidání URL dokumentace a příkazu k instalaci.\n"
+"    Můžete kliknout pravým tlačítkem myši na název knihovny a otevřít dokumentaci nebo instalovat knihovnu.\n"
+"    Z Nástroje->Library Finder... nebo Nápověda >Otevřít dokumentaci knihovny... budete mít\n"
+"    dialogové okno pro vyplnění příkazu k instalaci nebo URL pro dokumentaci.\n"
 "    "
 
 #: src/robotide/spec/libraryfinder.py:39
@@ -2262,12 +2048,10 @@ msgid "Info"
 msgstr "Info"
 
 #: src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"Knihovna \"%s\" importována\n"
+msgstr "Knihovna \"%s\" importována\n"
 "z \"%s\"\n"
 "To může vyžadovat RIDE restart."
 
@@ -2332,11 +2116,9 @@ msgid "Change recursively"
 msgstr "Změnit rekurzivně"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"Zadejte formát pro inicializaci souboru v adresáři\n"
+msgstr "Zadejte formát pro inicializaci souboru v adresáři\n"
 "\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2365,12 +2147,8 @@ msgid "All files|*.*"
 msgstr "Všechny soubory|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"Poskytuje strom zobrazení souborů a složek. Otevře vybranou položku "
-"kliknutím pravým tlačítkem myši."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "Poskytuje strom zobrazení souborů a složek. Otevře vybranou položku kliknutím pravým tlačítkem myši."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
@@ -2417,8 +2195,7 @@ msgstr "Klíčová slova pro hledání"
 
 #: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
-"Plugin pro vyhledávání klíčových slov na základě jména nebo dokumentace."
+msgstr "Plugin pro vyhledávání klíčových slov na základě jména nebo dokumentace."
 
 #: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -2442,28 +2219,19 @@ msgstr "[File]\n"
 
 #: src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&Nový projekt | Vytvořte novou špičkovou úroveň | Ctrlcmd-N | ART_NEW\n"
+msgstr "!&Nový projekt | Vytvořte novou špičkovou úroveň | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:60
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!&Otevřete testovací soubor | Otevřete soubor obsahující testy | Ctrlcmd-O | "
-"ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&Otevřete testovací soubor | Otevřete soubor obsahující testy | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:61
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Otevřete &adresář | Otevřený adresář obsahující datové soubory | Shift-"
-"Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Otevřete &adresář | Otevřený adresář obsahující datové soubory | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!Otevřít externí soubor | Otevřít soubor v editoru kódu | | ART_NORMAL_FILE\n"
+msgstr "!Otevřít externí soubor | Otevřít soubor v editoru kódu | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
@@ -2471,9 +2239,7 @@ msgstr "!&Uložit | Uložit vybraný datafil | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!Uložit &všechny | Uložit všechny změny | Ctrlcmd-Shift-S | "
-"ART_FILE_SAVE_AS\n"
+msgstr "!Uložit &všechny | Uložit všechny změny | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2513,8 +2279,7 @@ msgstr "!Wiki | RIDE User Guide (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
-"!Nahlásit problém | Otevřete prohlížeč pro SEARCH na systému problémů RIDE\n"
+msgstr "!Nahlásit problém | Otevřete prohlížeč pro SEARCH na systému problémů RIDE\n"
 
 #: src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
@@ -2546,11 +2311,9 @@ msgid "Test Suites"
 msgstr "Testovací sady"
 
 #: src/robotide/ui/mainframe.py:419
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"Existují neuložené úpravy.\n"
+msgstr "Existují neuložené úpravy.\n"
 "Chcete uložit změny před ukončením?"
 
 #: src/robotide/ui/mainframe.py:419
@@ -2559,11 +2322,9 @@ msgid "Warning"
 msgstr "Varování"
 
 #: src/robotide/ui/mainframe.py:512
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"Existují neuložené úpravy.\n"
+msgstr "Existují neuložené úpravy.\n"
 "Chcete pokračovat bez uložení?"
 
 #: src/robotide/ui/mainframe.py:563
@@ -2643,18 +2404,12 @@ msgid "Plugin"
 msgstr "Zásuvný modul"
 
 #: src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Info. Povolení a vypnutí pluginů může vyžadovat RIDE restartování menu, aby "
-"fungoval."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Info. Povolení a vypnutí pluginů může vyžadovat RIDE restartování menu, aby fungoval."
 
 #: src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
-"(zastaralé) Poskytuje náhled testovacích údajů ve formátech HTML, TSV a TXT."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(zastaralé) Poskytuje náhled testovacích údajů ve formátech HTML, TSV a TXT."
 
 #: src/robotide/ui/preview.py:41
 #: src/robotide/ui/preview.py:100
@@ -2682,12 +2437,9 @@ msgid "Search unused keywords"
 msgstr "Hledat nepoužitá klíčová slova"
 
 #: src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"Tento dialog vám pomůže najít nepoužitá klíčová slova v rámci otevřeného "
-"projektu.\n"
+msgstr "Tento dialog vám pomůže najít nepoužitá klíčová slova v rámci otevřeného projektu.\n"
 "Pokud chcete, můžete vyhledávání omezit na sadu souborů s filtrem."
 
 #: src/robotide/ui/review.py:70
@@ -2708,14 +2460,10 @@ msgid "Use RegEx"
 msgstr "Použít RegEx"
 
 #: src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"Zde můžete definovat jeden nebo více řetězců oddělených čárkou (např. "
-"běžný,abc,123).\n"
+msgstr "Zde můžete definovat jeden nebo více řetězců oddělených čárkou (např. běžný,abc,123).\n"
 "Filtr se shoduje, pokud je alespoň jeden řetězec součástí názvu souboru.\n"
 "Pokud nezadáváte žádné řetězce, všechny otevřené soubory jsou zahrnuty"
 
@@ -2774,12 +2522,8 @@ msgid "(None)"
 msgstr "(Žádné)"
 
 #: src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"Klíčová slova následujících souborů budou zahrnuta do vyhledávání:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "Klíčová slova následujících souborů budou zahrnuta do vyhledávání:\n\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2830,11 +2574,9 @@ msgid "Excluded Tag Search"
 msgstr "Vyhledávání štítků s vyloučením"
 
 #: src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"Celkové testy %d, Testy se značkami %d, Unikátní tagy %d\n"
+msgstr "Celkové testy %d, Testy se značkami %d, Unikátní tagy %d\n"
 "Aktuálně vybrané testy %d"
 
 #: src/robotide/ui/tagdialogs.py:233
@@ -2939,11 +2681,9 @@ msgid "Expand all"
 msgstr "Rozbalit vše"
 
 #: src/robotide/ui/treenodehandlers.py:444
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Složka obsahuje neuložená data!\n"
+msgstr "Složka obsahuje neuložená data!\n"
 "Před vyloučením musíte uložit data."
 
 #: src/robotide/ui/treenodehandlers.py:490
@@ -2977,11 +2717,9 @@ msgstr "Odstranit pouze pro čtení"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Soubor obsahuje neuložená data!\n"
+msgstr "Soubor obsahuje neuložená data!\n"
 "Před vyloučením musíte uložit data."
 
 #: src/robotide/ui/treenodehandlers.py:572
@@ -3071,3 +2809,4 @@ msgstr "OK"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "Ano"
+
