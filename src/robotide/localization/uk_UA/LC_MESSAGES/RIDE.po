@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-10-05 17:28+0100\n"
+"POT-Creation-Date: 2025-12-01 18:31+0000\n"
 "PO-Revision-Date: 2025-06-21 14:53\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
@@ -19,40 +19,40 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:210
+#: src/robotide/application/application.py:217
 #, fuzzy
 msgid "Global Settings"
 msgstr "Загальні налаштування"
 
-#: src/robotide/application/application.py:211
+#: src/robotide/application/application.py:218
 #, fuzzy
 msgid "Global Settings Detected"
 msgstr "Загальні налаштування"
 
-#: src/robotide/application/application.py:212
+#: src/robotide/application/application.py:219
 #, fuzzy
 msgid "Project Settings"
 msgstr "Налаштування"
 
-#: src/robotide/application/application.py:213
+#: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
 msgstr ""
 
-#: src/robotide/application/application.py:230
+#: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
 msgstr ""
 
-#: src/robotide/application/application.py:233
+#: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
 msgstr ""
 
-#: src/robotide/application/application.py:235
+#: src/robotide/application/application.py:242
 #, fuzzy
 msgid "Click OK to Restart RIDE!"
 msgstr "Натисніть ОК, щоб оновити зараз!"
 
-#: src/robotide/application/application.py:448
-#: src/robotide/application/application.py:453
+#: src/robotide/application/application.py:458
+#: src/robotide/application/application.py:463
 msgid "Found Robot Framework version %s from %s."
 msgstr "Знайдено версію Robot Framework %s з %s."
 
@@ -338,8 +338,8 @@ msgstr "Запустити тести"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:827
-#: src/robotide/ui/mainframe.py:839
+#: src/robotide/ui/mainframe.py:838
+#: src/robotide/ui/mainframe.py:850
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Інструменти"
@@ -411,7 +411,7 @@ msgid ""
 "Continue anyway?"
 msgstr ""
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:556
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:562
 msgid ""
 "\n"
 "Test finished {}"
@@ -419,157 +419,158 @@ msgstr ""
 "\n"
 "Тест завершено {}"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:590
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr "Журнал повідомлень перевищив 80% процесу пам'яті, зупинка зараз..."
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:761
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
 msgstr "Старт"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:762
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:765
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:768
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Start robot"
 msgstr "Головний робот"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:763
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:769
 msgid "Start running the robot test suite"
 msgstr "Почати роботу набору тестів для роботів"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:764
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Debug"
 msgstr "Debug"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:766
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Виконайте роботу робота-набору за допомогою DEBUG loglevel"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:768
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Зупинити"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Pause"
 msgstr "Пауза"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:775
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Pause test execution"
 msgstr "Призупинити виконання тесту"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:776
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:782
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:779
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:785
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Continue test execution"
 msgstr "Продовжити виконання"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Next"
 msgstr "Уперед"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:782
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:783
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:788
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:789
 msgid "Step next"
 msgstr "Наступний крок"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:820
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:826
 msgid "Execution Profile:  "
 msgstr "Профіль:  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:823
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "Choose which method to use for running the tests"
 msgstr "Виберіть, який метод використовувати для запуску тестів"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:830
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:836
 msgid "Open Logs Directory"
 msgstr "Відкрити папку логів"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:832
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:838
 msgid "View All Logs in Explorer"
 msgstr "Переглянути всі логи в провіднику"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:833
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Report"
 msgstr " Доповісти"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:834
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Переглянути звіт Robot у браузері (CtrlCmd-R)"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:836
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:842
 msgid " Log"
 msgstr " Логотип"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:837
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:843
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Перегляд входу Robot у браузері (CtrlCmd-L)"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:844
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:850
 msgid " Autosave  "
 msgstr " Autosave  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:845
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
 msgid "Automatically save all changes before running"
 msgstr "Автоматично зберігати всі зміни перед запуском"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:850
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:856
 msgid " Pause after failure  "
 msgstr " Пауза після відмови  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:857
 msgid "Automatically pause after failing keyword"
 msgstr "Автоматично призупинити після відмови з ключовим словом"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:853
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
+#: src/robotide/ui/fileexplorerplugin.py:475
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:967
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:973
 msgid "Console log"
 msgstr "Консольний журнал"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:971
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:977
 msgid "Message log"
 msgstr "Журнал повідомлень"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1094
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1100
 msgid "Starting test:"
 msgstr "Початок тесту:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1099
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
 msgid "Ending test:"
 msgstr "Завершення тесту:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1107
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1113
 msgid "UNKNOWN STATUS:"
 msgstr "НЕВІДОМО СТАТИ:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1135
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1137
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1141
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1143
 msgid "<<  PAUSED  >>"
 msgstr "<< PAUSED >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1142
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1148
 msgid "<< CONTINUE >>"
 msgstr "<< CONTINUE >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1144
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
 msgstr "<<  CONTINUE  >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1189
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
 msgstr "Немає каталогу журналів"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1189
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
@@ -577,19 +578,20 @@ msgstr ""
 "Каталогу відсутні. \n"
 "Будь ласка, запустіть тести і спробуйте ще раз"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1201
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/mainframe.py:617
+#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - Параметри"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1292
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1298
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "минулий час: %s pass: %s пропущено: %s невдача: %s"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1326
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1332
 msgid "  current keyword: "
 msgstr "  поточне ключове слово: "
 
@@ -1281,7 +1283,7 @@ msgstr "Створити список зміннихCtrl-2"
 msgid "Make Dict Variable\tCtrl-5"
 msgstr "Створити змінну за допомогою Ctrl-5"
 
-#: src/robotide/editor/kweditor.py:974
+#: src/robotide/editor/kweditor.py:975
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1299,51 +1301,51 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: src/robotide/editor/kweditor.py:1130
+#: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:200
 #: src/robotide/ui/treenodehandlers.py:243
 #: src/robotide/ui/treeplugin.py:1235
 msgid "Validation Error"
 msgstr "Помилка перевірки"
 
-#: src/robotide/editor/kweditor.py:1217
+#: src/robotide/editor/kweditor.py:1218
 msgid "New name"
 msgstr "Нове і'мя"
 
-#: src/robotide/editor/kweditor.py:1230
+#: src/robotide/editor/kweditor.py:1231
 msgid "Save"
 msgstr "Зберегти"
 
-#: src/robotide/editor/kweditor.py:1233
+#: src/robotide/editor/kweditor.py:1234
 #: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/robotide/editor/kweditor.py:1263
+#: src/robotide/editor/kweditor.py:1264
 msgid "Validation Error!"
 msgstr "Помилка перевірки!"
 
-#: src/robotide/editor/kweditor.py:1264
+#: src/robotide/editor/kweditor.py:1265
 msgid "Error in JSON:"
 msgstr "Помилка в JSON:"
 
-#: src/robotide/editor/kweditor.py:1264
+#: src/robotide/editor/kweditor.py:1265
 msgid "Save anyway?"
 msgstr "Зберегти все одно?"
 
-#: src/robotide/editor/kweditor.py:1440
+#: src/robotide/editor/kweditor.py:1441
 msgid "Please select what you want to check for usage"
 msgstr "Будь ласка, виберіть що ви хочете перевірити використання"
 
-#: src/robotide/editor/kweditor.py:1443
+#: src/robotide/editor/kweditor.py:1444
 msgid "Complete cell content"
 msgstr "Вміст повної мережі"
 
-#: src/robotide/editor/kweditor.py:1444
+#: src/robotide/editor/kweditor.py:1445
 msgid "Variable "
 msgstr "Змінна "
 
-#: src/robotide/editor/kweditor.py:1456
+#: src/robotide/editor/kweditor.py:1457
 #: src/robotide/editor/texteditor.py:1119
 #: src/robotide/editor/texteditor.py:1121
 #: src/robotide/searchtests/dialogsearchtests.py:49
@@ -1570,21 +1572,25 @@ msgid "Save or Load settings"
 msgstr "Зберегти або завантажити налаштування"
 
 #: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "Font Size"
 
 #: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "Коефіцієнт масштабування"
 
 #: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "Використовувати фіксований шрифт"
 
 #: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "Font Face"
@@ -1777,6 +1783,46 @@ msgstr "Перехід на передній план"
 msgid "Skip foreground"
 msgstr "Перемотати на передньому плані"
 
+#: src/robotide/preferences/fileexplorer.py:54
+#: src/robotide/preferences/fileexplorer.py:58
+#, fuzzy
+msgid "File Explorer"
+msgstr "Переглянути файловий провідник"
+
+#: src/robotide/preferences/fileexplorer.py:59
+#, fuzzy
+msgid "File Explorer Settings"
+msgstr "Налаштування текстового редактора"
+
+#: src/robotide/preferences/fileexplorer.py:96
+#, fuzzy
+msgid "Use these colors definitions"
+msgstr "Перейти до визначення"
+
+#: src/robotide/preferences/fileexplorer.py:98
+msgid "Use operating system file explorer"
+msgstr ""
+
+#: src/robotide/preferences/fileexplorer.py:118
+#: src/robotide/preferences/general.py:249
+msgid "Foreground"
+msgstr "Активний режим"
+
+#: src/robotide/preferences/fileexplorer.py:119
+#: src/robotide/preferences/general.py:250
+msgid "Background"
+msgstr "Фон"
+
+#: src/robotide/preferences/fileexplorer.py:120
+#: src/robotide/preferences/general.py:251
+msgid "Secondary Foreground"
+msgstr "Вторинне переднє поле"
+
+#: src/robotide/preferences/fileexplorer.py:121
+#: src/robotide/preferences/general.py:252
+msgid "Secondary Background"
+msgstr "Додатковий фон"
+
 #: src/robotide/preferences/general.py:98
 msgid "Apply to Project and File Explorer panels"
 msgstr "Застосувати до панелей проекту та файлового менеджера"
@@ -1795,22 +1841,6 @@ msgstr "Загальні налаштування"
 #: src/robotide/preferences/general.py:240
 msgid "General Settings"
 msgstr "Загальні налаштування"
-
-#: src/robotide/preferences/general.py:249
-msgid "Foreground"
-msgstr "Активний режим"
-
-#: src/robotide/preferences/general.py:250
-msgid "Background"
-msgstr "Фон"
-
-#: src/robotide/preferences/general.py:251
-msgid "Secondary Foreground"
-msgstr "Вторинне переднє поле"
-
-#: src/robotide/preferences/general.py:252
-msgid "Secondary Background"
-msgstr "Додатковий фон"
 
 #: src/robotide/preferences/general.py:253
 msgid "Text Foreground"
@@ -1856,27 +1886,27 @@ msgstr "Завантажити параметри з файлу..."
 msgid "Save settings to file..."
 msgstr "Зберегти налаштування в файл..."
 
-#: src/robotide/preferences/managesettingsdialog.py:58
+#: src/robotide/preferences/managesettingsdialog.py:59
 msgid "Current directory:"
 msgstr "Поточна тека:"
 
-#: src/robotide/preferences/managesettingsdialog.py:75
+#: src/robotide/preferences/managesettingsdialog.py:77
 msgid "File with Settings to Load"
 msgstr "Файл із налаштуваннями для завантаження"
 
-#: src/robotide/preferences/managesettingsdialog.py:101
+#: src/robotide/preferences/managesettingsdialog.py:107
 msgid "Save Settings to file"
 msgstr "Зберегти налаштування в файл"
 
-#: src/robotide/preferences/managesettingsdialog.py:114
+#: src/robotide/preferences/managesettingsdialog.py:120
 msgid "Could not open settings file \"%s\" for writing"
 msgstr "Не вдалося відкрити файл налаштувань \"%s\" для запису"
 
-#: src/robotide/preferences/managesettingsdialog.py:126
+#: src/robotide/preferences/managesettingsdialog.py:137
 msgid "Error trying to get '%s' from file %s"
 msgstr "Помилка при спробі отримати '%s' з файлу %s"
 
-#: src/robotide/preferences/managesettingsdialog.py:141
+#: src/robotide/preferences/managesettingsdialog.py:152
 msgid "Invalid config file '%s': %s"
 msgstr "Недійсний файл конфігурації '%s': %s"
 
@@ -2210,6 +2240,7 @@ msgid ""
 msgstr ""
 
 #: src/robotide/ui/filedialogs.py:410
+#: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
 msgstr "Відкриті"
 
@@ -2233,7 +2264,7 @@ msgstr "Права на дачу табуляції (*.tsv)|*.tsv"
 msgid "All files|*.*"
 msgstr "Всі файли|*.*"
 
-#: src/robotide/ui/fileexplorerplugin.py:29
+#: src/robotide/ui/fileexplorerplugin.py:39
 msgid ""
 "Provides a tree view for Files and Folders. Opens selected item with mouse "
 "right-click."
@@ -2241,20 +2272,29 @@ msgstr ""
 "Забезпечує деревовидний вигляд для файлів та тек. Відкриває обраний елемент "
 "правою кнопкою миші."
 
-#: src/robotide/ui/fileexplorerplugin.py:61
-#: src/robotide/ui/fileexplorerplugin.py:117
+#: src/robotide/ui/fileexplorerplugin.py:81
+#: src/robotide/ui/treenodehandlers.py:368
+#: src/robotide/ui/treenodehandlers.py:502
+#: src/robotide/ui/treenodehandlers.py:595
+msgid "Open Containing Folder"
+msgstr "Відкрити теку з файлом"
+
+#: src/robotide/ui/fileexplorerplugin.py:104
+#: src/robotide/ui/fileexplorerplugin.py:206
+#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "Файли"
 
-#: src/robotide/ui/fileexplorerplugin.py:66
+#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View"
 msgstr "Дивитись"
 
-#: src/robotide/ui/fileexplorerplugin.py:66
+#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
 msgstr "Переглянути файловий провідник"
 
-#: src/robotide/ui/fileexplorerplugin.py:68
+#: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
 msgstr "Показати панель Провідника Файлів"
 
@@ -2399,7 +2439,7 @@ msgstr "\"%s\" читається тільки"
 msgid "Test Suites"
 msgstr "Тестові набори"
 
-#: src/robotide/ui/mainframe.py:411
+#: src/robotide/ui/mainframe.py:419
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2407,12 +2447,12 @@ msgstr ""
 "Є незбережені зміни.\n"
 "Бажаєте зберегти зміни перед виходом?"
 
-#: src/robotide/ui/mainframe.py:411
-#: src/robotide/ui/mainframe.py:501
+#: src/robotide/ui/mainframe.py:419
+#: src/robotide/ui/mainframe.py:512
 msgid "Warning"
 msgstr "Застереження"
 
-#: src/robotide/ui/mainframe.py:501
+#: src/robotide/ui/mainframe.py:512
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2420,63 +2460,63 @@ msgstr ""
 "Є незбережені зміни.\n"
 "Продовжити без збереження?"
 
-#: src/robotide/ui/mainframe.py:552
+#: src/robotide/ui/mainframe.py:563
 msgid "Choose a directory containing Robot files"
 msgstr "Виберіть каталог, що містить файли роботів"
 
-#: src/robotide/ui/mainframe.py:704
+#: src/robotide/ui/mainframe.py:715
 msgid "Workspace modifications detected on the file system."
 msgstr "Зміни робочого простору виявлені у файловій системі."
 
-#: src/robotide/ui/mainframe.py:705
+#: src/robotide/ui/mainframe.py:716
 msgid "Do you want to reload the workspace?"
 msgstr "Хочете перезавантажити робочу область?"
 
-#: src/robotide/ui/mainframe.py:707
+#: src/robotide/ui/mainframe.py:718
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Відповідь <Yes> скасує незбережені зміни."
 
-#: src/robotide/ui/mainframe.py:708
+#: src/robotide/ui/mainframe.py:719
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Відповідь <No> буде ігнорувати зміни на диску."
 
-#: src/robotide/ui/mainframe.py:709
+#: src/robotide/ui/mainframe.py:720
 msgid "Files Changed On Disk"
 msgstr "Змінені файли на диску"
 
-#: src/robotide/ui/mainframe.py:752
+#: src/robotide/ui/mainframe.py:763
 msgid "Customize..."
 msgstr "Налаштувати..."
 
-#: src/robotide/ui/mainframe.py:840
+#: src/robotide/ui/mainframe.py:851
 msgid "search unused keywords"
 msgstr "пошукові ключові слова"
 
-#: src/robotide/ui/mainframe.py:840
+#: src/robotide/ui/mainframe.py:851
 msgid "stop test run"
 msgstr "зупинити випробування"
 
-#: src/robotide/ui/mainframe.py:841
+#: src/robotide/ui/mainframe.py:852
 msgid "preview"
 msgstr "попередній перегляд"
 
-#: src/robotide/ui/mainframe.py:841
+#: src/robotide/ui/mainframe.py:852
 msgid "view ride log"
 msgstr "переглянути журнал поїздки"
 
-#: src/robotide/ui/mainframe.py:883
+#: src/robotide/ui/mainframe.py:894
 msgid "Shortcut keys for RIDE"
 msgstr "Комбінації клавіш для RIDE"
 
-#: src/robotide/ui/mainframe.py:921
+#: src/robotide/ui/mainframe.py:932
 msgid "Show"
 msgstr "Показати"
 
-#: src/robotide/ui/mainframe.py:922
+#: src/robotide/ui/mainframe.py:933
 msgid "Hide"
 msgstr "Приховати"
 
-#: src/robotide/ui/mainframe.py:923
+#: src/robotide/ui/mainframe.py:934
 msgid "Close"
 msgstr "Закрити"
 
@@ -2762,12 +2802,6 @@ msgstr "Нова змінна словника"
 #: src/robotide/ui/treenodehandlers.py:579
 msgid "Change Format"
 msgstr "Змінити формат"
-
-#: src/robotide/ui/treenodehandlers.py:368
-#: src/robotide/ui/treenodehandlers.py:502
-#: src/robotide/ui/treenodehandlers.py:595
-msgid "Open Containing Folder"
-msgstr "Відкрити теку з файлом"
 
 #: src/robotide/ui/treenodehandlers.py:389
 #: src/robotide/ui/treenodehandlers.py:587
