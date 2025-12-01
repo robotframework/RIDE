@@ -197,11 +197,11 @@ class FileExplorerPreferences(EditorPreferences):
     def _reload_settings(self):
         from pprint import pp
         from .settings import RideSettings
-        if self._settings is not None:
-            print(f"DEBUG: FileExplorerPreferences _reload_settings ENTER previous settings="
-                  f"{pp(self._settings)}")
-        else:
+        if self._settings is None:
             self._settings = RideSettings(self._default_path)
+        # else:
+        #     print(f"DEBUG: FileExplorerPreferences _reload_settings ENTER previous settings="
+        #           f"{pp(self._settings)}")
         settings = [s.strip() for s in open(self._default_path, 'r').readlines()]
         name = '[[File Explorer]]'
         # print(f"DEBUG: Preferences {name} _reload_settings set {settings}")
@@ -219,8 +219,8 @@ class FileExplorerPreferences(EditorPreferences):
                 value = make_tuple(value)
             defaults[key] = value
         for key, value in defaults.items():
-            if key in ["own colors", "system file explorer"]:
-                self._settings.set(key, value)
+            if key in ["own colors", "system file explorer", "opened", "docked"]:
+                self._settings.set(key, bool(value))
             elif key == "font size":
                 self._settings.set(key, int(value))
             else:
@@ -247,7 +247,12 @@ class FileExplorerPreferences(EditorPreferences):
             if len(value) > 0 and value[0] == '(' and value[-1] == ')':
                 from ast import literal_eval as make_tuple
                 value = make_tuple(value)
-            defaults[key] = value
+            if key in ["own colors", "system file explorer", "opened", "docked"]:
+                defaults[key] = bool(value)
+            elif key == "font size":
+                defaults[key] = int(value)
+            else:
+                defaults[key] = value
         return defaults
 
     @staticmethod

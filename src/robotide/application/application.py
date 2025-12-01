@@ -147,7 +147,7 @@ class RIDE(wx.App):
         self.reload_preferences(Message)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
-        print(f"DEBUG: application.py RIDE OnInit after defining controller= {self._controller}")
+        # print(f"DEBUG: application.py RIDE OnInit after defining controller= {self._controller}")
         # Try to get FontInfo as soon as possible
         font_size = self.settings['General'].get('font size', 12)
         font_face = self.settings['General'].get('font face', 'Helvetica')

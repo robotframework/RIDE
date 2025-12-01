@@ -303,6 +303,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         # self.Bind(wx.EVT_SIZE, self.on_size)  # DEBUG With this activated, the "toolbar" is hidden
         self.Bind(wx.EVT_MOVE, self.on_size)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_right_click)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_press)
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         self.SetThemeEnabled(True)
         self.SetAutoLayout(True)
@@ -385,8 +386,12 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
 
     def on_close(self, event):
         __ = event
-        print("DEBUG: FileExplorer OnClose hidding")
+        # print("DEBUG: FileExplorer OnClose hidding")
         self._plugin.close_tree()
+
+    def on_key_press(self, event):
+        print(f"DEBUG: FileExplorer on_key_press Skipping {event.KeyCode()}")
+        event.Skip()
 
     def on_size(self, event):
         __ = event

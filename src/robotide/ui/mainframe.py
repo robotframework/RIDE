@@ -295,7 +295,7 @@ class RideFrame(wx.Frame):
             self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
             self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").
                               Caption(_("Files")).LeftDockable(True).CloseButton(False))
-            print(f"DEBUG: mainframe.py RideFrame created fileexplore={self.filemgr}")
+            # print(f"DEBUG: mainframe.py RideFrame created fileexplore={self.filemgr}")
             # DEBUG: Next was already called from application.py
             # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 
