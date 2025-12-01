@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-10-05 17:28+0100\n"
+"POT-Creation-Date: 2025-12-01 18:31+0000\n"
 "PO-Revision-Date: 2025-06-21 14:53\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
@@ -18,40 +18,40 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:210
+#: src/robotide/application/application.py:217
 #, fuzzy
 msgid "Global Settings"
 msgstr "Setări generale"
 
-#: src/robotide/application/application.py:211
+#: src/robotide/application/application.py:218
 #, fuzzy
 msgid "Global Settings Detected"
 msgstr "Setări generale"
 
-#: src/robotide/application/application.py:212
+#: src/robotide/application/application.py:219
 #, fuzzy
 msgid "Project Settings"
 msgstr "Setări"
 
-#: src/robotide/application/application.py:213
+#: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
 msgstr ""
 
-#: src/robotide/application/application.py:230
+#: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
 msgstr ""
 
-#: src/robotide/application/application.py:233
+#: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
 msgstr ""
 
-#: src/robotide/application/application.py:235
+#: src/robotide/application/application.py:242
 #, fuzzy
 msgid "Click OK to Restart RIDE!"
 msgstr "Faceţi clic pe OK pentru a face upgrade acum!"
 
-#: src/robotide/application/application.py:448
-#: src/robotide/application/application.py:453
+#: src/robotide/application/application.py:458
+#: src/robotide/application/application.py:463
 msgid "Found Robot Framework version %s from %s."
 msgstr "S-a găsit Robot Framework versiunea %s de la %s."
 
@@ -340,8 +340,8 @@ msgstr "Rulează testele"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:827
-#: src/robotide/ui/mainframe.py:839
+#: src/robotide/ui/mainframe.py:838
+#: src/robotide/ui/mainframe.py:850
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Unelte"
@@ -415,7 +415,7 @@ msgstr ""
 "Nici un test selectat. \n"
 "Continuați oricum?"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:556
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:562
 msgid ""
 "\n"
 "Test finished {}"
@@ -423,159 +423,160 @@ msgstr ""
 "\n"
 "Test terminat {}"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:590
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr ""
 "Jurnalul mesajelor a depășit 80% din memoria procesului, oprire deocamdată..."
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:761
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
 msgstr "Pornire"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:762
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:765
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:768
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Start robot"
 msgstr "Robot de pornire"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:763
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:769
 msgid "Start running the robot test suite"
 msgstr "Începeți să rulați suita de testare a robotului"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:764
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Debug"
 msgstr "Debug"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:766
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr ""
 "Începeți să rulați suita de teste pentru roboți cu nivel de logare DEBUG"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:768
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: src/robotide/run/ui.py:30
 msgid "Stop"
 msgstr "Oprește"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:772
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Pause"
 msgstr "Întrerupeți"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:774
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:775
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Pause test execution"
 msgstr "Întrerupeți executarea testului"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:776
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:782
 msgid "Continue"
 msgstr "Continuă"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:779
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:780
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:785
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Continue test execution"
 msgstr "Continuă executarea testului"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:781
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Next"
 msgstr "Următoarea"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:782
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:783
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:788
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:789
 msgid "Step next"
 msgstr "Pasul următor"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:820
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:826
 msgid "Execution Profile:  "
 msgstr "Profil de execuție:  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:823
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "Choose which method to use for running the tests"
 msgstr "Alegeți metoda de utilizat pentru rularea încercărilor"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:830
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:836
 msgid "Open Logs Directory"
 msgstr "Deschide directorul de loguri"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:832
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:838
 msgid "View All Logs in Explorer"
 msgstr "Vezi toate jurnalele în Explorator"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:833
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Report"
 msgstr " Raport"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:834
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Vezi raportul robotului în browser (CtrlCmd-R)"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:836
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:842
 msgid " Log"
 msgstr " Jurnal"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:837
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:843
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Vezi Robot Log în Browser (CtrlCmd-L)"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:844
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:850
 msgid " Autosave  "
 msgstr " Autosave  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:845
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
 msgid "Automatically save all changes before running"
 msgstr "Salvează automat toate modificările înainte de a rula"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:850
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:856
 msgid " Pause after failure  "
 msgstr " Pauză după eșec  "
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:851
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:857
 msgid "Automatically pause after failing keyword"
 msgstr "Pauză automat după eșuarea cuvântului cheie"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:853
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
+#: src/robotide/ui/fileexplorerplugin.py:475
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Setări"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:967
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:973
 msgid "Console log"
 msgstr "Jurnal Console"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:971
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:977
 msgid "Message log"
 msgstr "Jurnal mesaje"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1094
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1100
 msgid "Starting test:"
 msgstr "Începe testul:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1099
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
 msgid "Ending test:"
 msgstr "Test de finalizare:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1107
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1113
 msgid "UNKNOWN STATUS:"
 msgstr "NECUNOSCUTUL STATUL:"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1135
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1137
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1141
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1143
 msgid "<<  PAUSED  >>"
 msgstr "<< AUZĂ >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1142
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1148
 msgid "<< CONTINUE >>"
 msgstr "<< CONTINUĂ >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1144
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
 msgstr "<< CONTINUĂ >>"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1189
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
 msgstr "Nu există jurnal"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1189
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
@@ -583,19 +584,20 @@ msgstr ""
 "Directorul de jurnale nu există. \n"
 "Vă rugăm să rulați testele și să încercați din nou"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1201
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/mainframe.py:617
+#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferințe"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1292
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1298
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "timpul scurs: %s  trece: %s  sări: %s  eșuează: %s"
 
-#: src/robotide/contrib/testrunner/testrunnerplugin.py:1326
+#: src/robotide/contrib/testrunner/testrunnerplugin.py:1332
 msgid "  current keyword: "
 msgstr "  Cuvânt cheie curent: "
 
@@ -1312,7 +1314,7 @@ msgstr "Fă variabilă listă\tCtrl-2"
 msgid "Make Dict Variable\tCtrl-5"
 msgstr "Creează o Variabilă Dict\tCtrl-5"
 
-#: src/robotide/editor/kweditor.py:974
+#: src/robotide/editor/kweditor.py:975
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1344,51 +1346,51 @@ msgstr ""
 "din Robot Framework.</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1130
+#: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:200
 #: src/robotide/ui/treenodehandlers.py:243
 #: src/robotide/ui/treeplugin.py:1235
 msgid "Validation Error"
 msgstr "Eroare de validare"
 
-#: src/robotide/editor/kweditor.py:1217
+#: src/robotide/editor/kweditor.py:1218
 msgid "New name"
 msgstr "Nume nou"
 
-#: src/robotide/editor/kweditor.py:1230
+#: src/robotide/editor/kweditor.py:1231
 msgid "Save"
 msgstr "Salvează"
 
-#: src/robotide/editor/kweditor.py:1233
+#: src/robotide/editor/kweditor.py:1234
 #: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Anulează"
 
-#: src/robotide/editor/kweditor.py:1263
+#: src/robotide/editor/kweditor.py:1264
 msgid "Validation Error!"
 msgstr "Eroare de validare!"
 
-#: src/robotide/editor/kweditor.py:1264
+#: src/robotide/editor/kweditor.py:1265
 msgid "Error in JSON:"
 msgstr "Eroare în JSON:"
 
-#: src/robotide/editor/kweditor.py:1264
+#: src/robotide/editor/kweditor.py:1265
 msgid "Save anyway?"
 msgstr "Salvați oricum?"
 
-#: src/robotide/editor/kweditor.py:1440
+#: src/robotide/editor/kweditor.py:1441
 msgid "Please select what you want to check for usage"
 msgstr "Vă rugăm să selectați ce doriți să verificați pentru utilizare"
 
-#: src/robotide/editor/kweditor.py:1443
+#: src/robotide/editor/kweditor.py:1444
 msgid "Complete cell content"
 msgstr "Completează conținutul de celule"
 
-#: src/robotide/editor/kweditor.py:1444
+#: src/robotide/editor/kweditor.py:1445
 msgid "Variable "
 msgstr "Variabilă "
 
-#: src/robotide/editor/kweditor.py:1456
+#: src/robotide/editor/kweditor.py:1457
 #: src/robotide/editor/texteditor.py:1119
 #: src/robotide/editor/texteditor.py:1121
 #: src/robotide/searchtests/dialogsearchtests.py:49
@@ -1664,21 +1666,25 @@ msgid "Save or Load settings"
 msgstr "Salvează sau încarcă setările"
 
 #: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "Font Size"
 
 #: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "Factor de mărire"
 
 #: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "Folosește fontul lățimii fixe"
 
 #: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "Font Face"
@@ -1875,6 +1881,46 @@ msgstr "Treceți în prim-plan"
 msgid "Skip foreground"
 msgstr "Sari peste prim-plan"
 
+#: src/robotide/preferences/fileexplorer.py:54
+#: src/robotide/preferences/fileexplorer.py:58
+#, fuzzy
+msgid "File Explorer"
+msgstr "Vezi Explorator de Fișiere"
+
+#: src/robotide/preferences/fileexplorer.py:59
+#, fuzzy
+msgid "File Explorer Settings"
+msgstr "Setări Editor de Text"
+
+#: src/robotide/preferences/fileexplorer.py:96
+#, fuzzy
+msgid "Use these colors definitions"
+msgstr "Mergi la definiție"
+
+#: src/robotide/preferences/fileexplorer.py:98
+msgid "Use operating system file explorer"
+msgstr ""
+
+#: src/robotide/preferences/fileexplorer.py:118
+#: src/robotide/preferences/general.py:249
+msgid "Foreground"
+msgstr "prim-plan"
+
+#: src/robotide/preferences/fileexplorer.py:119
+#: src/robotide/preferences/general.py:250
+msgid "Background"
+msgstr "Context"
+
+#: src/robotide/preferences/fileexplorer.py:120
+#: src/robotide/preferences/general.py:251
+msgid "Secondary Foreground"
+msgstr "Secundar prim-plan"
+
+#: src/robotide/preferences/fileexplorer.py:121
+#: src/robotide/preferences/general.py:252
+msgid "Secondary Background"
+msgstr "Fundal secundar"
+
 #: src/robotide/preferences/general.py:98
 msgid "Apply to Project and File Explorer panels"
 msgstr "Aplică panourilor Proiecte și Explorator de Fișiere"
@@ -1893,22 +1939,6 @@ msgstr "Generalități"
 #: src/robotide/preferences/general.py:240
 msgid "General Settings"
 msgstr "Setări generale"
-
-#: src/robotide/preferences/general.py:249
-msgid "Foreground"
-msgstr "prim-plan"
-
-#: src/robotide/preferences/general.py:250
-msgid "Background"
-msgstr "Context"
-
-#: src/robotide/preferences/general.py:251
-msgid "Secondary Foreground"
-msgstr "Secundar prim-plan"
-
-#: src/robotide/preferences/general.py:252
-msgid "Secondary Background"
-msgstr "Fundal secundar"
 
 #: src/robotide/preferences/general.py:253
 msgid "Text Foreground"
@@ -1958,27 +1988,27 @@ msgstr "Încarcă setările din fișier..."
 msgid "Save settings to file..."
 msgstr "Salvează setările în fișier..."
 
-#: src/robotide/preferences/managesettingsdialog.py:58
+#: src/robotide/preferences/managesettingsdialog.py:59
 msgid "Current directory:"
 msgstr "Directorul curent:"
 
-#: src/robotide/preferences/managesettingsdialog.py:75
+#: src/robotide/preferences/managesettingsdialog.py:77
 msgid "File with Settings to Load"
 msgstr "Fişier cu setări de încărcat"
 
-#: src/robotide/preferences/managesettingsdialog.py:101
+#: src/robotide/preferences/managesettingsdialog.py:107
 msgid "Save Settings to file"
 msgstr "Salvează setările în fișier"
 
-#: src/robotide/preferences/managesettingsdialog.py:114
+#: src/robotide/preferences/managesettingsdialog.py:120
 msgid "Could not open settings file \"%s\" for writing"
 msgstr "Nu s-a putut deschide fișierul de setări \"%s\" pentru scris"
 
-#: src/robotide/preferences/managesettingsdialog.py:126
+#: src/robotide/preferences/managesettingsdialog.py:137
 msgid "Error trying to get '%s' from file %s"
 msgstr "Eroare la încercarea de a obține '%s' din fișierul %s"
 
-#: src/robotide/preferences/managesettingsdialog.py:141
+#: src/robotide/preferences/managesettingsdialog.py:152
 msgid "Invalid config file '%s': %s"
 msgstr "Fișier de configurare nevalid '%s': %s"
 
@@ -2346,6 +2376,7 @@ msgstr ""
 "\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
+#: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
 msgstr "Deschideți"
 
@@ -2369,7 +2400,7 @@ msgstr "Robot Tab Date separate (*.tsv)| *.tsv"
 msgid "All files|*.*"
 msgstr "Toate fişierele *.*"
 
-#: src/robotide/ui/fileexplorerplugin.py:29
+#: src/robotide/ui/fileexplorerplugin.py:39
 msgid ""
 "Provides a tree view for Files and Folders. Opens selected item with mouse "
 "right-click."
@@ -2377,20 +2408,29 @@ msgstr ""
 "Oferă o vedere de tip copac pentru fișiere și foldere. Deschide elementul "
 "selectat cu click-dreapta mouse-ului."
 
-#: src/robotide/ui/fileexplorerplugin.py:61
-#: src/robotide/ui/fileexplorerplugin.py:117
+#: src/robotide/ui/fileexplorerplugin.py:81
+#: src/robotide/ui/treenodehandlers.py:368
+#: src/robotide/ui/treenodehandlers.py:502
+#: src/robotide/ui/treenodehandlers.py:595
+msgid "Open Containing Folder"
+msgstr "Deschide dosarul care conține"
+
+#: src/robotide/ui/fileexplorerplugin.py:104
+#: src/robotide/ui/fileexplorerplugin.py:206
+#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "Fișiere"
 
-#: src/robotide/ui/fileexplorerplugin.py:66
+#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View"
 msgstr "Vizualizare"
 
-#: src/robotide/ui/fileexplorerplugin.py:66
+#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
 msgstr "Vezi Explorator de Fișiere"
 
-#: src/robotide/ui/fileexplorerplugin.py:68
+#: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
 msgstr "Arată panoul Exploratorilor de Fișiere"
 
@@ -2545,7 +2585,7 @@ msgstr "\"%s\" se citește numai"
 msgid "Test Suites"
 msgstr "Suite de test"
 
-#: src/robotide/ui/mainframe.py:411
+#: src/robotide/ui/mainframe.py:419
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2553,12 +2593,12 @@ msgstr ""
 "Există modificări nesalvate.\n"
 "Doriţi să salvaţi modificările înainte de a ieşi?"
 
-#: src/robotide/ui/mainframe.py:411
-#: src/robotide/ui/mainframe.py:501
+#: src/robotide/ui/mainframe.py:419
+#: src/robotide/ui/mainframe.py:512
 msgid "Warning"
 msgstr "Avertizare"
 
-#: src/robotide/ui/mainframe.py:501
+#: src/robotide/ui/mainframe.py:512
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2566,63 +2606,63 @@ msgstr ""
 "Există modificări nesalvate.\n"
 "Doriţi să continuaţi fără a salva?"
 
-#: src/robotide/ui/mainframe.py:552
+#: src/robotide/ui/mainframe.py:563
 msgid "Choose a directory containing Robot files"
 msgstr "Alegeți un director care conține fișiere Robot"
 
-#: src/robotide/ui/mainframe.py:704
+#: src/robotide/ui/mainframe.py:715
 msgid "Workspace modifications detected on the file system."
 msgstr "Modificări ale spaţiului de lucru detectate în sistemul de fişiere."
 
-#: src/robotide/ui/mainframe.py:705
+#: src/robotide/ui/mainframe.py:716
 msgid "Do you want to reload the workspace?"
 msgstr "Doriţi să reîncărcaţi spaţiul de lucru?"
 
-#: src/robotide/ui/mainframe.py:707
+#: src/robotide/ui/mainframe.py:718
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Răspunsul <Yes> va anula modificările nesalvate."
 
-#: src/robotide/ui/mainframe.py:708
+#: src/robotide/ui/mainframe.py:719
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Răspunsul <No> va ignora schimbările de pe disc."
 
-#: src/robotide/ui/mainframe.py:709
+#: src/robotide/ui/mainframe.py:720
 msgid "Files Changed On Disk"
 msgstr "Fișiere schimbate pe disc"
 
-#: src/robotide/ui/mainframe.py:752
+#: src/robotide/ui/mainframe.py:763
 msgid "Customize..."
 msgstr "Personalizează..."
 
-#: src/robotide/ui/mainframe.py:840
+#: src/robotide/ui/mainframe.py:851
 msgid "search unused keywords"
 msgstr "caută cuvinte cheie neutilizate"
 
-#: src/robotide/ui/mainframe.py:840
+#: src/robotide/ui/mainframe.py:851
 msgid "stop test run"
 msgstr "oprire rulare test"
 
-#: src/robotide/ui/mainframe.py:841
+#: src/robotide/ui/mainframe.py:852
 msgid "preview"
 msgstr "previzualizare"
 
-#: src/robotide/ui/mainframe.py:841
+#: src/robotide/ui/mainframe.py:852
 msgid "view ride log"
 msgstr "vizualizează jurnalul curselor"
 
-#: src/robotide/ui/mainframe.py:883
+#: src/robotide/ui/mainframe.py:894
 msgid "Shortcut keys for RIDE"
 msgstr "Taste de scurtătură pentru RIDE"
 
-#: src/robotide/ui/mainframe.py:921
+#: src/robotide/ui/mainframe.py:932
 msgid "Show"
 msgstr "Afișare"
 
-#: src/robotide/ui/mainframe.py:922
+#: src/robotide/ui/mainframe.py:933
 msgid "Hide"
 msgstr "Ascunde"
 
-#: src/robotide/ui/mainframe.py:923
+#: src/robotide/ui/mainframe.py:934
 msgid "Close"
 msgstr "Inchide"
 
@@ -2911,12 +2951,6 @@ msgstr "Variabilă Dicționar nouă"
 #: src/robotide/ui/treenodehandlers.py:579
 msgid "Change Format"
 msgstr "Schimbă formatul"
-
-#: src/robotide/ui/treenodehandlers.py:368
-#: src/robotide/ui/treenodehandlers.py:502
-#: src/robotide/ui/treenodehandlers.py:595
-msgid "Open Containing Folder"
-msgstr "Deschide dosarul care conține"
 
 #: src/robotide/ui/treenodehandlers.py:389
 #: src/robotide/ui/treenodehandlers.py:587
