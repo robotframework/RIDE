@@ -40,53 +40,30 @@ LIGHT_GRAY = "light gray"
 FIXED_FONT = 'fixed font'
 
 
+def get_settings_path():
+    import os
+    from ..context import SETTINGS_DIRECTORY
+    main_settings_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+    new_path = os.environ['RIDESETTINGS']
+    if os.path.exists(new_path):
+        return new_path
+    return main_settings_path
+
+
 class FileExplorerPreferences(EditorPreferences):
     location = (_("File Explorer"),)
 
     def __init__(self, settings, *args, **kwargs):
-        # self._settings = settings
+        self._settings = settings
         self.location = (_("File Explorer"),)
         self.title = _("File Explorer Settings")
         self.cb_default_file_explorer = None
         super(FileExplorerPreferences, self).__init__(settings['Plugins']['File Explorer'], *args, **kwargs)
-        self.name = 'File Explorer'
+        self._settings._name = self.name = 'File Explorer'
+        self._default_path = get_settings_path()
         # print(f"DEBUG: Preferences File Explorer init type settings={type(self._settings)}")
         # self.Sizer.Add(self.txt_file_explorer)
         self.Sizer.Add(self._create_file_explorer_config_editor())
-        """
-        self._color_pickers = []
-        # self._reload_settings()
-        # self.background_color = self.settings['background']
-        # self.foreground_color = self.settings['foreground']
-        # self.sbackground_color = self.settings['secondary background']
-        # self.sforeground_color = self.settings['secondary foreground']
-        # font_editor = self._create_font_editor()
-        # colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
-        # buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        # reset = wx.Button(self, ID_RESET, _('Reset colors to default'))
-        # saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, _('Save or Load settings'))
-        self.cb_own_colors = wx.CheckBox(self, ID_USE_OWN_COLORS, label=_("Use own colors"))
-        self.cb_own_colors.Enable()
-        self.cb_own_colors.SetValue(self._own_colors)
-        set_colors(self.cb_own_colors, self.background_color, self.foreground_color)
-        # set_colors(reset, self.sbackground_color, self.sforeground_color)
-        # set_colors(saveloadsettings, self.sbackground_color, self.sforeground_color)
-        # main_sizer.Add(font_editor)
-        # main_sizer.Add(colors_sizer)
-        main_sizer.Add(self.cb_own_colors)
-        # buttons_sizer.Add(reset)
-        # buttons_sizer.AddSpacer(10)
-        # buttons_sizer.Add(saveloadsettings)
-        # main_sizer.Add(buttons_sizer)
-        main_sizer.AddSpacer(10)
-        main_sizer.Add(self.txt_file_explorer)
-        self.SetSizerAndFit(main_sizer)
-        self.Bind(wx.EVT_BUTTON, self.on_reset)
-        self.Bind(wx.EVT_BUTTON, self.on_save_load_settings)
-        self.Bind(wx.EVT_CHECKBOX, self.on_check_box, self.cb_own_colors)
-        self.Bind(wx.EVT_CHECKBOX, self.on_check_box, self.cb_default_file_explorer)
-        """
 
     def set_txt_value(self, evt):
         new_value = self.txt_file_explorer.GetValue()
@@ -94,8 +71,6 @@ class FileExplorerPreferences(EditorPreferences):
         evt.Skip()
 
     def _create_file_explorer_config_editor(self):
-        # self._settings.get('confirm run', True)
-        # self._settings.get('use colors', False)
         self._settings.get('own colors', False)
         self._settings.get('file manager', None)
         self._settings.get('system file explorer', True)
@@ -106,13 +81,13 @@ class FileExplorerPreferences(EditorPreferences):
         if settings['system file explorer']:
             self.txt_file_explorer.SetEditable(False)
             self.txt_file_explorer.Disable()
-            print(f"DEBUG: Preferences _create_file_explorer_config_editor DISABLE settings['system file explorer']="
-                  f"{settings['system file explorer']}")
+            # print(f"DEBUG: Preferences _create_file_explorer_config_editor DISABLE settings['system file explorer']="
+            #       f"{settings['system file explorer']}")
         else:
             self.txt_file_explorer.Enable()
             self.txt_file_explorer.SetEditable(True)
-            print(f"DEBUG: Preferences _create_file_explorer_config_editor ENABLE settings['system file explorer']="
-                  f"{settings['system file explorer']}")
+            # print(f"DEBUG: Preferences _create_file_explorer_config_editor ENABLE settings['system file explorer']="
+            #       f"{settings['system file explorer']}")
         # self.cb_default_file_explorer = wx.CheckBox(self, ID_DEFAULT_FILE_EXPLORER, label=_("Use System File Explorer"))
         # set_colors(self.cb_default_file_explorer, self.background_color, self.foreground_color)
         # self.Sizer.Add(self.cb_default_file_explorer)
@@ -167,7 +142,7 @@ class FileExplorerPreferences(EditorPreferences):
         print(f"DEBUG: Preferences Checkbox set GLOBAL COLORS {str(self._own_colors)}")
 
     def on_check_box(self, event):
-        print(f"DEBUG: Preferences on_check_box ENTER {event}")
+        # print(f"DEBUG: Preferences on_check_box ENTER {event}")
         # event.Skip()
         if event.GetId() == ID_USE_OWN_COLORS:
             self._own_colors = event.IsChecked()
@@ -177,7 +152,7 @@ class FileExplorerPreferences(EditorPreferences):
             else:
                 self.set_global_colors()
         if event.GetId() == ID_DEFAULT_FILE_EXPLORER:
-            print(f"DEBUG: Preferences on_check_box ID_DEFAULT_FILE_EXPLORER {event.IsChecked()}")
+            # print(f"DEBUG: Preferences on_check_box ID_DEFAULT_FILE_EXPLORER {event.IsChecked()}")
             if not event.IsChecked():
                 self.txt_file_explorer.SetEditable(True)
             else:
@@ -192,21 +167,27 @@ class FileExplorerPreferences(EditorPreferences):
             picker.SetColour(defaults[picker.key])
 
     def on_save_load_settings(self, event):
-        print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings ENTER {event=}")
+        self._settings._name = self.name = 'File Explorer'
+        # print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings ENTER {event=}"
+        #       f" ID_SAVELOADSETTINGS={ID_SAVELOADSETTINGS}"
+        #       f"\n self._settings = {self._settings}")
         if event.GetId() != ID_SAVELOADSETTINGS:
-            print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings CONDITION event.GetId() != ID_SAVELOADSETTINGS "
-                  f"{event.GetId()} {ID_SAVELOADSETTINGS=}")
+            # print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings "
+            #       f"CONDITION event.GetId() != ID_SAVELOADSETTINGS "
+            #       f"{event.GetId()} {ID_SAVELOADSETTINGS=}")
             event.Skip()
             return
         save_settings_dialog = SaveLoadSettings(self, self._settings)
         save_settings_dialog.CenterOnParent()
         result = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings Preferences color_pickers {self._color_pickers=}")
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
-        print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings check {ID_LOAD}=={result=}")
+        # print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings check {ID_LOAD}=={result=}"
+        #       f"\nDIALOG RESULT {save_settings_dialog.GetReturnCode()}")
         if result == 5101:  # DEBUG Should be ID_LOAD: but is always 5101
-            print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings {result=}")
-            # self._reload_settings()  # Force reload on File explorer pane
+            # print(f"DEBUG: Preferences FILE_EXPLORER on_save_load_settings {result=}")
+            self._reload_settings()  # Force reload on File explorer pane
             # wnd_handle = wx.FindWindowByName('files_explorer')
             # print(f"DEBUG: Preferences FILE_EXPLORER WINDOW IS {wnd_handle=}")
             # if wnd_handle:
@@ -214,15 +195,16 @@ class FileExplorerPreferences(EditorPreferences):
             self.Update()
 
     def _reload_settings(self):
-        import os
-        from ..context import SETTINGS_DIRECTORY
+        from pprint import pp
         from .settings import RideSettings
-        self._settings = RideSettings()
-        # self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
-        self._default_path = self._settings.user_path
+        if self._settings is not None:
+            print(f"DEBUG: FileExplorerPreferences _reload_settings ENTER previous settings="
+                  f"{pp(self._settings)}")
+        else:
+            self._settings = RideSettings(self._default_path)
         settings = [s.strip() for s in open(self._default_path, 'r').readlines()]
         name = '[[File Explorer]]'
-        print(f"DEBUG: Preferences {name} _reload_settings set {settings}")
+        # print(f"DEBUG: Preferences {name} _reload_settings set {settings}")
         start_index = settings.index(name) + 1
         defaults = {}
         for line in settings[start_index:]:
@@ -231,14 +213,20 @@ class FileExplorerPreferences(EditorPreferences):
             if not line or line.startswith(';') or line.startswith('#'):
                 continue
             key, value = [s.strip().strip('\'') for s in line.split("=")]
-            print(f"DEBUG: Preferences FILE_EXPLORER default value type {type(value)} {key}={value}")
+            # print(f"DEBUG: Preferences FILE_EXPLORER default value type {type(value)} {key}={value}")
             if len(value) > 0 and value[0] == '(' and value[-1] == ')':
                 from ast import literal_eval as make_tuple
                 value = make_tuple(value)
             defaults[key] = value
         for key, value in defaults.items():
-            self._settings.set(key, value)
-
+            if key in ["own colors", "system file explorer"]:
+                self._settings.set(key, value)
+            elif key == "font size":
+                self._settings.set(key, int(value))
+            else:
+                self._settings.set(key, value)
+        # print(f"DEBUG: FileExplorerPreferences _reload_settings EXIT previous settings="
+        #       f"{pp(self._settings)}")
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
         self.Refresh(True)

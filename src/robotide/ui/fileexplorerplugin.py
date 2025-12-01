@@ -133,7 +133,7 @@ class FileExplorerPlugin(Plugin):
                 self._mgr.DetachPane(self.file_explorer)
                 self.save_setting('docked', False)
             else:
-                self._mgr.ClosePane(pane_info.Hide())
+                self._mgr.ClosePane(pane_info.Dock().Hide())
                 self.save_setting('docked', True)
         # perspective = self._mgr.SavePaneInfo(pane_info)
         # print(f"DEBUG: FileExplorerPlugin call close_tree perspective={perspective}")
@@ -176,7 +176,7 @@ class FileExplorerPlugin(Plugin):
         html_font_face = self.general_settings.get('font face', '')
         html_font_size = self.general_settings.get('font size', 11)
         self.html_font_face = self.settings.get('font face', html_font_face)
-        self.html_font_size = self.settings.get('font size', html_font_size)
+        self.html_font_size = int(self.settings.get('font size', html_font_size))
         self._filetreectrl = self.file_explorer.tree_ctrl.GetTreeCtrl()
         self.file_explorer.Show(True)
         # self.file_explorer.Raise()
@@ -238,13 +238,13 @@ class FileExplorerPlugin(Plugin):
 
     def on_open(self, event):
         # __ = event
-        print(f"DEBUG: FileExplorerPlugin call on_open_file={event}\n"
-              f"{self.file_explorer.current_path}")
+        # print(f"DEBUG: FileExplorerPlugin call on_open_file={event}\n"
+        #       f"{self.file_explorer.current_path}")
         self._parent.on_open_file(event)
 
     def on_open_containing_folder(self, event):
         __ = event
-        print(f"DEBUG: FileExplorerPlugin call on_open_containing_folder={event}")
+        # print(f"DEBUG: FileExplorerPlugin call on_open_containing_folder={event}")
         try:
             use_sys_file_explorer = self.settings['system file explorer']
             own_file_manager = self.settings[FILE_MANAGER]
@@ -256,7 +256,7 @@ class FileExplorerPlugin(Plugin):
             file_manager = None
         #  self._controller.execute(
         #  ctrlcommands.OpenContainingFolder(file_manager, self.file_explorer.current_path)
-        print(f"DEBUG: FileExplorerPlugin call file manager={file_manager}")
+        # print(f"DEBUG: FileExplorerPlugin call file manager={file_manager}")
         start_filemanager(self.file_explorer.current_path, file_manager)
 
     def on_config_panel(self):
@@ -282,11 +282,11 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self._plugin = plugin
         self._controller = controller
         self.dlg = RIDEDialog()
-        self.SetBackgroundColour(Colour(self.dlg.color_background))
-        self.SetForegroundColour(Colour(self.dlg.color_foreground))
+        self.SetBackgroundColour(Colour(self._plugin.settings['background']))
+        self.SetForegroundColour(Colour(self._plugin.settings['foreground']))
         # self.sizer = VerticalSizer()
         self.sizer = wx.FlexGridSizer(cols=1, hgap=5, vgap=5)
-        print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
+        # print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
         self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, style=wx.DIRCTRL_3D_INTERNAL)
@@ -309,7 +309,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.Refresh()
 
     def update_tree(self):
-        print(f"DEBUG: FileExplorer update_tree ENTER {self._controller}\n")
+        # print(f"DEBUG: FileExplorer update_tree ENTER {self._controller}\n")
         if isinstance(self._controller, Project):
             if self._controller.data and len(self._controller.data.directory) > 1:
                 # wnd_list = wx.GetTopLevelParent(self.parent)
@@ -320,7 +320,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                 # if len(txt_field) == 1:
                 #     txt_field = txt_field[0]
                 self._apply_settings()
-                print(f"DEBUG: FileExplorer update_tree VALID {self._controller.data.directory}\n")
+                # print(f"DEBUG: FileExplorer update_tree VALID {self._controller.data.directory}\n")
                 """
                       f"wnd_txt_file_explorer={wnd_txt_file_explorer}  txt_field={txt_field}")
                 if self._plugin.settings['system file explorer']:
@@ -373,7 +373,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
             self.tool_bar_txt.SetForegroundColour(Colour(self._plugin.settings['secondary foreground']))
         self.font = self.GetFont()
         self.font.SetFaceName(self._plugin.settings['font face'])
-        self.font.SetPointSize(self._plugin.settings['font size'])
+        self.font.SetPointSize(int(self._plugin.settings['font size']))
         self.SetFont(self.font)
         tc.Fit()
         tc.Refresh()
@@ -392,7 +392,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         __ = event
         self.update_tree()
         sz = self.GetSize()  # + wx.Size(-5, -5)
-        print(f"DEBUG: FileExplorer On size refreshing. sz={sz}")
+        # print(f"DEBUG: FileExplorer On size refreshing. sz={sz}")
         tc = self.tree_ctrl.GetTreeCtrl()
         tc.SetSize(sz)
         tc.Fit()
@@ -404,7 +404,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
     def on_right_click(self, event):
         # __ = event
         # event.Skip()
-        print(f"DEBUG: FileExplorer mouse RightClick event={event} controller={self._controller}")
+        # print(f"DEBUG: FileExplorer mouse RightClick event={event} controller={self._controller}")
         if not self._right_click:
             self._right_click = True
         handler = None
@@ -413,13 +413,13 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         # item, _ = tc.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         item = tc.GetSelection()
         if item:
-            print(f"DEBUG: FileExplorer mouse RightClick item={item} type={type(item)}")
+            # print(f"DEBUG: FileExplorer mouse RightClick item={item} type={type(item)}")
             # id=self.GetPopupMenuSelectionFromUser()
             handler = self.tree_ctrl.GetPath(item)  # self.GetItemData(item)
         if handler:
             # handler.show_popup()
             self.current_path = handler
-            print(f"DEBUG: FileExplorer PATH={handler}")
+            # print(f"DEBUG: FileExplorer PATH={handler}")
             if self._plugin:
                 self._plugin.show_popup()
             self._right_click = False
@@ -427,29 +427,36 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
     def on_settings_changed(self, message):
         """Redraw the colors if the color settings are modified"""
         if message.keys[0] == "General":
-            print(f"DEBUG: FileExplorer on_settings_changed GENERAL={message.keys}\n"
-                  f"settings={self._plugin.general_settings}")
+            # print(f"DEBUG: FileExplorer on_settings_changed GENERAL={message.keys}\n"
+            #       f"settings={self._plugin.general_settings}")
             if message.keys[-1] == "apply to panels":
                 self.update_tree()
             return
         section, _ = message.keys
         if section == PLUGIN_NAME:
-            print(f"DEBUG: FileExplorer on_settings_changed SECTION={message.keys}\n"
-                  f"settings={self._plugin.settings}")
+            # print(f"DEBUG: FileExplorer on_settings_changed SECTION={message.keys}\n"
+            #       f"settings={self._plugin.settings}")
             self.update_tree()
-            """
-            self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
-            caret_colour = self.settings[PLUGIN_NAME].get('setting', 'black')
-            caret_colour = self.editor.get_visible_color(caret_colour)
-            self.editor.SetCaretForeground(Colour(caret_colour))
-            caret_style = self.settings[PLUGIN_NAME].get('caret style', 'block')
-            caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
-            self.editor.SetCaretStyle(caret_style)
-            """
+            # mgr = self.parent.GetManager()
+            # if mgr.GetPane('file_explorer'):
+            if self._plugin._pane:
+                pane_info = self._plugin._pane
+                docked = self._plugin.settings['docked']
+                if docked:
+                    pane_info.Dock()
+                else:
+                    pane_info.Float()
+                opened = self._plugin.settings['opened']
+                if opened:
+                    pane_info.Show(True)
+                else:
+                    pane_info.Hide()
+                # print(f"DEBUG: FileExplorer on_settings_changed Call Update {opened=} {docked=}")
+                self._plugin._pane.GetManager().Update()
 
     def general_font_size(self) -> int:
-        fsize = self.dlg.font_size
-        print(f"DEBUG: FileExplorer return general_font_size fsize={fsize}")
+        fsize = int(self._plugin.general_settings['font size'])
+        # print(f"DEBUG: FileExplorer return general_font_size fsize={fsize}")
         return fsize
 
     def _create_pane_toolbar(self):
@@ -458,13 +465,13 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.pane_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
         self.tool_bar_txt = wx.StaticText(self, label="Add Tool Here")  # DEBUG To use later if needed
-        self.tool_bar_txt.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
-        self.tool_bar_txt.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        self.tool_bar_txt.SetBackgroundColour(Colour(self._plugin.settings['secondary background']))
+        self.tool_bar_txt.SetForegroundColour(Colour(self._plugin.settings['secondary foreground']))
         self.config_button = ButtonWithHandler(self, _('Settings'), bitmap='wrench.png', fsize=self._plugin.html_font_size,
                                           handler=lambda e: self._plugin.on_config_panel())
-        self.config_button.SetBackgroundColour(Colour(self.dlg.color_background))
-        self.config_button.SetOwnBackgroundColour(Colour(self.dlg.color_background))
-        self.config_button.SetForegroundColour(Colour(self.dlg.color_foreground))
+        self.config_button.SetBackgroundColour(Colour(self._plugin.settings['secondary background']))
+        self.config_button.SetOwnBackgroundColour(Colour(self._plugin.settings['secondary background']))
+        self.config_button.SetForegroundColour(Colour(self._plugin.settings['secondary foreground']))
         default_components.add_with_padding(self.tool_bar_txt)
         # self._create_search(default_components)
         self.pane_toolbar.add_expanding(default_components)

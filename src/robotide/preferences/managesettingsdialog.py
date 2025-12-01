@@ -54,7 +54,8 @@ class SaveLoadSettings(RIDEDialog):
         load.SetForegroundColour(Colour(self.color_secondary_foreground))
         save.SetBackgroundColour(Colour(self.color_secondary_background))
         save.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+        from .fileexplorer import get_settings_path
+        self._default_path = get_settings_path()
         directory = wx.StaticText(self, label=f"{_('Current directory:')} {SETTINGS_DIRECTORY}")
         buttons_sizer.Add(load)
         buttons_sizer.AddSpacer(10)
