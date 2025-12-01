@@ -24,7 +24,7 @@ from multiprocessing import shared_memory
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
-from .fileexplorerplugin import FileExplorer
+from .fileexplorerplugin import FileExplorerPlugin, FileExplorer
 from .notebook import NoteBook
 from .pluginmanager import PluginManager
 from .progress import LoadProgressObserver
@@ -285,11 +285,19 @@ class RideFrame(wx.Frame):
                                                              container=self.tree))
         if new_ui:  # Only when creating UI we add panes
             # ##### File explorer panel is always created here
-            self.filemgr = FileExplorer(self, self.controller)
+            # self.filemgr = FileExplorerPlugin(self._application, self.controller)._filemgr
+            # self.filemgr = None
+            # self.fileexplorerplugin = FileExplorerPlugin(self._application, self.controller)
+            # self.fileexp = FileExplorerPlugin(self._application, self.controller)
+            self.filemgr = FileExplorer(self, plugin=self._application.fileexplorerplugin, controller=self.controller)
+            # self.filemgr = self.fileexplorerplugin.file_explorer
             self.filemgr.SetFont(wx.Font(self.fontinfo))
-            self.filemgr.SetMinSize(wx.Size(275, 250))
+            self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
+            self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").
+                              Caption(_("Files")).LeftDockable(True).CloseButton(False))
+            # print(f"DEBUG: mainframe.py RideFrame created fileexplore={self.filemgr}")
             # DEBUG: Next was already called from application.py
-            self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
+            # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 
         # self.main_menu.take_menu_bar_into_use()
         if new_ui:  # Only when creating UI we add panes
@@ -442,13 +450,16 @@ class RideFrame(wx.Frame):
                                                                     'resource',
                                                                     'txt',
                                                                     'tsv'])  # Removed 'html'
-        path = self.filemgr.GetFilePath()
+        # path = self.filemgr.current_path  # .GetFilePath()
+        # print(f"DEBUG: mainframe.py RideFrame on_open_file 1 path={path}")
+        path = self.filemgr.tree_ctrl.GetPath()
+        print(f"DEBUG: mainframe.py RideFrame on_open_file 2 path={path}")
         ext = ''
         if len(path) > 0:
             ext = splitext(path)
             ext = ext[1].replace('.', '')
             # print("DEBUG: path %s ext %s" % (path, ext))
-        if len(ext) > 0 and ext in robottypes:
+        if os.path.isdir(path) or (len(ext) > 0 and ext in robottypes):
             if not self.check_unsaved_modifications():
                 return
             if self.open_suite(path):
@@ -459,11 +470,11 @@ class RideFrame(wx.Frame):
         if not self.filemgr:
             return
         # DEBUG: Use widgets/popupmenu tools
-        path = self.filemgr.GetFilePath()
+        path = self.filemgr.tree_ctrl.GetFilePath()
         if len(path) > 0:
             self.on_open_file(event)
         else:
-            path = self.filemgr.GetPath()
+            path = self.filemgr.tree_ctrl.GetPath()
             if not self.check_unsaved_modifications():
                 return
             self.open_suite(path)  # It is a directory, do not edit
@@ -544,7 +555,7 @@ class RideFrame(wx.Frame):
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
         if self.filemgr:
-            self.filemgr.ReCreateTree()
+            self.filemgr.tree_ctrl.ReCreateTree()
 
     def on_open_directory(self, event):
         __ = event

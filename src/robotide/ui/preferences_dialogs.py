@@ -246,7 +246,7 @@ def boolean_editor(parent, settings, name, label, elhelp=''):
 
 
 def _create_checkbox_editor(parent, settings, name, elhelp):
-    initial_value = settings.get(name, "")
+    initial_value = bool(settings.get(name, False))
     editor = wx.CheckBox(parent)
     editor.SetValue(initial_value)
     editor.Bind(wx.EVT_CHECKBOX, lambda evt: settings.set(name, editor.GetValue()))

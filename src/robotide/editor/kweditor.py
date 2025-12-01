@@ -676,8 +676,9 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_cut(self, event=None):
-        self.cut()
-        self.on_delete(event)
+        if not self.IsCellEditControlShown():
+            self.cut()
+            self.on_delete(event)
 
     def on_delete(self, event=None):
         __ = event
