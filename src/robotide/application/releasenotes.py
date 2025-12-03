@@ -170,7 +170,6 @@ and changes.</li>
  on other IDE or Editors. The option to not reformat the file is not working.</li>
 <li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
  to Text Editor and back to Grid Editor, to restore normal behavior.</li>
-<li>🐞 - In Files Explorer, the size of the files tree is not always using all available space.</li>
 </ul>
 </li>
 </ul>
@@ -237,7 +236,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 01/December/2025.</p>
+<p>RIDE {VERSION} was released on 02/December/2025.</p>
 <br/>
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
 <h3 align='center'>🇵🇹</h3>
