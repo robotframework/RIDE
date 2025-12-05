@@ -236,11 +236,12 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 02/December/2025.</p>
+<p>RIDE {VERSION} was released on 05/December/2025.</p>
 <br/>
+<!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
 <h3 align='center'>🇵🇹</h3>
-<!-- 
+
 <br/>
 <h3>Celebrate the bank holiday, 5th October, Implantation of the Republic in Portugal</h3>
 <h4>Happy 115th bithday! Long live the Republic!</h4>
