@@ -17,6 +17,7 @@ from .configobj.src.configobj import ConfigObj, ConfigObjError, Section, UnreprE
 from .editor import PreferenceEditor
 from .editors import GridEditorPreferences, TextEditorPreferences, TestRunnerPreferences
 from .general import DefaultPreferences
+from .fileexplorer import FileExplorerPreferences
 from .imports import ImportPreferences
 from .saving import SavingPreferences
 from .settings import Settings, initialize_settings, RideSettings
@@ -73,3 +74,4 @@ class Preferences(object):
         self.add(TextEditorPreferences)
         self.add(TestRunnerPreferences)
         self.add(ExcludePreferences)
+        self.add(FileExplorerPreferences)

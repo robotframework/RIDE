@@ -147,10 +147,12 @@ class RIDE(wx.App):
         self.reload_preferences(Message)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
+        # print(f"DEBUG: application.py RIDE OnInit after defining controller= {self._controller}")
         # Try to get FontInfo as soon as possible
         font_size = self.settings['General'].get('font size', 12)
         font_face = self.settings['General'].get('font face', 'Helvetica')
         self.fontinfo = wx.FontInfo(font_size).FaceName(font_face).Bold(False)
+        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
@@ -169,12 +171,17 @@ class RIDE(wx.App):
                   f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
-        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
+        # self.fileexplorerplugin = self.frame.fileexplorerplugin  # FileExplorerPlugin(self, self._controller)
+
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
+        if self.fileexplorerplugin.settings['_enabled']:
+            self.fileexplorerplugin.register_frame(self.frame)
+        if not self.fileexplorerplugin.opened:
+            self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
         self.robot_version = self._find_robot_installation()
         self._load_data()
@@ -321,15 +328,18 @@ class RIDE(wx.App):
         font.SetPointSize(font_size)
         _root.SetFont(font)
         self._WalkWidgets(_root, theme=theme)
-        if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
-            self.fileexplorerplugin.settings['background'] = theme['background']
-            self.fileexplorerplugin.settings['foreground'] = theme['foreground']
-            self.fileexplorerplugin.settings[FOREGROUND_TEXT] = theme[FOREGROUND_TEXT]
-            self.fileexplorerplugin.settings[BACKGROUND_HELP] = theme[BACKGROUND_HELP]
-            self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
-            self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
-            if self.fileexplorerplugin.settings['opened']:
-                self.fileexplorerplugin.show_file_explorer()
+        if self.fileexplorerplugin.settings['_enabled']:
+            if theme['apply to panels'] and not self.fileexplorerplugin.settings['own colors']:
+                self.fileexplorerplugin.settings['background'] = theme['background']
+                self.fileexplorerplugin.settings['foreground'] = theme['foreground']
+                self.fileexplorerplugin.settings[FOREGROUND_TEXT] = theme[FOREGROUND_TEXT]
+                self.fileexplorerplugin.settings[BACKGROUND_HELP] = theme[BACKGROUND_HELP]
+                self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
+                self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
+                if self.fileexplorerplugin.settings['opened']:
+                    self.fileexplorerplugin.show_file_explorer()
+            else:
+                self.fileexplorerplugin.update_tree()
         if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
             self.treeplugin.settings['background'] = theme['background']
             self.treeplugin.settings['foreground'] = theme['foreground']

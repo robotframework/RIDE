@@ -153,7 +153,7 @@ RELEASE_NOTES = f"""
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.13 (and also tested on 3.14.rc3 with wxPython 4.2.3).</li>
+<li>This version supports Python 3.9 up to 3.13 (and also tested on 3.14 with wxPython 4.2.3).</li>
 <li>There are some changes, or known issues:<ul>
 <!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
@@ -175,6 +175,12 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added context menu to File Explorer, to Open test suites directories or test suites files (also with double-click).
+</li>
+<li>Added context menu option to Open Containing Folder, in operating system file explorer, or specific tool.</li>
+<li>Added Config Panel button to File Explorer plugin. Here, you can set the operating system file explorer, or specify
+ other tool, the Font style, and Colors.</li>
+<li>Fixed persistance of the state docked/floating of File Explorer.
 <li>Fixed Cut (Ctrl-X) when editing the content of a cell in Grid Editor, before was deleting all content.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
@@ -199,7 +205,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.2
+pip install --upgrade robotframework-ride==2.2.1
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -230,7 +236,10 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 09/October/2025.</p>
+<p>RIDE {VERSION} was released on 02/December/2025.</p>
+<br/>
+<h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
+<h3 align='center'>🇵🇹</h3>
 <!-- 
 <br/>
 <h3>Celebrate the bank holiday, 5th October, Implantation of the Republic in Portugal</h3>

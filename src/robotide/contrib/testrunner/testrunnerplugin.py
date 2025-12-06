@@ -507,7 +507,13 @@ class TestRunnerPlugin(Plugin):
         try:
             tool = self.global_settings['General'][FILE_MANAGER]
         except KeyError:
-            tool = None
+            try:
+                tool = self.global_settings['Plugins']['File Explorer'][FILE_MANAGER]
+                sys_tool = bool(self.global_settings['Plugins']['File Explorer']['system file explorer'])
+                if sys_tool:
+                    tool = None
+            except KeyError:
+                tool = None
         if os.path.exists(self._logs_directory):
             start_filemanager(self._logs_directory, tool)
         else:
