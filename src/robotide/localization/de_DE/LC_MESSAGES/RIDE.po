@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-06-21 14:53\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -18,36 +18,34 @@ msgstr ""
 "X-Crowdin-File-ID: 14\n"
 
 #: src/robotide/application/application.py:217
-#, fuzzy
 msgid "Global Settings"
 msgstr "Allgemeine Einstellungen"
 
 #: src/robotide/application/application.py:218
-#, fuzzy
 msgid "Global Settings Detected"
-msgstr "Allgemeine Einstellungen"
+msgstr "Allgemeine Einstellungen erkannt"
 
 #: src/robotide/application/application.py:219
-#, fuzzy
 msgid "Project Settings"
-msgstr "Einstellungen"
+msgstr "Projekteinstellungen"
 
 #: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Projekteinstellungen erkannt"
 
 #: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "RIDE neu starten?"
 
 #: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
 msgstr ""
+"RIDE muss neu gestartet werden, um diese Funktionen vollständig nutzen zu "
+"können "
 
 #: src/robotide/application/application.py:242
-#, fuzzy
 msgid "Click OK to Restart RIDE!"
-msgstr "Klicken Sie auf OK, um jetzt zu aktualisieren!"
+msgstr "Klicken Sie auf OK, um RIDE neu zu starten!"
 
 #: src/robotide/application/application.py:458
 #: src/robotide/application/application.py:463
@@ -588,7 +586,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/fileexplorerplugin.py:273
 #: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - Einstellungen"
@@ -715,6 +713,9 @@ msgstr ""
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
 msgstr ""
+"Zeilen nach unten verschieben (Halten Sie entweder die Tasten Alt und Pfeil "
+"nach unten oder Strg (Ctrl), Umschalt (Shift) und Pfeil nach unten "
+"gedrückt.) | Zeilen nach unten verschieben\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:66
@@ -1873,23 +1874,20 @@ msgstr "Vordergrund überspringen"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "Datei-Explorer anzeigen"
+msgstr "Datei-Explorer"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "Text-Editor-Einstellungen"
+msgstr "Datei-Explorer Einstellungen"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "Gehe zur Definition"
+msgstr "Diese Farbdefinitionen verwenden"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Betriebssystem-Dateimanager verwenden"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -2411,8 +2409,8 @@ msgid "Open Containing Folder"
 msgstr "Containing Ordner öffnen"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "Dateien"

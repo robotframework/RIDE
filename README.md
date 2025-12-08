@@ -21,9 +21,9 @@ You can use the tag *robotframework-ide* to search and ask on [StackOverflow](ht
 
 ## **Welcome to RIDE - next major release will be version 2.3**
 
-If you are looking for the latest released version, you can get the source code from **[releases](https://github.com/robotframework/RIDE/releases)** or from branch **[release/2.2.1](https://github.com/robotframework/RIDE/tree/release/2.2.1)**
+If you are looking for the latest released version, you can get the source code from **[releases](https://github.com/robotframework/RIDE/releases)** or from branch **[release/2.2.1.1](https://github.com/robotframework/RIDE/tree/release/2.2.1.1)**
 
-See the [release notes](https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.1.rst) for latest release version 2.2.1
+See the [release notes](https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.1.1.rst) for latest release version 2.2.1.1
 
 **Version [2.2](https://github.com/robotframework/RIDE/tree/release/2.2) was the last release supporting Python 3.8**
 
@@ -32,13 +32,13 @@ See the [release notes](https://github.com/robotframework/RIDE/blob/master/doc/r
 **Version [1.7.4.2](https://github.com/robotframework/RIDE/tree/release/1.7.4.2) was the last release supporting Python 2.7**
 
 
-**The current development version is based on 2.2.1, supports Python from 3.9 up to 3.14 (01st December 2025).**
+**The current development version is based on 2.2.1.1, supports Python from 3.9 up to 3.14 (01st December 2025).**
 
 Currently, the unit tests are tested on Python 3.10, 3.11 and 3.13 (3.13 is the recommended version).
 We now have an experimental workflow on Fedora Linux 41, with wxPython 4.2.3 and Python 3.14.
 Likewise, the current version of wxPython, is 4.2.3, but RIDE is known to work with 4.0.7, 4.1.1 and 4.2.2 versions.
 
-(3.9 &lt;= python &lt;= 3.14) Install current released version (*2.2.1*) with:
+(3.9 &lt;= python &lt;= 3.14) Install current released version (*2.2.1.1*) with:
 
 `pip install -U robotframework-ride`
 

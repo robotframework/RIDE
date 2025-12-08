@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-06-21 14:53\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -18,36 +18,32 @@ msgstr ""
 "X-Crowdin-File-ID: 14\n"
 
 #: src/robotide/application/application.py:217
-#, fuzzy
 msgid "Global Settings"
-msgstr "全般設定"
+msgstr "グローバル設定"
 
 #: src/robotide/application/application.py:218
-#, fuzzy
 msgid "Global Settings Detected"
-msgstr "全般設定"
+msgstr "グローバル設定が検出されました"
 
 #: src/robotide/application/application.py:219
-#, fuzzy
 msgid "Project Settings"
-msgstr "設定"
+msgstr "プロジェクトの設定"
 
 #: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "プロジェクト設定が検出されました"
 
 #: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "RIDEを再起動しますか？"
 
 #: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "これらを完全に使用するには、ライドを再起動する必要があります "
 
 #: src/robotide/application/application.py:242
-#, fuzzy
 msgid "Click OK to Restart RIDE!"
-msgstr "「OK」をクリックして今すぐアップグレード！"
+msgstr "OKをクリックしてライドを再起動します!"
 
 #: src/robotide/application/application.py:458
 #: src/robotide/application/application.py:463
@@ -564,7 +560,7 @@ msgstr "<< 続ける>>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
-msgstr ""
+msgstr "<< 続ける>>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
@@ -582,7 +578,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/fileexplorerplugin.py:273
 #: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "ライド - 設定"
@@ -818,16 +814,20 @@ msgstr "'arg 1 | arg 2'のようなパイプ文字で複数の引数を分離し
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
 msgstr ""
+"ライブラリ名、ライブラリドキュメントの URL 、およびインストールするコマンドを"
+"指定します。"
 
 #: src/robotide/editor/dialoghelps.py:53
 msgid ""
 "In the command, you can use `%%executable` as a placeholder to be replaced "
 "by the actual path"
 msgstr ""
+"コマンドでは、`%%実行可能`を実際のパスに置き換えるプレースホルダとして使用で"
+"きます。"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
-msgstr ""
+msgstr " を実行可能にします。"
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
@@ -924,24 +924,32 @@ msgstr ""
 msgid ""
 "This keyword is executed before other keywords in this test case or keyword."
 msgstr ""
+"このキーワードは、このテストケースまたはキーワードの他のキーワードの前に実行"
+"されます。"
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
 msgstr ""
+"テストケースでは、スイートレベルで設定されたテストセットアップを上書きできま"
+"す。"
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
-msgstr ""
+msgstr "Robot v7.0からキーワードのセットアップが存在します。"
 
 #: src/robotide/editor/dialoghelps.py:84
 msgid ""
 "This keyword is executed after other keywords in this test case or keyword "
 "even if the test or keyword fails."
 msgstr ""
+"このキーワードは、テストやキーワードが失敗した場合でも、他のキーワードの後に"
+"実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
 msgstr ""
+"テストケースでは、スイートレベルで設定されているテストの分解が上書きされま"
+"す。"
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
@@ -1389,11 +1397,11 @@ msgstr "インポートを追加"
 
 #: src/robotide/editor/settingeditors.py:633
 msgid "Open Library Documentation"
-msgstr ""
+msgstr "ライブラリドキュメントを開く"
 
 #: src/robotide/editor/settingeditors.py:636
 msgid "Install Library"
-msgstr ""
+msgstr "ライブラリのインストール"
 
 #: src/robotide/editor/settingeditors.py:636
 #: src/robotide/spec/specimporter.py:34
@@ -1761,23 +1769,20 @@ msgstr "フォアグラウンドでスキップ"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "ファイルエクスプローラを表示"
+msgstr "ファイルエクスプローラー"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "テキストエディタの設定"
+msgstr "ファイルエクスプローラの設定"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "定義へ移動"
+msgstr "これらの色の定義を使用"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "オペレーティングシステムファイルエクスプローラを使用する"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -2108,23 +2113,23 @@ msgstr ""
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr ""
+msgstr "ライブラリファインダー..."
 
 #: src/robotide/spec/libraryfinder.py:40
 msgid "Open Library Documentation..."
-msgstr ""
+msgstr "ライブラリドキュメントを開く..."
 
 #: src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
-msgstr ""
+msgstr "ライブラリをインストールするための情報の準備"
 
 #: src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
-msgstr ""
+msgstr "ライブラリのドキュメントを開くために情報を準備する"
 
 #: src/robotide/spec/libraryfinder.py:106
 msgid "Library Finder"
-msgstr ""
+msgstr "ライブラリファインダー"
 
 #: src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
@@ -2253,8 +2258,8 @@ msgid "Open Containing Folder"
 msgstr "保持フォルダを開く"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "ファイル"
@@ -2882,7 +2887,7 @@ msgstr "%s (除外)"
 
 #: src/robotide/ui/treeplugin.py:1236
 msgid "Invalid keyword name: "
-msgstr ""
+msgstr "無効なキーワード名: "
 
 #: src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
@@ -2926,12 +2931,12 @@ msgstr "%s は空にできません"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "No"
-msgstr ""
+msgstr "いいえ"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
-msgstr ""
+msgstr "はい"

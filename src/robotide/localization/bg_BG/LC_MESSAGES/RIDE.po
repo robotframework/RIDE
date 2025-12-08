@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-06-21 14:53\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -562,7 +562,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/fileexplorerplugin.py:273
 #: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr ""
@@ -2177,8 +2177,8 @@ msgid "Open Containing Folder"
 msgstr ""
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr ""

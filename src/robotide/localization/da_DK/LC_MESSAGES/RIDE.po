@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-06-21 14:53\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -18,36 +18,32 @@ msgstr ""
 "X-Crowdin-File-ID: 14\n"
 
 #: src/robotide/application/application.py:217
-#, fuzzy
 msgid "Global Settings"
-msgstr "Generelle Indstillinger"
+msgstr "Globale Indstillinger"
 
 #: src/robotide/application/application.py:218
-#, fuzzy
 msgid "Global Settings Detected"
-msgstr "Generelle Indstillinger"
+msgstr "Globale Indstillinger Detekteret"
 
 #: src/robotide/application/application.py:219
-#, fuzzy
 msgid "Project Settings"
-msgstr "Indstillinger"
+msgstr "Projekt Indstillinger"
 
 #: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Projektindstillinger Detekteret"
 
 #: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "Genstart RIDE?"
 
 #: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "Behandling med RIDE skal genoptages for at anvende disse fuldstændigt "
 
 #: src/robotide/application/application.py:242
-#, fuzzy
 msgid "Click OK to Restart RIDE!"
-msgstr "Klik OK for at opgradere nu!"
+msgstr "Klik OK for at genstarte RIDE!"
 
 #: src/robotide/application/application.py:458
 #: src/robotide/application/application.py:463
@@ -583,7 +579,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/fileexplorerplugin.py:273
 #: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - Indstillinger"
@@ -704,7 +700,7 @@ msgstr "Slet Rækker - Slet Rækker - Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "Flyt rækker ned (Alt-Up eller Ctrl-Shift-Up) | Flyt rækker ned\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
@@ -720,6 +716,8 @@ msgid ""
 "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
 "and variable completions | | | POSITION-70\n"
 msgstr ""
+"Indholdshjælp (Ctrl-Space eller Ctrl-Alt-Space) | Vis muligt søgeord og "
+"variable kompletter | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -777,6 +775,11 @@ msgid ""
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
+"Angiv argumenterne adskilt med et pipe-tegn som '${arg1} | ${arg2}'.\n"
+"Standardværdier gives med lighedstegn, og det sidste argument kan være en "
+"listevariabel.\n"
+"Eksempel: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+"Seddel. Du kan bruge variable genveje i dette felt."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
@@ -1847,23 +1850,20 @@ msgstr "Spring forgrund over"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "Vis Fil Stifinder"
+msgstr "Fil Stifinder"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "Indstillinger For Teksteditor"
+msgstr "Indstilling Af Fil Stifinder"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "Gå til definition"
+msgstr "Brug disse farver definitioner"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Brug operativsystemets fil explorer"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -2376,8 +2376,8 @@ msgid "Open Containing Folder"
 msgstr "Åbn Indeholdende Mappe"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "Filer"
@@ -2464,7 +2464,7 @@ msgstr "!&Gem - Gem valgte datafiler Ctrlcmd-S - ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
+msgstr "!Gem &Alle | Gem alle ændringer | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"

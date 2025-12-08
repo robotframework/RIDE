@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-10-05 16:58\n"
-"Last-Translator: Bo Pan <ripplepiam@gmail.com>\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
+"Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -353,27 +353,27 @@ msgstr "停止测试运行(&S)"
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:332
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:336
 msgid "[ SENDING STOP SIGNAL ]\n"
-msgstr "[发送待办注册]\n"
+msgstr "[正在发送停止信号]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:341
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING PAUSE SIGNAL ]\n"
-msgstr "[发送签字]\n"
+msgstr "[正在发送暂停信号]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:349
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:352
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr "[正在继续登录]\n"
+msgstr "[正在发送继续信号]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:357
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:360
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
-msgstr "[ 发送下一张签字]\n"
+msgstr "[ 正在发送下一步信号]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:365
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:368
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr "[ 发送已登录的STEP]\n"
+msgstr "[ 正在发送步过信号]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:400
 msgid "command: %s\n"
@@ -430,7 +430,7 @@ msgstr "开始运行机器人测试套件"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Debug"
-msgstr "Debug"
+msgstr "调试"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
@@ -574,7 +574,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/fileexplorerplugin.py:273
 #: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - 首选项"
@@ -732,17 +732,17 @@ msgstr "编辑器"
 #: src/robotide/editor/dialoghelps.py:31
 msgid ""
 "Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr "值中可能的管道必须用反斜杠逃脱，如'\\|'。"
+msgstr "值中可能的存在的管道符必须用反斜杠转义，写成 '\\|'。"
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr "用管道字符分隔标签，如“标签 | 第二个标签 | 3rd。"
+msgstr "用管道字符分隔标签，例如 'tag | second tag | 3rd'。"
 
 #: src/robotide/editor/dialoghelps.py:33
 msgid ""
 "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
 "arg 2'."
-msgstr "用管道字符分隔可能的参数，如“我的关键词|arg 1 | arg 2”。"
+msgstr "用管道字符分隔参数，例如 'My Keyword | arg 1 | arg 2'。"
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
@@ -750,8 +750,9 @@ msgid ""
 "Before Robot v3.0.1 an optional message could have been specified like '3 "
 "minutes | My message here'."
 msgstr ""
-"使用时间语法，例如 '1min 10' 或 '2 小时' 或以秒为单位给出值。\n"
-"在Robot v3。 可选消息可以指定为“3分钟|我在这里的消息”。"
+"使用时间语法，例如 '1min 10s' 或 '2 hours' 或以秒为单位给出值。\n"
+"Robot v3.0.1 以前的版本，可以指定一个可选消息，形如 '3 minutes | My message "
+"here'。"
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
@@ -773,13 +774,13 @@ msgid ""
 "names.\n"
 "Alias is prepended with: "
 msgstr ""
-"别名可以用来多次导入不同名称的同一个库。\n"
-"别名前面加载： "
+"别名可用于以不同名称多次导入同一个库。\n"
+"别名前置符号： "
 
 #: src/robotide/editor/dialoghelps.py:43
 msgid ""
 " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr " 注意，自从Robot v6.0以来，原先使用NAME的进口被AS取代。"
+msgstr " . 需注意，从 Robot v6.0 开始，旧的 WITH NAME 导入方式已由 AS 替代。"
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
@@ -1040,12 +1041,12 @@ msgstr "书库"
 
 #: src/robotide/editor/editordialogs.py:209
 msgid "Alias"
-msgstr "Alias"
+msgstr "别名"
 
 #: src/robotide/editor/editordialogs.py:209
 #: src/robotide/editor/editordialogs.py:278
 msgid "Args"
-msgstr "Args"
+msgstr "参数"
 
 #: src/robotide/editor/editordialogs.py:247
 #: src/robotide/editor/editordialogs.py:308
@@ -1576,7 +1577,7 @@ msgstr "保存或加载设置"
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
-msgstr "Font Size"
+msgstr "字号"
 
 #: src/robotide/preferences/editors.py:138
 #: src/robotide/preferences/fileexplorer.py:273
@@ -1594,7 +1595,7 @@ msgstr "使用固定宽度字体"
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
-msgstr "Font Face"
+msgstr "字体"
 
 #: src/robotide/preferences/editors.py:159
 #: src/robotide/preferences/editors.py:162
@@ -1675,11 +1676,11 @@ msgstr "网格编辑器设置"
 
 #: src/robotide/preferences/editors.py:251
 msgid "Default column size"
-msgstr "Default column size"
+msgstr "默认列宽"
 
 #: src/robotide/preferences/editors.py:255
 msgid "Auto size columns"
-msgstr "Auto size columns"
+msgstr "自动调整列宽"
 
 #: src/robotide/preferences/editors.py:258
 msgid ""
@@ -1788,23 +1789,20 @@ msgstr "跳过前景"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "显示文件资源面板(&V)"
+msgstr "文件资源管理器"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "文本编辑器设置"
+msgstr "文件资源管理器设置"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "转到定义"
+msgstr "使用这些颜色定义"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "使用操作系统的文件资源管理器"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -1814,7 +1812,7 @@ msgstr "前景"
 #: src/robotide/preferences/fileexplorer.py:119
 #: src/robotide/preferences/general.py:250
 msgid "Background"
-msgstr "二. 背景"
+msgstr "背景"
 
 #: src/robotide/preferences/fileexplorer.py:120
 #: src/robotide/preferences/general.py:251
@@ -2292,7 +2290,7 @@ msgstr "所有文件|*.*"
 msgid ""
 "Provides a tree view for Files and Folders. Opens selected item with mouse "
 "right-click."
-msgstr "为文件和文件夹提供树木视图。用鼠标右键打开选中的项目。"
+msgstr "为文件和文件夹提供树视图。用鼠标右键打开选中的项目。"
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
@@ -2302,8 +2300,8 @@ msgid "Open Containing Folder"
 msgstr "打开包含文件夹"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "文件资源"

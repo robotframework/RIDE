@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-06-21 14:53\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -18,36 +18,32 @@ msgstr ""
 "X-Crowdin-File-ID: 14\n"
 
 #: src/robotide/application/application.py:217
-#, fuzzy
 msgid "Global Settings"
-msgstr "Configuración General"
+msgstr "Configuración general"
 
 #: src/robotide/application/application.py:218
-#, fuzzy
 msgid "Global Settings Detected"
-msgstr "Configuración General"
+msgstr "Configuración general detectada"
 
 #: src/robotide/application/application.py:219
-#, fuzzy
 msgid "Project Settings"
-msgstr "Ajustes"
+msgstr "Configuración del proyecto"
 
 #: src/robotide/application/application.py:220
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Configuración del proyecto detectada"
 
 #: src/robotide/application/application.py:237
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "¿Reiniciar RIDE?"
 
 #: src/robotide/application/application.py:240
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "RIDE debe reiniciarse para usar completamente estos "
 
 #: src/robotide/application/application.py:242
-#, fuzzy
 msgid "Click OK to Restart RIDE!"
-msgstr "¡Haz clic en Aceptar para actualizar ahora!"
+msgstr "¡Haz clic en Aceptar para Reiniciar RIDE!"
 
 #: src/robotide/application/application.py:458
 #: src/robotide/application/application.py:463
@@ -589,7 +585,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/fileexplorerplugin.py:273
 #: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferencias"
@@ -787,6 +783,12 @@ msgid ""
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
+"Especifique los argumentos separados por una barra vertical, por ejemplo «$"
+"{arg1} | ${arg2}».\n"
+"Los valores por defecto se indican utilizando el signo igual y el último "
+"argumento puede ser una variable de lista.\n"
+"Ejemplo: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+"Nota. Puede utilizar métodos abreviados de variables en este campo."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
@@ -1877,23 +1879,20 @@ msgstr "Saltar primer plano"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
-#, fuzzy
 msgid "File Explorer"
-msgstr "Ver Explorador de Archivos"
+msgstr "Explorador de archivos"
 
 #: src/robotide/preferences/fileexplorer.py:59
-#, fuzzy
 msgid "File Explorer Settings"
-msgstr "Ajustes del editor de texto"
+msgstr "Ajustes del Explorador de Archivos"
 
 #: src/robotide/preferences/fileexplorer.py:96
-#, fuzzy
 msgid "Use these colors definitions"
-msgstr "Ir a la definición"
+msgstr "Usar estas definiciones de colores"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Usar explorador de archivos del sistema operativo"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
@@ -2253,6 +2252,16 @@ msgid ""
 "documentation.\n"
 "    "
 msgstr ""
+"Instale las bibliotecas que faltan y abra la documentación.\n"
+"\n"
+"Puede editar el archivo settings.cfg para añadir la URL de la documentación "
+"y el comandos de instalación.\n"
+"Puede hacer clic con el botón derecho del ratón sobre el nombre de una "
+"biblioteca y seleccionar «Abrir documentación» o «Instalar biblioteca».\n"
+"Desde Herramientas->Buscador de bibliotecas... o Ayuda->Abrir documentación "
+"de la biblioteca... aparecerá\n"
+"un cuadro de diálogo para rellenar el comando de instalación o la URL de la "
+"documentación.    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
@@ -2401,8 +2410,8 @@ msgid "Open Containing Folder"
 msgstr "Abrir carpeta contenedora"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "Archivos"
