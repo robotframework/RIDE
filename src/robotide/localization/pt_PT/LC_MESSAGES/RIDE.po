@@ -1,22 +1,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-01 18:31+0000\n"
-"PO-Revision-Date: 2025-12-01 18:48+0000\n"
-"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
+"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"PO-Revision-Date: 2025-12-08 12:52\n"
+"Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: pt-PT\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"X-Generator: Poedit 3.8\n"
 
 #: src/robotide/application/application.py:217
 msgid "Global Settings"
@@ -53,7 +52,8 @@ msgstr "Encontrou-se o Robot Framework versão %s em %s."
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:57
-#: src/robotide/spec/libraryfinder.py:45 src/robotide/ui/actiontriggers.py:54
+#: src/robotide/spec/libraryfinder.py:45
+#: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
 msgstr "Ajuda"
@@ -328,12 +328,16 @@ msgstr "Executar testes"
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
-#: src/robotide/log/log.py:86 src/robotide/parserlog/parserlog.py:85
+#: src/robotide/log/log.py:86
+#: src/robotide/parserlog/parserlog.py:85
 #: src/robotide/postinstall/desktopshortcut.py:53
 #: src/robotide/searchtests/searchtests.py:41
-#: src/robotide/spec/libraryfinder.py:43 src/robotide/spec/specimporter.py:37
-#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:838 src/robotide/ui/mainframe.py:850
+#: src/robotide/spec/libraryfinder.py:43
+#: src/robotide/spec/specimporter.py:37
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/keywordsearch.py:53
+#: src/robotide/ui/mainframe.py:838
+#: src/robotide/ui/mainframe.py:850
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Ferramentas"
@@ -526,7 +530,8 @@ msgid "Automatically pause after failing keyword"
 msgstr "Pausar automaticamente após falha de palavra-chave"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
-#: src/robotide/editor/editors.py:227 src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/editors.py:227
+#: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:475
 #: src/robotide/ui/pluginmanager.py:152
@@ -582,7 +587,8 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:270 src/robotide/ui/mainframe.py:628
+#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferências"
 
@@ -709,7 +715,8 @@ msgstr ""
 "Mover Linhas Abaixo (Alt-Down ou Ctrl-Shift-Down) | Move as linhas "
 "selecionadas uma linha abaixo\n"
 
-#: src/robotide/editor/__init__.py:50 src/robotide/ui/mainframe.py:66
+#: src/robotide/editor/__init__.py:50
+#: src/robotide/ui/mainframe.py:66
 msgid "[Tools]\n"
 msgstr "[Ferramentas]\n"
 
@@ -835,7 +842,8 @@ msgstr ""
 "Indique o nome, os argumentos opcionais e o alias opcional da biblioteca a "
 "importar."
 
-#: src/robotide/editor/dialoghelps.py:51 src/robotide/editor/dialoghelps.py:56
+#: src/robotide/editor/dialoghelps.py:51
+#: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
 msgstr ""
 "Separe os vários argumentos com uma barra, assim: 'argumento_um | "
@@ -1079,8 +1087,10 @@ msgstr "Variável Escalar"
 #: src/robotide/editor/editordialogs.py:626
 #: src/robotide/editor/editordialogs.py:651
 #: src/robotide/editor/editordialogs.py:681
-#: src/robotide/run/configmanagerui.py:101 src/robotide/ui/filedialogs.py:92
-#: src/robotide/ui/filedialogs.py:94 src/robotide/ui/filedialogs.py:331
+#: src/robotide/run/configmanagerui.py:101
+#: src/robotide/ui/filedialogs.py:92
+#: src/robotide/ui/filedialogs.py:94
+#: src/robotide/ui/filedialogs.py:331
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
 msgstr "Nome"
@@ -1193,19 +1203,23 @@ msgstr "Copiar Palavra-Chave"
 msgid "New User Keyword"
 msgstr "Nova Palavra-Chave"
 
-#: src/robotide/editor/editors.py:163 src/robotide/editor/editors.py:400
-#: src/robotide/editor/macroeditors.py:135 src/robotide/ui/mainframe.py:195
+#: src/robotide/editor/editors.py:163
+#: src/robotide/editor/editors.py:400
+#: src/robotide/editor/macroeditors.py:135
+#: src/robotide/ui/mainframe.py:195
 msgid " (READ ONLY)"
 msgstr " (APENAS LEITURA)"
 
 #: src/robotide/editor/editors.py:350
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
-#: src/robotide/ui/keywordsearch.py:357 src/robotide/usages/usagesdialog.py:151
+#: src/robotide/ui/keywordsearch.py:357
+#: src/robotide/usages/usagesdialog.py:151
 msgid "Source"
 msgstr "Origem"
 
-#: src/robotide/editor/editors.py:387 src/robotide/ui/keywordsearch.py:207
+#: src/robotide/editor/editors.py:387
+#: src/robotide/ui/keywordsearch.py:207
 #: src/robotide/ui/treenodehandlers.py:493
 #: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
@@ -1332,8 +1346,10 @@ msgstr ""
 "ferramenta libdoc de Robot Framework.</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1131 src/robotide/ui/mainframe.py:200
-#: src/robotide/ui/treenodehandlers.py:243 src/robotide/ui/treeplugin.py:1235
+#: src/robotide/editor/kweditor.py:1131
+#: src/robotide/ui/mainframe.py:200
+#: src/robotide/ui/treenodehandlers.py:243
+#: src/robotide/ui/treeplugin.py:1235
 msgid "Validation Error"
 msgstr "Erro de Validação"
 
@@ -1345,7 +1361,8 @@ msgstr "Novo nome"
 msgid "Save"
 msgstr "Salvar"
 
-#: src/robotide/editor/kweditor.py:1234 src/robotide/widgets/dialog.py:133
+#: src/robotide/editor/kweditor.py:1234
+#: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -1373,33 +1390,39 @@ msgstr "Completar conteúdo de célula"
 msgid "Variable "
 msgstr "Variável "
 
-#: src/robotide/editor/kweditor.py:1457 src/robotide/editor/texteditor.py:1119
+#: src/robotide/editor/kweditor.py:1457
+#: src/robotide/editor/texteditor.py:1119
 #: src/robotide/editor/texteditor.py:1121
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
-#: src/robotide/ui/review.py:98 src/robotide/ui/review.py:160
+#: src/robotide/ui/review.py:98
+#: src/robotide/ui/review.py:160
 msgid "Search"
 msgstr "Procurar"
 
-#: src/robotide/editor/listeditor.py:40 src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/tagdialogs.py:233
 #: src/robotide/ui/treenodehandlers.py:384
 #: src/robotide/ui/treenodehandlers.py:688
 #: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
 msgstr "Apagar"
 
-#: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:684
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
 msgstr "Mover Acima\tCtrl-Up"
 
-#: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:685
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
 msgstr "Mover Abaixo\tCtrl-Down"
 
-#: src/robotide/editor/settingeditors.py:102 src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/settingeditors.py:102
+#: src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
 msgstr "Limpar"
 
@@ -1444,7 +1467,8 @@ msgid "Install Library"
 msgstr "Instalar Biblioteca"
 
 #: src/robotide/editor/settingeditors.py:636
-#: src/robotide/spec/specimporter.py:34 src/robotide/spec/specimporter.py:63
+#: src/robotide/spec/specimporter.py:34
+#: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr "Importar Especificação de Biblioteca XML"
 
@@ -1505,7 +1529,8 @@ msgstr "Adicionar Metadados"
 msgid "Text Edit"
 msgstr "Editor de Texto"
 
-#: src/robotide/editor/texteditor.py:467 src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:467
+#: src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Origem: "
@@ -1896,7 +1921,8 @@ msgstr "Fundo Secundário"
 msgid "Apply to Project and File Explorer panels"
 msgstr "Aplicar aos painéis de Projeto e Explorador de Ficheiros"
 
-#: src/robotide/preferences/general.py:224 src/robotide/ui/filedialogs.py:148
+#: src/robotide/preferences/general.py:224
+#: src/robotide/ui/filedialogs.py:148
 msgid "Language"
 msgstr "Língua"
 
@@ -1983,16 +2009,20 @@ msgstr "Erro ao tentar obter '%s' a partir do ficheiro %s"
 msgid "Invalid config file '%s': %s"
 msgstr "Ficheiro de definições inválido '%s': %s"
 
-#: src/robotide/preferences/saving.py:27 src/robotide/preferences/saving.py:30
-#: src/robotide/preferences/saving.py:31 src/robotide/preferences/saving.py:33
+#: src/robotide/preferences/saving.py:27
+#: src/robotide/preferences/saving.py:30
+#: src/robotide/preferences/saving.py:31
+#: src/robotide/preferences/saving.py:33
 msgid "Saving"
 msgstr "Salvando"
 
-#: src/robotide/preferences/saving.py:42 src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:42
+#: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
 msgstr "É Tarefa?"
 
-#: src/robotide/preferences/saving.py:43 src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:43
+#: src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
 msgstr "Tipo por omissão para secções de Tarefas ou Testes."
 
@@ -2041,7 +2071,8 @@ msgstr "Sem ficheiros recentes"
 #: src/robotide/recentfiles/recentfiles.py:120
 #: src/robotide/recentfiles/recentfiles.py:126
 #: src/robotide/recentfiles/recentfiles.py:157
-#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
 msgstr "Ficheiro"
@@ -2096,7 +2127,8 @@ msgstr ""
 "As configurações de execução são armazenadas no ficheiro de configurações do "
 "RIDE.\n"
 
-#: src/robotide/run/configmanagerui.py:45 src/robotide/run/runanything.py:55
+#: src/robotide/run/configmanagerui.py:45
+#: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "Gerir Configurações de Execução"
 
@@ -2122,7 +2154,8 @@ msgstr ""
 "execução no sistema.\n"
 "    Os resultados da execução são apresentados num novo separador."
 
-#: src/robotide/run/runanything.py:55 src/robotide/run/runanything.py:57
+#: src/robotide/run/runanything.py:55
+#: src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "Macros"
@@ -2185,7 +2218,8 @@ msgstr "Adicionar tudo aos selecionados"
 
 #: src/robotide/searchtests/dialogsearchtests.py:156
 #: src/robotide/searchtests/dialogsearchtests.py:164
-#: src/robotide/ui/keywordsearch.py:211 src/robotide/ui/keywordsearch.py:284
+#: src/robotide/ui/keywordsearch.py:211
+#: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
 msgstr "Resultados: %d"
 
@@ -2281,19 +2315,23 @@ msgstr "Não se conseguiu importar biblioteca do ficheiro \"%s\""
 msgid "Type"
 msgstr "Tipo"
 
-#: src/robotide/ui/filedialogs.py:110 src/robotide/ui/filedialogs.py:230
+#: src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/filedialogs.py:230
 msgid "Directory"
 msgstr "Diretoria"
 
-#: src/robotide/ui/filedialogs.py:170 src/robotide/ui/filedialogs.py:303
+#: src/robotide/ui/filedialogs.py:170
+#: src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
 msgstr "Novo Ficheiro de Recursos"
 
-#: src/robotide/ui/filedialogs.py:172 src/robotide/ui/preview.py:117
+#: src/robotide/ui/filedialogs.py:172
+#: src/robotide/ui/preview.py:117
 msgid "Format"
 msgstr "Formato"
 
-#: src/robotide/ui/filedialogs.py:184 src/robotide/ui/filedialogs.py:199
+#: src/robotide/ui/filedialogs.py:184
+#: src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
 msgstr "Diretoria Raiz"
 
@@ -2333,7 +2371,8 @@ msgstr ""
 "Indique o formato do ficheiro de inicialização na diretoria\n"
 "\"%s\"."
 
-#: src/robotide/ui/filedialogs.py:410 src/robotide/ui/fileexplorerplugin.py:79
+#: src/robotide/ui/filedialogs.py:410
+#: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
 msgstr "Abrir"
 
@@ -2373,8 +2412,9 @@ msgid "Open Containing Folder"
 msgstr "Abrir a Pasta Correspondente"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
-#: src/robotide/ui/fileexplorerplugin.py:206
-#: src/robotide/ui/fileexplorerplugin.py:209 src/robotide/ui/mainframe.py:297
+#: src/robotide/ui/fileexplorerplugin.py:211
+#: src/robotide/ui/fileexplorerplugin.py:214
+#: src/robotide/ui/mainframe.py:297
 msgid "Files"
 msgstr "Ficheiros"
 
@@ -2402,7 +2442,8 @@ msgstr "<todas as palavras-chave de utilizador>"
 msgid "<all library keywords>"
 msgstr "<todas as palavras-chave de biblioteca>"
 
-#: src/robotide/ui/keywordsearch.py:39 src/robotide/ui/keywordsearch.py:59
+#: src/robotide/ui/keywordsearch.py:39
+#: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
 msgstr "Procurar palavras-chave"
 
@@ -2534,7 +2575,8 @@ msgstr "Modificação não permitida"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" é apenas de leitura"
 
-#: src/robotide/ui/mainframe.py:280 src/robotide/ui/treeplugin.py:108
+#: src/robotide/ui/mainframe.py:280
+#: src/robotide/ui/treeplugin.py:108
 msgid "Test Suites"
 msgstr "Suites de Teste"
 
@@ -2546,7 +2588,8 @@ msgstr ""
 "Existem modificações não guardadas.\n"
 "Você quer salvar as alterações antes de sair?"
 
-#: src/robotide/ui/mainframe.py:419 src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:419
+#: src/robotide/ui/mainframe.py:512
 msgid "Warning"
 msgstr "Aviso"
 
@@ -2649,7 +2692,8 @@ msgstr ""
 "(Obsoleto) Disponibiliza uma antevisão dos dados de teste nos formatos, "
 "HTML, TSV e TXT."
 
-#: src/robotide/ui/preview.py:41 src/robotide/ui/preview.py:100
+#: src/robotide/ui/preview.py:41
+#: src/robotide/ui/preview.py:100
 msgid "Preview"
 msgstr "Ante-visão"
 
@@ -2687,7 +2731,8 @@ msgstr ""
 msgid "Filter is"
 msgstr "O filtro está"
 
-#: src/robotide/ui/review.py:71 src/robotide/ui/review.py:242
+#: src/robotide/ui/review.py:71
+#: src/robotide/ui/review.py:242
 msgid "inactive"
 msgstr "inativo"
 
@@ -2745,7 +2790,8 @@ msgstr "Palavra-Chave"
 msgid "Delete marked keywords"
 msgstr "Apagar as Palavras-Chave marcadas"
 
-#: src/robotide/ui/review.py:157 src/robotide/ui/review.py:320
+#: src/robotide/ui/review.py:157
+#: src/robotide/ui/review.py:320
 msgid "Unused Keywords"
 msgstr "Palavras-Chave Não Utilizadas"
 
@@ -2757,7 +2803,8 @@ msgstr "Abortar"
 msgid "active"
 msgstr "ativo"
 
-#: src/robotide/ui/review.py:270 src/robotide/ui/review.py:353
+#: src/robotide/ui/review.py:270
+#: src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
 msgstr "Palavras-Chave Não Utilizadas (%d)"
 
@@ -2833,7 +2880,8 @@ msgstr ""
 msgid "Select all"
 msgstr "Selecionar tudo"
 
-#: src/robotide/ui/tagdialogs.py:233 src/robotide/ui/tagdialogs.py:262
+#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
 msgstr "Renomear"
 
@@ -2853,7 +2901,8 @@ msgstr "Renomeando a etiqueta '%s'."
 msgid "Delete a tag '%s' ?"
 msgstr "Apagar a etiqueta '%s' ?"
 
-#: src/robotide/ui/tagdialogs.py:276 src/robotide/ui/treenodehandlers.py:661
+#: src/robotide/ui/tagdialogs.py:276
+#: src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
 msgstr "Confirmar"
 

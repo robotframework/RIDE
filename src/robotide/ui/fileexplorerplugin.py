@@ -23,7 +23,7 @@ from ..controller.project import Project
 from ..pluginapi import Plugin
 from ..pluginapi.plugin import ActionInfo
 from ..preferences import PreferenceEditor
-from ..publish import RideSettingsChanged, PUBLISHER
+from ..publish import RideSettingsChanged, RideOpenSuite, PUBLISHER
 from ..widgets import PopupCreator, PopupMenuItems, VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
@@ -101,7 +101,7 @@ class FileExplorerPlugin(Plugin):
                 register = self._mgr.AddPane
 
             register(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                     Caption(_("Files")).LeftDockable(True).CloseButton(False))
+                     Caption(_("Files")).LeftDockable(True).CloseButton(True))
 
             self._mgr.Update()
 
@@ -114,6 +114,10 @@ class FileExplorerPlugin(Plugin):
             self.show_file_explorer()
         # if not self.opened:
         #     self.close_tree()
+
+    def disable(self):
+        self.unregister_actions()
+        self.unsubscribe_all()
 
     def close_tree(self):
         # self.save_setting('opened', False)
@@ -191,6 +195,7 @@ class FileExplorerPlugin(Plugin):
         self.file_explorer.Refresh()
         self._filetreectrl.SetBackgroundColour(html_background)
         self._filetreectrl.SetForegroundColour(html_foreground)
+        # print(f"DEBUG: FileExplorerPlugin SET FONT treectrl size={self.html_font_size}")
         self._filetreectrl.SetFont(self.font)
         self._filetreectrl.Fit()
         self._filetreectrl.Refresh()
@@ -232,6 +237,7 @@ class FileExplorerPlugin(Plugin):
         if not self.file_explorer:
             return
         self.file_explorer.update_tree()
+        self.file_explorer.on_size()
 
     def show_popup(self):
         self._popup_creator.show(self.file_explorer, PopupMenuItems(self, self._actions, self._actions_nt), self._controller)
@@ -254,9 +260,6 @@ class FileExplorerPlugin(Plugin):
                 file_manager = self.global_settings[FILE_MANAGER]
         except KeyError:
             file_manager = None
-        #  self._controller.execute(
-        #  ctrlcommands.OpenContainingFolder(file_manager, self.file_explorer.current_path)
-        # print(f"DEBUG: FileExplorerPlugin call file manager={file_manager}")
         start_filemanager(self.file_explorer.current_path, file_manager)
 
     def on_config_panel(self):
@@ -284,14 +287,10 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.dlg = RIDEDialog()
         self.SetBackgroundColour(Colour(self._plugin.settings['background']))
         self.SetForegroundColour(Colour(self._plugin.settings['foreground']))
-        # self.sizer = VerticalSizer()
-        self.sizer = wx.FlexGridSizer(cols=1, hgap=5, vgap=5)
-        # print(f"DEBUG: FileExplorer INIT sizer={self.sizer}")
+        self.sizer = VerticalSizer()
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
         self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, style=wx.DIRCTRL_3D_INTERNAL)
-        # wx.BORDER_NONE   size=(200, 205),
-        # wx.GenericDirCtrl.__init__(self, parent=self, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         tsizer = VerticalSizer()
         tsizer.Add(self.tree_ctrl, proportion=1, flag=wx.EXPAND)
         self.sizer.Add(wx.Size(35, 35))
@@ -300,10 +299,10 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.current_path = None
         self._apply_settings()
         self.Bind(wx.EVT_CLOSE, self.on_close)
-        # self.Bind(wx.EVT_SIZE, self.on_size)  # DEBUG With this activated, the "toolbar" is hidden
-        self.Bind(wx.EVT_MOVE, self.on_size)
+        self.Bind(wx.EVT_SIZE, self.on_size)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_right_click)
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_press)
+        PUBLISHER.subscribe(self.on_suite_opened, RideOpenSuite)
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         self.SetThemeEnabled(True)
         self.SetAutoLayout(True)
@@ -337,10 +336,10 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                     self.tree_ctrl.TreeCtrl.EnsureVisible(self.tree_ctrl.TreeCtrl.GetSelection())
                 except Exception:
                     pass
-                # self.on_size(None)
+                # self.on_size(wx.EVT_SIZE)
                 self.Refresh()
-                self.Update()
                 self.tree_ctrl.Update()
+                self.Update()
 
     def _apply_settings(self):
         apply_to_panels = self._plugin.general_settings['apply to panels']
@@ -376,13 +375,18 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.font.SetFaceName(self._plugin.settings['font face'])
         self.font.SetPointSize(int(self._plugin.settings['font size']))
         self.SetFont(self.font)
+        tc.SetFont(self.font)
         tc.Fit()
         tc.Refresh()
         tc.Update()
+        # print(f"DEBUG: FileExplorerPlugin _apply_settings SET FONT treectrl "
+        #       f"size={int(self._plugin.settings['font size'])}")
         self.tree_ctrl.SetFont(self.font)
         self.tree_ctrl.Fit()
         self.tool_bar_txt.SetFont(self.font)
         self.tree_ctrl.Refresh()
+        self.tree_ctrl.Update()
+        self.Update()
 
     def on_close(self, event):
         __ = event
@@ -393,57 +397,53 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         print(f"DEBUG: FileExplorer on_key_press Skipping {event.KeyCode()}")
         event.Skip()
 
-    def on_size(self, event):
-        __ = event
+    def on_suite_opened(self, message):
+        # Update File Explorer tree when suite is opened to use whole pane (when floating).
+        # Not working
+        __ = message
+        wx.CallAfter(self.on_size)
+
+    def on_size(self, event=None):
+        if event:
+            event.Skip()
         self.update_tree()
         sz = self.GetSize()  # + wx.Size(-5, -5)
         # print(f"DEBUG: FileExplorer On size refreshing. sz={sz}")
+        self.tree_ctrl.SetSize(sz)
+        self.tree_ctrl.Fit()
+        self.tree_ctrl.Refresh()
         tc = self.tree_ctrl.GetTreeCtrl()
         tc.SetSize(sz)
         tc.Fit()
         tc.Refresh()
-        self.tree_ctrl.Fit()
-        self.tree_ctrl.Refresh()
         self.tree_ctrl.Update()
+        self.Update()
 
     def on_right_click(self, event):
-        # __ = event
-        # event.Skip()
-        # print(f"DEBUG: FileExplorer mouse RightClick event={event} controller={self._controller}")
+        __ = event
         if not self._right_click:
             self._right_click = True
         handler = None
-        # item = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))  #  wx.TREE_HITTEST_ONITEMLABEL)
         tc = self.tree_ctrl.GetTreeCtrl()
-        # item, _ = tc.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         item = tc.GetSelection()
         if item:
-            # print(f"DEBUG: FileExplorer mouse RightClick item={item} type={type(item)}")
-            # id=self.GetPopupMenuSelectionFromUser()
-            handler = self.tree_ctrl.GetPath(item)  # self.GetItemData(item)
+            handler = self.tree_ctrl.GetPath(item)
         if handler:
-            # handler.show_popup()
             self.current_path = handler
-            # print(f"DEBUG: FileExplorer PATH={handler}")
             if self._plugin:
                 self._plugin.show_popup()
             self._right_click = False
 
     def on_settings_changed(self, message):
         """Redraw the colors if the color settings are modified"""
+        # print(f"DEBUG: FileExplorer on_settings_changed ENTER {message.keys}\n")
         if message.keys[0] == "General":
-            # print(f"DEBUG: FileExplorer on_settings_changed GENERAL={message.keys}\n"
-            #       f"settings={self._plugin.general_settings}")
             if message.keys[-1] == "apply to panels":
                 self.update_tree()
             return
         section, _ = message.keys
         if section == PLUGIN_NAME:
-            # print(f"DEBUG: FileExplorer on_settings_changed SECTION={message.keys}\n"
-            #       f"settings={self._plugin.settings}")
             self.update_tree()
-            # mgr = self.parent.GetManager()
-            # if mgr.GetPane('file_explorer'):
             if self._plugin._pane:
                 pane_info = self._plugin._pane
                 docked = self._plugin.settings['docked']
@@ -454,9 +454,9 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                 opened = self._plugin.settings['opened']
                 if opened:
                     pane_info.Show(True)
+                    self._apply_settings()
                 else:
                     pane_info.Hide()
-                # print(f"DEBUG: FileExplorer on_settings_changed Call Update {opened=} {docked=}")
                 self._plugin._pane.GetManager().Update()
 
     def general_font_size(self) -> int:
@@ -482,5 +482,4 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.pane_toolbar.add_expanding(default_components)
         self.pane_toolbar.AddStretchSpacer()
         self.pane_toolbar.add_with_padding(self.config_button)
-        # self.sizer.add_expanding(self.pane_toolbar, propotion=0)
         self.sizer.Add(self.pane_toolbar, proportion=0)

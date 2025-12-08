@@ -453,7 +453,7 @@ class RideFrame(wx.Frame):
         # path = self.filemgr.current_path  # .GetFilePath()
         # print(f"DEBUG: mainframe.py RideFrame on_open_file 1 path={path}")
         path = self.filemgr.tree_ctrl.GetPath()
-        print(f"DEBUG: mainframe.py RideFrame on_open_file 2 path={path}")
+        # print(f"DEBUG: mainframe.py RideFrame on_open_file 2 path={path}")
         ext = ''
         if len(path) > 0:
             ext = splitext(path)

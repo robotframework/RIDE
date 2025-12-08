@@ -8,6 +8,12 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 // == https://github.com/robotframework/RIDE[Unreleased]
 
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.1.1.rst[2.2.1.1] - 2025-12-08
+
+=== Fixed
+- Fixed size fitting of folders tree in File Explorer.
+
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.1.rst[2.2.1] - 2025-12-01
 
 === Added
@@ -16,7 +22,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Added Config Panel button to File Explorer plugin. Here, you can set the operating system file explorer, or specify other tool, the Font style, and Colors.
 
 === Fixed
-- Fixed persistance of the state docked/floating of File Explorer.
+- Fixed persistence of the state docked/floating of File Explorer.
 - Fixed Cut (Ctrl-X) when editing the content of a cell in Grid Editor, before was deleting all content.
 
 
