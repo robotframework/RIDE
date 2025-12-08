@@ -560,8 +560,8 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:673
+#: src/robotide/ui/fileexplorerplugin.py:270
+#: src/robotide/ui/mainframe.py:628
 msgid "RIDE - Preferences"
 msgstr ""
 
