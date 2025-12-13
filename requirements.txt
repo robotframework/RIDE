@@ -4,6 +4,7 @@ Pywin32; sys_platform == 'win32'
 Pygments # This enables syntax highlighted in Text Editor
 robotframework
 Pypubsub
+isbinary
 psutil
 packaging
 requests>=2.32.4

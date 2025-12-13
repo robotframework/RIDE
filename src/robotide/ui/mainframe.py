@@ -15,6 +15,8 @@
 
 import builtins
 import os
+import subprocess
+import sys
 
 import wx
 import wx.lib.agw.aui as aui
@@ -42,6 +44,7 @@ from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
 from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
+from isbinary import is_binary_file
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -79,6 +82,17 @@ def get_menudata():
     return (file_0 + file_1 + separator + file_2 + file_3 + file_4 + separator + file_5 + file_6 + separator +
             file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0 + help_1 + help_2 +
             help_3 + help_4 + help_6 + help_7)
+
+
+def start_external_app(file_path):
+    if sys.platform.startswith('darwin'):  # macOS
+        subprocess.call(['open', file_path])
+    elif sys.platform.startswith('win32'):  # Windows
+        subprocess.call(['cmd', '/c', 'start', file_path], shell=True)
+    elif sys.platform.startswith('linux'):  # Linux
+        subprocess.call(['xdg-open', file_path])
+    else:
+        print('Unsupported OS')
 
 
 class RideFrame(wx.Frame):
@@ -464,7 +478,10 @@ class RideFrame(wx.Frame):
                 return
             if self.open_suite(path):
                 return
-        customsourceeditor.main(path)
+        if not is_binary_file(path):
+            customsourceeditor.main(path)
+        else:
+            start_external_app(path)
 
     def on_menu_open_file(self, event):
         if not self.filemgr:

@@ -177,6 +177,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>In File Explorer opening non-text files is done by the operating system registered app.</li>
 <li>Added context menu to File Explorer, to Open test suites directories or test suites files (also with double-click).
 </li>
 <li>Added context menu option to Open Containing Folder, in operating system file explorer, or specific tool.</li>
@@ -238,7 +239,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 08/December/2025.</p>
+<p>RIDE {VERSION} was released on 13/December/2025.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
