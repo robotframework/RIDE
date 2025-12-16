@@ -484,8 +484,12 @@ class RIDE(wx.App):
     def _get_recentfiles_plugin(self):
         from ..recentfiles import RecentFilesPlugin
         for pl in self.get_plugins():
-            if isinstance(pl.conn_plugin, RecentFilesPlugin):
-                return pl.conn_plugin
+            try:
+                plugin = pl.conn_plugin
+                if plugin and isinstance(plugin, RecentFilesPlugin):
+                    return plugin
+            except AttributeError:
+                pass
 
     def get_plugins(self):
         return self._plugin_loader.plugins
