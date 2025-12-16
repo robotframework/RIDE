@@ -354,7 +354,10 @@ class RIDE(wx.App):
         if message.keys[0] != "General":
             return
         initial_locale = self._locale.GetName()
-        code = self._get_language_code()
+        try:
+            code = self._get_language_code()
+        except AttributeError:
+            code = wx.LANGUAGE_ENGLISH_WORLD
         del self._locale
         self._locale = wx.Locale(code)
         if not self._locale.IsOk():
@@ -384,7 +387,7 @@ class RIDE(wx.App):
                     except FileNotFoundError:
                         pass
 
-    def _get_language_code(self) -> str:
+    def _get_language_code(self) -> str|int:
         if languages:
             from ..preferences import Languages
             names = [n for n in Languages.names]
