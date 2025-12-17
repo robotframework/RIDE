@@ -171,21 +171,20 @@ def _askdirectory(title, initialdir, frame=None):
 
 
 def _create_desktop_shortcut_linux(frame=None):
-    from os.path import expanduser
+    from os.path import expanduser, basename
     from os import chmod, chown
     from stat import S_IRWXU
-    import subprocess
     import pwd
     import sysconfig
     # DEBUG: Add more languages
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho", "zh": "Desktop"}
-    user = getlogin()
+    user = basename(expanduser('~'))
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
-        directory = join("/home", user, ndesktop)
-        defaultdir = join("/home", user, "Desktop")
+        directory = join(expanduser('~'), ndesktop)
+        defaultdir = join(expanduser('~'), "Desktop")
         if not exists(directory):
             if exists(defaultdir):
                 directory = defaultdir
