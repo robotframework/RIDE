@@ -15,7 +15,6 @@
 
 import builtins
 import os
-import psutil
 import subprocess
 import sys
 
@@ -171,7 +170,6 @@ class RIDE(wx.App):
                   f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
-        # self.fileexplorerplugin = self.frame.fileexplorerplugin  # FileExplorerPlugin(self, self._controller)
 
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
@@ -238,7 +236,7 @@ class RIDE(wx.App):
                                  f"{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
                                  f"{project_or_normal_detected}{FIVE_SPC}\n\n"
                                  f"{FIVE_SPC}{_('RIDE must be restarted to fully use these ')}{project_or_normal}"
-                                 f"{FIVE_SPC}\n"f"\n\n{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"{FIVE_SPC}\n\n\n{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
                                  f"{_('Click OK to Restart RIDE!')}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
                                  f"\n\n", wx.GetActiveWindow(), no_default=False):
                     return False
@@ -387,10 +385,10 @@ class RIDE(wx.App):
                     except FileNotFoundError:
                         pass
 
-    def _get_language_code(self) -> str|int:
+    def _get_language_code(self):  #  -> Union[str, int]
         if languages:
             from ..preferences import Languages
-            names = [n for n in Languages.names]
+            names = Languages.names
         else:
             names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
         general = self.settings.get_without_default('General')
