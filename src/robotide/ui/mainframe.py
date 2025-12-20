@@ -304,7 +304,6 @@ class RideFrame(wx.Frame):
             # self.fileexplorerplugin = FileExplorerPlugin(self._application, self.controller)
             # self.fileexp = FileExplorerPlugin(self._application, self.controller)
             self.filemgr = FileExplorer(self, plugin=self._application.fileexplorerplugin, controller=self.controller)
-            # self.filemgr = self.fileexplorerplugin.file_explorer
             self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
             self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").
@@ -464,10 +463,7 @@ class RideFrame(wx.Frame):
                                                                     'resource',
                                                                     'txt',
                                                                     'tsv'])  # Removed 'html'
-        # path = self.filemgr.current_path  # .GetFilePath()
-        # print(f"DEBUG: mainframe.py RideFrame on_open_file 1 path={path}")
         path = self.filemgr.tree_ctrl.GetPath()
-        # print(f"DEBUG: mainframe.py RideFrame on_open_file 2 path={path}")
         ext = ''
         if len(path) > 0:
             ext = splitext(path)
@@ -541,8 +537,7 @@ class RideFrame(wx.Frame):
             self._application.changed_workspace = True
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
-        set_lang = []
-        set_lang.append('en')
+        set_lang = ['en']
         try:
             set_lang = shared_memory.ShareableList(name="language")
         except FileNotFoundError:
@@ -844,7 +839,7 @@ class ActionRegisterer(object):
         self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
-        self._tools_items = dict()
+        self._tools_items = {}
 
     def register_action(self, action_info, update_aui=True):
         menubar_can_be_registered = True

@@ -51,4 +51,4 @@ def do_restart():
                        wx.GetActiveWindow())
     if result:
         wx.CallLater(1000, wx.App.Get().GetTopWindow().Close)
-        return True
+    return result
