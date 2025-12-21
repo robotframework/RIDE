@@ -54,7 +54,7 @@ dependencies = [
     "robotframework",
     "psutil",
     "packaging",
-    "requests>=2.32.4",
+    "requests>=2.6.0",
 ]
 
 [project.urls]

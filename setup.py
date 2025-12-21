@@ -29,7 +29,7 @@ REQUIREMENTS = ['PyPubSub',
                 'Pywin32; sys_platform=="win32"',
                 'wxPython',
                 'packaging',
-                'requests>=2.32.4']
+                'requests>=2.6.0']
 
 PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],
@@ -80,6 +80,7 @@ Programming Language :: Python :: 3.10
 Programming Language :: Python :: 3.11
 Programming Language :: Python :: 3.12
 Programming Language :: Python :: 3.13
+Programming Language :: Python :: 3.14
 Topic :: Software Development :: Testing
 """.strip().splitlines()
 
