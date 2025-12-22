@@ -15,6 +15,8 @@
 import unittest
 import os
 import pytest
+from random import randint
+from pytest import MonkeyPatch
 
 DISPLAY = os.getenv('DISPLAY')
 if not DISPLAY:  # Avoid failing unit tests in system without X11
@@ -25,7 +27,7 @@ from wx.lib.agw.aui import AuiManager
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
 from robotide.spec.librarymanager import LibraryManager
-from robotide.ui.mainframe import ActionRegisterer, ToolBar
+from robotide.ui.mainframe import ActionRegisterer, ToolBar, start_external_app
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.application import Project
 from robotide.application.pluginloader import PluginLoader
@@ -35,12 +37,41 @@ from robotide.editor.texteditor import TextEditorPlugin
 from robotide.log import LogPlugin
 from robotide.ui import mainframe
 from robotide.publish import PUBLISHER
+from robotide.preferences import Settings
 from robotide.ui.treeplugin import Tree
 from robotide.namespace.namespace import Namespace
 
 
 app = wx.App()
 
+class FakePlugin():
+    settings = {'foreground':'black',
+                'background':'white',
+                'secondary foreground':'blue',
+                'secondary background':'gray',
+                'font face':'',
+                'font size':11,
+                'own colors':False }
+    html_font_size = 11
+    general_settings = {'foreground':'black',
+                'background':'white',
+                'secondary foreground':'blue',
+                'secondary background':'gray',
+                'apply to panels':False}
+
+    def __init__(self):
+        self.settings = Settings(user_path=os.path.join(os.path.dirname(__file__), 'fake.cfg'))
+        self.settings.set('foreground', 'black')
+        self.settings.set('background', 'white')
+        self.settings.set('secondary foreground', 'blue')
+        self.settings.set('secondary background', 'gray')
+        self.settings.set('font_size', '11')
+
+
+class MyPlatform():
+    def startswith(self):
+        plt = ['linux', 'darwin', 'win32', 'something']
+        return plt[randint(0, 3)] == self
 
 class _BaseDialogTest(unittest.TestCase):
 
@@ -52,6 +83,7 @@ class _BaseDialogTest(unittest.TestCase):
         self.app.fontinfo = wx.FontInfo(font_size).FaceName(font_face).Bold(False)
         self.app.namespace = Namespace(FakeSettings())
         self.model = self._create_model()
+        self.app.fileexplorerplugin = FakePlugin
         self.frame = mainframe.RideFrame(self.app, self.model)
         self.app.frame = self.frame
         txtplugin = TextEditorPlugin
@@ -109,18 +141,35 @@ class _BaseDialogTest(unittest.TestCase):
 
 class TestMainFrame(_BaseDialogTest):
 
-   def test_show_mainframe(self):
+    def test_show_mainframe(self):
        self.frame.Show()
        wx.CallLater(2000, self.app.ExitMainLoop)
        self.app.MainLoop()
 
-   def test_show_plugins_manager(self):
+    def test_show_plugins_manager(self):
         self.frame.Show()
         plugins = self.loader.plugins
         self.frame._plugin_manager.show(plugins)
         wx.CallLater(5000, self.app.ExitMainLoop)
         wx.CallLater(4000, self.frame._plugin_manager._panel.Close)
         self.app.MainLoop()
+
+    def test_start_external_app(self):
+        import sys, subprocess
+        self._platform = ""
+
+        def my_call(*argument, **options):
+            _ = options
+            value = " ".join(argument[0])
+            # print(f'DEBUG: Calling suprocess.call("{value}")')
+
+        with MonkeyPatch().context() as m:
+            m.setattr(sys, 'platform', MyPlatform)
+            m.setattr(sys.platform, 'startswith', MyPlatform.startswith)
+            m.setattr(subprocess, 'call', my_call)
+
+            for _ in range(16):  # Hoping to cover all 4 cases
+                start_external_app(__file__)
 
 
 if __name__ == '__main__':
