@@ -69,7 +69,7 @@ class MyApp(wx.App):
     tree = None
 
     def __init__(self, redirect=False, filename=None, usebestvisual=False, clearsigint=True):
-        super().__init__(redirect, filename, usebestvisual, clearsigint)
+        wx.App.__init__(self, redirect, filename, usebestvisual, clearsigint)
         self.actions = None
         self.toolbar = None
         self._mgr = None
