@@ -199,14 +199,14 @@ class _ChoiceEditor(object):
         self.foreground_color = self.csettings['foreground']
 
     def chooser(self, parent):
-        element = self._editor_class(parent, wx.NewId(), self._settings,
+        element = self._editor_class(parent, wx.NewIdRef(), self._settings,
                                      key=self._setting_name, choices=self._choices)
         element.SetBackgroundColour(self.background_color)
         element.SetForegroundColour(self.foreground_color)
         return element
 
     def label(self, parent):
-        llabel = wx.StaticText(parent, wx.NewId(), self._label)
+        llabel = wx.StaticText(parent, wx.NewIdRef(), self._label)
         llabel.SetBackgroundColour(self.background_color)
         llabel.SetForegroundColour(self.foreground_color)
         return llabel

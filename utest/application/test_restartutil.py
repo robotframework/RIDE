@@ -43,15 +43,19 @@ class RestartUtilTestCase(unittest.TestCase):
                 from robotide.application.restartutil import do_restart, restart_dialog
                 self.RESULT = True
                 result = restart_dialog()
+                time.sleep(2)
                 assert result is True
                 self.RESULT = False
                 result = restart_dialog()
+                time.sleep(2)
                 assert result is False
                 assert self._callback_called is True
                 self._callback_called = False
-                do_restart()
+                self.RESULT = False
+                result = do_restart()
                 time.sleep(6)
-                # assert self._callback_called is True
+                assert result is False
+                assert self._callback_called is True
 
 
 if __name__ == '__main__':
