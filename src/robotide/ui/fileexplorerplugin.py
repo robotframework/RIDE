@@ -208,10 +208,10 @@ class FileExplorerPlugin(Plugin):
                 self._mgr.DetachPane("file_manager")
                 if not self.__getattr__('docked'):
                     self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                                      Caption(_("Files")).LeftDockable(True).CloseButton(False).Float())
+                                      Caption(_("Files")).LeftDockable(True).CloseButton(True).Float())
                 else:
                     self._mgr.AddPane(self.file_explorer, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                                      Caption(_("Files")).LeftDockable(True).CloseButton(False).Dock())
+                                      Caption(_("Files")).LeftDockable(True).CloseButton(True).Dock())
                 self._pane = self._mgr.GetPane("file_manager")
         if self._pane:
             self._pane.Show(True)

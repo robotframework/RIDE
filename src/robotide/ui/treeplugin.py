@@ -17,9 +17,9 @@ import builtins
 import os
 
 import wx
+import wx.lib.agw.aui as aui
 from wx import Colour, Point
 from wx.lib.agw import customtreectrl
-from wx.lib.agw.aui import GetManager
 from wx.lib.agw.customtreectrl import GenericTreeItem, TreeEvent
 from wx.lib.mixins import treemixin
 
@@ -69,7 +69,7 @@ class TreePlugin(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application, default_settings=self.defaults)
-        # print("DEBUG: treeplugin.py TreePlugin __init__")
+        print("DEBUG: treeplugin.py TreePlugin __init__")
         self._app = application
         self.settings = self._app.settings.config_obj['Plugins']['Tree']
         self._parent = None
@@ -80,20 +80,18 @@ class TreePlugin(Plugin):
         self._tree.SetForegroundColour(Colour(7, 0, 70))
         self._tree.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        self._mgr = GetManager(self._tree)
-        """
-        self._action_registerer = action_registerer
-        self.tree = parent.tree
-        """
+        self._mgr = aui.GetManager(self._tree)
         self.pane_id = self._tree.GetId()
         self._model = self.model
-        # DEBUG: self.frame.Bind(wx.EVT_MOVE, self.OnShowTree) self.frame.Bind(wx.EVT_SHOW, self.OnShowTree)
         self._tree.Bind(wx.EVT_SHOW, self.on_show_tree)
         self._tree.Bind(wx.EVT_MOVE, self.on_tab_changed)
+        # self._tree.Bind(aui.wxEVT_AUI_PANE_CLOSED, self.toggle_view)
         # parent, action_registerer, , default_settings={'collapsed':True}
+        self.opened = self.settings['opened']
         self._pane = self._mgr.GetPane(self._tree)
         self.font = wx.Font(self._app.fontinfo)  # self._tree.GetFont()
         self._tree.SetFont(self.font)
+        self.show_count = 0
         # print(f"DEBUG: TreePlugin init self.pane_id={self.pane_id} \n"
         #      f"self._pane = {self._pane}")
 
@@ -105,36 +103,68 @@ class TreePlugin(Plugin):
             else:
                 register = self._mgr.AddPane
             register(self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
-                     Caption(_("Test Suites")).LeftDockable(True))
+                     Caption(_("Test Suites")).CloseButton(True).LeftDockable(True))
             self._mgr.Update()
 
     def enable(self):
-        # DEBUG this does not work, the panel has no tree, when we dock from floating
-        # DEBUG: Attempt to create Panel and then calling self.OnShowTree
-        """
-        self.register_action(ActionInfo('View','View Test Suites Explorer', self.OnShowTree,
+        # DEBUG: This does not work (in KDE/Plasma on Fedora 42), the panel has no tree, when we dock from floating
+        # DEBUG: On other O.S. it may work, so we leave the feature on.
+        self.register_action(ActionInfo(_('View'), _('View Test Suites Explorer'), self.toggle_view,
                                         shortcut='F12',
-                                        doc='Show Test Suites tree panel',
-                                        position=1))
-        """
+                                        doc=_('Show Test Suites tree panel'),
+                                        position=2))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.reload_tree, RideSettingsChanged)
         # self.save_setting('opened', True)
         # DEBUG: Add toggle checkbox to menu View/Hide Tree
+        # On creation always show
+        self.on_show_tree(None)
+        """
         if self.opened:
+            print(f"DEBUG: TreePlugin enable CALL on_show_tree")
             self.on_show_tree(None)
+        """
 
+    """
     def close_tree(self):
         self._mgr.DetachPane(self._tree)
         self._tree.Hide()
         self._mgr.Update()
         self.save_setting('opened', False)
+    """
+
+    def close_tree(self):
+        self.show_count = 0
+        self.opened = False
+        self._mgr = aui.GetManager(self._app.frame)
+        print(f"DEBUG: TreePlugin ENTER close_tree self._mgr={self._mgr} _tree={self._tree} == frame {self.frame.tree}")
+        if not self._mgr:
+            return
+        # self._mgr = self.app.frame.aui_mgr
+        if not self._tree:
+            self._tree = self.frame.tree
+        print(f"DEBUG: TreePlugin ENTER close_tree _tree={self._tree}")
+        # self._mgr.DetachPane(self.file_explorer) DestroyOnClose()
+        pane_info = self._mgr.GetPane("tree_content")
+        if pane_info.IsOk():
+            if pane_info.IsFloating():
+                pane_info.DestroyOnClose()
+                self._mgr.DetachPane(self._tree)
+                self.set_float_docked(False)
+            else:
+                self._mgr.ClosePane(pane_info.Dock().Hide())
+                self.set_float_docked(True)
+        # perspective = self._mgr.SavePaneInfo(pane_info)
+        # print(f"DEBUG: TreePlugin call close_tree perspective={perspective}")
+        # self.save_setting('perspective', perspective)
+        self.save_setting('opened', False)
+        self._mgr.Update()
 
     def disable(self):
         self.close_tree()
         # self.save_setting('opened', False)
-        self.unsubscribe_all()
         self.unregister_actions()
+        self.unsubscribe_all()
 
     def is_focused(self):
         return self._tree.HasFocus()
@@ -159,13 +189,35 @@ class TreePlugin(Plugin):
         except IndexError:
             pass
 
+    def toggle_view(self, event):
+        __ = event
+        if event is None:
+            print(f"DEBUG: TreePlugin ENTER toggle_view {event=} is NONE tree is {self.opened}")
+            return
+        print(f"DEBUG: TreePlugin ENTER toggle_view {event=} in not None tree is {self.opened}")
+        self.save_setting('opened', not self.opened)
+        if not self.opened:
+            self.show_count = 0
+            self.opened = True
+            self.on_show_tree(None)
+        else:
+            self.close_tree()
+
     def on_show_tree(self, event):
+        print(f"DEBUG: TreePlugin on_show_tree ENTER {event=}"
+              f" COUNTER={self.show_count} event. == tree? {self._tree}")
+        self.show_count += 1
+        if self.show_count >= 2:
+            return
         __ = event
         if not self._parent:
             self._parent = self.frame
         if not self._tree:  # This is not needed because tree is always created
-            return  # On Windows this code is executed when closing the app, we return now
-
+            self._tree = Tree(self._parent, self._parent.actions, self._app.settings)
+            print(f"DEBUG: TreePlugin on_show_tree # On Windows this code is executed when closing the app, we DON'T "
+                  f"return now")
+            # return  # On Windows this code is executed when closing the app, we return now
+        print(f"DEBUG: TreePlugin on_show_tree {self._tree}")
         global_settings = self._app.settings.config_obj['General']
         apply_global = global_settings['apply to panels']
         use_own = self.settings['own colors']
@@ -204,6 +256,9 @@ class TreePlugin(Plugin):
         self._update_tree()
         self._mgr.Update()
 
+    def set_float_docked(self, state: bool):
+        self.save_setting('docked', state)  # Docked == True
+
     def on_tree_selection(self, message):
         if self.is_focused():
             self._tree.tree_node_selected(message.item)
@@ -214,6 +269,7 @@ class TreePlugin(Plugin):
 
     def _update_tree(self, event=None):
         __ = event
+        print(f"DEBUG: treeplugin.py TreePlugin _update_tree called model={self._model}")
         self._tree.populate(self._model)
         self._tree.refresh_view()
         self._tree.Update()
@@ -224,8 +280,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def __init__(self, parent, action_registerer, settings=None):
         from ..controller.ui.treecontroller import TreeController
         self._RESOURCES_NODE_LABEL = _('External Resources')
-        # print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
-        #       f"translated label={self._RESOURCES_NODE_LABEL}")
+        print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
+              f"translated label={self._RESOURCES_NODE_LABEL}")
         self.theme = settings.get_without_default('General')
         self.background = self.theme['background']
         self.foreground = self.theme['foreground']

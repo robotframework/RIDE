@@ -170,6 +170,7 @@ class RideFrame(wx.Frame):
         self.ui_language = self.general_settings.get('ui language', 'English')
         self.main_menu = None
         self._init_ui()
+        self.SetIcon(wx.Icon(self._image_provider.RIDE_ICON))
         self._task_bar_icon = RIDETaskBarIcon(self, self._image_provider)
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
@@ -181,6 +182,10 @@ class RideFrame(wx.Frame):
         self.Bind(wx.EVT_MAXIMIZE, self.on_maximize)
         self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.on_open_file)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_menu_open_file)
+        self.Bind(aui.EVT_AUI_PANE_FLOATING, self.OnFloatDock)
+        self.Bind(aui.EVT_AUI_PANE_FLOATED, self.OnFloatDock)
+        self.Bind(aui.EVT_AUI_PANE_DOCKING, self.OnFloatDock)
+        self.Bind(aui.EVT_AUI_PANE_DOCKED, self.OnFloatDock)
         self._subscribe_messages()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
         # DEBUG wx.CallAfter(self.OnSettingsChanged, self.general_settings)
@@ -291,7 +296,7 @@ class RideFrame(wx.Frame):
             # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
             # DEBUG: Next was already called from application.py
             self.aui_mgr.AddPane(self.tree,
-                                 aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).CloseButton(False).
+                                 aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).CloseButton(True).
                                  LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
             # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
             # TreePlugin will manage showing the Tree
@@ -307,7 +312,7 @@ class RideFrame(wx.Frame):
             self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
             self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").
-                              Caption(_("Files")).LeftDockable(True).CloseButton(False))
+                              Caption(_("Files")).LeftDockable(True).CloseButton(True))
             # print(f"DEBUG: mainframe.py RideFrame created fileexplore={self.filemgr}")
             # DEBUG: Next was already called from application.py
             # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
@@ -427,6 +432,32 @@ class RideFrame(wx.Frame):
         self._application.settings[MAINFRAME_MAXIMIZED] = True
         event.Skip()
 
+    def OnFloatDock(self, event):
+        # panelabel = event.pane.caption
+        etype = event.GetEventType()
+        # strs = "Pane %s "%panelabel
+        if etype == aui.wxEVT_AUI_PANE_FLOATING:
+            # strs += "is about to be floated"
+            if event.pane.name == "file_manager":
+                self.filemgr.update_tree()
+            elif event.pane.name == "tree_content":
+                self._application.treeplugin.set_float_docked(False)
+                self._application.treeplugin.on_show_tree(None)
+                self.tree.refresh_view()
+        #  elif etype == aui.wxEVT_AUI_PANE_FLOATED:
+        #     strs += "has been floated"
+        elif etype == aui.wxEVT_AUI_PANE_DOCKING:
+            # strs += "is about to be docked"
+            if event.pane.name == "file_manager":
+                self.filemgr.update_tree()
+            elif event.pane.name == "tree_content":
+                self._application.treeplugin.set_float_docked(True)
+                self._application.treeplugin.on_show_tree(None)
+                self.tree.refresh_view()
+        # elif etype == aui.wxEVT_AUI_PANE_DOCKED:
+        #     strs += "has been docked"
+        # print("DEBUG: " + strs + "\n")
+
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
             message_box = RIDEDialog(title=_('Warning'), message=_("There are unsaved modifications.\n"
@@ -450,6 +481,7 @@ class RideFrame(wx.Frame):
         self._populate_tree()
 
     def _populate_tree(self):
+        # print(f"DEBUG: mainframe.py RideFrame ENTER _populate_tree controller={self.controller.data.source}")
         self.tree.populate(self.controller)
         self.filemgr.update_tree()
 
