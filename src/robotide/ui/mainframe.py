@@ -296,8 +296,9 @@ class RideFrame(wx.Frame):
             # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
             # DEBUG: Next was already called from application.py
             self.aui_mgr.AddPane(self.tree,
-                                 aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).CloseButton(True).
-                                 LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
+                                 aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).LeftDockable(True)
+                                 .CloseButton(True)
+                                 )  # DEBUG: remove .CloseButton(False) when restore is fixed
             # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
             # TreePlugin will manage showing the Tree
         self.actions.register_actions(action_info_collection(_menudata, self, data_nt=self._menudata_nt,

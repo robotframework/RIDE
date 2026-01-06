@@ -66,10 +66,11 @@ class TreePlugin(Plugin):
                 "docked": True,
                 "own colors": False
                 }
+    show_count = 0
 
     def __init__(self, application):
         Plugin.__init__(self, application, default_settings=self.defaults)
-        print("DEBUG: treeplugin.py TreePlugin __init__")
+        # print("DEBUG: treeplugin.py TreePlugin __init__")
         self._app = application
         self.settings = self._app.settings.config_obj['Plugins']['Tree']
         self._parent = None
@@ -137,23 +138,27 @@ class TreePlugin(Plugin):
         self.show_count = 0
         self.opened = False
         self._mgr = aui.GetManager(self._app.frame)
-        print(f"DEBUG: TreePlugin ENTER close_tree self._mgr={self._mgr} _tree={self._tree} == frame {self.frame.tree}")
+        # print(f"DEBUG: TreePlugin ENTER close_tree self._mgr={self._mgr} _tree={self._tree} == frame {self.frame.tree}")
         if not self._mgr:
             return
         # self._mgr = self.app.frame.aui_mgr
         if not self._tree:
             self._tree = self.frame.tree
-        print(f"DEBUG: TreePlugin ENTER close_tree _tree={self._tree}")
+        # print(f"DEBUG: TreePlugin ENTER close_tree _tree={self._tree}")
         # self._mgr.DetachPane(self.file_explorer) DestroyOnClose()
         pane_info = self._mgr.GetPane("tree_content")
         if pane_info.IsOk():
             if pane_info.IsFloating():
-                pane_info.DestroyOnClose()
-                self._mgr.DetachPane(self._tree)
+                pane_info.DestroyOnClose(False)
+                # self._mgr.DetachPane(self._tree)
+                pane_info.Float().Hide()
                 self.set_float_docked(False)
+                # print(f"DEBUG: TreePlugin in branch  FLOAT close_tree pane_info={pane_info}")
             else:
-                self._mgr.ClosePane(pane_info.Dock().Hide())
+                # self._mgr.GetPane.ClosePane(
+                pane_info.Dock().Hide()
                 self.set_float_docked(True)
+                # print(f"DEBUG: TreePlugin in branch DOCK close_tree pane_info={pane_info}")
         # perspective = self._mgr.SavePaneInfo(pane_info)
         # print(f"DEBUG: TreePlugin call close_tree perspective={perspective}")
         # self.save_setting('perspective', perspective)
@@ -190,11 +195,10 @@ class TreePlugin(Plugin):
             pass
 
     def toggle_view(self, event):
-        __ = event
         if event is None:
-            print(f"DEBUG: TreePlugin ENTER toggle_view {event=} is NONE tree is {self.opened}")
+            # print(f"DEBUG: TreePlugin ENTER toggle_view {event=} is NONE tree is {self.opened}")
             return
-        print(f"DEBUG: TreePlugin ENTER toggle_view {event=} in not None tree is {self.opened}")
+        # print(f"DEBUG: TreePlugin ENTER toggle_view {event=} in not None tree is {self.opened}")
         self.save_setting('opened', not self.opened)
         if not self.opened:
             self.show_count = 0
@@ -204,20 +208,22 @@ class TreePlugin(Plugin):
             self.close_tree()
 
     def on_show_tree(self, event):
-        print(f"DEBUG: TreePlugin on_show_tree ENTER {event=}"
-              f" COUNTER={self.show_count} event. == tree? {self._tree}")
+        # print(f"DEBUG: TreePlugin on_show_tree ENTER {event=}"
+        #       f" COUNTER={self.show_count} event. == tree? {self._tree}")
         self.show_count += 1
         if self.show_count >= 2:
+            # print(f"DEBUG: TreePlugin on_show_tree COUNTER={self.show_count} >=2 returning")
+            self.show_count = 0
             return
         __ = event
         if not self._parent:
             self._parent = self.frame
         if not self._tree:  # This is not needed because tree is always created
             self._tree = Tree(self._parent, self._parent.actions, self._app.settings)
-            print(f"DEBUG: TreePlugin on_show_tree # On Windows this code is executed when closing the app, we DON'T "
-                  f"return now")
+            # print(f"DEBUG: TreePlugin on_show_tree # On Windows this code is executed when closing the app, we DON'T "
+            #       f"return now")
             # return  # On Windows this code is executed when closing the app, we return now
-        print(f"DEBUG: TreePlugin on_show_tree {self._tree}")
+        # print(f"DEBUG: TreePlugin on_show_tree {self._tree}")
         global_settings = self._app.settings.config_obj['General']
         apply_global = global_settings['apply to panels']
         use_own = self.settings['own colors']
@@ -252,9 +258,9 @@ class TreePlugin(Plugin):
         self._tree.Refresh()
         self._tree.Raise()
         self.save_setting('opened', True)
+        self._mgr.Update()
         self._tree.populate(self._model)
         self._update_tree()
-        self._mgr.Update()
 
     def set_float_docked(self, state: bool):
         self.save_setting('docked', state)  # Docked == True
@@ -269,7 +275,7 @@ class TreePlugin(Plugin):
 
     def _update_tree(self, event=None):
         __ = event
-        print(f"DEBUG: treeplugin.py TreePlugin _update_tree called model={self._model}")
+        # print(f"DEBUG: treeplugin.py TreePlugin _update_tree called model={self._model}")
         self._tree.populate(self._model)
         self._tree.refresh_view()
         self._tree.Update()
@@ -280,8 +286,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def __init__(self, parent, action_registerer, settings=None):
         from ..controller.ui.treecontroller import TreeController
         self._RESOURCES_NODE_LABEL = _('External Resources')
-        print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
-              f"translated label={self._RESOURCES_NODE_LABEL}")
+        # print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
+        #       f"translated label={self._RESOURCES_NODE_LABEL}")
         self.theme = settings.get_without_default('General')
         self.background = self.theme['background']
         self.foreground = self.theme['foreground']
