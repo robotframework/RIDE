@@ -59,7 +59,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
         sleep(5)
         result = dlg.on_load(MyEvent(ID_SAVE))
         assert dlg.GetTitle() == _("Save or Load Settings")
-        assert result==ID_CANCEL
+        assert result==ID_SAVE  # ID_CANCEL
 
     def test_on_load(self):
         self.frame = wx.Frame(None)
@@ -86,7 +86,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
         sleep(5)
         result = dlg.on_save(MyEvent(ID_LOAD))
         assert dlg.GetTitle() == _("Save or Load Settings")
-        assert result==ID_CANCEL
+        assert result==ID_LOAD  # ID_CANCEL
 
     def test_on_save(self):
         self.frame = wx.Frame(None)

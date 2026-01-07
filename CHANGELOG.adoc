@@ -8,6 +8,14 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 // == https://github.com/robotframework/RIDE[Unreleased]
 
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.2.rst[2.2.2] - 2026-01-06
+
+=== Changed
+- The Test Suites Explorer can be visible or hidden with F12 (View->View Test Suites Explorer). Pane can be made
+ floating or docked, by dragging or by double-clicking its top bar. See https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.2.rst[Release Notes] for a workaround if you cannot make it visible.
+- In File Explorer opening non-text files is done by the operating system registered app. Text files are opened in simple editor, or RIDE if valid types.
+
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.1.1.rst[2.2.1.1] - 2025-12-08
 
 === Fixed

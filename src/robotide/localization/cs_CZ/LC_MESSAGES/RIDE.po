@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"POT-Creation-Date: 2026-01-06 22:34+0000\n"
 "PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
@@ -17,36 +17,36 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:217
+#: src/robotide/application/application.py:214
 msgid "Global Settings"
 msgstr "Globální nastavení"
 
-#: src/robotide/application/application.py:218
+#: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
 msgstr "Zjištěna globální nastavení"
 
-#: src/robotide/application/application.py:219
+#: src/robotide/application/application.py:216
 msgid "Project Settings"
 msgstr "Nastavení projektu"
 
-#: src/robotide/application/application.py:220
+#: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
 msgstr "Detekována nastavení projektu"
 
-#: src/robotide/application/application.py:237
+#: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
 msgstr "Restartovat RIDE?"
 
-#: src/robotide/application/application.py:240
+#: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
 msgstr "RIDE musí být restartován pro plné použití "
 
-#: src/robotide/application/application.py:242
+#: src/robotide/application/application.py:239
 msgid "Click OK to Restart RIDE!"
 msgstr "Klepnutím na tlačítko OK restartujte RIDE!"
 
-#: src/robotide/application/application.py:458
-#: src/robotide/application/application.py:463
+#: src/robotide/application/application.py:461
+#: src/robotide/application/application.py:466
 msgid "Found Robot Framework version %s from %s."
 msgstr "Robot Framework verze %s byla nalezena z %s."
 
@@ -331,8 +331,8 @@ msgstr "Spustit testy"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:838
-#: src/robotide/ui/mainframe.py:850
+#: src/robotide/ui/mainframe.py:883
+#: src/robotide/ui/mainframe.py:895
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Nástroje a nářadí"
@@ -578,7 +578,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:628
+#: src/robotide/ui/mainframe.py:673
 msgid "RIDE - Preferences"
 msgstr "RIDE - Předvolby"
 
@@ -706,7 +706,7 @@ msgstr ""
 "Přesunout řádky dolů (Alt-Down nebo Ctrl-Shift-Down) | Přesunout řady dolů\n"
 
 #: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:66
+#: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
@@ -1179,7 +1179,7 @@ msgstr "Klíčové slovo nového uživatele"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:195
+#: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
 msgstr " POUZE ČTOVAT"
 
@@ -1319,9 +1319,9 @@ msgstr ""
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:200
+#: src/robotide/ui/mainframe.py:219
 #: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1235
+#: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "Chyba ověření"
 
@@ -2378,17 +2378,18 @@ msgstr "Otevřít příslušnou složku"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:297
+#: src/robotide/ui/mainframe.py:316
 msgid "Files"
 msgstr "Soubory"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
-msgid "View"
-msgstr "Zobrazit"
-
-#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
 msgstr "Zobrazit Průzkumník souborů"
+
+#: src/robotide/ui/fileexplorerplugin.py:109
+#: src/robotide/ui/treeplugin.py:113
+msgid "View"
+msgstr "Zobrazit"
 
 #: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
@@ -2432,23 +2433,23 @@ msgstr "Hledat dokumentaci"
 msgid "Description"
 msgstr "Popis"
 
-#: src/robotide/ui/mainframe.py:57
+#: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
 msgstr "[File]\n"
 
-#: src/robotide/ui/mainframe.py:58
+#: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr ""
 "!&Nový projekt | Vytvořte novou špičkovou úroveň | Ctrlcmd-N | ART_NEW\n"
 
-#: src/robotide/ui/mainframe.py:60
+#: src/robotide/ui/mainframe.py:63
 msgid ""
 "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr ""
 "!&Otevřete testovací soubor | Otevřete soubor obsahující testy | Ctrlcmd-O | "
 "ART_FILE_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:61
+#: src/robotide/ui/mainframe.py:64
 msgid ""
 "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
 "ART_FOLDER_OPEN\n"
@@ -2456,92 +2457,92 @@ msgstr ""
 "!Otevřete &adresář | Otevřený adresář obsahující datové soubory | Shift-"
 "Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:62
+#: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr ""
 "!Otevřít externí soubor | Otevřít soubor v editoru kódu | | ART_NORMAL_FILE\n"
 
-#: src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr "!&Uložit | Uložit vybraný datafil | Ctrlcmd-S | ART_FILE_SAVE\n"
 
-#: src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr ""
 "!Uložit &všechny | Uložit všechny změny | Ctrlcmd-Shift-S | "
 "ART_FILE_SAVE_AS\n"
 
-#: src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!E&xit | Ukončit RIDE | Ctrlcmd-Q\n"
 
-#: src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!Hledat nepoužitá klíčová slova | | | | POSITION-54\n"
 
-#: src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!Správa pluginů | | | | POSITION-81\n"
 
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!View all Tags | | F7 | | POSITION-82\n"
 
-#: src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!Nastavení | | | | POSITION-99\n"
 
-#: src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
 msgstr "[Help]\n"
 
-#: src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "!Klávesové zkratky | RIDE klávesy\n"
 
-#: src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:76
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "!User Guide | Uživatelská příručka Robot Framework\n"
 
-#: src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:77
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Wiki | RIDE User Guide (Wiki)\n"
 
-#: src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr ""
 "!Nahlásit problém | Otevřete prohlížeč pro SEARCH na systému problémů RIDE\n"
 
-#: src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
 msgstr "!O | Informace o RIDE\n"
 
-#: src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "!Zkontrolujte upgrade | Podívejte se na PyPi nově vydané verze\n"
 
-#: src/robotide/ui/mainframe.py:176
+#: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
 msgstr "Uloženo %s"
 
-#: src/robotide/ui/mainframe.py:177
+#: src/robotide/ui/mainframe.py:196
 msgid "Saved all files"
 msgstr "Uloženo všechny soubory"
 
-#: src/robotide/ui/mainframe.py:205
+#: src/robotide/ui/mainframe.py:224
 msgid "Modification prevented"
 msgstr "Úpravy zabránily"
 
-#: src/robotide/ui/mainframe.py:206
+#: src/robotide/ui/mainframe.py:225
 msgid "\"%s\" is read only"
 msgstr "\"%s\" je pouze pro čtení"
 
-#: src/robotide/ui/mainframe.py:280
-#: src/robotide/ui/treeplugin.py:108
+#: src/robotide/ui/mainframe.py:299
+#: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Testovací sady"
 
-#: src/robotide/ui/mainframe.py:419
+#: src/robotide/ui/mainframe.py:464
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2549,12 +2550,12 @@ msgstr ""
 "Existují neuložené úpravy.\n"
 "Chcete uložit změny před ukončením?"
 
-#: src/robotide/ui/mainframe.py:419
-#: src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:558
 msgid "Warning"
 msgstr "Varování"
 
-#: src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:558
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2562,63 +2563,63 @@ msgstr ""
 "Existují neuložené úpravy.\n"
 "Chcete pokračovat bez uložení?"
 
-#: src/robotide/ui/mainframe.py:563
+#: src/robotide/ui/mainframe.py:608
 msgid "Choose a directory containing Robot files"
 msgstr "Vyberte adresář obsahující soubory Robota"
 
-#: src/robotide/ui/mainframe.py:715
+#: src/robotide/ui/mainframe.py:760
 msgid "Workspace modifications detected on the file system."
 msgstr "V souborovém systému byly zjištěny úpravy pracovního prostoru."
 
-#: src/robotide/ui/mainframe.py:716
+#: src/robotide/ui/mainframe.py:761
 msgid "Do you want to reload the workspace?"
 msgstr "Chcete znovu načíst pracovní prostor?"
 
-#: src/robotide/ui/mainframe.py:718
+#: src/robotide/ui/mainframe.py:763
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Odpověď <Yes> zahodí neuložené změny."
 
-#: src/robotide/ui/mainframe.py:719
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Odpověď <No> bude ignorovat změny na disku."
 
-#: src/robotide/ui/mainframe.py:720
+#: src/robotide/ui/mainframe.py:765
 msgid "Files Changed On Disk"
 msgstr "Soubory změněny na disku"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:808
 msgid "Customize..."
 msgstr "Přizpůsobit..."
 
-#: src/robotide/ui/mainframe.py:851
+#: src/robotide/ui/mainframe.py:896
 msgid "search unused keywords"
 msgstr "hledat nepoužitá klíčová slova"
 
-#: src/robotide/ui/mainframe.py:851
+#: src/robotide/ui/mainframe.py:896
 msgid "stop test run"
 msgstr "zastavení zkoušky"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:897
 msgid "preview"
 msgstr "náhled"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:897
 msgid "view ride log"
 msgstr "zobrazit protokol jízdy"
 
-#: src/robotide/ui/mainframe.py:894
+#: src/robotide/ui/mainframe.py:939
 msgid "Shortcut keys for RIDE"
 msgstr "Klávesové zkratky RIDE"
 
-#: src/robotide/ui/mainframe.py:932
+#: src/robotide/ui/mainframe.py:977
 msgid "Show"
 msgstr "Zobrazit"
 
-#: src/robotide/ui/mainframe.py:933
+#: src/robotide/ui/mainframe.py:978
 msgid "Hide"
 msgstr "Skrýt"
 
-#: src/robotide/ui/mainframe.py:934
+#: src/robotide/ui/mainframe.py:979
 msgid "Close"
 msgstr "Zavřít"
 
@@ -3004,15 +3005,25 @@ msgstr "Přidat zdroj"
 msgid "Provides a tree view for Test Suites "
 msgstr "Poskytuje strom zobrazení pro testovací sady "
 
-#: src/robotide/ui/treeplugin.py:226
+#: src/robotide/ui/treeplugin.py:113
+#, fuzzy
+msgid "View Test Suites Explorer"
+msgstr "Zobrazit Průzkumník souborů"
+
+#: src/robotide/ui/treeplugin.py:115
+#, fuzzy
+msgid "Show Test Suites tree panel"
+msgstr "Zobrazit panel Průzkumníka souborů"
+
+#: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
 msgstr "Externí zdroje"
 
-#: src/robotide/ui/treeplugin.py:366
+#: src/robotide/ui/treeplugin.py:428
 msgid "%s (excluded)"
 msgstr "%s (vyloučeno)"
 
-#: src/robotide/ui/treeplugin.py:1236
+#: src/robotide/ui/treeplugin.py:1298
 msgid "Invalid keyword name: "
 msgstr "Neplatný název klíčového slova: "
 

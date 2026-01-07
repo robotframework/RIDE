@@ -15,6 +15,8 @@
 
 import builtins
 import os
+import subprocess
+import sys
 
 import wx
 import wx.lib.agw.aui as aui
@@ -42,6 +44,7 @@ from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
 from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
+from isbinary import is_binary_file
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -79,6 +82,17 @@ def get_menudata():
     return (file_0 + file_1 + separator + file_2 + file_3 + file_4 + separator + file_5 + file_6 + separator +
             file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0 + help_1 + help_2 +
             help_3 + help_4 + help_6 + help_7)
+
+
+def start_external_app(file_path):
+    if sys.platform.startswith('darwin'):  # macOS
+        subprocess.call(['open', file_path])
+    elif sys.platform.startswith('win32'):  # Windows
+        subprocess.call(['cmd', '/c', 'start', file_path], shell=True)
+    elif sys.platform.startswith('linux'):  # Linux
+        subprocess.call(['xdg-open', file_path])
+    else:
+        print('Unsupported OS')
 
 
 class RideFrame(wx.Frame):
@@ -156,6 +170,7 @@ class RideFrame(wx.Frame):
         self.ui_language = self.general_settings.get('ui language', 'English')
         self.main_menu = None
         self._init_ui()
+        self.SetIcon(wx.Icon(self._image_provider.RIDE_ICON))
         self._task_bar_icon = RIDETaskBarIcon(self, self._image_provider)
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
@@ -167,6 +182,10 @@ class RideFrame(wx.Frame):
         self.Bind(wx.EVT_MAXIMIZE, self.on_maximize)
         self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.on_open_file)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_menu_open_file)
+        self.Bind(aui.EVT_AUI_PANE_FLOATING, self.OnFloatDock)
+        self.Bind(aui.EVT_AUI_PANE_FLOATED, self.OnFloatDock)
+        self.Bind(aui.EVT_AUI_PANE_DOCKING, self.OnFloatDock)
+        self.Bind(aui.EVT_AUI_PANE_DOCKED, self.OnFloatDock)
         self._subscribe_messages()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
         # DEBUG wx.CallAfter(self.OnSettingsChanged, self.general_settings)
@@ -276,9 +295,11 @@ class RideFrame(wx.Frame):
             # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
             # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
             # DEBUG: Next was already called from application.py
+            # print(f"DEBUG: mainframe.py RideFrame NEW UI tree caption {_('Test Suites')}")
             self.aui_mgr.AddPane(self.tree,
-                                 aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).CloseButton(False).
-                                 LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
+                                 aui.AuiPaneInfo().Name("tree_content").Caption(_('Test Suites')).CloseButton(True)
+                                 .LeftDockable(True)
+                                 )  # DEBUG: remove .CloseButton(False) when restore is fixed
             # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
             # TreePlugin will manage showing the Tree
         self.actions.register_actions(action_info_collection(_menudata, self, data_nt=self._menudata_nt,
@@ -290,11 +311,10 @@ class RideFrame(wx.Frame):
             # self.fileexplorerplugin = FileExplorerPlugin(self._application, self.controller)
             # self.fileexp = FileExplorerPlugin(self._application, self.controller)
             self.filemgr = FileExplorer(self, plugin=self._application.fileexplorerplugin, controller=self.controller)
-            # self.filemgr = self.fileexplorerplugin.file_explorer
             self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.tree_ctrl.SetMinSize(wx.Size(275, 250))
             self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").
-                              Caption(_("Files")).LeftDockable(True).CloseButton(False))
+                              Caption(_("Files")).LeftDockable(True).CloseButton(True))
             # print(f"DEBUG: mainframe.py RideFrame created fileexplore={self.filemgr}")
             # DEBUG: Next was already called from application.py
             # self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
@@ -414,6 +434,32 @@ class RideFrame(wx.Frame):
         self._application.settings[MAINFRAME_MAXIMIZED] = True
         event.Skip()
 
+    def OnFloatDock(self, event):
+        # panelabel = event.pane.caption
+        etype = event.GetEventType()
+        # strs = "Pane %s "%panelabel
+        if etype == aui.wxEVT_AUI_PANE_FLOATING:
+            # strs += "is about to be floated"
+            if event.pane.name == "file_manager":
+                self.filemgr.update_tree()
+            elif event.pane.name == "tree_content":
+                self._application.treeplugin.set_float_docked(False)
+                self._application.treeplugin.on_show_tree(None)
+                self.tree.refresh_view()
+        #  elif etype == aui.wxEVT_AUI_PANE_FLOATED:
+        #     strs += "has been floated"
+        elif etype == aui.wxEVT_AUI_PANE_DOCKING:
+            # strs += "is about to be docked"
+            if event.pane.name == "file_manager":
+                self.filemgr.update_tree()
+            elif event.pane.name == "tree_content":
+                self._application.treeplugin.set_float_docked(True)
+                self._application.treeplugin.on_show_tree(None)
+                self.tree.refresh_view()
+        # elif etype == aui.wxEVT_AUI_PANE_DOCKED:
+        #     strs += "has been docked"
+        # print("DEBUG: " + strs + "\n")
+
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
             message_box = RIDEDialog(title=_('Warning'), message=_("There are unsaved modifications.\n"
@@ -437,6 +483,7 @@ class RideFrame(wx.Frame):
         self._populate_tree()
 
     def _populate_tree(self):
+        # print(f"DEBUG: mainframe.py RideFrame ENTER _populate_tree controller={self.controller.data.source}")
         self.tree.populate(self.controller)
         self.filemgr.update_tree()
 
@@ -450,10 +497,7 @@ class RideFrame(wx.Frame):
                                                                     'resource',
                                                                     'txt',
                                                                     'tsv'])  # Removed 'html'
-        # path = self.filemgr.current_path  # .GetFilePath()
-        # print(f"DEBUG: mainframe.py RideFrame on_open_file 1 path={path}")
         path = self.filemgr.tree_ctrl.GetPath()
-        # print(f"DEBUG: mainframe.py RideFrame on_open_file 2 path={path}")
         ext = ''
         if len(path) > 0:
             ext = splitext(path)
@@ -464,7 +508,10 @@ class RideFrame(wx.Frame):
                 return
             if self.open_suite(path):
                 return
-        customsourceeditor.main(path)
+        if not is_binary_file(path):
+            customsourceeditor.main(path)
+        else:
+            start_external_app(path)
 
     def on_menu_open_file(self, event):
         if not self.filemgr:
@@ -524,8 +571,7 @@ class RideFrame(wx.Frame):
             self._application.changed_workspace = True
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
-        set_lang = []
-        set_lang.append('en')
+        set_lang = ['en']
         try:
             set_lang = shared_memory.ShareableList(name="language")
         except FileNotFoundError:
@@ -827,7 +873,7 @@ class ActionRegisterer(object):
         self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
-        self._tools_items = dict()
+        self._tools_items = {}
 
     def register_action(self, action_info, update_aui=True):
         menubar_can_be_registered = True

@@ -49,7 +49,7 @@ _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 _DEFAULT_FONT_SIZE = 11
-COL_HEADER_EDITOR = wx.NewId()
+COL_HEADER_EDITOR = wx.NewIdRef()
 PLUGIN_NAME = 'Editor'
 ZOOM_FACTOR = 'zoom factor'
 INS_ROWS = 'Insert Rows\tCtrl-I'

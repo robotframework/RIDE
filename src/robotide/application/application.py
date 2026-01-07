@@ -15,7 +15,6 @@
 
 import builtins
 import os
-import psutil
 import subprocess
 import sys
 
@@ -65,7 +64,7 @@ SPC = "  "
 FIVE_SPC = SPC*5
 
 
-def restart_RIDE(args:list):
+def restart_ride(args:list):
     script = os.path.abspath(os.path.dirname(__file__) + '/../__init__.py')  # This is probably a different signature
     python = sys.executable
     arguments = [python, script]
@@ -73,7 +72,7 @@ def restart_RIDE(args:list):
         if a:
             arguments.append(a)
     # print(f"DEBUG: Application.py restart_RIDE arguments={arguments}\n")
-    """
+    """DEBUG
     try:
         process = psutil.Process(os.getpid())
         # process.terminate()
@@ -143,7 +142,6 @@ class RIDE(wx.App):
         from ..context import coreplugins, SETTINGS_DIRECTORY
         from ..ui.treeplugin import TreePlugin
         librarydatabase.initialize_database()
-        # self.preferences = Preferences(self.settings, self.settings_path)
         self.reload_preferences(Message)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
@@ -171,7 +169,6 @@ class RIDE(wx.App):
                   f"{self.settings_path or os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
-        # self.fileexplorerplugin = self.frame.fileexplorerplugin  # FileExplorerPlugin(self, self._controller)
 
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
@@ -238,13 +235,13 @@ class RIDE(wx.App):
                                  f"{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
                                  f"{project_or_normal_detected}{FIVE_SPC}\n\n"
                                  f"{FIVE_SPC}{_('RIDE must be restarted to fully use these ')}{project_or_normal}"
-                                 f"{FIVE_SPC}\n"f"\n\n{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
+                                 f"{FIVE_SPC}\n\n\n{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
                                  f"{_('Click OK to Restart RIDE!')}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}{FIVE_SPC}"
                                  f"\n\n", wx.GetActiveWindow(), no_default=False):
                     return False
                 args = [f"{'--noupdatecheck' if not self._updatecheck else ''}",
                         f"--settingspath {message.keys[2]}", f"{message.keys[3]}"]
-                restart_RIDE(args)
+                restart_ride(args)
                 wx.CallLater(1000, self.OnExit)
                 # The next block was an attempt to reload plugins, in particular Test Runner to
                 # load the Arguments for the project. This did not work because the plugins are
@@ -354,7 +351,10 @@ class RIDE(wx.App):
         if message.keys[0] != "General":
             return
         initial_locale = self._locale.GetName()
-        code = self._get_language_code()
+        try:
+            code = self._get_language_code()
+        except AttributeError:
+            code = wx.LANGUAGE_ENGLISH_WORLD
         del self._locale
         self._locale = wx.Locale(code)
         if not self._locale.IsOk():
@@ -364,30 +364,33 @@ class RIDE(wx.App):
         wx.Locale.AddCatalogLookupPathPrefix(lpath)
         self._locale.AddCatalog('RIDE')
         if len(message.keys) > 1:  # Avoid initial setting
-            from multiprocessing import shared_memory
-            from .restartutil import do_restart
             new_locale = self._locale.GetName()
             # print(f"DEBUG: application.py RIDE change_locale from {initial_locale} to {new_locale}")
             if initial_locale != new_locale:
                 #if restart_dialog():  # DEBUG: See the in implementation why we don't restart
-                # print("DEBUG: application.py RIDE change_locale Restart accepted.")
                 # Shared memory to store language definition
-                try:
-                    sharemem = shared_memory.ShareableList(['en'], name="language")
-                except FileExistsError:  # Other instance created file
-                    sharemem = shared_memory.ShareableList(name="language")
-                result = do_restart()
-                if result:
-                    try:
-                        sharemem.shm.close()
-                        sharemem.shm.unlink()
-                    except FileNotFoundError:
-                        pass
+                self._manage_shared_lang()
 
-    def _get_language_code(self) -> str:
+    @staticmethod
+    def _manage_shared_lang():
+        from multiprocessing import shared_memory
+        from .restartutil import do_restart
+        try:
+            sharemem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            sharemem = shared_memory.ShareableList(name="language")
+        result = do_restart()
+        if result:
+            try:
+                sharemem.shm.close()
+                sharemem.shm.unlink()
+            except FileNotFoundError:
+                pass
+
+    def _get_language_code(self):  #  -> Union[str, int]
         if languages:
             from ..preferences import Languages
-            names = [n for n in Languages.names]
+            names = Languages.names
         else:
             names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
         general = self.settings.get_without_default('General')
@@ -484,8 +487,12 @@ class RIDE(wx.App):
     def _get_recentfiles_plugin(self):
         from ..recentfiles import RecentFilesPlugin
         for pl in self.get_plugins():
-            if isinstance(pl.conn_plugin, RecentFilesPlugin):
-                return pl.conn_plugin
+            try:
+                plugin = pl.conn_plugin
+                if plugin and isinstance(plugin, RecentFilesPlugin):
+                    return plugin
+            except AttributeError:
+                pass
 
     def get_plugins(self):
         return self._plugin_loader.plugins
@@ -503,36 +510,26 @@ class RIDE(wx.App):
         old_settings_dir = self.settings_path
         # print(f"DEBUG: Project.py Project initialize_project_settings ENTER: path={local_settings_dir}")
         if local_settings_dir and os.path.isdir(local_settings_dir):
-            # old_settings = self.internal_settings.get_without_default('General')
-            # old_bkg = old_settings['background']
             local_settings = os.path.join(local_settings_dir, 'ride_settings.cfg')
             self.settings_path = local_settings
             if os.path.isfile(local_settings):
-                # os.putenv('RIDESETTINGS', local_settings)
                 os.environ['RIDESETTINGS'] = local_settings
                 self.settings = RideSettings(local_settings)
-                # print(f"DEBUG: Project.py Project initialize_project_settings EXISTING project settings "
-                #       f"{local_settings=} \nRIDESETTINGS={os.environ['RIDESETTINGS']}"
-                #      f"\nsettings={self.dump_settings()}")
             else:
                 default = RideSettings()
                 settings_path = default.user_path
                 new_path = initialize_settings(path=settings_path, dest_file_name=local_settings)
-                # print(f"DEBUG: Project.py Project initialize_project_settings NEW project settings new_path={new_path}"
-                #       f" local_settings={local_settings}")
                 self.settings = RideSettings(new_path)
-            # new_settings = self.settings.get_without_default('General')
-            # new_bkg = new_settings.get_without_default('background')
-            # RideSettingsChanged(keys=('General', 'background'), old=old_bkg, new=new_bkg).publish()
         else:
             os.environ['RIDESETTINGS'] = ''
-        # print(f"DEBUG: Project.py Project initialize_project_settings RETURNING: path={self.settings_path}")
         if self.settings_path != old_settings_dir:
             RideSettingsChanged(keys=('General', ), old=None, new=None).publish()
         return self.settings_path
 
     def dump_settings(self):
-        keys = [items for items in self.settings]
+        keys = []
+        for items in self.settings:
+            keys.append(items)
         values = [f"{val}={self.settings[val]}" for val in keys]
         return values
 

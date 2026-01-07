@@ -150,16 +150,16 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.3.2. However, 
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.4.1. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
-<li>This version supports Python 3.9 up to 3.13 (and also tested on 3.14 with wxPython 4.2.3).</li>
+<li>This version supports Python 3.9 up to 3.14.</li>
 <li>There are some changes, or known issues:<ul>
 <!--
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
-version 4.2.1, 4.2.2 and 4.2.3, which we now <em>recommend</em>.</li>
+version 4.2.1, 4.2.2, 4.2.3 and 4.2.4, which we now <em>recommend</em>.</li>
 -->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
 and changes.</li>
@@ -172,11 +172,16 @@ and changes.</li>
  to Text Editor and back to Grid Editor, to restore normal behavior.</li>
 <li>🐞 - In Files Explorer, when in floating window, the files tree is not always using all available space.
  Do a small resize of window to redraw.</li>
+<li>🐞 - The Test Suites Explorer, may be visible or hidden with F12, or toggled floating/docked, but content may
+ disappear. You should try to make it reappear by toggling Files Explorer, F11, or by editing <b>settings.cfg</b>.</li>
 </ul>
 </li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>The Test Suites Explorer can be visible or hidden with F12 (View->View Test Suites Explorer). Pane can be made
+ floating or docked, by dragging or by double-clicking its top bar.</li>
+<li>In File Explorer opening non-text files is done by the operating system registered app.</li>
 <li>Added context menu to File Explorer, to Open test suites directories or test suites files (also with double-click).
 </li>
 <li>Added context menu option to Open Containing Folder, in operating system file explorer, or specific tool.</li>
@@ -187,15 +192,15 @@ and changes.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
-<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.3, which we recommend.
+<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.4, which we recommend.
 </strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
   manager.</p>
 <p>The <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc">
 CHANGELOG.adoc</a> lists the changes done on the different versions.</p>
-<p>All issues targeted for RIDE v2.2 can be found
-from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.2">issue
+<p>All issues targeted for RIDE v2.3 can be found
+from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.3">issue
  tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
 <a class="reference external" href="https://groups.google.com/group/robotframework-users">robotframework-users</a>
@@ -207,7 +212,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.2.1.1
+pip install --upgrade robotframework-ride==2.2.2
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -238,7 +243,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 08/December/2025.</p>
+<p>RIDE {VERSION} was released on 07/January/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
