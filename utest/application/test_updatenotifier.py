@@ -30,9 +30,7 @@ CHECKFORUPDATES = 'check for updates'
 LASTUPDATECHECK = 'last update check'
 
 import wx
-from wx.lib.agw.aui import AuiManager
 import wx.lib.agw.aui as aui
-from multiprocessing import shared_memory
 from utest.resources import datafilereader, MessageRecordingLoadObserver
 from robotide.ui.mainframe import ActionRegisterer, ToolBar
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
@@ -85,26 +83,22 @@ class MyApp(wx.App):
 
         # tell AuiManager to manage this frame
         self._mgr.SetManagedWindow(self.frame)
-        self.book.SetBackgroundColour((255, 255, 255))
-        self.book.SetForegroundColour((0, 0, 0))
-        self._mgr.AddPane(self.book,
-                          aui.AuiPaneInfo().Name("notebook_editors").
-                          CenterPane().PaneBorder(False))
+        self.book.SetBackgroundColour(wx.Colour(255, 255, 254))
+        self.book.SetForegroundColour(wx.Colour(0, 0, 1))
+        self._mgr.AddPane(self.book, aui.AuiPaneInfo().Name("notebook_editors").CenterPane().PaneBorder(False))
         mb = MenuBar(self.frame)
         self.toolbar = ToolBar(self.frame)
         self.toolbar.SetMinSize(wx.Size(100, 60))
-        self.toolbar.SetBackgroundColour((255, 255, 255))
-        self.toolbar.SetForegroundColour((0, 0, 0))
-        mb.m_frame.SetBackgroundColour((255, 255, 255))
-        mb.m_frame.SetForegroundColour((0, 0, 0))
-        self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
-                          ToolbarPane().Top())
+        self.toolbar.SetBackgroundColour(wx.Colour(254, 255, 255))
+        self.toolbar.SetForegroundColour(wx.Colour(0, 0, 0))
+        mb.m_frame.SetBackgroundColour(wx.Colour(254, 255, 255))
+        mb.m_frame.SetForegroundColour(wx.Colour(0, 0, 0))
+        self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").ToolbarPane().Top())
         self.frame.actions = ActionRegisterer(self._mgr, mb, self.toolbar, ShortcutRegistry(self.frame))
         self.tree = Tree(self.frame, self.frame.actions, self.settings)
         self.tree.SetMinSize(wx.Size(275, 250))
         self.frame.SetMinSize(wx.Size(600, 400))
-        self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
+        self._mgr.AddPane(self.tree, aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
                           LeftDockable())
         mb.take_menu_bar_into_use()
         self._mgr.Update()
@@ -120,7 +114,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.app = MyApp()
         settings = self.app.settings
         self.frame = self.app.frame
-        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+        self.frame.actions = ActionRegisterer(aui.AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
                                               ShortcutRegistry(self.frame))
         self.frame.tree = Tree(self.frame, self.frame.actions, settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
