@@ -104,7 +104,7 @@ class TreePlugin(Plugin):
             else:
                 register = self._mgr.AddPane
             register(self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
-                     Caption(_("Test Suites")).CloseButton(True).LeftDockable(True))
+                     Caption(_('Test Suites')).CloseButton(True).LeftDockable(True))
             self._mgr.Update()
 
     def enable(self):

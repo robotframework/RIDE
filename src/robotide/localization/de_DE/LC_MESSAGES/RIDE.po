@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"POT-Creation-Date: 2026-01-06 22:34+0000\n"
 "PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
@@ -17,38 +17,38 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:217
+#: src/robotide/application/application.py:214
 msgid "Global Settings"
 msgstr "Allgemeine Einstellungen"
 
-#: src/robotide/application/application.py:218
+#: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
 msgstr "Allgemeine Einstellungen erkannt"
 
-#: src/robotide/application/application.py:219
+#: src/robotide/application/application.py:216
 msgid "Project Settings"
 msgstr "Projekteinstellungen"
 
-#: src/robotide/application/application.py:220
+#: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
 msgstr "Projekteinstellungen erkannt"
 
-#: src/robotide/application/application.py:237
+#: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
 msgstr "RIDE neu starten?"
 
-#: src/robotide/application/application.py:240
+#: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
 msgstr ""
 "RIDE muss neu gestartet werden, um diese Funktionen vollständig nutzen zu "
 "können "
 
-#: src/robotide/application/application.py:242
+#: src/robotide/application/application.py:239
 msgid "Click OK to Restart RIDE!"
 msgstr "Klicken Sie auf OK, um RIDE neu zu starten!"
 
-#: src/robotide/application/application.py:458
-#: src/robotide/application/application.py:463
+#: src/robotide/application/application.py:461
+#: src/robotide/application/application.py:466
 msgid "Found Robot Framework version %s from %s."
 msgstr "Robot Framework Version %s von %s gefunden."
 
@@ -336,8 +336,8 @@ msgstr "Tests ausführen"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:838
-#: src/robotide/ui/mainframe.py:850
+#: src/robotide/ui/mainframe.py:883
+#: src/robotide/ui/mainframe.py:895
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Werkzeuge"
@@ -587,7 +587,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:628
+#: src/robotide/ui/mainframe.py:673
 msgid "RIDE - Preferences"
 msgstr "RIDE - Einstellungen"
 
@@ -718,7 +718,7 @@ msgstr ""
 "gedrückt.) | Zeilen nach unten verschieben\n"
 
 #: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:66
+#: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
@@ -1199,7 +1199,7 @@ msgstr "Neues Benutzerschlüsselwort"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:195
+#: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
 msgstr " (NUR LESEN)"
 
@@ -1340,9 +1340,9 @@ msgstr ""
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:200
+#: src/robotide/ui/mainframe.py:219
 #: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1235
+#: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "Validierungsfehler"
 
@@ -2411,17 +2411,18 @@ msgstr "Containing Ordner öffnen"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:297
+#: src/robotide/ui/mainframe.py:316
 msgid "Files"
 msgstr "Dateien"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
-msgid "View"
-msgstr "Ansicht"
-
-#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
 msgstr "Datei-Explorer anzeigen"
+
+#: src/robotide/ui/fileexplorerplugin.py:109
+#: src/robotide/ui/treeplugin.py:113
+msgid "View"
+msgstr "Ansicht"
 
 #: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
@@ -2466,22 +2467,22 @@ msgstr "Dokumentation durchsuchen"
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/robotide/ui/mainframe.py:57
+#: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
 msgstr "[File]\n"
 
-#: src/robotide/ui/mainframe.py:58
+#: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr ""
 "!&Neues Projekt | Erstelle eine neue Top Level Suite | CtrlCmd-N | ART_NEW\n"
 
-#: src/robotide/ui/mainframe.py:60
+#: src/robotide/ui/mainframe.py:63
 msgid ""
 "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr ""
 "!&Open Test Suite | Datei mit Tests öffnen | Ctrlcmd-O | ART_FILE_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:61
+#: src/robotide/ui/mainframe.py:64
 msgid ""
 "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
 "ART_FOLDER_OPEN\n"
@@ -2489,90 +2490,90 @@ msgstr ""
 "!Öffne &Verzeichnis | Öffne Verzeichnis mit Datenblättern | Shift-Ctrlcmd-O "
 "| ART_FOLDER_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:62
+#: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr ""
 "!Externe Datei öffnen | Datei im Code Editor öffnen | | ART_NORMAL_FILE\n"
 
-#: src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr ""
 "!&Speichern | Ausgewählte Datendatei speichern | CtrlCmd-S | ART_FILE_SAVE\n"
 
-#: src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr "!Speichern &Alle | Speichern | CtrlCmd-Shift-S | ART_FILE_SAVE_AS\n"
 
-#: src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!E&xit | RIDE beenden | CtrlCmd-Q\n"
 
-#: src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!Suche ungenutzte Schlüsselwörter | | | | POSITION-54\n"
 
-#: src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!Plugins verwalten | | | | POSITION-81\n"
 
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!Alle Tags anzeigen | | F7 | | POSITION-82\n"
 
-#: src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!Einstellungen | | | | POSITION-99\n"
 
-#: src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
 msgstr "[Help]\n"
 
-#: src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "!Tastenkombination | RIDE Tastenkombination\n"
 
-#: src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:76
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "!Benutzerhandbuch | Robot-Framework Benutzerhandbuch\n"
 
-#: src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:77
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Wiki | RIDE User Guide (Wiki)\n"
 
-#: src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr "!Melde ein Problem | Öffne den Browser auf dem RIDE Issue-Tracker\n"
 
-#: src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
 msgstr "!Über | Informationen über RIDE\n"
 
-#: src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "!Check nach Upgrade | schaut auf PyPi nach der neuen Version\n"
 
-#: src/robotide/ui/mainframe.py:176
+#: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
 msgstr "Gespeichert %s"
 
-#: src/robotide/ui/mainframe.py:177
+#: src/robotide/ui/mainframe.py:196
 msgid "Saved all files"
 msgstr "Alle Dateien gespeichert"
 
-#: src/robotide/ui/mainframe.py:205
+#: src/robotide/ui/mainframe.py:224
 msgid "Modification prevented"
 msgstr "Änderung verhindert"
 
-#: src/robotide/ui/mainframe.py:206
+#: src/robotide/ui/mainframe.py:225
 msgid "\"%s\" is read only"
 msgstr "\"%s\" wird nur gelesen"
 
-#: src/robotide/ui/mainframe.py:280
-#: src/robotide/ui/treeplugin.py:108
+#: src/robotide/ui/mainframe.py:299
+#: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Test-Suiten"
 
-#: src/robotide/ui/mainframe.py:419
+#: src/robotide/ui/mainframe.py:464
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2580,12 +2581,12 @@ msgstr ""
 "Es gibt ungespeicherte Änderungen.\n"
 "Möchten Sie Ihre Änderungen vor dem Beenden speichern?"
 
-#: src/robotide/ui/mainframe.py:419
-#: src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:558
 msgid "Warning"
 msgstr "Warnung"
 
-#: src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:558
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2593,66 +2594,66 @@ msgstr ""
 "Es gibt ungespeicherte Änderungen.\n"
 "Möchten Sie ohne Speichern fortfahren?"
 
-#: src/robotide/ui/mainframe.py:563
+#: src/robotide/ui/mainframe.py:608
 msgid "Choose a directory containing Robot files"
 msgstr "Wählen Sie ein Verzeichnis mit Robot-Dateien"
 
-#: src/robotide/ui/mainframe.py:715
+#: src/robotide/ui/mainframe.py:760
 msgid "Workspace modifications detected on the file system."
 msgstr "Änderungen am Arbeitsbereich im Dateisystem erkannt."
 
-#: src/robotide/ui/mainframe.py:716
+#: src/robotide/ui/mainframe.py:761
 msgid "Do you want to reload the workspace?"
 msgstr "Wollen Sie den Arbeitsbereich neu laden?"
 
-#: src/robotide/ui/mainframe.py:718
+#: src/robotide/ui/mainframe.py:763
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr ""
 "Wenn du <Yes> beantwortest, werden ungespeicherte Änderungen verworfen."
 
-#: src/robotide/ui/mainframe.py:719
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <No> will ignore the changes on disk."
 msgstr ""
 "Wenn Sie auf <No> antworten, werden die Änderungen auf der Festplatte "
 "ignoriert."
 
-#: src/robotide/ui/mainframe.py:720
+#: src/robotide/ui/mainframe.py:765
 msgid "Files Changed On Disk"
 msgstr "Dateien auf Festplatte geändert"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:808
 msgid "Customize..."
 msgstr "Anpassen..."
 
-#: src/robotide/ui/mainframe.py:851
+#: src/robotide/ui/mainframe.py:896
 msgid "search unused keywords"
 msgstr "ungenutzte Suchbegriffe suchen"
 
-#: src/robotide/ui/mainframe.py:851
+#: src/robotide/ui/mainframe.py:896
 msgid "stop test run"
 msgstr "testlauf stoppen"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:897
 msgid "preview"
 msgstr "vorschau"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:897
 msgid "view ride log"
 msgstr "Fahrtenlog anzeigen"
 
-#: src/robotide/ui/mainframe.py:894
+#: src/robotide/ui/mainframe.py:939
 msgid "Shortcut keys for RIDE"
 msgstr "Tastenkürzel für RIDE"
 
-#: src/robotide/ui/mainframe.py:932
+#: src/robotide/ui/mainframe.py:977
 msgid "Show"
 msgstr "Zeigen"
 
-#: src/robotide/ui/mainframe.py:933
+#: src/robotide/ui/mainframe.py:978
 msgid "Hide"
 msgstr "Verstecken"
 
-#: src/robotide/ui/mainframe.py:934
+#: src/robotide/ui/mainframe.py:979
 msgid "Close"
 msgstr "Schließen"
 
@@ -3041,15 +3042,25 @@ msgstr "Ressource hinzufügen"
 msgid "Provides a tree view for Test Suites "
 msgstr "Bietet eine Baumansicht für Test-Suiten "
 
-#: src/robotide/ui/treeplugin.py:226
+#: src/robotide/ui/treeplugin.py:113
+#, fuzzy
+msgid "View Test Suites Explorer"
+msgstr "Datei-Explorer anzeigen"
+
+#: src/robotide/ui/treeplugin.py:115
+#, fuzzy
+msgid "Show Test Suites tree panel"
+msgstr "Datei-Explorer anzeigen"
+
+#: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
 msgstr "Externe Ressourcen"
 
-#: src/robotide/ui/treeplugin.py:366
+#: src/robotide/ui/treeplugin.py:428
 msgid "%s (excluded)"
 msgstr "%s (ausgeschlossen)"
 
-#: src/robotide/ui/treeplugin.py:1236
+#: src/robotide/ui/treeplugin.py:1298
 msgid "Invalid keyword name: "
 msgstr "Ungültiger Schlüsselwortname: "
 

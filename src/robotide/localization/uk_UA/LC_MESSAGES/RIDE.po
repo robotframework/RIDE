@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2025-12-08 13:44+0000\n"
+"POT-Creation-Date: 2026-01-06 22:34+0000\n"
 "PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
@@ -19,36 +19,36 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: src/robotide/application/application.py:217
+#: src/robotide/application/application.py:214
 msgid "Global Settings"
 msgstr "Глобальні налаштування"
 
-#: src/robotide/application/application.py:218
+#: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
 msgstr "Виявлено глобальні налаштування"
 
-#: src/robotide/application/application.py:219
+#: src/robotide/application/application.py:216
 msgid "Project Settings"
 msgstr "Налаштування проекту"
 
-#: src/robotide/application/application.py:220
+#: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
 msgstr "Виявлено налаштування проекту"
 
-#: src/robotide/application/application.py:237
+#: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
 msgstr "Перезапустити RIDE?"
 
-#: src/robotide/application/application.py:240
+#: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
 msgstr "RIDE повинен бути перезавантажений, щоб повністю використовувати ці "
 
-#: src/robotide/application/application.py:242
+#: src/robotide/application/application.py:239
 msgid "Click OK to Restart RIDE!"
 msgstr "Натисніть ОК, щоб перезапустити RIDE!"
 
-#: src/robotide/application/application.py:458
-#: src/robotide/application/application.py:463
+#: src/robotide/application/application.py:461
+#: src/robotide/application/application.py:466
 msgid "Found Robot Framework version %s from %s."
 msgstr "Знайдено версію Robot Framework %s з %s."
 
@@ -334,8 +334,8 @@ msgstr "Запустити тести"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:838
-#: src/robotide/ui/mainframe.py:850
+#: src/robotide/ui/mainframe.py:883
+#: src/robotide/ui/mainframe.py:895
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Інструменти"
@@ -579,7 +579,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:628
+#: src/robotide/ui/mainframe.py:673
 msgid "RIDE - Preferences"
 msgstr "RIDE - Параметри"
 
@@ -701,7 +701,7 @@ msgstr ""
 "вниз\n"
 
 #: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:66
+#: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
 msgstr ""
 
@@ -1172,7 +1172,7 @@ msgstr "Ключове слово користувача"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:195
+#: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
 msgstr " (ПЕРЕДАТИ ОНЛАЙ)"
 
@@ -1298,9 +1298,9 @@ msgid ""
 msgstr ""
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:200
+#: src/robotide/ui/mainframe.py:219
 #: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1235
+#: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "Помилка перевірки"
 
@@ -2275,17 +2275,18 @@ msgstr "Відкрити теку з файлом"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:297
+#: src/robotide/ui/mainframe.py:316
 msgid "Files"
 msgstr "Файли"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
-msgid "View"
-msgstr "Дивитись"
-
-#: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
 msgstr "Переглянути файловий провідник"
+
+#: src/robotide/ui/fileexplorerplugin.py:109
+#: src/robotide/ui/treeplugin.py:113
+msgid "View"
+msgstr "Дивитись"
 
 #: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
@@ -2328,21 +2329,21 @@ msgstr "Пошук документації"
 msgid "Description"
 msgstr "Опис"
 
-#: src/robotide/ui/mainframe.py:57
+#: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
 msgstr ""
 
-#: src/robotide/ui/mainframe.py:58
+#: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr ""
 "!&New Project | Створити новий набір верхнього рівня| Ctrlcmd-N | ART_NEW\n"
 
-#: src/robotide/ui/mainframe.py:60
+#: src/robotide/ui/mainframe.py:63
 msgid ""
 "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr ""
 
-#: src/robotide/ui/mainframe.py:61
+#: src/robotide/ui/mainframe.py:64
 msgid ""
 "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
 "ART_FOLDER_OPEN\n"
@@ -2350,89 +2351,89 @@ msgstr ""
 "!Open &Directory | Відкрити каталог, що містить файли даних | Shift-Ctrlcmd-"
 "O | ART_FOLDER_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:62
+#: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr ""
 "!Open Зовнішній файл | Відкрити файл в редакторі коду | | ART_NORMAL_FILE\n"
 
-#: src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr ""
 
-#: src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr "!Save &Все | Зберегти всі зміни | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
-#: src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!E&xit | Вийти з RIDE | Ctrlcmd-Q\n"
 
-#: src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!Search невикористовувані ключові слова | | | | POSITION-54\n"
 
-#: src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!Manage Plugins | | | | POSITION-81\n"
 
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!View всі Теги | | F7 | | POSITION-82\n"
 
-#: src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!Preferences | | | POSITION-99\n"
 
-#: src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
 msgstr ""
 
-#: src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "!Shortcut keys | клавіші скорочень RIDE\n"
 
-#: src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:76
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "!Керівництво користувача | Robot Framework\n"
 
-#: src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:77
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Wiki | Посібник користувача (Wiki)\n"
 
-#: src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr ""
 
-#: src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
 msgstr "!About | Інформація про\n"
 
-#: src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr ""
 
-#: src/robotide/ui/mainframe.py:176
+#: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
 msgstr "Збережено %s"
 
-#: src/robotide/ui/mainframe.py:177
+#: src/robotide/ui/mainframe.py:196
 msgid "Saved all files"
 msgstr "Збережені всі файли"
 
-#: src/robotide/ui/mainframe.py:205
+#: src/robotide/ui/mainframe.py:224
 msgid "Modification prevented"
 msgstr "Вимкнено зміну"
 
-#: src/robotide/ui/mainframe.py:206
+#: src/robotide/ui/mainframe.py:225
 msgid "\"%s\" is read only"
 msgstr "\"%s\" читається тільки"
 
-#: src/robotide/ui/mainframe.py:280
-#: src/robotide/ui/treeplugin.py:108
+#: src/robotide/ui/mainframe.py:299
+#: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Тестові набори"
 
-#: src/robotide/ui/mainframe.py:419
+#: src/robotide/ui/mainframe.py:464
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2440,12 +2441,12 @@ msgstr ""
 "Є незбережені зміни.\n"
 "Бажаєте зберегти зміни перед виходом?"
 
-#: src/robotide/ui/mainframe.py:419
-#: src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:558
 msgid "Warning"
 msgstr "Застереження"
 
-#: src/robotide/ui/mainframe.py:512
+#: src/robotide/ui/mainframe.py:558
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2453,63 +2454,63 @@ msgstr ""
 "Є незбережені зміни.\n"
 "Продовжити без збереження?"
 
-#: src/robotide/ui/mainframe.py:563
+#: src/robotide/ui/mainframe.py:608
 msgid "Choose a directory containing Robot files"
 msgstr "Виберіть каталог, що містить файли роботів"
 
-#: src/robotide/ui/mainframe.py:715
+#: src/robotide/ui/mainframe.py:760
 msgid "Workspace modifications detected on the file system."
 msgstr "Зміни робочого простору виявлені у файловій системі."
 
-#: src/robotide/ui/mainframe.py:716
+#: src/robotide/ui/mainframe.py:761
 msgid "Do you want to reload the workspace?"
 msgstr "Хочете перезавантажити робочу область?"
 
-#: src/robotide/ui/mainframe.py:718
+#: src/robotide/ui/mainframe.py:763
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Відповідь <Yes> скасує незбережені зміни."
 
-#: src/robotide/ui/mainframe.py:719
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Відповідь <No> буде ігнорувати зміни на диску."
 
-#: src/robotide/ui/mainframe.py:720
+#: src/robotide/ui/mainframe.py:765
 msgid "Files Changed On Disk"
 msgstr "Змінені файли на диску"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:808
 msgid "Customize..."
 msgstr "Налаштувати..."
 
-#: src/robotide/ui/mainframe.py:851
+#: src/robotide/ui/mainframe.py:896
 msgid "search unused keywords"
 msgstr "пошукові ключові слова"
 
-#: src/robotide/ui/mainframe.py:851
+#: src/robotide/ui/mainframe.py:896
 msgid "stop test run"
 msgstr "зупинити випробування"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:897
 msgid "preview"
 msgstr "попередній перегляд"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:897
 msgid "view ride log"
 msgstr "переглянути журнал поїздки"
 
-#: src/robotide/ui/mainframe.py:894
+#: src/robotide/ui/mainframe.py:939
 msgid "Shortcut keys for RIDE"
 msgstr "Комбінації клавіш для RIDE"
 
-#: src/robotide/ui/mainframe.py:932
+#: src/robotide/ui/mainframe.py:977
 msgid "Show"
 msgstr "Показати"
 
-#: src/robotide/ui/mainframe.py:933
+#: src/robotide/ui/mainframe.py:978
 msgid "Hide"
 msgstr "Приховати"
 
-#: src/robotide/ui/mainframe.py:934
+#: src/robotide/ui/mainframe.py:979
 msgid "Close"
 msgstr "Закрити"
 
@@ -2894,15 +2895,25 @@ msgstr "Додати ресурс"
 msgid "Provides a tree view for Test Suites "
 msgstr "Забезпечує вітриною для тестових наборів "
 
-#: src/robotide/ui/treeplugin.py:226
+#: src/robotide/ui/treeplugin.py:113
+#, fuzzy
+msgid "View Test Suites Explorer"
+msgstr "Переглянути файловий провідник"
+
+#: src/robotide/ui/treeplugin.py:115
+#, fuzzy
+msgid "Show Test Suites tree panel"
+msgstr "Показати панель Провідника Файлів"
+
+#: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
 msgstr "Зовнішні ресурси"
 
-#: src/robotide/ui/treeplugin.py:366
+#: src/robotide/ui/treeplugin.py:428
 msgid "%s (excluded)"
 msgstr "%s (виключено)"
 
-#: src/robotide/ui/treeplugin.py:1236
+#: src/robotide/ui/treeplugin.py:1298
 msgid "Invalid keyword name: "
 msgstr "Хибне ім'я ключового слова: "
 
