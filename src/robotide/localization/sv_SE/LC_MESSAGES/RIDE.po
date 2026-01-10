@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-06 22:34+0000\n"
+"POT-Creation-Date: 2026-01-10 02:20+0000\n"
 "PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
@@ -86,8 +86,7 @@ msgstr "Öppna RIDE igen för språkändring"
 
 #: src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
-"Språkändringen kommer endast att vara korrekt efter att RIDE öppnats på nytt."
+msgstr "Språkändringen kommer endast att vara korrekt efter att RIDE öppnats på nytt."
 
 #: src/robotide/application/restartutil.py:32
 #: src/robotide/application/restartutil.py:50
@@ -122,12 +121,8 @@ msgstr "Klicka OK för att uppgradera nu!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Efter uppgraderingen kommer du att se en annan dialogruta som informerar om "
-"att stänga denna RIDE-instans."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Efter uppgraderingen kommer du att se en annan dialogruta som informerar om att stänga denna RIDE-instans."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
@@ -226,20 +221,12 @@ msgid "Some of the icons are from %s."
 msgstr "Några av ikonerna är från %s."
 
 #: src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s projektansvarige tackar de ursprungliga författarna och alla användare "
-"och medarbetare."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s projektansvarige tackar de ursprungliga författarna och alla användare och medarbetare."
 
 #: src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"Ett särskilt tack till %s för att ha sponsrat utvecklingen av översatta "
-"testsviter kompatibilitet med %s Version 6.1, i deras %s."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "Ett särskilt tack till %s för att ha sponsrat utvecklingen av översatta testsviter kompatibilitet med %s Version 6.1, i deras %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -333,8 +320,8 @@ msgstr "Kör tester"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:883
-#: src/robotide/ui/mainframe.py:895
+#: src/robotide/ui/mainframe.py:884
+#: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Verktyg"
@@ -580,7 +567,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:673
+#: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - Inställningar"
 
@@ -595,17 +582,13 @@ msgstr "  nuvarande sökord: "
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
 "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
 "[Navigate]\n"
-"        ! o &Tillbaka | Gå tillbaka till föregående plats i trädet | Alt-%s "
-"| ART_GO_BACK\n"
-"        ! o &Framåt | Gå vidare till nästa plats i trädet | Alt-%s | "
-"ART_GO_FORWARD\n"
+"        ! o &Tillbaka | Gå tillbaka till föregående plats i trädet | Alt-%s | ART_GO_BACK\n"
+"        ! o &Framåt | Gå vidare till nästa plats i trädet | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
@@ -703,9 +686,7 @@ msgstr "Flytta rader upp (Alt-Up eller Ctrl-Shift-Up) <unk> Flytta rader upp\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
-"Flytta rader nedåt (Alt-Down eller Ctrl-Shift-Down) <unk> Flytta rader "
-"nedåt\n"
+msgstr "Flytta rader nedåt (Alt-Down eller Ctrl-Shift-Down) <unk> Flytta rader nedåt\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
@@ -713,12 +694,8 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Innehållshjälp (Ctrl-Space eller Ctrl-Alt-Space) | Visa möjliga sökord och "
-"variabelkompletteringar | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Innehållshjälp (Ctrl-Space eller Ctrl-Alt-Space) | Visa möjliga sökord och variabelkompletteringar | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -730,8 +707,7 @@ msgid ""
 msgstr ""
 "Standardeditor-pluginet. Även känd som Grid eller Cell Editor.\n"
 "\n"
-"    Denna plugin implementerar redaktörer för de olika objekten i Robot "
-"Framework\n"
+"    Denna plugin implementerar redaktörer för de olika objekten i Robot Framework\n"
 "    testdata.\n"
 "    "
 
@@ -740,94 +716,68 @@ msgid "Editor"
 msgstr "Redigerare"
 
 #: src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
-"Möjliga rör i värdet måste rymmas med ett bakåtsnedstreck som '\\<unk> '."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgstr "Möjliga rör i värdet måste rymmas med ett bakåtsnedstreck som '\\<unk> '."
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
-"Separera taggar med ett rörtecken som \"tag <unk> second tag <unk> 3rd\"."
+msgstr "Separera taggar med ett rörtecken som \"tag <unk> second tag <unk> 3rd\"."
 
 #: src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
-msgstr ""
-"Separera möjliga argument med ett rörtecken som \"Mitt sökord <unk> arg 1 "
-"<unk> arg 2\"."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
+msgstr "Separera möjliga argument med ett rörtecken som \"Mitt sökord <unk> arg 1 <unk> arg 2\"."
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
-"Använd tidssyntax som '1min 10s' eller '2 timmar' eller ange värdet som "
-"sekunder.\n"
-"Före Robot v3. .1 ett valfritt meddelande kunde ha angetts som '3 minuter "
-"<unk> Mitt meddelande här'."
+"Använd tidssyntax som '1min 10s' eller '2 timmar' eller ange värdet som sekunder.\n"
+"Före Robot v3. .1 ett valfritt meddelande kunde ha angetts som '3 minuter <unk> Mitt meddelande här'."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
 "Ange argumenten separerade med ett rörtecken som '${arg1} <unk> ${arg2}'.\n"
-"Standardvärden anges med hjälp av lika tecken och det sista argumentet kan "
-"vara en listvariabel.\n"
+"Standardvärden anges med hjälp av lika tecken och det sista argumentet kan vara en listvariabel.\n"
 "Exempel: '${arg1} <unk> ${arg2}=standardvärde <unk> @{rest}'.\n"
 "Obs. Du kan använda variabelgenvägar i detta fält."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+"Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
-"Alias kan användas för att importera samma bibliotek flera gånger med olika "
-"namn.\n"
+"Alias kan användas för att importera samma bibliotek flera gånger med olika namn.\n"
 "Alias är beroende av: "
 
 #: src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" . Observera att sedan Robot v6.0, import med gamla MED NAMN ersätts av AS."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " . Observera att sedan Robot v6.0, import med gamla MED NAMN ersätts av AS."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Ge namn och värde på variabeln."
 
 #: src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Ge namn och värde på variabeln. Inmatningslista variabla objekt i separata "
-"celler."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Ge namn och värde på variabeln. Inmatningslista variabla objekt i separata celler."
 
 #: src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
-msgstr ""
-"Ge namn och värde på variabeln. Inmatningsordbok objekt i separata celler."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
+msgstr "Ge namn och värde på variabeln. Inmatningsordbok objekt i separata celler."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Individuella objekt måste vara i formatet `key=value`"
 
 #: src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Ange namn, valfria argument och valfria alias för biblioteket att importera."
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Ange namn, valfria argument och valfria alias för biblioteket att importera."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
@@ -836,17 +786,11 @@ msgstr "Separera flera argument med ett rörtecken som 'arg 1 <unk> arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
-"Ge bibliotekets namn, bibliotekets dokumentations-URL och kommando för att "
-"installera."
+msgstr "Ge bibliotekets namn, bibliotekets dokumentations-URL och kommando för att installera."
 
 #: src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
-"I kommandot kan du använda `%%executable` som platshållare som ska bytas ut "
-"mot den faktiska sökvägen"
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "I kommandot kan du använda `%%executable` som platshållare som ska bytas ut mot den faktiska sökvägen"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -885,66 +829,35 @@ msgid "These tags are set to all test cases in this test suite."
 msgstr "Dessa taggar är inställda på alla testfall i denna testsvit."
 
 #: src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Dessa taggar är inställda på alla testfall i denna testsvit såvida inte "
-"testfall har sina egna taggar."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Dessa taggar är inställda på alla testfall i denna testsvit såvida inte testfall har sina egna taggar."
 
 #: src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Dessa taggar tillämpas på alla testfall i den här testsviten. Detta fält "
-"finns sedan Robot Framework 6. och kommer att ersätta Force och "
-"standardetiketter efter version 7.0."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Dessa taggar tillämpas på alla testfall i den här testsviten. Detta fält finns sedan Robot Framework 6. och kommer att ersätta Force och standardetiketter efter version 7.0."
 
 #: src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Dessa taggar är inställda på detta testfall förutom Tvinga taggar och de "
-"åsidosätter möjliga Standardtaggar."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Dessa taggar är inställda på detta testfall förutom Tvinga taggar och de åsidosätter möjliga Standardtaggar."
 
 #: src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Detta sökord utförs innan du utför någon av testfallen eller lägre nivå "
-"sviter."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Detta sökord utförs innan du utför någon av testfallen eller lägre nivå sviter."
 
 #: src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Detta sökord utförs efter att alla testfall och sviter på lägre nivå har "
-"utförts."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Detta sökord utförs efter att alla testfall och sviter på lägre nivå har utförts."
 
 #: src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Detta sökord utförs före varje testfall i denna svit om inte testfall "
-"åsidosätter det."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Detta sökord utförs före varje testfall i denna svit om inte testfall åsidosätter det."
 
 #: src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Detta sökord utförs efter varje testfall i denna svit om inte testfall "
-"åsidosätter det."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Detta sökord utförs efter varje testfall i denna svit om inte testfall åsidosätter det."
 
 #: src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
+msgid "This keyword is executed before other keywords in this test case or keyword."
 msgstr "Detta sökord körs innan andra sökord i detta testfall eller sökord."
 
 #: src/robotide/editor/dialoghelps.py:82
@@ -956,12 +869,8 @@ msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Setup i sökord finns sedan Robot v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Detta sökord körs efter andra sökord i detta testfall eller nyckelord även "
-"om testet eller nyckelordet misslyckas."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Detta sökord körs efter andra sökord i detta testfall eller nyckelord även om testet eller nyckelordet misslyckas."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
@@ -972,53 +881,36 @@ msgid "Specifies the default template keyword used by tests in this suite."
 msgstr "Anger standardmallens sökord som används av tester i denna svit."
 
 #: src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"Testfallen kommer endast att innehålla data för att använda som argument "
-"till det nyckelordet."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "Testfallen kommer endast att innehålla data för att använda som argument till det nyckelordet."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Anger mallens sökord att använda."
 
 #: src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"Själva testet kommer endast att innehålla data för att använda som argument "
-"till det nyckelordet."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "Själva testet kommer endast att innehålla data för att använda som argument till det nyckelordet."
 
 #: src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
 msgstr "Ange returvärde. Använd ett rörtecken för att separera flera värden."
 
 #: src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Maximal tid testfall i denna svit tillåts att köra innan de avbryts kraftigt."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Maximal tid testfall i denna svit tillåts att köra innan de avbryts kraftigt."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
 msgstr "Kan åsidosättas av enskilda testfall med Timeout-inställning."
 
 #: src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
-msgstr ""
-"Maximal tid för detta test/sökord är tillåtet att köra innan det avbryts "
-"kraftigt."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
+msgstr "Maximal tid för detta test/sökord är tillåtet att köra innan det avbryts kraftigt."
 
 #: src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"Med testfall åsidosätter denna inställning Test Timeout inställd på svit "
-"nivå."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "Med testfall åsidosätter denna inställning Test Timeout inställd på svit nivå."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1199,12 +1091,8 @@ msgid "Columns"
 msgstr "Kolumner"
 
 #: src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Antal kolumner som visas i denna editor. Valda värden lagras och används "
-"globalt."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Antal kolumner som visas i denna editor. Valda värden lagras och används globalt."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1287,31 +1175,23 @@ msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
 "<b>Nyckelord upptäcktes inte av RIDE</b>\n"
 "        <br>Möjliga korrigeringar:<br>\n"
 "        <ul>\n"
-"            <li>Importera bibliotek eller resursfil som innehåller "
-"nyckelordet.</li>\n"
-"            <li>För bibliotekets importfel: Överväg att importera "
-"bibliotekets spec XML\n"
-"            (Verktyg / Importera bibliotekets Spec XML eller genom att lägga "
-"till XML-filen med\n"
+"            <li>Importera bibliotek eller resursfil som innehåller nyckelordet.</li>\n"
+"            <li>För bibliotekets importfel: Överväg att importera bibliotekets spec XML\n"
+"            (Verktyg / Importera bibliotekets Spec XML eller genom att lägga till XML-filen med\n"
 "            rätt namn till PYTHONPATH) för att aktivera sökordsslutförande\n"
 "            till exempel för Java-bibliotek.\n"
-"            Library spec XML kan skapas med libdoc-verktyg från Robot "
-"Framework.</li>\n"
+"            Library spec XML kan skapas med libdoc-verktyg från Robot Framework.</li>\n"
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
@@ -1445,42 +1325,30 @@ msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 msgstr ""
 "<br>Möjliga rättelser och anteckningar:<br>\n"
 "        <ul>\n"
 "            <li>Importfel visas med röd färg.</li>\n"
-"            <li>Se Verktyg / Visa RIDE-loggen för detaljerad information om "
-"felet.</li>\n"
-"            <li>Om importen innehåller en variabel som RIDE inte har "
-"initierat, överväg att lägga till variabeln\n"
+"            <li>Se Verktyg / Visa RIDE-loggen för detaljerad information om felet.</li>\n"
+"            <li>Om importen innehåller en variabel som RIDE inte har initierat, överväg att lägga till variabeln\n"
 "            i variabeltabellen med ett standardvärde.</li>\n"
-"            <li>För import av bibliotek misslyckades: Överväg att importera "
-"spec XML (Verktyg / Import Library Spec XML eller av\n"
-"            lägga till XML-filen med rätt namn till PYTHONPATH) för att "
-"aktivera sökordsslutförande\n"
+"            <li>För import av bibliotek misslyckades: Överväg att importera spec XML (Verktyg / Import Library Spec XML eller av\n"
+"            lägga till XML-filen med rätt namn till PYTHONPATH) för att aktivera sökordsslutförande\n"
 "            till exempel för Java-bibliotek.\n"
-"            Library spec XML kan skapas med libdoc-verktyg från Robot "
-"Framework.\n"
+"            Library spec XML kan skapas med libdoc-verktyg från Robot Framework.\n"
 "            För mer information se \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1534,8 +1402,7 @@ msgstr "Få hjälp"
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1551,20 +1418,17 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 msgstr ""
 "<h1>Syntaxfärgning</h1>\n"
 "        <p>\n"
-"        Syntaxfärgning för textredigering använder <a href='https://"
-"pygments.org/'>Pygments</a> syntaxfärgning.\n"
+"        Syntaxfärgning för textredigering använder <a href='https://pygments.org/'>Pygments</a> syntaxfärgning.\n"
 "        </p>\n"
 "        <p>\n"
 "        Installera Pygments från kommandoraden med:\n"
@@ -1580,13 +1444,11 @@ msgstr ""
 "        <p>\n"
 "        Om du inte har pip eller easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >följ dessa instruktioner</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        För mer information om installation av Pygments, <a href='https://"
-"pygments.org/download/'>se sajten</a>.\n"
+"        För mer information om installation av Pygments, <a href='https://pygments.org/download/'>se sajten</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1924,17 +1786,12 @@ msgid "Comma separated list of libraries to be automatically imported."
 msgstr "Kommaseparerad lista över bibliotek som ska importeras automatiskt."
 
 #: src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Kommaseparerad lista över kataloger som ska läggas till i PYTHONPATH när "
-"bibliotek söks."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Kommaseparerad lista över kataloger som ska läggas till i PYTHONPATH när bibliotek söks."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
-"Kommaseparerad lista över kataloger som innehåller bibliotekets spec filer."
+msgstr "Kommaseparerad lista över kataloger som innehåller bibliotekets spec filer."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
@@ -2010,10 +1867,8 @@ msgid "Line separator:"
 msgstr "Radseparator:"
 
 #: src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
-"Möjliga värden är infödda (av nuvarande OS) CRLF (Windows) och LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr "Möjliga värden är infödda (av nuvarande OS) CRLF (Windows) och LF (Unixy)"
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
@@ -2056,12 +1911,9 @@ msgid ""
 "and its arguments. If either the command or any of the arguments require\n"
 "internal spaces, they must be written as '<SPACE>'.\n"
 "\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
 "command does not work.\n"
 "\n"
 "Examples:\n"
@@ -2070,16 +1922,13 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
-"Den angivna kommandoraden kommer att delas upp från blanksteg i ett "
-"kommando\n"
+"Den angivna kommandoraden kommer att delas upp från blanksteg i ett kommando\n"
 "och dess argument. Om antingen kommandot eller något av argumenten kräver\n"
 "interna utrymmen, måste de skrivas som \"<SPACE>\".\n"
 "\n"
 "Kommandot kommer att köras i systemet direkt utan att öppna ett skal.\n"
-"Detta innebär att skalkommandon och tillägg inte är tillgängliga. Till "
-"exempel,\n"
-"i Windows batch-filer som ska köras måste innehålla '. at' tillägg och "
-"'dir'\n"
+"Detta innebär att skalkommandon och tillägg inte är tillgängliga. Till exempel,\n"
+"i Windows batch-filer som ska köras måste innehålla '. at' tillägg och 'dir'\n"
 "kommandot fungerar inte.\n"
 "\n"
 "Exempel:\n"
@@ -2153,12 +2002,8 @@ msgid "Results: "
 msgstr "Resultat: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Hitta matchningar med taggmönster. Se användarhandboken för RF eller 'robot "
-"--help' för mer information."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Hitta matchningar med taggmönster. Se användarhandboken för RF eller 'robot --help' för mer information."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
@@ -2198,33 +2043,24 @@ msgstr "Sök termin"
 
 #: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
-"En plugin för att söka tester baserat på namn, taggar och dokumentation"
+msgstr "En plugin för att söka tester baserat på namn, taggar och dokumentation"
 
 #: src/robotide/spec/libraryfinder.py:31
 msgid ""
 "Install missing libraries and open documentation.\n"
 "\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
 "Installera saknade bibliotek och öppna dokumentation.\n"
 "\n"
-"    Du kan redigera settings.cfg för att lägga till URL för dokumentation "
-"och kommando för att installera.\n"
-"    Du kan högerklicka på ett biblioteksnamn och öppna dokumentation eller "
-"installera biblioteket.\n"
-"    Från Verktyg->Bibliotekssökare... eller Hjälp->Öppna "
-"biblioteksdokumentation... du kommer att ha\n"
-"    en dialogruta för att fylla i kommandot för att installera eller "
-"webbadressen för dokumentationen.\n"
+"    Du kan redigera settings.cfg för att lägga till URL för dokumentation och kommando för att installera.\n"
+"    Du kan högerklicka på ett biblioteksnamn och öppna dokumentation eller installera biblioteket.\n"
+"    Från Verktyg->Bibliotekssökare... eller Hjälp->Öppna biblioteksdokumentation... du kommer att ha\n"
+"    en dialogruta för att fylla i kommandot för att installera eller webbadressen för dokumentationen.\n"
 "    "
 
 #: src/robotide/spec/libraryfinder.py:39
@@ -2359,9 +2195,7 @@ msgid "All files|*.*"
 msgstr "Alla filer| *.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
 msgstr "Ger en trädvy för filer och mappar. Öppnar valt objekt med högerklick."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
@@ -2374,7 +2208,7 @@ msgstr "Öppna innehållsmapp"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:316
+#: src/robotide/ui/mainframe.py:317
 msgid "Files"
 msgstr "Filer"
 
@@ -2437,18 +2271,12 @@ msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr "!&Nytt projekt | Skapa en ny toppnivå svit | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!&Öppna testsviten | Öppna filen med tester | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&Öppna testsviten | Öppna filen med tester | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Öppna &Katalog | Öppna katalogen innehåller datafiler | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Öppna &Katalog | Öppna katalogen innehåller datafiler | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
@@ -2460,8 +2288,7 @@ msgstr "!&Spara | Spara vald datafil | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!Spara &Alla | Spara alla ändringar | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgstr "!Spara &Alla | Spara alla ändringar | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2501,9 +2328,7 @@ msgstr "!Wiki | RIDE användarguide (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
-"!Rapportera ett problem | Öppna webbläsaren för att SÖK på RIDE "
-"ärendehanteraren\n"
+msgstr "!Rapportera ett problem | Öppna webbläsaren för att SÖK på RIDE ärendehanteraren\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
@@ -2529,12 +2354,12 @@ msgstr "Modifiering förhindrad"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" är endast läst"
 
-#: src/robotide/ui/mainframe.py:299
+#: src/robotide/ui/mainframe.py:300
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Testa sviter"
 
-#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2542,12 +2367,12 @@ msgstr ""
 "Det finns osparade ändringar.\n"
 "Vill du spara dina ändringar innan du avslutar?"
 
-#: src/robotide/ui/mainframe.py:464
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:559
 msgid "Warning"
 msgstr "Varning"
 
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2555,63 +2380,63 @@ msgstr ""
 "Det finns osparade ändringar.\n"
 "Vill du fortsätta utan att spara?"
 
-#: src/robotide/ui/mainframe.py:608
+#: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
 msgstr "Välj en katalog som innehåller robotfiler"
 
-#: src/robotide/ui/mainframe.py:760
+#: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
 msgstr "Ändringar i arbetsytan upptäcktes på filsystemet."
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
 msgstr "Vill du ladda om arbetsytan?"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Svaret på <Yes> kommer att kassera osparade ändringar."
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Att svara på <No> kommer att ignorera ändringarna på disken."
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
 msgstr "Filer ändrade på disk"
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
 msgstr "Anpassa..."
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
 msgstr "sök oanvända nyckelord"
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
 msgstr "stoppa provkörning"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "preview"
 msgstr "förhandsgranska"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
 msgstr "visa körningslogg"
 
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
 msgstr "Genvägstangenter för IDE"
 
-#: src/robotide/ui/mainframe.py:977
+#: src/robotide/ui/mainframe.py:978
 msgid "Show"
 msgstr "Visa"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:979
 msgid "Hide"
 msgstr "Dölj"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:980
 msgid "Close"
 msgstr "Stäng"
 
@@ -2632,16 +2457,11 @@ msgid "Plugin"
 msgstr "Tillägg"
 
 #: src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Info. Att aktivera och inaktivera plugins kan kräva omstart av RIDE för att "
-"menyer ska fungera."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Info. Att aktivera och inaktivera plugins kan kräva omstart av RIDE för att menyer ska fungera."
 
 #: src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
 msgstr "(Obsolete) Ger förhandsvisning av testdata i HTML, TSV och TXT-format."
 
 #: src/robotide/ui/preview.py:41
@@ -2674,8 +2494,7 @@ msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
-"Den här dialogrutan hjälper dig att hitta oanvända sökord i ditt öppnade "
-"projekt.\n"
+"Den här dialogrutan hjälper dig att hitta oanvända sökord i ditt öppnade projekt.\n"
 "Om du vill kan du begränsa sökningen till en uppsättning filer med filtret."
 
 #: src/robotide/ui/review.py:70
@@ -2697,13 +2516,11 @@ msgstr "Använd RegEx"
 
 #: src/robotide/ui/review.py:93
 msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
-"Här kan du definiera en eller flera strängar separerade med kommatecken "
-"(t.ex. gemensamt,abc,123).\n"
+"Här kan du definiera en eller flera strängar separerade med kommatecken (t.ex. gemensamt,abc,123).\n"
 "Filtret matchar om minst en sträng är en del av filnamnet.\n"
 "Om du inte anger några strängar inkluderas alla öppnade filer"
 
