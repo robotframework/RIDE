@@ -180,7 +180,8 @@ for tLang in supportedLang:
     poFile = os.path.join(langDir, langDomain + '.po')
 
     if os.path.isfile(poFile):
-        tCmd = 'msgmerge' + ' ' + '-U' + ' ' + poFile + ' ' + potFile
+        options = '-w 120 --no-wrap'
+        tCmd = 'msgmerge' + ' ' + options + ' ' + '-U' + ' ' + poFile + ' ' + potFile
         print("Updating .po file with .pot\n")
         print("cmd: %s" % tCmd)
         rCode = subprocess.call(tCmd.split(' '))

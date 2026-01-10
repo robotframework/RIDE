@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-06 22:34+0000\n"
+"POT-Creation-Date: 2026-01-10 02:20+0000\n"
 "PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
@@ -121,12 +121,8 @@ msgstr "「OK」をクリックして今すぐアップグレード！"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"アップグレード後、このRIDEインスタンスを閉じるための別のダイアログが表示され"
-"ます。"
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "アップグレード後、このRIDEインスタンスを閉じるための別のダイアログが表示されます。"
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
@@ -225,20 +221,12 @@ msgid "Some of the icons are from %s."
 msgstr "いくつかのアイコンは %s のものです。"
 
 #: src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s プロジェクトの管理者は、元の作者とすべてのユーザーと共同編集者に感謝しま"
-"す。"
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s プロジェクトの管理者は、元の作者とすべてのユーザーと共同編集者に感謝します。"
 
 #: src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"%s が %s バージョン6.1との翻訳されたテストスイートコンテンツの互換性を %sに後"
-"援してくれたことに感謝します。"
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "%s が %s バージョン6.1との翻訳されたテストスイートコンテンツの互換性を %sに後援してくれたことに感謝します。"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -332,8 +320,8 @@ msgstr "テストを実行"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:883
-#: src/robotide/ui/mainframe.py:895
+#: src/robotide/ui/mainframe.py:884
+#: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "ツール"
@@ -579,7 +567,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:673
+#: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "ライド - 設定"
 
@@ -594,10 +582,8 @@ msgstr "  現在のキーワード: "
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
 "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
 
@@ -704,12 +690,8 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"コンテンツ支援 (Ctrl-SpaceまたはCtrl-Alt-Space) | キーワードと変数補完を表示 "
-"| | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "コンテンツ支援 (Ctrl-SpaceまたはCtrl-Alt-Space) | キーワードと変数補完を表示 | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -725,74 +707,55 @@ msgid "Editor"
 msgstr "エディター"
 
 #: src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
-"値に含まれるパイプは、'\\|' のようなバックスラッシュでエスケープする必要があ"
-"ります。"
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgstr "値に含まれるパイプは、'\\|' のようなバックスラッシュでエスケープする必要があります。"
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
 msgstr "'tag | second tag | 3rd' のようなパイプ文字でタグを分離します。"
 
 #: src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
-msgstr ""
-"'My Keyword | arg 1 | arg 2'のようなパイプ文字で可能な引数を分離します。"
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
+msgstr "'My Keyword | arg 1 | arg 2'のようなパイプ文字で可能な引数を分離します。"
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
 "'1min 10s'や'2時間'のような時間構文を使用するか、値を秒単位で指定します。\n"
-"ロボットv3の前。 .1 オプションのメッセージは '3 minutes | My message here' の"
-"ように指定されている可能性があります。"
+"ロボットv3の前。 .1 オプションのメッセージは '3 minutes | My message here' のように指定されている可能性があります。"
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+"Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
-"エイリアスは、異なる名前で同じライブラリを複数回インポートするために使用でき"
-"ます。\n"
+"エイリアスは、異なる名前で同じライブラリを複数回インポートするために使用できます。\n"
 "エイリアスの前には次のように記述します: "
 
 #: src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" をクリックします。ロボットv6.0以降では、古い名前付きのインポートはASに置き換"
-"えられます。"
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " をクリックします。ロボットv6.0以降では、古い名前付きのインポートはASに置き換えられます。"
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "変数の名前と値を指定します。"
 
 #: src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
 msgstr "変数の名前と値を指定します。変数リストの項目を個別のセルに入力します。"
 
 #: src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
 msgstr "変数の名前と値を指定します。辞書アイテムを個別のセルに入力します。"
 
 #: src/robotide/editor/dialoghelps.py:49
@@ -800,11 +763,8 @@ msgid "Individual items must be in format `key=value`"
 msgstr "個々のアイテムは `key=value` の形式でなければなりません"
 
 #: src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"インポートするライブラリの名前、オプション引数、オプションのエイリアスを指定"
-"します。"
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "インポートするライブラリの名前、オプション引数、オプションのエイリアスを指定します。"
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
@@ -813,17 +773,11 @@ msgstr "'arg 1 | arg 2'のようなパイプ文字で複数の引数を分離し
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
-"ライブラリ名、ライブラリドキュメントの URL 、およびインストールするコマンドを"
-"指定します。"
+msgstr "ライブラリ名、ライブラリドキュメントの URL 、およびインストールするコマンドを指定します。"
 
 #: src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
-"コマンドでは、`%%実行可能`を実際のパスに置き換えるプレースホルダとして使用で"
-"きます。"
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "コマンドでは、`%%実行可能`を実際のパスに置き換えるプレースホルダとして使用できます。"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -859,150 +813,91 @@ msgstr "さらに、URLはクリック可能なリンクに変換されます。
 
 #: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
-"これらのタグは、このテストスイートのすべてのテストケースに設定されます。"
+msgstr "これらのタグは、このテストスイートのすべてのテストケースに設定されます。"
 
 #: src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"これらのタグは、テストケースに独自のタグがない限り、このテストスイートのすべ"
-"てのテストケースに設定されます。"
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "これらのタグは、テストケースに独自のタグがない限り、このテストスイートのすべてのテストケースに設定されます。"
 
 #: src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"これらのタグは、このテストスイートのすべてのテストケースに適用されます。この"
-"フィールドはロボットフレームワーク6以降に存在します。 をクリックすると、バー"
-"ジョン7.0以降のフォースタグとデフォルトタグが置き換えられます。"
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "これらのタグは、このテストスイートのすべてのテストケースに適用されます。このフィールドはロボットフレームワーク6以降に存在します。 をクリックすると、バージョン7.0以降のフォースタグとデフォルトタグが置き換えられます。"
 
 #: src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"これらのタグは、強制的なタグに加えて、このテストケースに設定されており、それ"
-"らは可能な既定のタグを上書きします。"
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "これらのタグは、強制的なタグに加えて、このテストケースに設定されており、それらは可能な既定のタグを上書きします。"
 
 #: src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"このキーワードは、テストケースまたは下位レベルのスイートを実行する前に実行さ"
-"れます。"
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "このキーワードは、テストケースまたは下位レベルのスイートを実行する前に実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"このキーワードは、すべてのテストケースと下位レベルのスイートが実行された後に"
-"実行されます。"
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "このキーワードは、すべてのテストケースと下位レベルのスイートが実行された後に実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"このキーワードは、テストケースがそれを上書きしない限り、このスイートのすべて"
-"のテストケースの前に実行されます。"
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "このキーワードは、テストケースがそれを上書きしない限り、このスイートのすべてのテストケースの前に実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"このキーワードは、テストケースがそれを上書きしない限り、このスイートのすべて"
-"のテストケースの後に実行されます。"
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "このキーワードは、テストケースがそれを上書きしない限り、このスイートのすべてのテストケースの後に実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"このキーワードは、このテストケースまたはキーワードの他のキーワードの前に実行"
-"されます。"
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "このキーワードは、このテストケースまたはキーワードの他のキーワードの前に実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
-"テストケースでは、スイートレベルで設定されたテストセットアップを上書きできま"
-"す。"
+msgstr "テストケースでは、スイートレベルで設定されたテストセットアップを上書きできます。"
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Robot v7.0からキーワードのセットアップが存在します。"
 
 #: src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"このキーワードは、テストやキーワードが失敗した場合でも、他のキーワードの後に"
-"実行されます。"
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "このキーワードは、テストやキーワードが失敗した場合でも、他のキーワードの後に実行されます。"
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
-"テストケースでは、スイートレベルで設定されているテストの分解が上書きされま"
-"す。"
+msgstr "テストケースでは、スイートレベルで設定されているテストの分解が上書きされます。"
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
-"このスイートのテストで使用されるデフォルトのテンプレートキーワードを指定しま"
-"す。"
+msgstr "このスイートのテストで使用されるデフォルトのテンプレートキーワードを指定します。"
 
 #: src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"テストケースには、キーワードの引数として使用するデータのみが含まれます。"
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "テストケースには、キーワードの引数として使用するデータのみが含まれます。"
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "使用するテンプレートキーワードを指定します。"
 
 #: src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
+msgid "The test itself will contain only data to use as arguments to that keyword."
 msgstr "テスト自体には、キーワードの引数として使用するデータのみが含まれます。"
 
 #: src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
 msgstr "戻り値を指定します。複数の値を区切るにはパイプ文字を使用します。"
 
 #: src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"このスイートの最大時間テストケースは、強制的に中断する前に実行することができ"
-"ます。"
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "このスイートの最大時間テストケースは、強制的に中断する前に実行することができます。"
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
-"タイムアウト設定を使用して、個々のテストケースでオーバーライドすることができ"
-"ます。"
+msgstr "タイムアウト設定を使用して、個々のテストケースでオーバーライドすることができます。"
 
 #: src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
 msgstr "このテスト/キーワードを強制的に中断する前に実行できる最大時間。"
 
 #: src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"テストケースでは、この設定はスイートレベルで設定されたTest Timeoutを上書きし"
-"ます。"
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "テストケースでは、この設定はスイートレベルで設定されたTest Timeoutを上書きします。"
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1183,11 +1078,8 @@ msgid "Columns"
 msgstr "列"
 
 #: src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"このエディタに表示される列数。選択した値はグローバルに保存され使用されます。"
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "このエディタに表示される列数。選択した値はグローバルに保存され使用されます。"
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1270,16 +1162,12 @@ msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
 
@@ -1414,21 +1302,15 @@ msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 msgstr ""
@@ -1483,8 +1365,7 @@ msgstr "ヘルプを見る"
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1500,13 +1381,11 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 msgstr ""
@@ -1845,11 +1724,8 @@ msgid "Comma separated list of libraries to be automatically imported."
 msgstr "自動的にインポートされるライブラリのカンマ区切りリスト。"
 
 #: src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"ライブラリの検索時にPYTHONPATHに追加するディレクトリのカンマ区切りのリスト。"
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "ライブラリの検索時にPYTHONPATHに追加するディレクトリのカンマ区切りのリスト。"
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
@@ -1929,8 +1805,7 @@ msgid "Line separator:"
 msgstr "行区切り:"
 
 #: src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
 msgstr "指定可能な値は(現在のOSの)ネイティブのCRLF(Windows)とLF(Unixy)です。"
 
 #: src/robotide/preferences/saving.py:68
@@ -1974,12 +1849,9 @@ msgid ""
 "and its arguments. If either the command or any of the arguments require\n"
 "internal spaces, they must be written as '<SPACE>'.\n"
 "\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
 "command does not work.\n"
 "\n"
 "Examples:\n"
@@ -2049,12 +1921,8 @@ msgid "Results: "
 msgstr "結果: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"タグパターンを使用して一致するものを見つけます。詳細については、RF ユーザーガ"
-"イドまたは 'robot --help' を参照してください。"
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "タグパターンを使用して一致するものを見つけます。詳細については、RF ユーザーガイドまたは 'robot --help' を参照してください。"
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
@@ -2100,14 +1968,10 @@ msgstr "名前、タグ、ドキュメントに基づいてテストを検索す
 msgid ""
 "Install missing libraries and open documentation.\n"
 "\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
 
@@ -2243,12 +2107,8 @@ msgid "All files|*.*"
 msgstr "すべてのファイル|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"ファイルとフォルダにツリー ビューを提供します。選択したアイテムを右クリックで"
-"開きます。"
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "ファイルとフォルダにツリー ビューを提供します。選択したアイテムを右クリックで開きます。"
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
@@ -2260,7 +2120,7 @@ msgstr "保持フォルダを開く"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:316
+#: src/robotide/ui/mainframe.py:317
 msgid "Files"
 msgstr "ファイル"
 
@@ -2320,28 +2180,19 @@ msgstr "[File]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&New Project | 新しいトップレベルスイートを作成 | Ctrlcmd-N | ART_NEW\n"
+msgstr "!&New Project | 新しいトップレベルスイートを作成 | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"テストスイートを開く(&Open Test Suite) | テストを含むファイルを開く | "
-"Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "テストスイートを開く(&Open Test Suite) | テストを含むファイルを開く | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Open &Directory | データファイルを含むディレクトリを開く | Shift-Ctrlcmd-O "
-"| ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Open &Directory | データファイルを含むディレクトリを開く | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!外部ファイルを開く | コードエディターでファイルを開く | | ART_NORMAL_FILE\n"
+msgstr "!外部ファイルを開く | コードエディターでファイルを開く | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
@@ -2349,8 +2200,7 @@ msgstr ""
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!すべて保存(&A) | すべての変更を保存 | Ctrl+Shift+S | ART_FILE_SAVE_AS\n"
+msgstr "!すべて保存(&A) | すべての変更を保存 | Ctrl+Shift+S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2416,12 +2266,12 @@ msgstr "変更できませんでした"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" は読み取り専用です"
 
-#: src/robotide/ui/mainframe.py:299
+#: src/robotide/ui/mainframe.py:300
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "スイートをテスト"
 
-#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2429,12 +2279,12 @@ msgstr ""
 "保存されていない変更があります。\n"
 "終了する前に変更を保存しますか？"
 
-#: src/robotide/ui/mainframe.py:464
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:559
 msgid "Warning"
 msgstr "警告"
 
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2442,63 +2292,63 @@ msgstr ""
 "未保存の変更があります。\n"
 "保存せずに続行しますか？"
 
-#: src/robotide/ui/mainframe.py:608
+#: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
 msgstr "ロボットファイルを含むディレクトリを選択してください"
 
-#: src/robotide/ui/mainframe.py:760
+#: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
 msgstr "ファイルシステムでワークスペースの変更が検出されました。"
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
 msgstr "ワークスペースを再読み込みしますか？"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "回答する <Yes> は保存されていない変更を破棄します。"
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "回答する <No> はディスク上の変更を無視します。"
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
 msgstr "ディスク上で変更されたファイル"
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
 msgstr "カスタマイズ ..."
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
 msgstr "未使用のキーワードを検索"
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
 msgstr "テストランを停止"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "preview"
 msgstr "プレビュー"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
 msgstr "ライドログを表示"
 
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
 msgstr "RIDE用ショートカットキー"
 
-#: src/robotide/ui/mainframe.py:977
+#: src/robotide/ui/mainframe.py:978
 msgid "Show"
 msgstr "表示"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:979
 msgid "Hide"
 msgstr "非表示"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:980
 msgid "Close"
 msgstr "閉じる"
 
@@ -2519,15 +2369,11 @@ msgid "Plugin"
 msgstr "プラグイン"
 
 #: src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"プラグインの有効化と無効化には、メニューの再起動が必要な場合があります。"
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "プラグインの有効化と無効化には、メニューの再起動が必要な場合があります。"
 
 #: src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
 msgstr "(廃止) HTML、TSV、TXT形式のテストデータのプレビューを提供します。"
 
 #: src/robotide/ui/preview.py:41
@@ -2560,8 +2406,7 @@ msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
-"このダイアログでは、開いているプロジェクト内で未使用のキーワードを見つけるこ"
-"とができます。\n"
+"このダイアログでは、開いているプロジェクト内で未使用のキーワードを見つけることができます。\n"
 "必要に応じて、フィルタを使用して一連のファイルに制限することができます。"
 
 #: src/robotide/ui/review.py:70
@@ -2583,8 +2428,7 @@ msgstr "RegExを使用"
 
 #: src/robotide/ui/review.py:93
 msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""

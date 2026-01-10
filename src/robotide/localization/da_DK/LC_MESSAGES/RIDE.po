@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-06 22:34+0000\n"
+"POT-Creation-Date: 2026-01-10 02:20+0000\n"
 "PO-Revision-Date: 2025-12-08 12:52\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
@@ -121,12 +121,8 @@ msgstr "Klik OK for at opgradere nu!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Efter opgradering vil du se en anden dialog der informerer om at lukke denne "
-"RIDE instans."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Efter opgradering vil du se en anden dialog der informerer om at lukke denne RIDE instans."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
@@ -198,8 +194,7 @@ msgstr "Opgradér Nu"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
-"Startede RIDE %s ved hjælp af python version %s med wx version %s i %s."
+msgstr "Startede RIDE %s ved hjælp af python version %s med wx version %s i %s."
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
@@ -226,20 +221,12 @@ msgid "Some of the icons are from %s."
 msgstr "Nogle af ikonerne er fra %s."
 
 #: src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s vedligeholder af projektet takker de oprindelige forfattere og alle "
-"brugere og samarbejdspartnere."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s vedligeholder af projektet takker de oprindelige forfattere og alle brugere og samarbejdspartnere."
 
 #: src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"En særlig tak til %s for at have sponsoreret udviklingen af oversatte "
-"testsuiter indhold kompatibilitet med %s Version 6.1, i deres %s."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "En særlig tak til %s for at have sponsoreret udviklingen af oversatte testsuiter indhold kompatibilitet med %s Version 6.1, i deres %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -333,8 +320,8 @@ msgstr "Kør Tests"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:883
-#: src/robotide/ui/mainframe.py:895
+#: src/robotide/ui/mainframe.py:884
+#: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Værktøjer"
@@ -580,7 +567,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:273
-#: src/robotide/ui/mainframe.py:673
+#: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - Indstillinger"
 
@@ -595,17 +582,13 @@ msgstr "  nuværende søgeord: "
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
 "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
 "[Navigate]\n"
-"        ! o &Tilbage - Gå tilbage til tidligere placering i træet | Alt-%s | "
-"ART_GO_BACK\n"
-"        ! o &Forward - Gå frem til næste sted i træ | Alt-%s | "
-"ART_GO_FORWARD\n"
+"        ! o &Tilbage - Gå tilbage til tidligere placering i træet | Alt-%s | ART_GO_BACK\n"
+"        ! o &Forward - Gå frem til næste sted i træ | Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
@@ -679,8 +662,7 @@ msgstr "Afkommentere Rækkener ¤ Afkommentere markerede rækker: Ctrlcmd-4\n"
 
 #: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
-"Afkommentér celler PRAKT Fjern kommentar celler med # | Ctrlcmd-Shift-4\n"
+msgstr "Afkommentér celler PRAKT Fjern kommentar celler med # | Ctrlcmd-Shift-4\n"
 
 #: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
@@ -712,12 +694,8 @@ msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
 #: src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Indholdshjælp (Ctrl-Space eller Ctrl-Alt-Space) | Vis muligt søgeord og "
-"variable kompletter | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Indholdshjælp (Ctrl-Space eller Ctrl-Alt-Space) | Vis muligt søgeord og variable kompletter | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -729,8 +707,7 @@ msgid ""
 msgstr ""
 "Standard editor plugin. Også kendt som Grid eller Cell Editor.\n"
 "\n"
-"    Dette plugin implementerer editorer for de forskellige elementer i Robot "
-"Framework\n"
+"    Dette plugin implementerer editorer for de forskellige elementer i Robot Framework\n"
 "    testdata.\n"
 "    "
 
@@ -739,8 +716,7 @@ msgid "Editor"
 msgstr "Editor"
 
 #: src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
 msgstr "Mulige rør i værdien skal undslippes med en rygskråstreg som '\\¤ '."
 
 #: src/robotide/editor/dialoghelps.py:32
@@ -748,83 +724,60 @@ msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
 msgstr "Adskil tags med en pibekarakter som 'tag' andet tag' - 3. rd."
 
 #: src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
-msgstr ""
-"Adskil mulige argumenter med en pipe-karakter som 'Mit søgeord,' arg 1 ¤ arg "
-"2'."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
+msgstr "Adskil mulige argumenter med en pipe-karakter som 'Mit søgeord,' arg 1 ¤ arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
-"Brug tidssyntaks som '1min 10' eller '2 timer', eller giv værdien som "
-"sekunder.\n"
-"Før Robot v3. .1 en valgfri besked kunne have været angivet som '3 minutter "
-"Øjeblikkelig Min besked her'."
+"Brug tidssyntaks som '1min 10' eller '2 timer', eller giv værdien som sekunder.\n"
+"Før Robot v3. .1 en valgfri besked kunne have været angivet som '3 minutter Øjeblikkelig Min besked her'."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
 "Angiv argumenterne adskilt med et pipe-tegn som '${arg1} | ${arg2}'.\n"
-"Standardværdier gives med lighedstegn, og det sidste argument kan være en "
-"listevariabel.\n"
+"Standardværdier gives med lighedstegn, og det sidste argument kan være en listevariabel.\n"
 "Eksempel: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Seddel. Du kan bruge variable genveje i dette felt."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+"Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
-"Alias kan bruges til at importere samme bibliotek flere gange med "
-"forskellige navne.\n"
+"Alias kan bruges til at importere samme bibliotek flere gange med forskellige navne.\n"
 "Alias er foranstillet: "
 
 #: src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" Bemærk, at siden Robot v6.0, import med gamle MED NAVN erstattes af AS."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " Bemærk, at siden Robot v6.0, import med gamle MED NAVN erstattes af AS."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Angiv navn og værdi for variablen."
 
 #: src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Give navn og værdi for variablen. Input liste variabel elementer i separate "
-"celler."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Give navn og værdi for variablen. Input liste variabel elementer i separate celler."
 
 #: src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
-msgstr ""
-"Giv navn og værdi for variablen. Input ordbog elementer i separate celler."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
+msgstr "Giv navn og værdi for variablen. Input ordbog elementer i separate celler."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Individuelle elementer skal være i formatet `key=value`"
 
 #: src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Giv navn, valgfrie argumenter og valgfri alias af biblioteket at importere."
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Giv navn, valgfrie argumenter og valgfri alias af biblioteket at importere."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
@@ -833,17 +786,11 @@ msgstr "Adskil flere argumenter med en pibekarakter som 'arg 1 ¤ arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
-"Giv bibliotekets navn, bibliotek dokumentation URL og kommando til at "
-"installere."
+msgstr "Giv bibliotekets navn, bibliotek dokumentation URL og kommando til at installere."
 
 #: src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
-"I kommandoen, kan du bruge `%%eksekverbar ` som en pladsholder, der skal "
-"erstattes af den faktiske sti"
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "I kommandoen, kan du bruge `%%eksekverbar ` som en pladsholder, der skal erstattes af den faktiske sti"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -851,8 +798,7 @@ msgstr " til kørbar Python."
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
-"Giv stien og valgfrie argumenter for den variable fil, der skal importeres."
+msgstr "Giv stien og valgfrie argumenter for den variable fil, der skal importeres."
 
 #: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
@@ -860,8 +806,7 @@ msgstr "Giv sti til ressourcefilen der skal importeres."
 
 #: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
-"Eksisterende ressourcer vil automatisk blive indlæst til ressourcetræet."
+msgstr "Eksisterende ressourcer vil automatisk blive indlæst til ressourcetræet."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
@@ -884,68 +829,36 @@ msgid "These tags are set to all test cases in this test suite."
 msgstr "Disse tags er sat til alle testtilfælde i denne testsuite."
 
 #: src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Disse tags er sat til alle testkasser i denne testpakke, medmindre "
-"testkasserne har deres egne tags."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Disse tags er sat til alle testkasser i denne testpakke, medmindre testkasserne har deres egne tags."
 
 #: src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Disse tags anvendes på alle testtilfælde i denne testsuite. Dette felt "
-"eksisterer siden Robot Framework 6. og vil erstatte Kraft og standard tags "
-"efter version 7.0."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Disse tags anvendes på alle testtilfælde i denne testsuite. Dette felt eksisterer siden Robot Framework 6. og vil erstatte Kraft og standard tags efter version 7.0."
 
 #: src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Disse tags er sat til denne test case ud over Kraft Tags og de tilsidesætter "
-"mulige standard tags."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Disse tags er sat til denne test case ud over Kraft Tags og de tilsidesætter mulige standard tags."
 
 #: src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Dette søgeord udføres før udførelse af nogen af testkasser eller lavere "
-"niveau suiter."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Dette søgeord udføres før udførelse af nogen af testkasser eller lavere niveau suiter."
 
 #: src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Dette søgeord udføres efter at alle testtilfælde og suiter på lavere niveau "
-"er blevet udført."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Dette søgeord udføres efter at alle testtilfælde og suiter på lavere niveau er blevet udført."
 
 #: src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Dette søgeord udføres før hver test tilfælde i denne suite medmindre test "
-"tilfælde tilsidesætte det."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Dette søgeord udføres før hver test tilfælde i denne suite medmindre test tilfælde tilsidesætte det."
 
 #: src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Dette søgeord udføres efter hver test tilfælde i denne suite medmindre test "
-"tilfælde tilsidesætte det."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Dette søgeord udføres efter hver test tilfælde i denne suite medmindre test tilfælde tilsidesætte det."
 
 #: src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"Dette søgeord udføres før andre søgeord i denne test tilfælde eller nøgleord."
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "Dette søgeord udføres før andre søgeord i denne test tilfælde eller nøgleord."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
@@ -956,12 +869,8 @@ msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Opsætning i søgeord eksisterer siden Robot v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Dette søgeord udføres efter andre søgeord i dette testtilfælde eller "
-"søgeord, selvom testen eller søgeordet mislykkes."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Dette søgeord udføres efter andre søgeord i dette testtilfælde eller søgeord, selvom testen eller søgeordet mislykkes."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
@@ -972,54 +881,36 @@ msgid "Specifies the default template keyword used by tests in this suite."
 msgstr "Angiver standard skabelon nøgleord brugt af tests i denne suite."
 
 #: src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"Testtilfældene vil kun indeholde data til brug som argumenter til dette "
-"søgeord."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "Testtilfældene vil kun indeholde data til brug som argumenter til dette søgeord."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Angiver skabelonens nøgleord der skal bruges."
 
 #: src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"Selve testen vil kun indeholde data til brug som argumenter til dette "
-"søgeord."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "Selve testen vil kun indeholde data til brug som argumenter til dette søgeord."
 
 #: src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
 msgstr "Angiv returværdi. Brug et rørtegn til at adskille flere værdier."
 
 #: src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Maksimal tid testtilfælde i denne suite har lov til at udføre før de "
-"afbrydes kraftigt."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Maksimal tid testtilfælde i denne suite har lov til at udføre før de afbrydes kraftigt."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
-"Kan tilsidesættes af individuelle testtilfælde ved hjælp af Timeout "
-"indstilling."
+msgstr "Kan tilsidesættes af individuelle testtilfælde ved hjælp af Timeout indstilling."
 
 #: src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
 msgstr "Maksimal tid dette test/søgeord må udføre, før det afbrydes kraftigt."
 
 #: src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"Med testkasser tilsidesætter denne indstilling Test Timeout sæt på suite "
-"niveau."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "Med testkasser tilsidesætter denne indstilling Test Timeout sæt på suite niveau."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1200,12 +1091,8 @@ msgid "Columns"
 msgstr "Kolonner"
 
 #: src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Antal kolonner der vises i denne editor. Valgte værdi gemmes og bruges "
-"globalt."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Antal kolonner der vises i denne editor. Valgte værdi gemmes og bruges globalt."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1288,32 +1175,23 @@ msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
 "<b>Keyword blev ikke detekteret af RIDE</b>\n"
 "        <br>Mulige korrektioner:<br>\n"
 "        <ul>\n"
-"            <li>Importér bibliotek eller ressourcefil, der indeholder "
-"søgeordet.</li>\n"
-"            <li>For bibliotekets importfejl: Overvej at importere bibliotek "
-"spec XML\n"
-"            (Værktøjer / Import Library Spec XML eller ved at tilføje XML-"
-"filen med\n"
-"            korrekt navn til PYTHONPATH) for at aktivere søgeord "
-"færdiggørelse\n"
+"            <li>Importér bibliotek eller ressourcefil, der indeholder søgeordet.</li>\n"
+"            <li>For bibliotekets importfejl: Overvej at importere bibliotek spec XML\n"
+"            (Værktøjer / Import Library Spec XML eller ved at tilføje XML-filen med\n"
+"            korrekt navn til PYTHONPATH) for at aktivere søgeord færdiggørelse\n"
 "            for eksempel for Java-biblioteker.\n"
-"            Bibliotek spec XML kan oprettes ved hjælp af libdoc værktøj fra "
-"Robot Framework.</li>\n"
+"            Bibliotek spec XML kan oprettes ved hjælp af libdoc værktøj fra Robot Framework.</li>\n"
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
@@ -1447,42 +1325,30 @@ msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 msgstr ""
 "<br>Mulige korrektioner og noter:<br>\n"
 "        <ul>\n"
 "            <li>Import fejl vises med rød farve.</li>\n"
-"            <li>Se værktøjer / Vis RIDE Log for detaljeret information om "
-"fejlen.</li>\n"
-"            <li>Hvis importen indeholder en variabel som RIDE ikke har "
-"initialiseret, overveje at tilføje variablen\n"
+"            <li>Se værktøjer / Vis RIDE Log for detaljeret information om fejlen.</li>\n"
+"            <li>Hvis importen indeholder en variabel som RIDE ikke har initialiseret, overveje at tilføje variablen\n"
 "            til variabel tabel med en standardværdi.</li>\n"
-"            <li>Til bibliotekets importfejl: Overvej at importere "
-"bibliotekets spec XML (Værktøjer / Import Library Spec XML eller\n"
-"            at tilføje XML-filen med det korrekte navn til PYTHONPATH) for "
-"at aktivere søgeordsfærdiggørelse\n"
+"            <li>Til bibliotekets importfejl: Overvej at importere bibliotekets spec XML (Værktøjer / Import Library Spec XML eller\n"
+"            at tilføje XML-filen med det korrekte navn til PYTHONPATH) for at aktivere søgeordsfærdiggørelse\n"
 "            for eksempel for Java-biblioteker.\n"
-"            Bibliotek spec XML kan oprettes ved hjælp af libdoc værktøj fra "
-"Robot Framework.\n"
+"            Bibliotek spec XML kan oprettes ved hjælp af libdoc værktøj fra Robot Framework.\n"
 "            For mere information se \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1536,8 +1402,7 @@ msgstr "Få hjælp"
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1553,20 +1418,17 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 msgstr ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit bruger <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit bruger <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Installer Pygments fra kommandolinjen med:\n"
@@ -1582,13 +1444,11 @@ msgstr ""
 "        <p>\n"
 "        Hvis du ikke har pip eller easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >følg disse instruktioner</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For mere information om installation af Pygments, <a href='https://"
-"pygments.org/download/'>se webstedet</a>.\n"
+"        For mere information om installation af Pygments, <a href='https://pygments.org/download/'>se webstedet</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1926,17 +1786,12 @@ msgid "Comma separated list of libraries to be automatically imported."
 msgstr "Kommasepareret liste over biblioteker, der automatisk skal importeres."
 
 #: src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Kommasepareret liste over mapper der skal tilføjes til PYTHONPATH når "
-"biblioteker søges."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Kommasepareret liste over mapper der skal tilføjes til PYTHONPATH når biblioteker søges."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
-"Kommasepareret liste over mapper der indeholder bibliotekets spec filer."
+msgstr "Kommasepareret liste over mapper der indeholder bibliotekets spec filer."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
@@ -2012,10 +1867,8 @@ msgid "Line separator:"
 msgstr "Linje separator:"
 
 #: src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
-"Mulige værdier er indfødte (af nuværende OS) CRLF (Windows) og LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr "Mulige værdier er indfødte (af nuværende OS) CRLF (Windows) og LF (Unixy)"
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
@@ -2058,12 +1911,9 @@ msgid ""
 "and its arguments. If either the command or any of the arguments require\n"
 "internal spaces, they must be written as '<SPACE>'.\n"
 "\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
 "command does not work.\n"
 "\n"
 "Examples:\n"
@@ -2077,10 +1927,8 @@ msgstr ""
 "interne rum, skal de skrives som '<SPACE>'.\n"
 "\n"
 "Kommandoen vil blive udført direkte i systemet uden at åbne en skal.\n"
-"Det betyder at skalkommandoer og udvidelser ikke er tilgængelige. For "
-"eksempel,\n"
-"i Windows batch-filer for at udføre skal indeholde den '. at' udvidelse og "
-"'dir'\n"
+"Det betyder at skalkommandoer og udvidelser ikke er tilgængelige. For eksempel,\n"
+"i Windows batch-filer for at udføre skal indeholde den '. at' udvidelse og 'dir'\n"
 "kommando virker ikke.\n"
 "\n"
 "Eksempler:\n"
@@ -2112,8 +1960,7 @@ msgid ""
 msgstr ""
 "Et plugin til at udføre kommandoer på systemet.\n"
 "\n"
-"    Dette plugin gør det muligt at oprette vedvarende kørende "
-"konfigurationer og\n"
+"    Dette plugin gør det muligt at oprette vedvarende kørende konfigurationer og\n"
 "    udførelse af disse. Output af den udførte kommando vises i en\n"
 "    separat fane."
 
@@ -2155,12 +2002,8 @@ msgid "Results: "
 msgstr "Resultater: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Find kampe ved hjælp af tag mønstre. Se RF User Guide eller 'robot --help' "
-"for mere information."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Find kampe ved hjælp af tag mønstre. Se RF User Guide eller 'robot --help' for mere information."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
@@ -2200,33 +2043,24 @@ msgstr "Søgeord"
 
 #: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
-"Et plugin til at søge efter tests baseret på navn, tags og dokumentation"
+msgstr "Et plugin til at søge efter tests baseret på navn, tags og dokumentation"
 
 #: src/robotide/spec/libraryfinder.py:31
 msgid ""
 "Install missing libraries and open documentation.\n"
 "\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
 "Installer manglende biblioteker og åben dokumentation.\n"
 "\n"
-"    Du kan redigere settings.cfg for at tilføje URL til dokumentation og "
-"kommando til at installere.\n"
-"    Du kan højreklikke på et Biblioteks navn og Åbn dokumentation eller "
-"installationsbibliotek.\n"
-"    Fra Værktøjer->Bibliotek Finder... eller Hjælp->Åbn Bibliotek "
-"Dokumentation... du vil have\n"
-"    en dialog til at udfylde kommandoen for at installere eller URL'en for "
-"dokumentationen.\n"
+"    Du kan redigere settings.cfg for at tilføje URL til dokumentation og kommando til at installere.\n"
+"    Du kan højreklikke på et Biblioteks navn og Åbn dokumentation eller installationsbibliotek.\n"
+"    Fra Værktøjer->Bibliotek Finder... eller Hjælp->Åbn Bibliotek Dokumentation... du vil have\n"
+"    en dialog til at udfylde kommandoen for at installere eller URL'en for dokumentationen.\n"
 "    "
 
 #: src/robotide/spec/libraryfinder.py:39
@@ -2361,12 +2195,8 @@ msgid "All files|*.*"
 msgstr "Alle filer*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"Giver en trævisning for filer og mapper. Åbner det markerede punkt med højre "
-"museklik."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "Giver en trævisning for filer og mapper. Åbner det markerede punkt med højre museklik."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
@@ -2378,7 +2208,7 @@ msgstr "Åbn Indeholdende Mappe"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:316
+#: src/robotide/ui/mainframe.py:317
 msgid "Files"
 msgstr "Filer"
 
@@ -2438,22 +2268,15 @@ msgstr "[File]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&Nyt projekt - Opret en ny suite på øverste niveau - Ctrlcmd-N - ART_NEW\n"
+msgstr "!&Nyt projekt - Opret en ny suite på øverste niveau - Ctrlcmd-N - ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!&Åben Test Suite, Open fil, der indeholder tests - Ctrlcmd-O - "
-"ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&Åben Test Suite, Open fil, der indeholder tests - Ctrlcmd-O - ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Åbn &mappe... Åbn mappen med datafiler, Shift-Ctrlcmd-O - ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Åbn &mappe... Åbn mappen med datafiler, Shift-Ctrlcmd-O - ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
@@ -2531,12 +2354,12 @@ msgstr "Modifikation forhindret"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" er kun læst"
 
-#: src/robotide/ui/mainframe.py:299
+#: src/robotide/ui/mainframe.py:300
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Test Suites"
 
-#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2544,12 +2367,12 @@ msgstr ""
 "Der er ikke-gemte ændringer.\n"
 "Vil du gemme dine ændringer før du afslutter?"
 
-#: src/robotide/ui/mainframe.py:464
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:559
 msgid "Warning"
 msgstr "Advarsel"
 
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2557,63 +2380,63 @@ msgstr ""
 "Der er ikke-gemte ændringer.\n"
 "Vil du fortsætte uden at gemme?"
 
-#: src/robotide/ui/mainframe.py:608
+#: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
 msgstr "Vælg en mappe med Robot filer"
 
-#: src/robotide/ui/mainframe.py:760
+#: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
 msgstr "Ændringer i arbejdsområdet detekteret på filsystemet."
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
 msgstr "Vil du genindlæse arbejdsområdet?"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Besvar <Yes> vil kassere ikke-gemte ændringer."
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Svar <No> vil ignorere ændringerne på disken."
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
 msgstr "Filer Ændret På Disk"
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
 msgstr "Tilpas..."
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
 msgstr "søg ubrugte søgeord"
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
 msgstr "stop testkørsel"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "preview"
 msgstr "forhåndsvisning"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
 msgstr "se tur log"
 
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
 msgstr "Genvejstaster til RIDE"
 
-#: src/robotide/ui/mainframe.py:977
+#: src/robotide/ui/mainframe.py:978
 msgid "Show"
 msgstr "Vis"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:979
 msgid "Hide"
 msgstr "Skjul"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:980
 msgid "Close"
 msgstr "Luk"
 
@@ -2634,18 +2457,12 @@ msgid "Plugin"
 msgstr "Plugin"
 
 #: src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Info. Aktivering og deaktivering af plugins kan kræve, at RIDE-genstart af "
-"menuer virker."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Info. Aktivering og deaktivering af plugins kan kræve, at RIDE-genstart af menuer virker."
 
 #: src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
-"(Forældet) Giver forhåndsvisning af testdata i HTML-, TSV- og TXT-formater."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(Forældet) Giver forhåndsvisning af testdata i HTML-, TSV- og TXT-formater."
 
 #: src/robotide/ui/preview.py:41
 #: src/robotide/ui/preview.py:100
@@ -2699,13 +2516,11 @@ msgstr "Brug RegEx"
 
 #: src/robotide/ui/review.py:93
 msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
-"Her kan du definere en eller flere strenge adskilt af komma (f.eks. "
-"almindelig, abc, 123).\n"
+"Her kan du definere en eller flere strenge adskilt af komma (f.eks. almindelig, abc, 123).\n"
 "Filteret matcher hvis mindst en streng er en del af filnavnet.\n"
 "Hvis du ikke indtaster nogen strenge, er alle åbne filer inkluderet"
 
