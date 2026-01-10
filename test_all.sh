@@ -1,16 +1,14 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 export PYTHONPATH=/home/helio/github/RIDE/utest/:$PYTHONPATH
 export PYTHONPATH=/home/helio/github/RIDE/src/:$PYTHONPATH
 
-export PYTHONROOT=/usr/bin
+export PYTHONROOT=$(dirname $(a=$(which python);echo $a))
 
 if [ $# -ge 1 ]
 then
-      PY=3
       DIR="$1"
 else
-    PY=3
     DIR="utest"
 fi
 
@@ -32,7 +30,7 @@ do
                 then
                         b=`true`
                 else 
-                        b=`$PYTHONROOT/python$PY $j`
+                        b=`$PYTHONROOT/python $j`
                 fi
                 if [ $? -eq 1 ]
 		then

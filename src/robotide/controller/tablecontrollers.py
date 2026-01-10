@@ -20,7 +20,7 @@ from ..publish.messages import RideItemMovedUp, RideItemMovedDown
 from ..robotapi import is_list_var, is_scalar_var, is_dict_var
 from ..utils import variablematcher
 from .basecontroller import ControllerWithParent
-from . import macrocontrollers  # TestCaseController, UserKeywordController
+# from . import macrocontrollers  # TestCaseController, UserKeywordController
 from .settingcontrollers import MetadataController, import_controller, VariableController
 
 
@@ -317,9 +317,10 @@ class _MacroTable(_TableController):
 
 
 class TestCaseTableController(_MacroTable):
+    from .macrocontrollers import TestCaseController
     __test__ = False
     item_type = 'Test case'
-    _controller_class = macrocontrollers.TestCaseController
+    _controller_class = TestCaseController
 
     @property
     def items(self):
@@ -350,8 +351,9 @@ class TestCaseTableController(_MacroTable):
 
 
 class KeywordTableController(_MacroTable):
+    from .macrocontrollers import UserKeywordController
     item_type = 'User keyword'
-    _controller_class = macrocontrollers.UserKeywordController
+    _controller_class = UserKeywordController
 
     @property
     def items(self):

@@ -18,7 +18,7 @@ import wx.lib.agw.aui as aui
 from wx import Colour
 from wx.lib.agw.aui import GetManager
 
-from ..controller.filecontrollers import start_filemanager
+# from ..controller.filecontrollers import start_filemanager
 from ..controller.project import Project
 from ..pluginapi import Plugin
 from ..pluginapi.plugin import ActionInfo
@@ -250,6 +250,7 @@ class FileExplorerPlugin(Plugin):
 
     def on_open_containing_folder(self, event):
         __ = event
+        from ..controller.filecontrollers import start_filemanager
         # print(f"DEBUG: FileExplorerPlugin call on_open_containing_folder={event}")
         try:
             use_sys_file_explorer = self.settings['system file explorer']

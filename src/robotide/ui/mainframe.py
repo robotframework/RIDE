@@ -44,7 +44,7 @@ from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
 from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
-from isbinary import is_binary_file
+from ..lib.isbinary import is_binary_file
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation

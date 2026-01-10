@@ -15,6 +15,7 @@ pytest-html
 pytest-order
 packaging >= 24.2
 hatch-fancy-pypi-readme
+hypothesis  # dependency for isbinary unit tests
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
 # Include also normal project requirements.
