@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-06 22:34+0000\n"
+"POT-Creation-Date: 2026-01-10 02:20+0000\n"
 "PO-Revision-Date: 2026-01-06 22:52+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese\n"
@@ -53,7 +53,8 @@ msgstr "Encontrou-se o Robot Framework versão %s em %s."
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:57
-#: src/robotide/spec/libraryfinder.py:45 src/robotide/ui/actiontriggers.py:54
+#: src/robotide/spec/libraryfinder.py:45
+#: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
 msgstr "Ajuda"
@@ -121,12 +122,8 @@ msgstr "Clique em OK para Atualizar agora!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
-msgid ""
-"After upgrade you will see another dialog informing to close this RIDE "
-"instance."
-msgstr ""
-"Depois da atualização, você verá outro diálogo informando para fechar esta "
-"instância do RIDE."
+msgid "After upgrade you will see another dialog informing to close this RIDE instance."
+msgstr "Depois da atualização, você verá outro diálogo informando para fechar esta instância do RIDE."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
@@ -198,8 +195,7 @@ msgstr "Atualizar Agora"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
-"Iniciado o RIDE %s usando Python versão %s com a versão %s do wx em %s."
+msgstr "Iniciado o RIDE %s usando Python versão %s com a versão %s do wx em %s."
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
@@ -226,21 +222,12 @@ msgid "Some of the icons are from %s."
 msgstr "Alguns dos ícones são de %s."
 
 #: src/robotide/context/__init__.py:80
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
-msgstr ""
-"%s o responsável pela manutenção do projeto, agradece aos autores originais "
-"e a todos os utilizadores e colaboradores."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
+msgstr "%s o responsável pela manutenção do projeto, agradece aos autores originais e a todos os utilizadores e colaboradores."
 
 #: src/robotide/context/__init__.py:81
-msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
-"Um agradecimento especial à %s por ter patrocinado o desenvolvimento da "
-"compatibilidade de suites de testes traduzidas na Versão 6.1 do %s, no "
-"âmbito do seu programa, %s."
+msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "Um agradecimento especial à %s por ter patrocinado o desenvolvimento da compatibilidade de suites de testes traduzidas na Versão 6.1 do %s, no âmbito do seu programa, %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
@@ -277,9 +264,7 @@ msgstr "Argumentos"
 #: src/robotide/contrib/testrunner/runprofiles.py:514
 #: src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr ""
-"Argumentos para a execução do teste. O argumentos são listas com espaços "
-"como separador."
+msgstr "Argumentos para a execução do teste. O argumentos são listas com espaços como separador."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
@@ -328,12 +313,16 @@ msgstr "Executar testes"
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
-#: src/robotide/log/log.py:86 src/robotide/parserlog/parserlog.py:85
+#: src/robotide/log/log.py:86
+#: src/robotide/parserlog/parserlog.py:85
 #: src/robotide/postinstall/desktopshortcut.py:53
 #: src/robotide/searchtests/searchtests.py:41
-#: src/robotide/spec/libraryfinder.py:43 src/robotide/spec/specimporter.py:37
-#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:883 src/robotide/ui/mainframe.py:895
+#: src/robotide/spec/libraryfinder.py:43
+#: src/robotide/spec/specimporter.py:37
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/keywordsearch.py:53
+#: src/robotide/ui/mainframe.py:884
+#: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Ferramentas"
@@ -348,8 +337,7 @@ msgstr "Executar Testes em modo Debug"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:243
 msgid "Run the selected tests with Debug"
-msgstr ""
-"Executar os testes selecionados com o nível de registo DEBUG (depuração)"
+msgstr "Executar os testes selecionados com o nível de registo DEBUG (depuração)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
 msgid "Stop Test Run"
@@ -418,9 +406,7 @@ msgstr ""
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr ""
-"O registo de mensagens excede 80% da memória do processo, parando por "
-"agora..."
+msgstr "O registo de mensagens excede 80% da memória do processo, parando por agora..."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
@@ -441,9 +427,7 @@ msgstr "Debug (depuração)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr ""
-"Iniciar execução da suite de testes Robot no nível de registo DEBUG "
-"(depuração)"
+msgstr "Iniciar execução da suite de testes Robot no nível de registo DEBUG (depuração)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: src/robotide/run/ui.py:30
@@ -526,7 +510,8 @@ msgid "Automatically pause after failing keyword"
 msgstr "Pausar automaticamente após falha de palavra-chave"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
-#: src/robotide/editor/editors.py:227 src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/editors.py:227
+#: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:475
 #: src/robotide/ui/pluginmanager.py:152
@@ -582,7 +567,8 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273 src/robotide/ui/mainframe.py:673
+#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferências"
 
@@ -597,10 +583,8 @@ msgstr "  palavra-chave corrente: "
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
 "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | "
-"ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
-"ART_GO_FORWARD\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
 "[Navegação]\n"
@@ -699,27 +683,20 @@ msgstr "Eliminar Linhas | Elimina as linhas selecionadas | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
-"Mover Linhas Acima (Alt-Up ou Ctrl-Shift-Up) | Move as linhas selecionadas "
-"uma linha acima\n"
+msgstr "Mover Linhas Acima (Alt-Up ou Ctrl-Shift-Up) | Move as linhas selecionadas uma linha acima\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
-"Mover Linhas Abaixo (Alt-Down ou Ctrl-Shift-Down) | Move as linhas "
-"selecionadas uma linha abaixo\n"
+msgstr "Mover Linhas Abaixo (Alt-Down ou Ctrl-Shift-Down) | Move as linhas selecionadas uma linha abaixo\n"
 
-#: src/robotide/editor/__init__.py:50 src/robotide/ui/mainframe.py:69
+#: src/robotide/editor/__init__.py:50
+#: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
 msgstr "[Ferramentas]\n"
 
 #: src/robotide/editor/__init__.py:51
-msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
-msgstr ""
-"Assistência de Conteúdo (Ctrl-Space ou Ctrl-Alt-Space) | Mostra possíveis "
-"palavras-chave e variáveis para completar | | | POSITION-70\n"
+msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgstr "Assistência de Conteúdo (Ctrl-Space ou Ctrl-Alt-Space) | Mostra possíveis palavras-chave e variáveis para completar | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -729,11 +706,9 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
-"O plugin Editor por omissão. Também conhecido por Editor em Grelha ou por "
-"Células.\n"
+"O plugin Editor por omissão. Também conhecido por Editor em Grelha ou por Células.\n"
 "\n"
-"    Este plugin, implementa editores para os diferentes campos e elementos "
-"dos dados de testes\n"
+"    Este plugin, implementa editores para os diferentes campos e elementos dos dados de testes\n"
 "    do Robot Framework.\n"
 "    "
 
@@ -742,118 +717,81 @@ msgid "Editor"
 msgstr "Editor de Grelha"
 
 #: src/robotide/editor/dialoghelps.py:31
-msgid ""
-"Possible pipes in the value must be escaped with a backslash like '\\|'."
+msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
 msgstr "Eventuais barras no valor têm que ser escapadas assim, '\\|'."
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
-"Separe as etiquetas com uma barra, assim: 'etiqueta | segunda | terceira'."
+msgstr "Separe as etiquetas com uma barra, assim: 'etiqueta | segunda | terceira'."
 
 #: src/robotide/editor/dialoghelps.py:33
-msgid ""
-"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
-"arg 2'."
-msgstr ""
-"Separe os eventuais argumentos com uma barra, assim: 'A Minha Palavra-Chave "
-"| argumento_um | argumento_dois'."
+msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
+msgstr "Separe os eventuais argumentos com uma barra, assim: 'A Minha Palavra-Chave | argumento_um | argumento_dois'."
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-"Before Robot v3.0.1 an optional message could have been specified like '3 "
-"minutes | My message here'."
+"Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
-"Use a sintaxe de tempo, assim: '1min 10s' ou '2 hours' ou indique o valor em "
-"segundos.\n"
-"Antes do Robot v3.0.1 era possível indicar uma mensagem opcional, como por "
-"exemplo: '3 minutes | A minha mensagem aqui'."
+"Use a sintaxe de tempo, assim: '1min 10s' ou '2 hours' ou indique o valor em segundos.\n"
+"Antes do Robot v3.0.1 era possível indicar uma mensagem opcional, como por exemplo: '3 minutes | A minha mensagem aqui'."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | $"
-"{arg2}'.\n"
-"Default values are given using equal sign and the last argument can be a "
-"list variable.\n"
+"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+"Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
-"Especifique os argumentos separados com uma barra, assim: '${argumento um} | "
-"${argumento dois}'.\n"
-"Os valores por omissão são indicados usando um sinal de igual e o último "
-"argumento pode ser uma variável lista.\n"
-"Exemplo: '${argumento um} | ${argumento dois}=valor por omissão | "
-"@{restantes}'.\n"
+"Especifique os argumentos separados com uma barra, assim: '${argumento um} | ${argumento dois}'.\n"
+"Os valores por omissão são indicados usando um sinal de igual e o último argumento pode ser uma variável lista.\n"
+"Exemplo: '${argumento um} | ${argumento dois}=valor por omissão | @{restantes}'.\n"
 "Nota. Você pode usar atalhos de variáveis neste campo."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
-"Alias can be used to import same library multiple times with different "
-"names.\n"
+"Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
-"Os aliases podem ser usados para importar a mesma biblioteca várias vezes "
-"com nomes diferentes.\n"
+"Os aliases podem ser usados para importar a mesma biblioteca várias vezes com nomes diferentes.\n"
 "Um aliás é antecedido com: "
 
 #: src/robotide/editor/dialoghelps.py:43
-msgid ""
-" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
-" . Note que desde o Robot v6.0, as importações com o antigo WITH NAME serão "
-"substituídas por AS."
+msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
+msgstr " . Note que desde o Robot v6.0, as importações com o antigo WITH NAME serão substituídas por AS."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
 msgstr "Indique um nome e valor para a nova variável."
 
 #: src/robotide/editor/dialoghelps.py:46
-msgid ""
-"Give name and value of the variable. Input list variable items into separate "
-"cells."
-msgstr ""
-"Indique o nome e o valor da variável. Introduzir os itens da lista de "
-"variáveis em células separadas."
+msgid "Give name and value of the variable. Input list variable items into separate cells."
+msgstr "Indique o nome e o valor da variável. Introduzir os itens da lista de variáveis em células separadas."
 
 #: src/robotide/editor/dialoghelps.py:48
-msgid ""
-"Give name and value of the variable. Input dictionary items into separate "
-"cells."
-msgstr ""
-"Indique o nome e o valor da variável. Introduzir os itens do dicionário em "
-"células separadas."
+msgid "Give name and value of the variable. Input dictionary items into separate cells."
+msgstr "Indique o nome e o valor da variável. Introduzir os itens do dicionário em células separadas."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
 msgstr "Os itens individuais devem estar no formato `chave=valor`"
 
 #: src/robotide/editor/dialoghelps.py:50
-msgid ""
-"Give name, optional arguments and optional alias of the library to import."
-msgstr ""
-"Indique o nome, os argumentos opcionais e o alias opcional da biblioteca a "
-"importar."
+msgid "Give name, optional arguments and optional alias of the library to import."
+msgstr "Indique o nome, os argumentos opcionais e o alias opcional da biblioteca a importar."
 
-#: src/robotide/editor/dialoghelps.py:51 src/robotide/editor/dialoghelps.py:56
+#: src/robotide/editor/dialoghelps.py:51
+#: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr ""
-"Separe os vários argumentos com uma barra, assim: 'argumento_um | "
-"argumento_dois'."
+msgstr "Separe os vários argumentos com uma barra, assim: 'argumento_um | argumento_dois'."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
-"Indique o nome da biblioteca, o link para a documentação e o comando para "
-"instalar."
+msgstr "Indique o nome da biblioteca, o link para a documentação e o comando para instalar."
 
 #: src/robotide/editor/dialoghelps.py:53
-msgid ""
-"In the command, you can use `%%executable` as a placeholder to be replaced "
-"by the actual path"
-msgstr ""
-"No comando, você pode usar `%%executable` como indicador do local que será "
-"substituído pelo caminho atual"
+msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
+msgstr "No comando, você pode usar `%%executable` como indicador do local que será substituído pelo caminho atual"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -861,9 +799,7 @@ msgstr " para o executável do Python."
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
-"Indique o caminho e os argumentos opcionais do ficheiro de variáveis a "
-"importar."
+msgstr "Indique o caminho e os argumentos opcionais do ficheiro de variáveis a importar."
 
 #: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
@@ -871,9 +807,7 @@ msgstr "Indique o caminho para o ficheiro de recursos a importar."
 
 #: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
-"Os recursos existentes serão automaticamente carregados na árvore de "
-"recursos."
+msgstr "Os recursos existentes serão automaticamente carregados na árvore de recursos."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
@@ -893,155 +827,91 @@ msgstr "Adicionalmente, os URL serão convertidos para ligações clicáveis."
 
 #: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
-"Estas etiquetas são aplicadas a todos os casos de teste nesta suite de teste."
+msgstr "Estas etiquetas são aplicadas a todos os casos de teste nesta suite de teste."
 
 #: src/robotide/editor/dialoghelps.py:64
-msgid ""
-"These tags are set to all test cases in this test suite unless test cases "
-"have their own tags."
-msgstr ""
-"Estas etiquetas são aplicadas a todos os casos de teste nesta suite de "
-"teste, desde que não tenham uma etiqueta própria."
+msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
+msgstr "Estas etiquetas são aplicadas a todos os casos de teste nesta suite de teste, desde que não tenham uma etiqueta própria."
 
 #: src/robotide/editor/dialoghelps.py:66
-msgid ""
-"These tags are applied to all test cases in this test suite. This field "
-"exists since Robot Framework 6.0 and will replace Force and Default Tags "
-"after version 7.0."
-msgstr ""
-"Estas etiquetas são aplicadas a todos os casos de teste nesta suite de "
-"teste. Este campo existe desde o Robot Framework 6.0 e substituirá Forçar "
-"Etiquetas e Etiquetas por Omissão, depois da versão 7.0."
+msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
+msgstr "Estas etiquetas são aplicadas a todos os casos de teste nesta suite de teste. Este campo existe desde o Robot Framework 6.0 e substituirá Forçar Etiquetas e Etiquetas por Omissão, depois da versão 7.0."
 
 #: src/robotide/editor/dialoghelps.py:70
-msgid ""
-"These tags are set to this test case in addition to Force Tags and they "
-"override possible Default Tags."
-msgstr ""
-"Estas etiquetas estão definidas para este caso de teste juntamente com as de "
-"Forçar Etiquetas e removem as eventuais Etiquetas por Omissão."
+msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
+msgstr "Estas etiquetas estão definidas para este caso de teste juntamente com as de Forçar Etiquetas e removem as eventuais Etiquetas por Omissão."
 
 #: src/robotide/editor/dialoghelps.py:73
-msgid ""
-"This keyword is executed before executing any of the test cases or lower "
-"level suites."
-msgstr ""
-"Esta palavra-chave é executada antes de executar algum dos casos de testes "
-"ou suites de teste em níveis abaixo."
+msgid "This keyword is executed before executing any of the test cases or lower level suites."
+msgstr "Esta palavra-chave é executada antes de executar algum dos casos de testes ou suites de teste em níveis abaixo."
 
 #: src/robotide/editor/dialoghelps.py:75
-msgid ""
-"This keyword is executed after all test cases and lower level suites have "
-"been executed."
-msgstr ""
-"Esta palavra-chave é executada depois de executar todos os casos de testes e "
-"suites de teste em níveis abaixo."
+msgid "This keyword is executed after all test cases and lower level suites have been executed."
+msgstr "Esta palavra-chave é executada depois de executar todos os casos de testes e suites de teste em níveis abaixo."
 
 #: src/robotide/editor/dialoghelps.py:77
-msgid ""
-"This keyword is executed before every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Esta palavra-chave é executada antes de cada caso de teste nesta suite de "
-"teste, se os casos de teste não tiverem esta definição própria."
+msgid "This keyword is executed before every test case in this suite unless test cases override it."
+msgstr "Esta palavra-chave é executada antes de cada caso de teste nesta suite de teste, se os casos de teste não tiverem esta definição própria."
 
 #: src/robotide/editor/dialoghelps.py:79
-msgid ""
-"This keyword is executed after every test case in this suite unless test "
-"cases override it."
-msgstr ""
-"Esta palavra-chave é executada depois de cada caso de teste nesta suite de "
-"teste, se os casos de teste não tiverem esta definição própria."
+msgid "This keyword is executed after every test case in this suite unless test cases override it."
+msgstr "Esta palavra-chave é executada depois de cada caso de teste nesta suite de teste, se os casos de teste não tiverem esta definição própria."
 
 #: src/robotide/editor/dialoghelps.py:81
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
-"Esta palavra-chave é executada antes das palavras-chave neste caso de teste "
-"ou palavra-chave."
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr "Esta palavra-chave é executada antes das palavras-chave neste caso de teste ou palavra-chave."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
-"Quando em casos de testes, sobrepõe-se a uma eventual Inicialização de Teste "
-"no nível da suite."
+msgstr "Quando em casos de testes, sobrepõe-se a uma eventual Inicialização de Teste no nível da suite."
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr "Inicialização em palavras-chave existe desde Robot v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
-msgstr ""
-"Esta palavra-chave é executada depois de todas as palavras-chave neste caso "
-"de teste ou palavra-chave, mesmo que o teste ou palavra-chave tenha falhado."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
+msgstr "Esta palavra-chave é executada depois de todas as palavras-chave neste caso de teste ou palavra-chave, mesmo que o teste ou palavra-chave tenha falhado."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
-"Quando em casos de testes, sobrepõe-se a uma eventual Finalização de Teste "
-"no nível da suite."
+msgstr "Quando em casos de testes, sobrepõe-se a uma eventual Finalização de Teste no nível da suite."
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
-"Especifica a palavra-chave por omissão como modelo usado nos testes desta "
-"suite."
+msgstr "Especifica a palavra-chave por omissão como modelo usado nos testes desta suite."
 
 #: src/robotide/editor/dialoghelps.py:89
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"Os casos de teste apenas contêm os dados a serem usados como argumentos para "
-"essa palavra-chave."
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "Os casos de teste apenas contêm os dados a serem usados como argumentos para essa palavra-chave."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
 msgstr "Especifica a palavra-chave como modelo a usar."
 
 #: src/robotide/editor/dialoghelps.py:91
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
-"O caso de teste apenas contêm os dados a serem usados como argumentos para "
-"essa palavra-chave."
+msgid "The test itself will contain only data to use as arguments to that keyword."
+msgstr "O caso de teste apenas contêm os dados a serem usados como argumentos para essa palavra-chave."
 
 #: src/robotide/editor/dialoghelps.py:93
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
-"Especifique o valor de retorno. Use uma barra para separar vários valores."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
+msgstr "Especifique o valor de retorno. Use uma barra para separar vários valores."
 
 #: src/robotide/editor/dialoghelps.py:96
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"Duração máxima para a execução dos casos de teste nesta suite antes de serem "
-"forçosamente interrompidos."
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "Duração máxima para a execução dos casos de teste nesta suite antes de serem forçosamente interrompidos."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
-"Pode ser sobreposto pela definição individual, Tempo Limite no caso de teste."
+msgstr "Pode ser sobreposto pela definição individual, Tempo Limite no caso de teste."
 
 #: src/robotide/editor/dialoghelps.py:98
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
-msgstr ""
-"Duração máxima para a execução deste teste ou palavra-chave antes de ser "
-"forçosamente interrompido."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
+msgstr "Duração máxima para a execução deste teste ou palavra-chave antes de ser forçosamente interrompido."
 
 #: src/robotide/editor/dialoghelps.py:99
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"Quando em casos de teste esta definição sobrepõe-se ao Tempo Limite de Teste "
-"definido no nível da suite."
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "Quando em casos de teste esta definição sobrepõe-se ao Tempo Limite de Teste definido no nível da suite."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
@@ -1079,8 +949,10 @@ msgstr "Variável Escalar"
 #: src/robotide/editor/editordialogs.py:626
 #: src/robotide/editor/editordialogs.py:651
 #: src/robotide/editor/editordialogs.py:681
-#: src/robotide/run/configmanagerui.py:101 src/robotide/ui/filedialogs.py:92
-#: src/robotide/ui/filedialogs.py:94 src/robotide/ui/filedialogs.py:331
+#: src/robotide/run/configmanagerui.py:101
+#: src/robotide/ui/filedialogs.py:92
+#: src/robotide/ui/filedialogs.py:94
+#: src/robotide/ui/filedialogs.py:331
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
 msgstr "Nome"
@@ -1193,19 +1065,23 @@ msgstr "Copiar Palavra-Chave"
 msgid "New User Keyword"
 msgstr "Nova Palavra-Chave"
 
-#: src/robotide/editor/editors.py:163 src/robotide/editor/editors.py:400
-#: src/robotide/editor/macroeditors.py:135 src/robotide/ui/mainframe.py:214
+#: src/robotide/editor/editors.py:163
+#: src/robotide/editor/editors.py:400
+#: src/robotide/editor/macroeditors.py:135
+#: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
 msgstr " (APENAS LEITURA)"
 
 #: src/robotide/editor/editors.py:350
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
-#: src/robotide/ui/keywordsearch.py:357 src/robotide/usages/usagesdialog.py:151
+#: src/robotide/ui/keywordsearch.py:357
+#: src/robotide/usages/usagesdialog.py:151
 msgid "Source"
 msgstr "Origem"
 
-#: src/robotide/editor/editors.py:387 src/robotide/ui/keywordsearch.py:207
+#: src/robotide/editor/editors.py:387
+#: src/robotide/ui/keywordsearch.py:207
 #: src/robotide/ui/treenodehandlers.py:493
 #: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
@@ -1216,12 +1092,8 @@ msgid "Columns"
 msgstr "Colunas"
 
 #: src/robotide/editor/fieldeditors.py:195
-msgid ""
-"Number of columns that are shown in this editor. Selected value is stored "
-"and used globally."
-msgstr ""
-"Número de colunas que são mostradas neste editor. O valor selecionado fica "
-"guardado e é usado globalmente."
+msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
+msgstr "Número de colunas que são mostradas neste editor. O valor selecionado fica guardado e é usado globalmente."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
@@ -1304,36 +1176,29 @@ msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</"
-"li>\n"
-"            <li>For library import errors: Consider importing library spec "
-"XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with "
-"the\n"
+"            <li>Import library or resource file containing the keyword.</li>\n"
+"            <li>For library import errors: Consider importing library spec XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
 "<b>Palavra-chave não detetada pelo RIDE</b>\n"
 "        <br>Correções possíveis:<br>\n"
 "        <ul>\n"
-"            <li>Importar a biblioteca ou ficheiro de recursos que contenha a "
-"palavra-chave.</li>\n"
-"            <li>Para erros de importação de bibliotecas: Considere importar "
-"a especificação de biblioteca XML\n"
-"            (Ferramentas / Importar Especificação de Biblioteca XML ou por "
-"adicionar o ficheiro XML com o\n"
-"            nome correto a PYTHONPATH) para ativar o completar de palavras-"
-"chave\n"
+"            <li>Importar a biblioteca ou ficheiro de recursos que contenha a palavra-chave.</li>\n"
+"            <li>Para erros de importação de bibliotecas: Considere importar a especificação de biblioteca XML\n"
+"            (Ferramentas / Importar Especificação de Biblioteca XML ou por adicionar o ficheiro XML com o\n"
+"            nome correto a PYTHONPATH) para ativar o completar de palavras-chave\n"
 "            por exemplo para bibliotecas Java.\n"
-"            A especificação de biblioteca XML pode ser criada usando a "
-"ferramenta libdoc de Robot Framework.</li>\n"
+"            A especificação de biblioteca XML pode ser criada usando a ferramenta libdoc de Robot Framework.</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1131 src/robotide/ui/mainframe.py:219
-#: src/robotide/ui/treenodehandlers.py:243 src/robotide/ui/treeplugin.py:1297
+#: src/robotide/editor/kweditor.py:1131
+#: src/robotide/ui/mainframe.py:219
+#: src/robotide/ui/treenodehandlers.py:243
+#: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "Erro de Validação"
 
@@ -1345,7 +1210,8 @@ msgstr "Novo nome"
 msgid "Save"
 msgstr "Salvar"
 
-#: src/robotide/editor/kweditor.py:1234 src/robotide/widgets/dialog.py:133
+#: src/robotide/editor/kweditor.py:1234
+#: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -1373,33 +1239,39 @@ msgstr "Completar conteúdo de célula"
 msgid "Variable "
 msgstr "Variável "
 
-#: src/robotide/editor/kweditor.py:1457 src/robotide/editor/texteditor.py:1119
+#: src/robotide/editor/kweditor.py:1457
+#: src/robotide/editor/texteditor.py:1119
 #: src/robotide/editor/texteditor.py:1121
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
-#: src/robotide/ui/review.py:98 src/robotide/ui/review.py:160
+#: src/robotide/ui/review.py:98
+#: src/robotide/ui/review.py:160
 msgid "Search"
 msgstr "Procurar"
 
-#: src/robotide/editor/listeditor.py:40 src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/tagdialogs.py:233
 #: src/robotide/ui/treenodehandlers.py:384
 #: src/robotide/ui/treenodehandlers.py:688
 #: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
 msgstr "Apagar"
 
-#: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:684
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
 msgstr "Mover Acima\tCtrl-Up"
 
-#: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:685
+#: src/robotide/editor/listeditor.py:40
+#: src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
 msgstr "Mover Abaixo\tCtrl-Down"
 
-#: src/robotide/editor/settingeditors.py:102 src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/settingeditors.py:102
+#: src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
 msgstr "Limpar"
 
@@ -1444,7 +1316,8 @@ msgid "Install Library"
 msgstr "Instalar Biblioteca"
 
 #: src/robotide/editor/settingeditors.py:636
-#: src/robotide/spec/specimporter.py:34 src/robotide/spec/specimporter.py:63
+#: src/robotide/spec/specimporter.py:34
+#: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr "Importar Especificação de Biblioteca XML"
 
@@ -1453,43 +1326,30 @@ msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the "
-"failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not "
-"initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec "
-"XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to "
-"enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot "
-"Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 msgstr ""
 "<br>Possíveis correções e notas:<br>\n"
 "        <ul>\n"
 "            <li>A falha de importação é mostrada com a cor vermelha.</li>\n"
-"            <li>Ver Ferramentas / Ver Registo do RIDE para informação "
-"detalhada acerca da falha.</li>\n"
-"            <li>Se a importação contiver uma variável que RIDE não tenha "
-"inicializado, considere acrescentar a variável\n"
+"            <li>Ver Ferramentas / Ver Registo do RIDE para informação detalhada acerca da falha.</li>\n"
+"            <li>Se a importação contiver uma variável que RIDE não tenha inicializado, considere acrescentar a variável\n"
 "            à tabela de variáveis com um valor por omissão.</li>\n"
-"            <li>Para falhas na importação de biblioteca: Considere importar "
-"a especificação de biblioteca XML (Ferramentas / Importar Especificação de "
-"Biblioteca XML ou por\n"
-"            adicionar o ficheiro XML com o nome correto a PYTHONPATH) para "
-"ativar completar palavras-chave\n"
+"            <li>Para falhas na importação de biblioteca: Considere importar a especificação de biblioteca XML (Ferramentas / Importar Especificação de Biblioteca XML ou por\n"
+"            adicionar o ficheiro XML com o nome correto a PYTHONPATH) para ativar completar palavras-chave\n"
 "            por exemplo para bibliotecas Java.\n"
-"            A especificação de biblioteca XML pode ser criada usando a "
-"ferramenta libdoc de Robot Framework.\n"
+"            A especificação de biblioteca XML pode ser criada usando a ferramenta libdoc de Robot Framework.\n"
 "            Para mais informação ver \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
-"Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -1505,7 +1365,8 @@ msgstr "Adicionar Metadados"
 msgid "Text Edit"
 msgstr "Editor de Texto"
 
-#: src/robotide/editor/texteditor.py:467 src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:467
+#: src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Origem: "
@@ -1542,8 +1403,7 @@ msgstr "Obter ajuda"
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://"
-"pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1559,20 +1419,17 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://"
-"pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 msgstr ""
 "h1>Colorização de Sintaxe</h1>\n"
 "        <p>\n"
-"        A Colorização de Sintaxe para o Editor de for Texto usa o realce de "
-"sintaxe, <a href='https://pygments.org/'>Pygments</a>.\n"
+"        A Colorização de Sintaxe para o Editor de for Texto usa o realce de sintaxe, <a href='https://pygments.org/'>Pygments</a>.\n"
 "        </p>\n"
 "        <p>\n"
 "        Instale Pygments a partir da linha de comandos com:\n"
@@ -1588,13 +1445,11 @@ msgstr ""
 "        <p>\n"
 "        Se você não tiver o pip ou easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/"
-"setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
 "        >siga estas instruções</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        Para mais informação acerca a instalação do Pygments, <a "
-"href='https://pygments.org/download/'>ver este sítio</a>.\n"
+"        Para mais informação acerca a instalação do Pygments, <a href='https://pygments.org/download/'>ver este sítio</a>.\n"
 "        </p>\n"
 "        "
 
@@ -1840,8 +1695,7 @@ msgstr "Mostra cores na consola ativado por"
 
 #: src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
-"Perguntar pela confirmação de executar todos os testes sem selecionados "
+msgstr "Perguntar pela confirmação de executar todos os testes sem selecionados "
 
 #: src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
@@ -1896,7 +1750,8 @@ msgstr "Fundo Secundário"
 msgid "Apply to Project and File Explorer panels"
 msgstr "Aplicar aos painéis de Projeto e Explorador de Ficheiros"
 
-#: src/robotide/preferences/general.py:224 src/robotide/ui/filedialogs.py:148
+#: src/robotide/preferences/general.py:224
+#: src/robotide/ui/filedialogs.py:148
 msgid "Language"
 msgstr "Língua"
 
@@ -1929,23 +1784,15 @@ msgstr "Importação de Bibliotecas e PYTHONPATH"
 
 #: src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
-"Lista de bibliotecas separadas por vírgulas para serem automaticamente "
-"importadas."
+msgstr "Lista de bibliotecas separadas por vírgulas para serem automaticamente importadas."
 
 #: src/robotide/preferences/imports.py:45
-msgid ""
-"Comma separated list of directories to be added to PYTHONPATH when libraries "
-"are searched."
-msgstr ""
-"Lista de diretorias separadas por vírgulas para serem adicionadas a "
-"PYTHONPATH para procura de bibliotecas."
+msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
+msgstr "Lista de diretorias separadas por vírgulas para serem adicionadas a PYTHONPATH para procura de bibliotecas."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
-"Lista de diretorias separadas por vírgulas contendo ficheiros de "
-"especificação de bibliotecas."
+msgstr "Lista de diretorias separadas por vírgulas contendo ficheiros de especificação de bibliotecas."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
@@ -1983,16 +1830,20 @@ msgstr "Erro ao tentar obter '%s' a partir do ficheiro %s"
 msgid "Invalid config file '%s': %s"
 msgstr "Ficheiro de definições inválido '%s': %s"
 
-#: src/robotide/preferences/saving.py:27 src/robotide/preferences/saving.py:30
-#: src/robotide/preferences/saving.py:31 src/robotide/preferences/saving.py:33
+#: src/robotide/preferences/saving.py:27
+#: src/robotide/preferences/saving.py:30
+#: src/robotide/preferences/saving.py:31
+#: src/robotide/preferences/saving.py:33
 msgid "Saving"
 msgstr "Salvando"
 
-#: src/robotide/preferences/saving.py:42 src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:42
+#: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
 msgstr "É Tarefa?"
 
-#: src/robotide/preferences/saving.py:43 src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:43
+#: src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
 msgstr "Tipo por omissão para secções de Tarefas ou Testes."
 
@@ -2017,10 +1868,8 @@ msgid "Line separator:"
 msgstr "Separador de linhas:"
 
 #: src/robotide/preferences/saving.py:66
-msgid ""
-"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
-"Os valores possíveis são nativo (do SO corrente) CRLF (Windows) e LF (Unixy)"
+msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr "Os valores possíveis são nativo (do SO corrente) CRLF (Windows) e LF (Unixy)"
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
@@ -2041,7 +1890,8 @@ msgstr "Sem ficheiros recentes"
 #: src/robotide/recentfiles/recentfiles.py:120
 #: src/robotide/recentfiles/recentfiles.py:126
 #: src/robotide/recentfiles/recentfiles.py:157
-#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
 msgstr "Ficheiro"
@@ -2062,12 +1912,9 @@ msgid ""
 "and its arguments. If either the command or any of the arguments require\n"
 "internal spaces, they must be written as '<SPACE>'.\n"
 "\n"
-"The command will be executed in the system directly without opening a "
-"shell.\n"
-"This means that shell commands and extensions are not available. For "
-"example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and "
-"'dir'\n"
+"The command will be executed in the system directly without opening a shell.\n"
+"This means that shell commands and extensions are not available. For example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
 "command does not work.\n"
 "\n"
 "Examples:\n"
@@ -2076,27 +1923,23 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
-"O comando especificado na cadeia de texto, será separado dos espaços para um "
-"comando\n"
+"O comando especificado na cadeia de texto, será separado dos espaços para um comando\n"
 "e os seus argumentos. Se o comando ou argumentos precisarem de\n"
 "espaços internamente, estes podem ser escritos como  '<SPACE>'.\n"
 "\n"
-"O comando será executado no sistema diretamente sem abrir um terminal ou "
-"shell.\n"
-"Isto significa que comandos shell e extensões não estarão disponíveis. Por "
-"exemplo,\n"
-"em Windows ficheiros de lote (batch) para executar, têm que ter a extensão "
-"'.bat' e o comando 'dir'\n"
+"O comando será executado no sistema diretamente sem abrir um terminal ou shell.\n"
+"Isto significa que comandos shell e extensões não estarão disponíveis. Por exemplo,\n"
+"em Windows ficheiros de lote (batch) para executar, têm que ter a extensão '.bat' e o comando 'dir'\n"
 "não funciona.\n"
 "\n"
 "Exemplos:\n"
 "    robot.bat --include iniciais C:\\meus_testes\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
-"As configurações de execução são armazenadas no ficheiro de configurações do "
-"RIDE.\n"
+"As configurações de execução são armazenadas no ficheiro de configurações do RIDE.\n"
 
-#: src/robotide/run/configmanagerui.py:45 src/robotide/run/runanything.py:55
+#: src/robotide/run/configmanagerui.py:45
+#: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "Gerir Configurações de Execução"
 
@@ -2118,11 +1961,11 @@ msgid ""
 msgstr ""
 "Um Plugin para executar comandos no sistema.\n"
 "\n"
-"    Este Plugin permite a criação de configurações persistentes e a sua "
-"execução no sistema.\n"
+"    Este Plugin permite a criação de configurações persistentes e a sua execução no sistema.\n"
 "    Os resultados da execução são apresentados num novo separador."
 
-#: src/robotide/run/runanything.py:55 src/robotide/run/runanything.py:57
+#: src/robotide/run/runanything.py:55
+#: src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "Macros"
@@ -2159,12 +2002,8 @@ msgid "Results: "
 msgstr "Resultados: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
-msgid ""
-"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
-"more information."
-msgstr ""
-"Procurar usando padrões com etiquetas. Ver o Guia de Utilizador do Robot "
-"Framework ou 'robot --help' para mais informação."
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr "Procurar usando padrões com etiquetas. Ver o Guia de Utilizador do Robot Framework ou 'robot --help' para mais informação."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
@@ -2185,7 +2024,8 @@ msgstr "Adicionar tudo aos selecionados"
 
 #: src/robotide/searchtests/dialogsearchtests.py:156
 #: src/robotide/searchtests/dialogsearchtests.py:164
-#: src/robotide/ui/keywordsearch.py:211 src/robotide/ui/keywordsearch.py:284
+#: src/robotide/ui/keywordsearch.py:211
+#: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
 msgstr "Resultados: %d"
 
@@ -2209,26 +2049,18 @@ msgstr "Um Plugin para procurar testes por nome, etiquetas e documentação"
 msgid ""
 "Install missing libraries and open documentation.\n"
 "\n"
-"    You can edit settings.cfg to add URL for documentation and command to "
-"install.\n"
-"    You can right-click on a Library name, and Open Documentation or Install "
-"Library.\n"
-"    From Tools->Library Finder... or Help->Open Library Documentation... you "
-"will have\n"
-"    a dialog to fill the command to install or the URL for the "
-"documentation.\n"
+"    You can edit settings.cfg to add URL for documentation and command to install.\n"
+"    You can right-click on a Library name, and Open Documentation or Install Library.\n"
+"    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
+"    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
 "Instala as bibliotecas em falta e abre a documentação.\n"
 "\n"
-"    Você pode editar settings.cfg para acrescentar o URL para a documentação "
-"e o comando para instalar.\n"
-"    Você pode clicar com o botão direito sobre o nome da Biblioteca, e Abrir "
-"Documentação ou Instalar Biblioteca.\n"
-"    A partir de Ferramentas->Procurar Biblioteca... ou Ajuda->Abrir "
-"Documentação de Biblioteca...você tem\n"
-"    um diálogo para preencher o comando de instalação ou o link para a "
-"documentação.\n"
+"    Você pode editar settings.cfg para acrescentar o URL para a documentação e o comando para instalar.\n"
+"    Você pode clicar com o botão direito sobre o nome da Biblioteca, e Abrir Documentação ou Instalar Biblioteca.\n"
+"    A partir de Ferramentas->Procurar Biblioteca... ou Ajuda->Abrir Documentação de Biblioteca...você tem\n"
+"    um diálogo para preencher o comando de instalação ou o link para a documentação.\n"
 "    "
 
 #: src/robotide/spec/libraryfinder.py:39
@@ -2281,19 +2113,23 @@ msgstr "Não se conseguiu importar biblioteca do ficheiro \"%s\""
 msgid "Type"
 msgstr "Tipo"
 
-#: src/robotide/ui/filedialogs.py:110 src/robotide/ui/filedialogs.py:230
+#: src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/filedialogs.py:230
 msgid "Directory"
 msgstr "Diretoria"
 
-#: src/robotide/ui/filedialogs.py:170 src/robotide/ui/filedialogs.py:303
+#: src/robotide/ui/filedialogs.py:170
+#: src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
 msgstr "Novo Ficheiro de Recursos"
 
-#: src/robotide/ui/filedialogs.py:172 src/robotide/ui/preview.py:117
+#: src/robotide/ui/filedialogs.py:172
+#: src/robotide/ui/preview.py:117
 msgid "Format"
 msgstr "Formato"
 
-#: src/robotide/ui/filedialogs.py:184 src/robotide/ui/filedialogs.py:199
+#: src/robotide/ui/filedialogs.py:184
+#: src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
 msgstr "Diretoria Raiz"
 
@@ -2333,7 +2169,8 @@ msgstr ""
 "Indique o formato do ficheiro de inicialização na diretoria\n"
 "\"%s\"."
 
-#: src/robotide/ui/filedialogs.py:410 src/robotide/ui/fileexplorerplugin.py:79
+#: src/robotide/ui/filedialogs.py:410
+#: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
 msgstr "Abrir"
 
@@ -2358,12 +2195,8 @@ msgid "All files|*.*"
 msgstr "Todos os ficheiros|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
-msgid ""
-"Provides a tree view for Files and Folders. Opens selected item with mouse "
-"right-click."
-msgstr ""
-"Disponibiliza uma vista em árvore para Ficheiros e Pastas. Abre o elemento "
-"selecionado clicando com o botão direito do rato."
+msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
+msgstr "Disponibiliza uma vista em árvore para Ficheiros e Pastas. Abre o elemento selecionado clicando com o botão direito do rato."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
@@ -2374,7 +2207,8 @@ msgstr "Abrir a Pasta Correspondente"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
-#: src/robotide/ui/fileexplorerplugin.py:214 src/robotide/ui/mainframe.py:316
+#: src/robotide/ui/fileexplorerplugin.py:214
+#: src/robotide/ui/mainframe.py:317
 msgid "Files"
 msgstr "Ficheiros"
 
@@ -2382,7 +2216,8 @@ msgstr "Ficheiros"
 msgid "View File Explorer"
 msgstr "Ver Explorador de Ficheiros"
 
-#: src/robotide/ui/fileexplorerplugin.py:109 src/robotide/ui/treeplugin.py:113
+#: src/robotide/ui/fileexplorerplugin.py:109
+#: src/robotide/ui/treeplugin.py:113
 msgid "View"
 msgstr "Ver"
 
@@ -2402,7 +2237,8 @@ msgstr "<todas as palavras-chave de utilizador>"
 msgid "<all library keywords>"
 msgstr "<todas as palavras-chave de biblioteca>"
 
-#: src/robotide/ui/keywordsearch.py:39 src/robotide/ui/keywordsearch.py:59
+#: src/robotide/ui/keywordsearch.py:39
+#: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
 msgstr "Procurar palavras-chave"
 
@@ -2435,36 +2271,24 @@ msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr "!Novo Projeto | Cria uma suite principal | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
-msgid ""
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
-"!Abrir Suite de Testes | Abre um ficheiro contendo testes | Ctrlcmd-O | "
-"ART_FILE_OPEN\n"
+msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!Abrir Suite de Testes | Abre um ficheiro contendo testes | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
-msgid ""
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
-"ART_FOLDER_OPEN\n"
-msgstr ""
-"!Abrir Directoria | Abre uma diretoria contendo ficheiros de dados | Shift-"
-"Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgstr "!Abrir Directoria | Abre uma diretoria contendo ficheiros de dados | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!Abrir Ficheiro Externo | Abre um ficheiro no Editor de Código | | "
-"ART_NORMAL_FILE\n"
+msgstr "!Abrir Ficheiro Externo | Abre um ficheiro no Editor de Código | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
-"!Salvar | Salva o ficheiro de dados selecionado | Ctrlcmd-S | ART_FILE_SAVE\n"
+msgstr "!Salvar | Salva o ficheiro de dados selecionado | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
-"!Salvar Todos | Salvar todas as alterações | Ctrlcmd-Shift-S | "
-"ART_FILE_SAVE_AS\n"
+msgstr "!Salvar Todos | Salvar todas as alterações | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2504,9 +2328,7 @@ msgstr "!Wiki | Guia de Utilização do RIDE (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
-"!Reportar um Problema | Abre o Navegador da Web para PROCURAR no sistema de "
-"reporte de defeitos\n"
+msgstr "!Reportar um Problema | Abre o Navegador da Web para PROCURAR no sistema de reporte de defeitos\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
@@ -2514,9 +2336,7 @@ msgstr "!Acerca de | Informação acerca do RIDE\n"
 
 #: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
-"!Verificar Se Há Atualização | Procura em PyPi por uma nova versão "
-"produzida\n"
+msgstr "!Verificar Se Há Atualização | Procura em PyPi por uma nova versão produzida\n"
 
 #: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
@@ -2534,11 +2354,12 @@ msgstr "Modificação não permitida"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" é apenas de leitura"
 
-#: src/robotide/ui/mainframe.py:299 src/robotide/ui/treeplugin.py:107
+#: src/robotide/ui/mainframe.py:300
+#: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Suites de Teste"
 
-#: src/robotide/ui/mainframe.py:464
+#: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2546,11 +2367,12 @@ msgstr ""
 "Existem modificações não guardadas.\n"
 "Você quer salvar as alterações antes de sair?"
 
-#: src/robotide/ui/mainframe.py:464 src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:559
 msgid "Warning"
 msgstr "Aviso"
 
-#: src/robotide/ui/mainframe.py:558
+#: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2558,63 +2380,63 @@ msgstr ""
 "Existem modificações não guardadas.\n"
 "Você quer prosseguir sem salvar?"
 
-#: src/robotide/ui/mainframe.py:608
+#: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
 msgstr "Escolha uma diretoria contendo ficheiros Robot"
 
-#: src/robotide/ui/mainframe.py:760
+#: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
 msgstr "Detetadas modificações no espaço de trabalho."
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
 msgstr "Você quer reabrir o espaço de trabalho?"
 
-#: src/robotide/ui/mainframe.py:763
+#: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Responder <Sim> irá descartar as alterações não guardadas."
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Responder <Não> irá ignorar as alterações em disco."
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
 msgstr "Ficheiros Modificados No Disco"
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
 msgstr "Personalizar..."
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
 msgstr "procurar palavras-chave não utilizadas"
 
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
 msgstr "parar execução de teste"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "preview"
 msgstr "antever"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
 msgstr "ver o registo do ride"
 
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
 msgstr "Teclas de atalho do RIDE"
 
-#: src/robotide/ui/mainframe.py:977
+#: src/robotide/ui/mainframe.py:978
 msgid "Show"
 msgstr "Mostrar"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:979
 msgid "Hide"
 msgstr "Ocultar"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:980
 msgid "Close"
 msgstr "Fechar"
 
@@ -2635,21 +2457,15 @@ msgid "Plugin"
 msgstr "Plugin"
 
 #: src/robotide/ui/pluginmanager.py:92
-msgid ""
-"Info. Enabling and disabling plugins might require RIDE restart for menus to "
-"work."
-msgstr ""
-"Info. Ativar e desativar Plugins pode necessitar reiniciar o RIDE para que "
-"os menus fiquem corretos."
+msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
+msgstr "Info. Ativar e desativar Plugins pode necessitar reiniciar o RIDE para que os menus fiquem corretos."
 
 #: src/robotide/ui/preview.py:32
-msgid ""
-"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
-"(Obsoleto) Disponibiliza uma antevisão dos dados de teste nos formatos, "
-"HTML, TSV e TXT."
+msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(Obsoleto) Disponibiliza uma antevisão dos dados de teste nos formatos, HTML, TSV e TXT."
 
-#: src/robotide/ui/preview.py:41 src/robotide/ui/preview.py:100
+#: src/robotide/ui/preview.py:41
+#: src/robotide/ui/preview.py:100
 msgid "Preview"
 msgstr "Ante-visão"
 
@@ -2678,16 +2494,15 @@ msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
-"Este diálogo ajuda a procurar palavras-chave não utilizadas dentro do "
-"projeto aberto.\n"
-"Se você quiser, pode restringir a procura a um conjunto de ficheiros com o "
-"filtro."
+"Este diálogo ajuda a procurar palavras-chave não utilizadas dentro do projeto aberto.\n"
+"Se você quiser, pode restringir a procura a um conjunto de ficheiros com o filtro."
 
 #: src/robotide/ui/review.py:70
 msgid "Filter is"
 msgstr "O filtro está"
 
-#: src/robotide/ui/review.py:71 src/robotide/ui/review.py:242
+#: src/robotide/ui/review.py:71
+#: src/robotide/ui/review.py:242
 msgid "inactive"
 msgstr "inativo"
 
@@ -2701,17 +2516,13 @@ msgstr "Usar RegEx"
 
 #: src/robotide/ui/review.py:93
 msgid ""
-"Here you can define one or more strings separated by comma (e.g. "
-"common,abc,123).\n"
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
-"Aqui, você pode definir uma ou mais cadeias de texto separadas por vírgula "
-"(por exemplo: comum, abc,123).\n"
-"O filtro corresponderá se pelo menos uma das cadeias de texto é parte do "
-"nome do ficheiro.\n"
-"Se você não indicar nenhuma cadeia de texto, todos os ficheiros abertos "
-"serão incluídos"
+"Aqui, você pode definir uma ou mais cadeias de texto separadas por vírgula (por exemplo: comum, abc,123).\n"
+"O filtro corresponderá se pelo menos uma das cadeias de texto é parte do nome do ficheiro.\n"
+"Se você não indicar nenhuma cadeia de texto, todos os ficheiros abertos serão incluídos"
 
 #: src/robotide/ui/review.py:101
 msgid "Test case files"
@@ -2745,7 +2556,8 @@ msgstr "Palavra-Chave"
 msgid "Delete marked keywords"
 msgstr "Apagar as Palavras-Chave marcadas"
 
-#: src/robotide/ui/review.py:157 src/robotide/ui/review.py:320
+#: src/robotide/ui/review.py:157
+#: src/robotide/ui/review.py:320
 msgid "Unused Keywords"
 msgstr "Palavras-Chave Não Utilizadas"
 
@@ -2757,7 +2569,8 @@ msgstr "Abortar"
 msgid "active"
 msgstr "ativo"
 
-#: src/robotide/ui/review.py:270 src/robotide/ui/review.py:353
+#: src/robotide/ui/review.py:270
+#: src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
 msgstr "Palavras-Chave Não Utilizadas (%d)"
 
@@ -2833,7 +2646,8 @@ msgstr ""
 msgid "Select all"
 msgstr "Selecionar tudo"
 
-#: src/robotide/ui/tagdialogs.py:233 src/robotide/ui/tagdialogs.py:262
+#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
 msgstr "Renomear"
 
@@ -2853,7 +2667,8 @@ msgstr "Renomeando a etiqueta '%s'."
 msgid "Delete a tag '%s' ?"
 msgstr "Apagar a etiqueta '%s' ?"
 
-#: src/robotide/ui/tagdialogs.py:276 src/robotide/ui/treenodehandlers.py:661
+#: src/robotide/ui/tagdialogs.py:276
+#: src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
 msgstr "Confirmar"
 
