@@ -45,7 +45,6 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-    "isbinary",
     "psutil",
     "Pygments",
     "PyPubSub",
