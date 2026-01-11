@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-11 15:32+0000\n"
-"PO-Revision-Date: 2026-01-11 21:54+0000\n"
+"PO-Revision-Date: 2026-01-11 23:55+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Thai\n"
 "Language: th_TH\n"
@@ -1082,35 +1082,35 @@ msgstr "จำนวนคอลัมน์ที่แสดงในตัว
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
-msgstr "ลบเซลล์ Ctrl-Shift-D"
+msgstr "ลบเซลล์\tCtrl-Shift-D"
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr "แทรกเซลล์    Ctrl-Shift-I"
+msgstr "แทรกเซลล์\tCtrl-Shift-I"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Copy\tCtrl-C"
-msgstr "คัดลอก Ctrl-C"
+msgstr "คัดลอก\tCtrl-C"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Cut\tCtrl-X"
-msgstr "ตัด Ctrl-X"
+msgstr "ตัด\tCtrl-X"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Select All\tCtrl-A"
-msgstr "เลือกทั้งหมด    Ctrl-A"
+msgstr "เลือกทั้งหมด\tCtrl-A"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Delete\tDel"
-msgstr "ลบ    ลบ"
+msgstr "ลบ\tลบ"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Insert\tCtrl-Shift-V"
-msgstr "แทรก Ctrl-Shift-V"
+msgstr "แทรก\tCtrl-Shift-V"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Paste\tCtrl-V"
-msgstr "วาง Ctrl-V"
+msgstr "วาง\tCtrl-V"
 
 #: src/robotide/editor/kweditor.py:104
 msgid "Create Keyword"
@@ -1130,31 +1130,31 @@ msgstr "ค้นหาการใช้งาน"
 
 #: src/robotide/editor/kweditor.py:109
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr "JSON Editor Ctrl-Shift-J"
+msgstr "JSON Editor\tCtrl-Shift-J"
 
 #: src/robotide/editor/kweditor.py:111
 msgid "Go to Definition\tCtrl-B"
-msgstr "ไปที่คำจำกัดความ    Ctrl-B"
+msgstr "ไปที่คำจำกัดความ\tCtrl-B"
 
 #: src/robotide/editor/kweditor.py:113
 msgid "Undo\tCtrl-Z"
-msgstr "ยกเลิก Ctrl-Z"
+msgstr "ยกเลิก\tCtrl-Z"
 
 #: src/robotide/editor/kweditor.py:114
 msgid "Redo\tCtrl-Y"
-msgstr "ทำใหม่ Ctrl-Y"
+msgstr "ทำใหม่\tCtrl-Y"
 
 #: src/robotide/editor/kweditor.py:116
 msgid "Make Variable\tCtrl-1"
-msgstr "สร้างตัวแปร    Ctrl-1"
+msgstr "สร้างตัวแปร\tCtrl-1"
 
 #: src/robotide/editor/kweditor.py:117
 msgid "Make List Variable\tCtrl-2"
-msgstr "สร้างตัวแปรรายการ    Ctrl-2"
+msgstr "สร้างตัวแปรรายการ\tCtrl-2"
 
 #: src/robotide/editor/kweditor.py:118
 msgid "Make Dict Variable\tCtrl-5"
-msgstr "สร้างตัวแปร Dict    Ctrl-5"
+msgstr "สร้างตัวแปร Dict\tCtrl-5"
 
 #: src/robotide/editor/kweditor.py:975
 msgid ""
@@ -1240,12 +1240,12 @@ msgstr "ลบ"
 #: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
-msgstr "เลื่อนขึ้น    Ctrl-ขึ้น"
+msgstr "เลื่อนขึ้น\tCtrl-ขึ้น"
 
 #: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
-msgstr "เลื่อนลง    Ctrl-ลง"
+msgstr "เลื่อนลง\tCtrl-ลง"
 
 #: src/robotide/editor/settingeditors.py:102 src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
@@ -2629,7 +2629,7 @@ msgstr "ทรัพยากรใหม่"
 
 #: src/robotide/ui/treenodehandlers.py:358
 msgid "New Suite\tCtrl-Shift-F"
-msgstr "ห้องชุดใหม่    Ctrl-Shift-F"
+msgstr "ห้องชุดใหม่\tCtrl-Shift-F"
 
 #: src/robotide/ui/treenodehandlers.py:359
 msgid "New Directory"
@@ -2639,19 +2639,19 @@ msgstr "ไดเรกทอรีใหม่"
 #: src/robotide/ui/treenodehandlers.py:485
 #: src/robotide/ui/treenodehandlers.py:573
 msgid "New User Keyword\tCtrl-Shift-K"
-msgstr "คำค้นหาสำหรับผู้ใช้ใหม่    Ctrl-Shift-K"
+msgstr "คำค้นหาสำหรับผู้ใช้ใหม่\tCtrl-Shift-K"
 
 #: src/robotide/ui/treenodehandlers.py:363
 #: src/robotide/ui/treenodehandlers.py:486
 #: src/robotide/ui/treenodehandlers.py:574
 msgid "New Scalar\tCtrl-Shift-V"
-msgstr "สเกลาร์ใหม่ Ctrl-Shift-V"
+msgstr "สเกลาร์ใหม่\tCtrl-Shift-V"
 
 #: src/robotide/ui/treenodehandlers.py:364
 #: src/robotide/ui/treenodehandlers.py:487
 #: src/robotide/ui/treenodehandlers.py:575
 msgid "New List Variable\tCtrl-Shift-L"
-msgstr "รายการตัวแปรใหม่    Ctrl-Shift-L"
+msgstr "รายการตัวแปรใหม่\tCtrl-Shift-L"
 
 #: src/robotide/ui/treenodehandlers.py:365
 #: src/robotide/ui/treenodehandlers.py:488
@@ -2706,7 +2706,7 @@ msgstr ""
 #: src/robotide/ui/treenodehandlers.py:686
 #: src/robotide/ui/treenodehandlers.py:790
 msgid "Rename\tF2"
-msgstr "เปลี่ยนชื่อ    F2"
+msgstr "เปลี่ยนชื่อ\tF2"
 
 #: src/robotide/ui/treenodehandlers.py:492
 #: src/robotide/ui/treenodehandlers.py:497
@@ -2718,7 +2718,7 @@ msgstr "จัดเรียงคำค้นหา"
 #: src/robotide/ui/treenodehandlers.py:494
 #: src/robotide/ui/treenodehandlers.py:581
 msgid "Delete\tCtrl-Shift-D"
-msgstr "ลบ Ctrl-Shift-D"
+msgstr "ลบ\tCtrl-Shift-D"
 
 #: src/robotide/ui/treenodehandlers.py:496
 #: src/robotide/ui/treenodehandlers.py:583
@@ -2741,7 +2741,7 @@ msgstr ""
 
 #: src/robotide/ui/treenodehandlers.py:572
 msgid "New Test Case\tCtrl-Shift-T"
-msgstr "กรณีทดสอบใหม่ Ctrl-Shift-T"
+msgstr "กรณีทดสอบใหม่\tCtrl-Shift-T"
 
 #: src/robotide/ui/treenodehandlers.py:584
 msgid "Sort Tests"
@@ -2753,7 +2753,7 @@ msgstr "ลบไฟล์กรณีทดสอบ"
 
 #: src/robotide/ui/treenodehandlers.py:683
 msgid "Copy\tCtrl-Shift-C"
-msgstr "คัดลอก Ctrl-Shift-C"
+msgstr "คัดลอก\tCtrl-Shift-C"
 
 #: src/robotide/ui/treenodehandlers.py:839
 msgid "Add Resource"
