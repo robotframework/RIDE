@@ -125,12 +125,13 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.source = self.app.tree.controller
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
         PUBLISHER.unsubscribe_all()
-        self.app.project.close()
+        if self.app.project:
+            self.app.project.close()
         # wx.CallAfter(self.app.ExitMainLoop)
         # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
@@ -204,6 +205,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertFalse(self._callback_called)
 
     def test_check_for_updates_is_false(self):
+        self.app = MyApp()
         with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
             settings = self.internal_settings(check_for_updates=False)
             original_time = settings[LASTUPDATECHECK]
@@ -212,6 +214,9 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertFalse(settings[CHECKFORUPDATES])
             self.assertEqual(original_time, settings[LASTUPDATECHECK])
             self.assertFalse(self._callback_called)
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
     def test_no_update_found(self):
         with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
