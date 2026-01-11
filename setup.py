@@ -25,6 +25,7 @@ ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
 REQUIREMENTS = ['PyPubSub',
                 'Pygments',
+                'chardet',
                 'psutil',
                 'Pywin32; sys_platform=="win32"',
                 'wxPython',

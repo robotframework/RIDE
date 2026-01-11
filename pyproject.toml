@@ -45,6 +45,7 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
+    "chardet",
     "psutil",
     "Pygments",
     "PyPubSub",

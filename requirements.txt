@@ -6,4 +6,5 @@ robotframework
 Pypubsub
 psutil
 packaging
+chardet
 requests>=2.32.4
