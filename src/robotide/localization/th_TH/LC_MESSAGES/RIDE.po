@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2026-01-11 19:04\n"
+"PO-Revision-Date: 2026-01-11 23:52\n"
 "Last-Translator: \n"
 "Language-Team: Thai\n"
 "MIME-Version: 1.0\n"
@@ -683,7 +683,7 @@ msgstr "[เครื่องมือ]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr "ความช่วยเหลือด้านเนื้อหา (Ctrl-Space หรือ Ctrl-Alt-Space) | แสดงคำสำคัญและตัวแปรที่สามารถเติมเต็มได้ | | | ตำแหน่ง-70\n"
+msgstr "ความช่วยเหลือด้านเนื้อหา (Ctrl-Space หรือ Ctrl-Alt-Space) | แสดงคำสำคัญและตัวแปรที่สามารถเติมเต็มได้ | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
@@ -2246,19 +2246,19 @@ msgstr "!E&xit | ออกจาก RIDE | Ctrlcmd-Q\n"
 
 #: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr "!ค้นหาคำหลักที่ไม่ได้ใช้ | | | | ตำแหน่ง-54\n"
+msgstr "!ค้นหาคำหลักที่ไม่ได้ใช้ | | | | POSITION-54\n"
 
 #: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr "!จัดการปลั๊กอิน | | | | ตำแหน่ง-81\n"
+msgstr "!จัดการปลั๊กอิน | | | | POSITION-81\n"
 
 #: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr "!ดูทั้งหมด | | F7 | | ตำแหน่ง-82\n"
+msgstr "!ดูทั้งหมด | | F7 | | POSITION-82\n"
 
 #: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr "!การตั้งค่า | | | | ตำแหน่ง-99\n"
+msgstr "!การตั้งค่า | | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
