@@ -2,20 +2,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-11 15:32+0000\n"
-"PO-Revision-Date: 2026-01-11 00:37\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-01-11 21:54+0000\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Thai\n"
 "Language: th_TH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: th\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"X-Generator: Poedit 3.8\n"
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
@@ -52,8 +53,7 @@ msgstr "พบเวอร์ชันของ Robot Framework %s จาก %s.
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:57
-#: src/robotide/spec/libraryfinder.py:45
-#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/spec/libraryfinder.py:45 src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
 msgstr "ช่วยเหลือ"
@@ -312,16 +312,12 @@ msgstr "รันการทดสอบ"
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
-#: src/robotide/log/log.py:86
-#: src/robotide/parserlog/parserlog.py:85
+#: src/robotide/log/log.py:86 src/robotide/parserlog/parserlog.py:85
 #: src/robotide/postinstall/desktopshortcut.py:53
 #: src/robotide/searchtests/searchtests.py:41
-#: src/robotide/spec/libraryfinder.py:43
-#: src/robotide/spec/specimporter.py:37
-#: src/robotide/ui/actiontriggers.py:54
-#: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:884
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/spec/libraryfinder.py:43 src/robotide/spec/specimporter.py:37
+#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/keywordsearch.py:53
+#: src/robotide/ui/mainframe.py:884 src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "เครื่องมือ"
@@ -509,8 +505,7 @@ msgid "Automatically pause after failing keyword"
 msgstr "หยุดชั่วคราวโดยอัตโนมัติหลังจากล้มเหลวในคำสำคัญ"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
-#: src/robotide/editor/editors.py:227
-#: src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/editors.py:227 src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
@@ -566,8 +561,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:674
+#: src/robotide/ui/fileexplorerplugin.py:274 src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - การตั้งค่า"
 
@@ -688,14 +682,13 @@ msgstr "ย้ายแถวขึ้น (Alt-ขึ้น หรือ Ctrl-Sh
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
 msgstr "ย้ายแถวลง (Alt-ลง หรือ Ctrl-Shift-ลง) | ย้ายแถวลง\n"
 
-#: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/editor/__init__.py:50 src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
 msgstr "[เครื่องมือ]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr "ความช่วยเหลือด้านเนื้อหา (Ctrl-Space หรือ Ctrl-Alt-Space) | แสดงคำสำคัญและตัวแปรที่สามารถเติมเต็มได้ | | | ตำแหน่ง-70\n"
+msgstr "ความช่วยเหลือด้านเนื้อหา (Ctrl-Space หรือ Ctrl-Alt-Space) | แสดงคำสำคัญและตัวแปรที่สามารถเติมเต็มได้ | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -779,8 +772,7 @@ msgstr "รายการแต่ละรายการต้องอยู
 msgid "Give name, optional arguments and optional alias of the library to import."
 msgstr "ให้ชื่อ, อาร์กิวเมนต์ที่เลือกได้ และชื่อเล่นที่เลือกได้ของไลบรารีที่ต้องการนำเข้า"
 
-#: src/robotide/editor/dialoghelps.py:51
-#: src/robotide/editor/dialoghelps.py:56
+#: src/robotide/editor/dialoghelps.py:51 src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
 msgstr "แยกอาร์กิวเมนต์หลายรายการด้วยอักขระท่อ เช่น 'arg 1 | arg 2'"
 
@@ -948,10 +940,8 @@ msgstr "ตัวแปรสเกลาร์"
 #: src/robotide/editor/editordialogs.py:626
 #: src/robotide/editor/editordialogs.py:651
 #: src/robotide/editor/editordialogs.py:681
-#: src/robotide/run/configmanagerui.py:101
-#: src/robotide/ui/filedialogs.py:92
-#: src/robotide/ui/filedialogs.py:94
-#: src/robotide/ui/filedialogs.py:331
+#: src/robotide/run/configmanagerui.py:101 src/robotide/ui/filedialogs.py:92
+#: src/robotide/ui/filedialogs.py:94 src/robotide/ui/filedialogs.py:331
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
 msgstr "ชื่อ"
@@ -1064,23 +1054,19 @@ msgstr "คัดลอกคำหลักของผู้ใช้"
 msgid "New User Keyword"
 msgstr "คำค้นหาสำหรับผู้ใช้ใหม่"
 
-#: src/robotide/editor/editors.py:163
-#: src/robotide/editor/editors.py:400
-#: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:214
+#: src/robotide/editor/editors.py:163 src/robotide/editor/editors.py:400
+#: src/robotide/editor/macroeditors.py:135 src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
 msgstr " (อ่านอย่างเดียว)"
 
 #: src/robotide/editor/editors.py:350
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
-#: src/robotide/ui/keywordsearch.py:357
-#: src/robotide/usages/usagesdialog.py:151
+#: src/robotide/ui/keywordsearch.py:357 src/robotide/usages/usagesdialog.py:151
 msgid "Source"
 msgstr "แหล่งที่มา"
 
-#: src/robotide/editor/editors.py:387
-#: src/robotide/ui/keywordsearch.py:207
+#: src/robotide/editor/editors.py:387 src/robotide/ui/keywordsearch.py:207
 #: src/robotide/ui/treenodehandlers.py:493
 #: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
@@ -1194,10 +1180,8 @@ msgstr ""
 "            เช่น สำหรับไลบรารี Java ไฟล์ XML ของสเปคไลบรารีสามารถสร้างได้โดยใช้เครื่องมือ libdoc จาก Robot Framework</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:219
-#: src/robotide/ui/treenodehandlers.py:243
-#: src/robotide/ui/treeplugin.py:1297
+#: src/robotide/editor/kweditor.py:1131 src/robotide/ui/mainframe.py:219
+#: src/robotide/ui/treenodehandlers.py:243 src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "ข้อผิดพลาดในการตรวจสอบความถูกต้อง"
 
@@ -1209,8 +1193,7 @@ msgstr "ชื่อใหม่"
 msgid "Save"
 msgstr "บันทึก"
 
-#: src/robotide/editor/kweditor.py:1234
-#: src/robotide/widgets/dialog.py:133
+#: src/robotide/editor/kweditor.py:1234 src/robotide/widgets/dialog.py:133
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -1238,39 +1221,33 @@ msgstr "เนื้อหาเซลล์ครบถ้วน"
 msgid "Variable "
 msgstr "ตัวแปร "
 
-#: src/robotide/editor/kweditor.py:1457
-#: src/robotide/editor/texteditor.py:1119
+#: src/robotide/editor/kweditor.py:1457 src/robotide/editor/texteditor.py:1119
 #: src/robotide/editor/texteditor.py:1121
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
-#: src/robotide/ui/review.py:98
-#: src/robotide/ui/review.py:160
+#: src/robotide/ui/review.py:98 src/robotide/ui/review.py:160
 msgid "Search"
 msgstr "ค้นหา"
 
-#: src/robotide/editor/listeditor.py:40
-#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/listeditor.py:40 src/robotide/ui/tagdialogs.py:233
 #: src/robotide/ui/treenodehandlers.py:384
 #: src/robotide/ui/treenodehandlers.py:688
 #: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
 msgstr "ลบ"
 
-#: src/robotide/editor/listeditor.py:40
-#: src/robotide/ui/treenodehandlers.py:684
+#: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
 msgstr "เลื่อนขึ้น    Ctrl-ขึ้น"
 
-#: src/robotide/editor/listeditor.py:40
-#: src/robotide/ui/treenodehandlers.py:685
+#: src/robotide/editor/listeditor.py:40 src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
 msgstr "เลื่อนลง    Ctrl-ลง"
 
-#: src/robotide/editor/settingeditors.py:102
-#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/editor/settingeditors.py:102 src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
 msgstr "ชัดเจน"
 
@@ -1315,8 +1292,7 @@ msgid "Install Library"
 msgstr "ติดตั้งไลบรารี"
 
 #: src/robotide/editor/settingeditors.py:636
-#: src/robotide/spec/specimporter.py:34
-#: src/robotide/spec/specimporter.py:63
+#: src/robotide/spec/specimporter.py:34 src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr "นำเข้าสเปคไลบรารี XML"
 
@@ -1364,8 +1340,7 @@ msgstr "เพิ่มข้อมูลเมตา"
 msgid "Text Edit"
 msgstr "แก้ไขข้อความ"
 
-#: src/robotide/editor/texteditor.py:467
-#: src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:467 src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "แหล่งที่มา: "
@@ -1749,8 +1724,7 @@ msgstr "ภูมิหลังรอง"
 msgid "Apply to Project and File Explorer panels"
 msgstr "นำไปใช้กับแผงโปรเจ็กต์และแผงไฟล์"
 
-#: src/robotide/preferences/general.py:224
-#: src/robotide/ui/filedialogs.py:148
+#: src/robotide/preferences/general.py:224 src/robotide/ui/filedialogs.py:148
 msgid "Language"
 msgstr "ภาษา"
 
@@ -1829,20 +1803,16 @@ msgstr "เกิดข้อผิดพลาดในการดึงข้
 msgid "Invalid config file '%s': %s"
 msgstr "ไฟล์การตั้งค่าไม่ถูกต้อง '%s': %s"
 
-#: src/robotide/preferences/saving.py:27
-#: src/robotide/preferences/saving.py:30
-#: src/robotide/preferences/saving.py:31
-#: src/robotide/preferences/saving.py:33
+#: src/robotide/preferences/saving.py:27 src/robotide/preferences/saving.py:30
+#: src/robotide/preferences/saving.py:31 src/robotide/preferences/saving.py:33
 msgid "Saving"
 msgstr "การบันทึก"
 
-#: src/robotide/preferences/saving.py:42
-#: src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:42 src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
 msgstr "งานใช่ไหม?"
 
-#: src/robotide/preferences/saving.py:43
-#: src/robotide/ui/filedialogs.py:116
+#: src/robotide/preferences/saving.py:43 src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
 msgstr "ค่าเริ่มต้นสำหรับส่วนงานหรือการทดสอบ"
 
@@ -1889,8 +1859,7 @@ msgstr "ไม่มีไฟล์ล่าสุด"
 #: src/robotide/recentfiles/recentfiles.py:120
 #: src/robotide/recentfiles/recentfiles.py:126
 #: src/robotide/recentfiles/recentfiles.py:157
-#: src/robotide/ui/actiontriggers.py:54
-#: src/robotide/ui/filedialogs.py:110
+#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
 msgstr "ไฟล์"
@@ -1937,8 +1906,7 @@ msgstr ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>ด้วยช่องว่าง<SPACE>,\n"
 "การตั้งค่าการรันจะถูกเก็บไว้ในไฟล์การตั้งค่าของ RIDE\n"
 
-#: src/robotide/run/configmanagerui.py:45
-#: src/robotide/run/runanything.py:55
+#: src/robotide/run/configmanagerui.py:45 src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "จัดการการกำหนดค่าการทำงาน"
 
@@ -1964,8 +1932,7 @@ msgstr ""
 "    การทำงานเหล่านั้นได้ ผลลัพธ์ของคำสั่งที่ดำเนินการจะแสดงในแท็บ\n"
 "    แยกต่างหาก"
 
-#: src/robotide/run/runanything.py:55
-#: src/robotide/run/runanything.py:57
+#: src/robotide/run/runanything.py:55 src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "มาโคร"
@@ -2024,8 +1991,7 @@ msgstr "เพิ่มทั้งหมดไปยังที่เลือ
 
 #: src/robotide/searchtests/dialogsearchtests.py:156
 #: src/robotide/searchtests/dialogsearchtests.py:164
-#: src/robotide/ui/keywordsearch.py:211
-#: src/robotide/ui/keywordsearch.py:284
+#: src/robotide/ui/keywordsearch.py:211 src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
 msgstr "ผลลัพธ์: %d"
 
@@ -2113,23 +2079,19 @@ msgstr "ไม่สามารถนำเข้าไลบรารีจา
 msgid "Type"
 msgstr "ประเภท"
 
-#: src/robotide/ui/filedialogs.py:110
-#: src/robotide/ui/filedialogs.py:230
+#: src/robotide/ui/filedialogs.py:110 src/robotide/ui/filedialogs.py:230
 msgid "Directory"
 msgstr "ไดเรกทอรี"
 
-#: src/robotide/ui/filedialogs.py:170
-#: src/robotide/ui/filedialogs.py:303
+#: src/robotide/ui/filedialogs.py:170 src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
 msgstr "ไฟล์ทรัพยากรใหม่"
 
-#: src/robotide/ui/filedialogs.py:172
-#: src/robotide/ui/preview.py:117
+#: src/robotide/ui/filedialogs.py:172 src/robotide/ui/preview.py:117
 msgid "Format"
 msgstr "รูปแบบ"
 
-#: src/robotide/ui/filedialogs.py:184
-#: src/robotide/ui/filedialogs.py:199
+#: src/robotide/ui/filedialogs.py:184 src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
 msgstr "ไดเรกทอรีหลัก"
 
@@ -2169,8 +2131,7 @@ msgstr ""
 "ให้รูปแบบสำหรับไฟล์การเริ่มต้นในไดเรกทอรี\n"
 "\"%s\"."
 
-#: src/robotide/ui/filedialogs.py:410
-#: src/robotide/ui/fileexplorerplugin.py:79
+#: src/robotide/ui/filedialogs.py:410 src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
 msgstr "เปิด"
 
@@ -2207,8 +2168,7 @@ msgstr "เปิดโฟลเดอร์ที่บรรจุอยู่
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
-#: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:317
+#: src/robotide/ui/fileexplorerplugin.py:214 src/robotide/ui/mainframe.py:317
 msgid "Files"
 msgstr "ไฟล์"
 
@@ -2216,8 +2176,7 @@ msgstr "ไฟล์"
 msgid "View File Explorer"
 msgstr "ดูไฟล์เอกซ์พลอเรอร์"
 
-#: src/robotide/ui/fileexplorerplugin.py:109
-#: src/robotide/ui/treeplugin.py:113
+#: src/robotide/ui/fileexplorerplugin.py:109 src/robotide/ui/treeplugin.py:113
 msgid "View"
 msgstr "มุมมอง"
 
@@ -2237,8 +2196,7 @@ msgstr "<all user keywords>การแปล: \"การแปล\""
 msgid "<all library keywords>"
 msgstr "<all library keywords>การแปล: \"การแปล\""
 
-#: src/robotide/ui/keywordsearch.py:39
-#: src/robotide/ui/keywordsearch.py:59
+#: src/robotide/ui/keywordsearch.py:39 src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
 msgstr "คำค้นหา"
 
@@ -2296,19 +2254,19 @@ msgstr "!E&xit | ออกจาก RIDE | Ctrlcmd-Q\n"
 
 #: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr "!ค้นหาคำหลักที่ไม่ได้ใช้ | | | | ตำแหน่ง-54\n"
+msgstr "!ค้นหาคำหลักที่ไม่ได้ใช้ | | | | POSITION-54\n"
 
 #: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr "!จัดการปลั๊กอิน | | | | ตำแหน่ง-81\n"
+msgstr "!จัดการปลั๊กอิน | | | | POSITION-81\n"
 
 #: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr "!ดูทั้งหมด | | F7 | | ตำแหน่ง-82\n"
+msgstr "!ดูทั้งหมด | | F7 | | POSITION-82\n"
 
 #: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr "!การตั้งค่า | | | | ตำแหน่ง-99\n"
+msgstr "!การตั้งค่า | | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
@@ -2354,8 +2312,7 @@ msgstr "การแก้ไขถูกป้องกัน"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" สามารถอ่านได้เท่านั้น"
 
-#: src/robotide/ui/mainframe.py:300
-#: src/robotide/ui/treeplugin.py:107
+#: src/robotide/ui/mainframe.py:300 src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "ชุดทดสอบ"
 
@@ -2367,8 +2324,7 @@ msgstr ""
 "มีการแก้ไขที่ยังไม่ได้บันทึก\n"
 "คุณต้องการบันทึกการเปลี่ยนแปลงก่อนออกจากระบบหรือไม่?"
 
-#: src/robotide/ui/mainframe.py:465
-#: src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:465 src/robotide/ui/mainframe.py:559
 msgid "Warning"
 msgstr "คำเตือน"
 
@@ -2464,8 +2420,7 @@ msgstr "ข้อมูล การเปิดใช้งานและป�
 msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
 msgstr "(ล้าสมัย) ให้ตัวอย่างข้อมูลการทดสอบในรูปแบบ HTML, TSV และ TXT"
 
-#: src/robotide/ui/preview.py:41
-#: src/robotide/ui/preview.py:100
+#: src/robotide/ui/preview.py:41 src/robotide/ui/preview.py:100
 msgid "Preview"
 msgstr "ตัวอย่าง"
 
@@ -2501,8 +2456,7 @@ msgstr ""
 msgid "Filter is"
 msgstr "ฟิลเตอร์คือ"
 
-#: src/robotide/ui/review.py:71
-#: src/robotide/ui/review.py:242
+#: src/robotide/ui/review.py:71 src/robotide/ui/review.py:242
 msgid "inactive"
 msgstr "ไม่ใช้งาน"
 
@@ -2556,8 +2510,7 @@ msgstr "คำหลัก"
 msgid "Delete marked keywords"
 msgstr "ลบคำสำคัญที่ถูกทำเครื่องหมาย"
 
-#: src/robotide/ui/review.py:157
-#: src/robotide/ui/review.py:320
+#: src/robotide/ui/review.py:157 src/robotide/ui/review.py:320
 msgid "Unused Keywords"
 msgstr "คำค้นหาที่ไม่ได้ใช้"
 
@@ -2569,8 +2522,7 @@ msgstr "ยกเลิก"
 msgid "active"
 msgstr "กระตือรือร้น"
 
-#: src/robotide/ui/review.py:270
-#: src/robotide/ui/review.py:353
+#: src/robotide/ui/review.py:270 src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
 msgstr "คำหลักที่ไม่ได้ใช้ (%d)"
 
@@ -2646,8 +2598,7 @@ msgstr ""
 msgid "Select all"
 msgstr "เลือกทั้งหมด"
 
-#: src/robotide/ui/tagdialogs.py:233
-#: src/robotide/ui/tagdialogs.py:262
+#: src/robotide/ui/tagdialogs.py:233 src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
 msgstr "เปลี่ยนชื่อ"
 
@@ -2667,8 +2618,7 @@ msgstr "การเปลี่ยนชื่อแท็ก '%s'"
 msgid "Delete a tag '%s' ?"
 msgstr "ลบแท็ก '%s' หรือไม่?"
 
-#: src/robotide/ui/tagdialogs.py:276
-#: src/robotide/ui/treenodehandlers.py:661
+#: src/robotide/ui/tagdialogs.py:276 src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
 msgstr "ยืนยัน"
 
