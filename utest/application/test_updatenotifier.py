@@ -205,7 +205,8 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertFalse(self._callback_called)
 
     def test_check_for_updates_is_false(self):
-        self.app = MyApp()
+        # self.app = MyApp()
+        print(f"DEBUG: test_check_for_updates_is_false app={self.app} app.frame={self.app.frame} self.frame={self.frame}")
         with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
             settings = self.internal_settings(check_for_updates=False)
             original_time = settings[LASTUPDATECHECK]
@@ -214,9 +215,9 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertFalse(settings[CHECKFORUPDATES])
             self.assertEqual(original_time, settings[LASTUPDATECHECK])
             self.assertFalse(self._callback_called)
-        # Uncomment next lines if you want to see the app
-        wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+            # Uncomment next lines if you want to see the app
+            wx.CallLater(5000, self.app.ExitMainLoop)
+            self.app.MainLoop()
 
     def test_no_update_found(self):
         with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):
