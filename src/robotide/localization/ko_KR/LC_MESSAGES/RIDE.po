@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-11 15:32+0000\n"
-"PO-Revision-Date: 2026-01-11 00:37\n"
+"PO-Revision-Date: 2026-01-11 19:12\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
-"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,8 +13,9 @@ msgstr ""
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: ko\n"
-"X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
-"X-Crowdin-File-ID: 14\n"
+"X-Crowdin-File: /develop/src/robotide/localization/RIDE.pot\n"
+"X-Crowdin-File-ID: 24\n"
+"Language: ko_KR\n"
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
@@ -177,11 +177,9 @@ msgid "See the latest development "
 msgstr "최신 개발 사항 보기 "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"RIDE 업데이트에 다른 방법(\n"
+msgstr "RIDE 업데이트에 다른 방법(\n"
 " )을 사용 중이며 자동 업데이트 확인이 필요하지 않습니다."
 
 #: src/robotide/application/updatenotifier.py:252
@@ -376,11 +374,9 @@ msgid "Unsaved Modifications"
 msgstr "저장되지 않은 수정 사항"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"저장되지 않은 수정 사항이 있습니다.\n"
+msgstr "저장되지 않은 수정 사항이 있습니다.\n"
 "        모든 변경 사항을 저장하고 테스트를 실행하시겠습니까?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -388,19 +384,15 @@ msgid "No tests selected"
 msgstr "선택한 테스트 없음"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
-msgstr ""
-"선택한 테스트가 없습니다. \n"
+msgstr "선택한 테스트가 없습니다. \n"
 "그래도 계속하시겠습니까?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "테스트 완료 {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -540,26 +532,24 @@ msgstr "알 수 없는 상태:"
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1141
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1143
 msgid "<<  PAUSED  >>"
-msgstr "<<  PAUSED  >>"
+msgstr ""
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1148
 msgid "<< CONTINUE >>"
-msgstr "<< CONTINUE >>"
+msgstr ""
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
-msgstr "<<  CONTINUE  >>"
+msgstr ""
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
 msgstr "로그 디렉터리 없음"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"로그 디렉터리가 없습니다. \n"
+msgstr "로그 디렉터리가 없습니다. \n"
 "테스트를 실행하고 다시 시도하세요."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
@@ -580,13 +570,11 @@ msgid "  current keyword: "
 msgstr "  현재 키워드를 입력합니다: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
+msgid "[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[탐색]\n"
+msgstr "[탐색]\n"
 "        !이동 &뒤로 가기 | 트리에서 이전 위치로 돌아가기 | Alt-%s | ART_GO_BACK\n"
 "        !이동 & 앞으로 가기 | 트리에서 다음 위치로 앞으로 가기 | Alt-%s | ART_GO_FORWARD\n"
 "        "
@@ -630,7 +618,7 @@ msgstr "&다시 실행 | 수정 다시 실행 | Ctrlcmd-Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr "Cu&t | Cut | Ctrlcmd-X\n"
+msgstr ""
 
 #: src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
@@ -698,15 +686,11 @@ msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword
 msgstr "콘텐츠 지원(Ctrl-스페이스 또는 Ctrl-알트-스페이스) | 가능한 키워드 및 변수 완성 표시 | | 위치 70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"기본 편집기 플러그인입니다. 그리드 또는 셀 에디터라고도 합니다.\n"
-"\n"
+msgstr "기본 편집기 플러그인입니다. 그리드 또는 셀 에디터라고도 합니다.\n\n"
 "    이 플러그인은 로봇 프레임워크\n"
 "    테스트 데이터의 다양한 항목에 대한 편집기를 구현합니다.\n"
 "    "
@@ -728,31 +712,25 @@ msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 
 msgstr "가능한 인수를 '내 키워드 | 인수 1 | 인수 2'와 같이 파이프 문자로 구분합니다."
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr ""
-"'1분 10초' 또는 '2시간'과 같은 시간 구문을 사용하거나 값을 초 단위로 입력합니다.\n"
+msgstr "'1분 10초' 또는 '2시간'과 같은 시간 구문을 사용하거나 값을 초 단위로 입력합니다.\n"
 "로봇 v3.0.1 이전에는 '3분 | 내 메시지 여기'와 같이 선택적 메시지를 지정할 수 있었습니다."
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
 "Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"인수를 '${arg1} | ${arg2}'과 같이 파이프 문자로 구분하여 지정합니다.\n"
+msgstr "인수를 '${arg1} | ${arg2}'과 같이 파이프 문자로 구분하여 지정합니다.\n"
 "기본값은 등호를 사용하여 지정하며 마지막 인수는 목록 변수가 될 수 있습니다.\n"
 "예: '${arg1} | ${arg2}=기본값 | @{rest}'.\n"
 "참고. 이 필드에 변수 바로 가기를 사용할 수 있습니다."
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"별칭을 사용하여 동일한 라이브러리를 다른 이름으로 여러 번 가져올 수 있습니다.\n"
+msgstr "별칭을 사용하여 동일한 라이브러리를 다른 이름으로 여러 번 가져올 수 있습니다.\n"
 "별칭 앞에 별칭이 붙습니다: "
 
 #: src/robotide/editor/dialoghelps.py:43
@@ -982,12 +960,12 @@ msgstr "라이브러리"
 
 #: src/robotide/editor/editordialogs.py:209
 msgid "Alias"
-msgstr "Alias"
+msgstr ""
 
 #: src/robotide/editor/editordialogs.py:209
 #: src/robotide/editor/editordialogs.py:278
 msgid "Args"
-msgstr "Args"
+msgstr ""
 
 #: src/robotide/editor/editordialogs.py:247
 #: src/robotide/editor/editordialogs.py:308
@@ -1171,8 +1149,7 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "딕셔너리 변수 만들기 Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1182,8 +1159,7 @@ msgid ""
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>키워드가 RIDE에서 검색되지 않았습니다</b>\n"
+msgstr "<b>키워드가 RIDE에서 검색되지 않았습니다</b>\n"
 "        <br>수정이 가능합니다:<br>\n"
 "        <ul>\n"
 "            <li>키워드가 포함된 라이브러리 또는 리소스 파일을 가져옵니다.</li>\n"
@@ -1321,8 +1297,7 @@ msgid "Import Library Spec XML"
 msgstr "라이브러리 사양 XML 가져오기"
 
 #: src/robotide/editor/settingeditors.py:687
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1336,8 +1311,7 @@ msgid ""
 "            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>가능한 수정 사항 및 참고 사항:<br>\n"
+msgstr "<br>가능한 수정 사항 및 참고 사항:<br>\n"
 "        <ul>\n"
 "            <li>가져오기 실패는 빨간색으로 표시됩니다.</li>\n"
 "            <li>실패에 대한 자세한 정보는 도구 / RIDE 로그 보기를 참조하세요.</li>\n"
@@ -1399,8 +1373,7 @@ msgid "Get help"
 msgstr "도움 받기"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1425,8 +1398,7 @@ msgid ""
 "        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>구문 색상화</h1>\n"
+msgstr "<h1>구문 색상화</h1>\n"
 "        <p>\n"
 "        텍스트 편집의 구문 색상화는 <a href='https://pygments.org/'>파이그먼트</a> 구문 형광펜을 사용합니다.\n"
 "        </p>\n"
@@ -1604,11 +1576,9 @@ msgid "Auto size columns"
 msgstr "열 자동 크기 조정"
 
 #: src/robotide/preferences/editors.py:258
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"최대 열 크기\n"
+msgstr "최대 열 크기\n"
 "(자동 크기가 켜져 있을 때 적용됨)"
 
 #: src/robotide/preferences/editors.py:262
@@ -1839,7 +1809,7 @@ msgstr "저장"
 #: src/robotide/preferences/saving.py:42
 #: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
-msgstr "Is Task?"
+msgstr ""
 
 #: src/robotide/preferences/saving.py:43
 #: src/robotide/ui/filedialogs.py:116
@@ -1906,31 +1876,25 @@ msgid "Open %s"
 msgstr "%s열기"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
 "The command will be executed in the system directly without opening a shell.\n"
 "This means that shell commands and extensions are not available. For example,\n"
 "in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n"
-"\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr ""
-"지정된 명령 문자열은 공백으로 구분되어\n"
+msgstr "지정된 명령 문자열은 공백으로 구분되어\n"
 "명령과 그 인수가 됩니다. 명령이나 인수에\n"
-"내부 공백이 필요한 경우 '<SPACE>'로 작성해야 합니다.\n"
-"\n"
+"내부 공백이 필요한 경우 '<SPACE>'로 작성해야 합니다.\n\n"
 "명령은 셸을 열지 않고 시스템에서 직접 실행됩니다.\n"
 "즉, 셸 명령 및 확장을 사용할 수 없습니다. 예를 들어, 실행할 Windows 배치 파일의\n"
 "에는 '.bat' 확장자가 포함되어야 하며 'dir'\n"
-"명령은 작동하지 않습니다.\n"
-"\n"
+"명령은 작동하지 않습니다.\n\n"
 "예:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -1951,15 +1915,11 @@ msgid "Remove"
 msgstr "제거"
 
 #: src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"시스템에서 명령을 실행하기 위한 플러그인입니다.\n"
-"\n"
+msgstr "시스템에서 명령을 실행하기 위한 플러그인입니다.\n\n"
 "    이 플러그인을 사용하면 영구 실행 구성을 생성하고\n"
 "    실행할 수 있습니다. 실행된 명령의 출력은\n"
 "    별도의 탭에 표시됩니다."
@@ -2046,17 +2006,13 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "이름, 태그 및 문서를 기반으로 테스트를 검색하는 플러그인"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
+msgid "Install missing libraries and open documentation.\n\n"
 "    You can edit settings.cfg to add URL for documentation and command to install.\n"
 "    You can right-click on a Library name, and Open Documentation or Install Library.\n"
 "    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
-"누락된 라이브러리를 설치하고 문서를 엽니다.\n"
-"\n"
+msgstr "누락된 라이브러리를 설치하고 문서를 엽니다.\n\n"
 "    settings.cfg를 수정하여 문서 및 설치 명령을 위한 URL을 추가할 수 있습니다.\n"
 "    라이브러리 이름을 마우스 오른쪽 버튼으로 클릭하고 문서 열기 또는 라이브러리 설치를 선택할 수 있습니다.\n"
 "    도구-> 라이브러리 찾기... 또는 도움말-> 라이브러리 문서 열기...에서\n"
@@ -2092,12 +2048,10 @@ msgid "Info"
 msgstr "정보"
 
 #: src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"라이브러리 \"%s\"\n"
+msgstr "라이브러리 \"%s\"\n"
 "에서 가져온 \"%s\"\n"
 "RIDE를 다시 시작해야 할 수 있습니다."
 
@@ -2162,11 +2116,9 @@ msgid "Change recursively"
 msgstr "재귀적으로 변경"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"\n"
+msgstr "\n"
 "\"%s\" 디렉터리에 초기화 파일의 형식을 입력합니다."
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2227,15 +2179,15 @@ msgstr "파일 탐색기 패널 표시"
 
 #: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr "<all keywords>"
+msgstr ""
 
 #: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr "<all user keywords>"
+msgstr ""
 
 #: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr "<all library keywords>"
+msgstr ""
 
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
@@ -2360,11 +2312,9 @@ msgid "Test Suites"
 msgstr "테스트 스위트"
 
 #: src/robotide/ui/mainframe.py:465
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"저장하지 않은 수정 사항이 있습니다.\n"
+msgstr "저장하지 않은 수정 사항이 있습니다.\n"
 "종료하기 전에 변경 사항을 저장하시겠습니까?"
 
 #: src/robotide/ui/mainframe.py:465
@@ -2373,11 +2323,9 @@ msgid "Warning"
 msgstr "경고"
 
 #: src/robotide/ui/mainframe.py:559
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"저장하지 않은 수정 사항이 있습니다.\n"
+msgstr "저장하지 않은 수정 사항이 있습니다.\n"
 "저장하지 않고 계속 진행하시겠습니까?"
 
 #: src/robotide/ui/mainframe.py:609
@@ -2490,11 +2438,9 @@ msgid "Search unused keywords"
 msgstr "사용하지 않는 키워드 검색"
 
 #: src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"이 대화상자는 열린 프로젝트 내에서 사용하지 않는 키워드를 찾는 데 도움이 됩니다.\n"
+msgstr "이 대화상자는 열린 프로젝트 내에서 사용하지 않는 키워드를 찾는 데 도움이 됩니다.\n"
 "원하는 경우 필터를 사용하여 검색을 파일 집합으로 제한할 수 있습니다."
 
 #: src/robotide/ui/review.py:70
@@ -2515,12 +2461,10 @@ msgid "Use RegEx"
 msgstr "RegEx 사용"
 
 #: src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"여기에서 쉼표로 구분된 하나 이상의 문자열을 정의할 수 있습니다(예: common,abc,123).\n"
+msgstr "여기에서 쉼표로 구분된 하나 이상의 문자열을 정의할 수 있습니다(예: common,abc,123).\n"
 "하나 이상의 문자열이 파일 이름의 일부인 경우 필터가 일치합니다.\n"
 "문자열을 입력하지 않으면 열린 모든 파일이 포함됩니다."
 
@@ -2579,12 +2523,8 @@ msgid "(None)"
 msgstr "(없음)"
 
 #: src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"다음 파일의 키워드가 검색에 포함됩니다:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "다음 파일의 키워드가 검색에 포함됩니다:\n\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2635,11 +2575,9 @@ msgid "Excluded Tag Search"
 msgstr "제외된 태그 검색"
 
 #: src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"총 테스트 %d, 태그가 있는 테스트 %d, 고유 태그 %d\n"
+msgstr "총 테스트 %d, 태그가 있는 테스트 %d, 고유 태그 %d\n"
 "현재 선택된 테스트 %d"
 
 #: src/robotide/ui/tagdialogs.py:233
@@ -2744,11 +2682,9 @@ msgid "Expand all"
 msgstr "모두 확장"
 
 #: src/robotide/ui/treenodehandlers.py:444
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"디렉토리에 저장되지 않은 데이터가 있습니다!\n"
+msgstr "디렉토리에 저장되지 않은 데이터가 있습니다!\n"
 "제외하기 전에 데이터를 저장해야 합니다."
 
 #: src/robotide/ui/treenodehandlers.py:490
@@ -2782,11 +2718,9 @@ msgstr "읽기 전용 제거"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"파일에 저장되지 않은 데이터가 있습니다!\n"
+msgstr "파일에 저장되지 않은 데이터가 있습니다!\n"
 "제외하기 전에 데이터를 저장해야 합니다."
 
 #: src/robotide/ui/treenodehandlers.py:572
@@ -2884,3 +2818,4 @@ msgstr "확인"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "예"
+
