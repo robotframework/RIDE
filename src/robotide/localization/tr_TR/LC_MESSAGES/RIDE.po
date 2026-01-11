@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -19,36 +19,36 @@ msgstr ""
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
-msgstr ""
+msgstr "Global Ayarlar"
 
 #: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
-msgstr ""
+msgstr "Global Ayarlar Algılandı"
 
 #: src/robotide/application/application.py:216
 msgid "Project Settings"
-msgstr ""
+msgstr "Proje Ayarları"
 
 #: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Proje Ayarları Algılandı"
 
 #: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "RIDE'ı yeniden başlatalım mı?"
 
 #: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "Bunları tam olarak kullanmak için RIDE yeniden başlatılmalıdır "
 
 #: src/robotide/application/application.py:239
 msgid "Click OK to Restart RIDE!"
-msgstr ""
+msgstr "RIDE'ı Yeniden Başlatmak için Tamam'a tıklayın!"
 
 #: src/robotide/application/application.py:461
 #: src/robotide/application/application.py:466
 msgid "Found Robot Framework version %s from %s."
-msgstr ""
+msgstr "%sadresinden %s Robot Framework sürümü bulundu."
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:57
@@ -61,194 +61,196 @@ msgstr "Yardım"
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
-msgstr ""
+msgstr "Sürüm Notları"
 
 #: src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
-msgstr ""
+msgstr "Sürüm notlarını göster"
 
 #: src/robotide/application/releasenotes.py:57
 #: src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
-msgstr ""
+msgstr "Çevrimdışı Değişiklik Günlüğü"
 
 #: src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
-msgstr ""
+msgstr "Çevrimdışı CHANGELOG'u göster"
 
 #: src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
-msgstr ""
+msgstr "Çevrimiçi sürümü şu adresten kontrol edin "
 
 #: src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Dil Değişikliği için RIDE'ı yeniden açın"
 
 #: src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
+msgstr "Dil değişikliği ancak RIDE yeniden açıldıktan sonra doğru olacaktır."
 
 #: src/robotide/application/restartutil.py:32
 #: src/robotide/application/restartutil.py:50
 #: src/robotide/application/updatenotifier.py:203
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "RIDE'ı şimdi KAPATMAK istiyor musunuz?"
 
 #: src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
-msgstr ""
+msgstr "Tamamlanan Dil Değişikliği"
 
 #: src/robotide/application/restartutil.py:49
 #: src/robotide/application/updatenotifier.py:202
 msgid "You should close this RIDE (Process ID = "
-msgstr ""
+msgstr "Bu RIDE'ı kapatmalısınız (İşlem Kimliği = "
 
 #: src/robotide/application/updatenotifier.py:115
 msgid "New development version is available."
-msgstr ""
+msgstr "Yeni geliştirme sürümü mevcuttur."
 
 #: src/robotide/application/updatenotifier.py:115
 msgid "Upgrade?"
-msgstr ""
+msgstr "Yükseltme mi?"
 
 #: src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
-msgstr ""
+msgstr "%s sürümü ile yükleyebilirsiniz:"
 
 #: src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
-msgstr ""
+msgstr "Şimdi Yükseltmek için Tamam'a tıklayın!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
 msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr ""
+msgstr "Yükseltmeden sonra, bu RIDE örneğini kapatmanızı bildiren başka bir iletişim kutusu göreceksiniz."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
-msgstr ""
+msgstr "Yükseltme Mevcut Değil"
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "You have the latest version of RIDE."
-msgstr ""
+msgstr "RIDE'ın en son sürümüne sahipsiniz."
 
 #: src/robotide/application/updatenotifier.py:127
 msgid "              Have a nice day :)"
-msgstr ""
+msgstr "              İyi günler :)"
 
 #: src/robotide/application/updatenotifier.py:172
 msgid "An error occurred when installing new version"
-msgstr ""
+msgstr "Yeni sürüm yüklenirken bir hata oluştu"
 
 #: src/robotide/application/updatenotifier.py:172
 msgid "Failed to Upgrade"
-msgstr ""
+msgstr "Yükseltme Yapılamadı"
 
 #: src/robotide/application/updatenotifier.py:202
 msgid "Completed Upgrade"
-msgstr ""
+msgstr "Tamamlanan Yükseltme"
 
 #: src/robotide/application/updatenotifier.py:228
 msgid "Update available"
-msgstr ""
+msgstr "Güncelleme mevcut"
 
 #: src/robotide/application/updatenotifier.py:236
 msgid " available from "
-msgstr ""
+msgstr " şu adresten temin edilebilir "
 
 #: src/robotide/application/updatenotifier.py:236
 msgid "New version "
-msgstr ""
+msgstr "Yeni versiyon "
 
 #: src/robotide/application/updatenotifier.py:237
 msgid "See this version "
-msgstr ""
+msgstr "Bu versiyona bakın "
 
 #: src/robotide/application/updatenotifier.py:239
 msgid "You can update with the command:"
-msgstr ""
+msgstr "Komutu ile güncelleme yapabilirsiniz:"
 
 #: src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr ""
+msgstr "Veya <b>Şimdi Yükselt</b>'e tıklayın"
 
 #: src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
-msgstr ""
+msgstr "En son gelişmeleri görün "
 
 #: src/robotide/application/updatenotifier.py:247
 msgid ""
 "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr ""
+"RIDE güncellemeleri için başka bir yöntem kullanıyorum\n"
+" ve otomatik güncelleme kontrollerine ihtiyaç duymuyorum"
 
 #: src/robotide/application/updatenotifier.py:252
 msgid "remind me later"
-msgstr ""
+msgstr "Bana sonra hatırlat."
 
 #: src/robotide/application/updatenotifier.py:258
 msgid "Upgrade Now"
-msgstr ""
+msgstr "Şimdi Yükselt"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
+msgstr "%sadresinde wx sürümü %s ile python sürümü %s kullanılarak RIDE %s başlatıldı."
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
-msgstr ""
+msgstr "Tüm RIDE çevirmenlerine teşekkürler: %s"
 
 #: src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
-msgstr ""
+msgstr "RIDE -- Robot Çerçevesi Test Verileri Düzenleyicisi"
 
 #: src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
-msgstr ""
+msgstr "Python üzerinde çalışan RIDE %s %s."
 
 #: src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
-msgstr ""
+msgstr "RIDE, %siçin bir test verisi düzenleyicisidir."
 
 #: src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
-msgstr ""
+msgstr "Daha fazla bilgi için %sadresindeki proje sayfalarına bakınız."
 
 #: src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
-msgstr ""
+msgstr "Bazı simgeler %sadresinden alınmıştır."
 
 #: src/robotide/context/__init__.py:80
 msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
-msgstr ""
+msgstr "%s Projenin sürdürücüsü, orijinal yazarlara ve tüm kullanıcılara ve işbirlikçilere teşekkür eder."
 
 #: src/robotide/context/__init__.py:81
 msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
+msgstr "%s adresine, %sadresinde %s Sürüm 6.1 ile içerik uyumluluğu çevrilmiş test paketlerinin geliştirilmesine sponsor oldukları için özel olarak teşekkür ederiz."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
-msgstr ""
+msgstr "Günlük seçenekleri"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:435
 msgid "Output directory: "
-msgstr ""
+msgstr "Çıktı dizini: "
 
 #: src/robotide/contrib/testrunner/runprofiles.py:455
 msgid "Add suite name to log names"
-msgstr ""
+msgstr "Günlük adlarına süit adı ekleyin"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:458
 msgid "Add timestamp to log names"
-msgstr ""
+msgstr "Günlük adlarına zaman damgası ekleme"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:461
 msgid "Save Console and Message logs"
-msgstr ""
+msgstr "Konsol ve Mesaj günlüklerini kaydetme"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:479
 msgid "Select Logs Directory"
-msgstr ""
+msgstr "Günlükler Dizinini Seçin"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:501
 #: src/robotide/editor/editordialogs.py:538
@@ -256,56 +258,56 @@ msgstr ""
 #: src/robotide/editor/editordialogs.py:683
 #: src/robotide/editor/settingeditors.py:575
 msgid "Arguments"
-msgstr ""
+msgstr "Argümanlar"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:514
 #: src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr ""
+msgstr "Test çalıştırması için bağımsız değişkenler. Bağımsız değişkenler boşluk bırakılarak ayrılmış listedir."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
-msgstr ""
+msgstr "Çalıştırılmıyor - yardım veya sürüm seçeneği verildi"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Unknown option(s):"
-msgstr ""
+msgstr "Bilinmeyen seçenek(ler):"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:570
 msgid "Tests filters"
-msgstr ""
+msgstr "Filtreleri test eder"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:580
 msgid "Only run tests with these tags:"
-msgstr ""
+msgstr "Testleri yalnızca bu etiketlerle çalıştırın:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:583
 msgid "Skip tests with these tags:"
-msgstr ""
+msgstr "Bu etiketlere sahip testleri atlayın:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:681
 msgid "Script to run tests:"
-msgstr ""
+msgstr "Testleri çalıştırmak için komut dosyası:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Stop a running test"
-msgstr ""
+msgstr "Çalışan bir testi durdurma"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:101
 msgid "Step over"
-msgstr ""
+msgstr "Adım at"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:132
 msgid "A plugin for running tests from within RIDE"
-msgstr ""
+msgstr "RIDE içinden test çalıştırmak için bir eklenti"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "Run"
-msgstr ""
+msgstr "Koşmak"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 msgid "Run Tests"
-msgstr ""
+msgstr "Testleri Çalıştırın"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
@@ -322,252 +324,260 @@ msgstr ""
 #: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
-msgstr ""
+msgstr "Araçlar"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests"
-msgstr ""
+msgstr "Seçilen testleri çalıştırın"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 msgid "Run Tests with Debug"
-msgstr ""
+msgstr "Testleri Hata Ayıklama ile Çalıştırma"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:243
 msgid "Run the selected tests with Debug"
-msgstr ""
+msgstr "Seçilen testleri Debug ile çalıştırın"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
 msgid "Stop Test Run"
-msgstr ""
+msgstr "Test Çalışmasını Durdur"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:332
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:336
 msgid "[ SENDING STOP SIGNAL ]\n"
-msgstr ""
+msgstr "[ DURDURMA SINYALI GÖNDERME ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:341
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING PAUSE SIGNAL ]\n"
-msgstr ""
+msgstr "[ DURAKLATMA SINYALI GÖNDERME ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:349
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:352
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr ""
+msgstr "[DEVAM SINYALI GÖNDERILIYOR]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:357
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:360
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
-msgstr ""
+msgstr "[ SONRAKI ADIM SINYALI GÖNDERILIYOR ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:365
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:368
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr ""
+msgstr "[ STEP OVER SINYALI GÖNDERME ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:400
 msgid "command: %s\n"
-msgstr ""
+msgstr "Komuta: %s\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:468
 msgid "Unsaved Modifications"
-msgstr ""
+msgstr "Kaydedilmemiş Değişiklikler"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
 msgid ""
 "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
 msgstr ""
+"Kaydedilmemiş değişiklikler var.\n"
+"        Tüm değişiklikleri kaydetmek ve testleri çalıştırmak istiyor musunuz?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid "No tests selected"
-msgstr ""
+msgstr "Seçilen test yok"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid ""
 "No tests selected. \n"
 "Continue anyway?"
 msgstr ""
+"Hiçbir test seçilmedi. \n"
+"Yine de devam edelim mi?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
 msgid ""
 "\n"
 "Test finished {}"
 msgstr ""
+"\n"
+"Test tamamlandı {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr ""
+msgstr "Mesaj günlüğü işlem belleğinin %80'ini aştı, şimdilik durduruluyor..."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
-msgstr ""
+msgstr "Başlangıç"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:768
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Start robot"
-msgstr ""
+msgstr "Robotu başlat"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:769
 msgid "Start running the robot test suite"
-msgstr ""
+msgstr "Robot test paketini çalıştırmaya başlayın"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Debug"
-msgstr ""
+msgstr "Hata Ayıklama"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr ""
+msgstr "Robot test paketini DEBUG günlük seviyesi ile çalıştırmaya başlayın"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: src/robotide/run/ui.py:30
 msgid "Stop"
-msgstr ""
+msgstr "Dur"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Pause"
-msgstr ""
+msgstr "Duraklat"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:780
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Pause test execution"
-msgstr ""
+msgstr "Test yürütmeyi duraklatma"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:782
 msgid "Continue"
-msgstr ""
+msgstr "Devam et"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:785
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Continue test execution"
-msgstr ""
+msgstr "Test yürütmeye devam et"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Next"
-msgstr ""
+msgstr "Sonraki"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:788
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:789
 msgid "Step next"
-msgstr ""
+msgstr "Sonraki adım"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:826
 msgid "Execution Profile:  "
-msgstr ""
+msgstr "Yürütme Profili:  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "Choose which method to use for running the tests"
-msgstr ""
+msgstr "Testleri çalıştırmak için hangi yöntemin kullanılacağını seçin"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:836
 msgid "Open Logs Directory"
-msgstr ""
+msgstr "Günlükler Dizinini Aç"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:838
 msgid "View All Logs in Explorer"
-msgstr ""
+msgstr "Explorer'da Tüm Günlükleri Görüntüle"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Report"
-msgstr ""
+msgstr " Rapor"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "View Robot Report in Browser (CtrlCmd-R)"
-msgstr ""
+msgstr "Robot Raporunu Tarayıcıda Görüntüle (CtrlCmd-R)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:842
 msgid " Log"
-msgstr ""
+msgstr " Günlük"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:843
 msgid "View Robot Log in Browser (CtrlCmd-L)"
-msgstr ""
+msgstr "Robot Günlüğünü Tarayıcıda Görüntüle (CtrlCmd-L)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:850
 msgid " Autosave  "
-msgstr ""
+msgstr " Otomatik Kaydetme  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:851
 msgid "Automatically save all changes before running"
-msgstr ""
+msgstr "Çalıştırmadan önce tüm değişiklikleri otomatik olarak kaydet"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:856
 msgid " Pause after failure  "
-msgstr ""
+msgstr " Arıza sonrası duraklama  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:857
 msgid "Automatically pause after failing keyword"
-msgstr ""
+msgstr "Başarısız anahtar kelimeden sonra otomatik olarak duraklat"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
-msgstr ""
+msgstr "Ayarlar"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:973
 msgid "Console log"
-msgstr ""
+msgstr "Konsol günlüğü"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:977
 msgid "Message log"
-msgstr ""
+msgstr "Mesaj günlüğü"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1100
 msgid "Starting test:"
-msgstr ""
+msgstr "Başlangıç testi:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
 msgid "Ending test:"
-msgstr ""
+msgstr "Test bitiyor:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1113
 msgid "UNKNOWN STATUS:"
-msgstr ""
+msgstr "DURUMU BILINMIYOR:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1141
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1143
 msgid "<<  PAUSED  >>"
-msgstr ""
+msgstr "<<  PAUSED  >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1148
 msgid "<< CONTINUE >>"
-msgstr ""
+msgstr "<< CONTINUE >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
-msgstr ""
+msgstr "<<  CONTINUE  >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
-msgstr ""
+msgstr "Günlük dizini yok"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
 msgstr ""
+"Günlükler dizini yok. \n"
+"Lütfen testleri çalıştırın ve tekrar deneyin"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
-msgstr ""
+msgstr "RIDE - Tercihler"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1298
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
-msgstr ""
+msgstr "geçen süre: %s  pass: %s  skip: %s  fail: %s"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1332
 msgid "  current keyword: "
-msgstr ""
+msgstr "  geçerli anahtar kelime: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
@@ -576,10 +586,14 @@ msgid ""
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
+"[Navigate]\n"
+"        !Go &Back | Ağaçtaki önceki konuma geri git | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Ağaçtaki sonraki konuma ileri git | Alt-%s | ART_GO_FORWARD\n"
+"        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
-msgstr ""
+msgstr "Seçilene Etiket Ekle"
 
 #: src/robotide/controller/ui/treecontroller.py:56
 #: src/robotide/controller/ui/treecontroller.py:58
@@ -588,100 +602,100 @@ msgstr ""
 #: src/robotide/editor/settingeditors.py:659
 #: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
-msgstr ""
+msgstr "Düzenle"
 
 #: src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
-msgstr ""
+msgstr "Seçileni Temizle"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
-msgstr ""
+msgstr "Seçilene Etiket Ekle"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
-msgstr ""
+msgstr "Etiket Adını Girin"
 
 #: src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Düzenle]\n"
 
 #: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr ""
+msgstr "&Undo | Son değişikliği geri al | Ctrlcmd-Z\n"
 
 #: src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr ""
+msgstr "&Redo | Değişikliği yinele | Ctrlcmd-Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr ""
+msgstr "Cu&t | Cut | Ctrlcmd-X\n"
 
 #: src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
-msgstr ""
+msgstr "&Copy | Copy | Ctrlcmd-C\n"
 
 #: src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr ""
+msgstr "&Paste | Paste | Ctrlcmd-V\n"
 
 #: src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
-msgstr ""
+msgstr "&Insert | Insert | Shift-Ctrl-V\n"
 
 #: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr ""
+msgstr "&Delete | Delete | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr ""
+msgstr "Satırları Yorumla | Seçili satırları yorumla | Ctrlcmd-3\n"
 
 #: src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
+msgstr "Yorum Hücreleri | # ile yorum hücreleri | Ctrlcmd-Shift-3\n"
 
 #: src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
+msgstr "Satırların yorumunu kaldır | Seçili satırların yorumunu kaldır | Ctrlcmd-4\n"
 
 #: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
+msgstr "Hücrelerdeki Yorumu Kaldır | Hücrelerdeki Yorumu # ile Kaldır | Ctrlcmd-Shift-4\n"
 
 #: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr ""
+msgstr "Hücre Ekle | Hücre Ekle | Ctrlcmd-Shift-I\n"
 
 #: src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr ""
+msgstr "Hücreleri Sil | Ctrlcmd-Shift-D\n"
 
 #: src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr ""
+msgstr "Satır Ekle | Satır Ekle | Ctrlcmd-I\n"
 
 #: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr ""
+msgstr "Satırları Sil | Satırları Sil | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "Satırları Yukarı Taşı (Alt-Up veya Ctrl-Shift-Up) | Satırları Yukarı Taşı\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
+msgstr "Satırları Aşağı Taşı (Alt-Aşağı veya Ctrl-Shift-Aşağı) | Satırları Aşağı Taşı\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
-msgstr ""
+msgstr "[Araçlar]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr ""
+msgstr "İçerik Yardımı (Ctrl-Space veya Ctrl-Alt-Space) | Olası anahtar sözcük ve değişken tamamlamalarını göster | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -691,28 +705,35 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
+"Varsayılan düzenleyici eklentisi. Izgara veya Hücre Düzenleyici olarak da bilinir.\n"
+"\n"
+"    Bu eklenti, Robot Framework\n"
+"    test verilerinin çeşitli öğeleri için düzenleyiciler uygular.\n"
+"    "
 
 #: src/robotide/editor/__init__.py:95
 msgid "Editor"
-msgstr ""
+msgstr "Editör"
 
 #: src/robotide/editor/dialoghelps.py:31
 msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
+msgstr "Değerdeki olası borular '\\|' gibi bir ters eğik çizgi ile kaçılmalıdır."
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
+msgstr "Etiketleri 'etiket | ikinci etiket | üçüncü' gibi bir boru karakteri ile ayırın."
 
 #: src/robotide/editor/dialoghelps.py:33
 msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
-msgstr ""
+msgstr "Olası argümanları 'Anahtar Sözcüğüm | arg 1 | arg 2' gibi bir boru karakteriyle ayırın."
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
+"'1dk 10s' veya '2 saat' gibi zaman sözdizimini kullanın veya değeri saniye olarak verin.\n"
+"Robot v3.0.1'den önce '3 dakika | Mesajım burada' gibi isteğe bağlı bir mesaj belirtilebilirdi."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
@@ -721,196 +742,202 @@ msgid ""
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
+"'${arg1} | ${arg2}' gibi bir boru karakteri ile ayrılmış argümanları belirtin.\n"
+"Varsayılan değerler eşittir işareti kullanılarak verilir ve son bağımsız değişken bir liste değişkeni olabilir.\n"
+"Örnek: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+"Not. Bu alanda değişken kısayollarını kullanabilirsiniz."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
 "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
+"Takma adlar, aynı kütüphaneyi farklı adlarla birden çok kez içe aktarmak için kullanılabilir.\n"
+"Alias'ın başına şu eklenir: "
 
 #: src/robotide/editor/dialoghelps.py:43
 msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
+msgstr " . Robot v6.0'dan bu yana, eski WITH NAME ile içe aktarmaların AS ile değiştirildiğini unutmayın."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
-msgstr ""
+msgstr "Değişkenin adını ve değerini verin."
 
 #: src/robotide/editor/dialoghelps.py:46
 msgid "Give name and value of the variable. Input list variable items into separate cells."
-msgstr ""
+msgstr "Değişkenin adını ve değerini verin. Liste değişkeni öğelerini ayrı hücrelere girin."
 
 #: src/robotide/editor/dialoghelps.py:48
 msgid "Give name and value of the variable. Input dictionary items into separate cells."
-msgstr ""
+msgstr "Değişkenin adını ve değerini verin. Sözlük öğelerini ayrı hücrelere girin."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
-msgstr ""
+msgstr "Bireysel öğeler `anahtar=değer` biçiminde olmalıdır"
 
 #: src/robotide/editor/dialoghelps.py:50
 msgid "Give name, optional arguments and optional alias of the library to import."
-msgstr ""
+msgstr "İçe aktarılacak kütüphanenin adını, isteğe bağlı argümanlarını ve isteğe bağlı takma adını verin."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr ""
+msgstr "Birden fazla argümanı 'arg 1 | arg 2' gibi bir boru karakteriyle ayırın."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
+msgstr "Kütüphane adını, kütüphane dokümantasyon URL'sini ve kurulacak komutu verin."
 
 #: src/robotide/editor/dialoghelps.py:53
 msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
-msgstr ""
+msgstr "Komutta, gerçek yolla değiştirilecek bir yer tutucu olarak `%%executable` kullanabilirsiniz"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
-msgstr ""
+msgstr " Python çalıştırılabilir dosyasına."
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
+msgstr "İçe aktarılacak değişken dosyasının yolunu ve isteğe bağlı argümanlarını verin."
 
 #: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
-msgstr ""
+msgstr "İçe aktarılacak kaynak dosyasının yolunu verin."
 
 #: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
+msgstr "Mevcut kaynaklar otomatik olarak kaynak ağacına yüklenecektir."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
-msgstr ""
+msgstr "Belgeleri verin."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "New resources must be created separately."
-msgstr ""
+msgstr "Yeni kaynaklar ayrıca oluşturulmalıdır."
 
 #: src/robotide/editor/dialoghelps.py:60
 msgid "Simple formatting like *bold* and _italic_ can be used."
-msgstr ""
+msgstr "Kalın* ve _italik_ gibi basit biçimlendirme kullanılabilir."
 
 #: src/robotide/editor/dialoghelps.py:61
 msgid "Additionally, URLs are converted to clickable links."
-msgstr ""
+msgstr "Ayrıca, URL'ler tıklanabilir bağlantılara dönüştürülür."
 
 #: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
+msgstr "Bu etiketler, bu test paketindeki tüm test senaryolarına ayarlanır."
 
 #: src/robotide/editor/dialoghelps.py:64
 msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
-msgstr ""
+msgstr "Bu etiketler, test senaryolarının kendi etiketleri olmadığı sürece bu test paketindeki tüm test senaryolarına ayarlanır."
 
 #: src/robotide/editor/dialoghelps.py:66
 msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
-msgstr ""
+msgstr "Bu etiketler, bu test paketindeki tüm test senaryolarına uygulanır. Bu alan Robot Framework 6.0'dan beri mevcuttur ve sürüm 7.0'dan sonra Force ve Default Etiketlerinin yerini alacaktır."
 
 #: src/robotide/editor/dialoghelps.py:70
 msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
-msgstr ""
+msgstr "Bu etiketler, Etiketleri Zorla seçeneğine ek olarak bu test vakasına ayarlanır ve olası Varsayılan Etiketleri geçersiz kılar."
 
 #: src/robotide/editor/dialoghelps.py:73
 msgid "This keyword is executed before executing any of the test cases or lower level suites."
-msgstr ""
+msgstr "Bu anahtar kelime, test senaryolarından veya daha düşük seviyeli süitlerden herhangi biri çalıştırılmadan önce yürütülür."
 
 #: src/robotide/editor/dialoghelps.py:75
 msgid "This keyword is executed after all test cases and lower level suites have been executed."
-msgstr ""
+msgstr "Bu anahtar kelime, tüm test senaryoları ve alt seviye süitler yürütüldükten sonra çalıştırılır."
 
 #: src/robotide/editor/dialoghelps.py:77
 msgid "This keyword is executed before every test case in this suite unless test cases override it."
-msgstr ""
+msgstr "Bu anahtar sözcük, test senaryoları geçersiz kılmadığı sürece bu paketteki her test senaryosundan önce yürütülür."
 
 #: src/robotide/editor/dialoghelps.py:79
 msgid "This keyword is executed after every test case in this suite unless test cases override it."
-msgstr ""
+msgstr "Bu anahtar sözcük, test senaryoları geçersiz kılmadığı sürece bu paketteki her test senaryosundan sonra yürütülür."
 
 #: src/robotide/editor/dialoghelps.py:81
 msgid "This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
+msgstr "Bu anahtar sözcük, bu test durumundaki veya anahtar sözcükteki diğer anahtar sözcüklerden önce yürütülür."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
+msgstr "Test senaryolarında, paket düzeyinde ayarlanan olası Test Kurulumunu geçersiz kılar."
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
-msgstr ""
+msgstr "Anahtar kelimelerdeki kurulum Robot v7.0'dan beri mevcuttur."
 
 #: src/robotide/editor/dialoghelps.py:84
 msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
-msgstr ""
+msgstr "Bu anahtar sözcük, test veya anahtar sözcük başarısız olsa bile bu test senaryosundaki veya anahtar sözcükteki diğer anahtar sözcüklerden sonra yürütülür."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
+msgstr "Test senaryolarında, paket düzeyinde ayarlanan olası Test Yıkımını geçersiz kılar."
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
+msgstr "Bu paketteki testler tarafından kullanılan varsayılan şablon anahtar sözcüğünü belirtir."
 
 #: src/robotide/editor/dialoghelps.py:89
 msgid "The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
+msgstr "Test senaryoları yalnızca bu anahtar kelimeye argüman olarak kullanılacak verileri içerecektir."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
-msgstr ""
+msgstr "Kullanılacak şablon anahtar sözcüğünü belirtir."
 
 #: src/robotide/editor/dialoghelps.py:91
 msgid "The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
+msgstr "Testin kendisi yalnızca bu anahtar kelimeye argüman olarak kullanılacak verileri içerecektir."
 
 #: src/robotide/editor/dialoghelps.py:93
 msgid "Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
+msgstr "Dönüş değerini belirtin. Birden fazla değeri ayırmak için bir boru karakteri kullanın."
 
 #: src/robotide/editor/dialoghelps.py:96
 msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
-msgstr ""
+msgstr "Bu paketteki test senaryolarının zorla iptal edilmeden önce yürütülmesine izin verilen maksimum süre."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
+msgstr "Zaman aşımı ayarı kullanılarak bireysel test senaryoları tarafından geçersiz kılınabilir."
 
 #: src/robotide/editor/dialoghelps.py:98
 msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
-msgstr ""
+msgstr "Bu testin/anahtar kelimenin zorla iptal edilmeden önce yürütülmesine izin verilen maksimum süre."
 
 #: src/robotide/editor/dialoghelps.py:99
 msgid "With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
+msgstr "Test senaryolarında bu ayar, paket düzeyinde ayarlanan Test Zaman Aşımını geçersiz kılar."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
-msgstr ""
+msgstr "Paket meta verileri için bir ad ve değer verin."
 
 #: src/robotide/editor/dialoghelps.py:101
 msgid "Give a name for the new test case."
-msgstr ""
+msgstr "Yeni test senaryosu için bir ad verin."
 
 #: src/robotide/editor/dialoghelps.py:102
 msgid "Give a name and arguments for the new user keyword."
-msgstr ""
+msgstr "Yeni kullanıcı anahtar sözcüğü için bir ad ve argümanlar verin."
 
 #: src/robotide/editor/dialoghelps.py:103
 msgid "Give a name for the new user keyword."
-msgstr ""
+msgstr "Yeni kullanıcı anahtar sözcüğü için bir ad verin."
 
 #: src/robotide/editor/editordialogs.py:84
 #: src/robotide/editor/settingeditors.py:487
 #: src/robotide/editor/settingeditors.py:575
 #: src/robotide/editor/settingeditors.py:739
 msgid "Comment"
-msgstr ""
+msgstr "Yorum"
 
 #: src/robotide/editor/editordialogs.py:135
 msgid "Scalar Variable"
-msgstr ""
+msgstr "Skaler Değişken"
 
 #: src/robotide/editor/editordialogs.py:143
 #: src/robotide/editor/editordialogs.py:162
@@ -927,7 +954,7 @@ msgstr ""
 #: src/robotide/ui/filedialogs.py:331
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
-msgstr ""
+msgstr "İsim"
 
 #: src/robotide/editor/editordialogs.py:143
 #: src/robotide/editor/editordialogs.py:163
@@ -936,113 +963,113 @@ msgstr ""
 #: src/robotide/editor/settingeditors.py:487
 #: src/robotide/editor/settingeditors.py:739
 msgid "Value"
-msgstr ""
+msgstr "Değer"
 
 #: src/robotide/editor/editordialogs.py:155
 msgid "List Variable"
-msgstr ""
+msgstr "Liste Değişkeni"
 
 #: src/robotide/editor/editordialogs.py:175
 msgid "Dictionary Variable"
-msgstr ""
+msgstr "Sözlük Değişkeni"
 
 #: src/robotide/editor/editordialogs.py:199
 #: src/robotide/editor/editordialogs.py:230
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:666
 msgid "Library"
-msgstr ""
+msgstr "Kütüphane"
 
 #: src/robotide/editor/editordialogs.py:209
 msgid "Alias"
-msgstr ""
+msgstr "Takma ad"
 
 #: src/robotide/editor/editordialogs.py:209
 #: src/robotide/editor/editordialogs.py:278
 msgid "Args"
-msgstr ""
+msgstr "Args"
 
 #: src/robotide/editor/editordialogs.py:247
 #: src/robotide/editor/editordialogs.py:308
 #: src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
-msgstr ""
+msgstr "Dokümantasyon"
 
 #: src/robotide/editor/editordialogs.py:248
 #: src/robotide/run/configmanagerui.py:101
 msgid "Command"
-msgstr ""
+msgstr "Komuta"
 
 #: src/robotide/editor/editordialogs.py:271
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:681
 msgid "Variables"
-msgstr ""
+msgstr "Değişkenler"
 
 #: src/robotide/editor/editordialogs.py:277
 #: src/robotide/editor/editordialogs.py:295
 msgid "Path"
-msgstr ""
+msgstr "Yol"
 
 #: src/robotide/editor/editordialogs.py:290
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:673
 msgid "Resource"
-msgstr ""
+msgstr "Kaynak"
 
 #: src/robotide/editor/editordialogs.py:396
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
-msgstr ""
+msgstr "Etiketler"
 
 #: src/robotide/editor/editordialogs.py:424
 msgid "Suite Setup is run before any tests"
-msgstr ""
+msgstr "Suite Kurulumu herhangi bir testten önce çalıştırılır"
 
 #: src/robotide/editor/editordialogs.py:483
 msgid "Setup"
-msgstr ""
+msgstr "Kurulum"
 
 #: src/robotide/editor/editordialogs.py:497
 msgid "Teardown"
-msgstr ""
+msgstr "Yıkım"
 
 #: src/robotide/editor/editordialogs.py:511
 msgid "Template"
-msgstr ""
+msgstr "Şablon"
 
 #: src/robotide/editor/editordialogs.py:571
 msgid "Test Timeout"
-msgstr ""
+msgstr "Test Zaman Aşımı"
 
 #: src/robotide/editor/editordialogs.py:585
 msgid "Timeout"
-msgstr ""
+msgstr "Zaman Aşımı"
 
 #: src/robotide/editor/editordialogs.py:598
 #: src/robotide/editor/settingeditors.py:739
 msgid "Metadata"
-msgstr ""
+msgstr "Metadata"
 
 #: src/robotide/editor/editordialogs.py:617
 msgid "New Test Case"
-msgstr ""
+msgstr "Yeni Test Vakası"
 
 #: src/robotide/editor/editordialogs.py:642
 msgid "Copy User Keyword"
-msgstr ""
+msgstr "Kullanıcı Anahtar Kelimesini Kopyala"
 
 #: src/robotide/editor/editordialogs.py:671
 msgid "New User Keyword"
-msgstr ""
+msgstr "Yeni Kullanıcı Anahtar Kelimesi"
 
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
 #: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
-msgstr ""
+msgstr " (SADECE OKUYUN)"
 
 #: src/robotide/editor/editors.py:350
 #: src/robotide/searchtests/dialogsearchtests.py:61
@@ -1050,98 +1077,98 @@ msgstr ""
 #: src/robotide/ui/keywordsearch.py:357
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Source"
-msgstr ""
+msgstr "Kaynak"
 
 #: src/robotide/editor/editors.py:387
 #: src/robotide/ui/keywordsearch.py:207
 #: src/robotide/ui/treenodehandlers.py:493
 #: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
-msgstr ""
+msgstr "Kullanımları Bul"
 
 #: src/robotide/editor/fieldeditors.py:191
 msgid "Columns"
-msgstr ""
+msgstr "Sütunlar"
 
 #: src/robotide/editor/fieldeditors.py:195
 msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
-msgstr ""
+msgstr "Bu düzenleyicide gösterilen sütun sayısı. Seçilen değer saklanır ve global olarak kullanılır."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
-msgstr ""
+msgstr "Hücreleri Sil Ctrl-Shift-D"
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr ""
+msgstr "Hücre Ekle Ctrl-Shift-I"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Copy\tCtrl-C"
-msgstr ""
+msgstr "Kopyala Ctrl-C"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Cut\tCtrl-X"
-msgstr ""
+msgstr "Kes Ctrl-X"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Select All\tCtrl-A"
-msgstr ""
+msgstr "Tümünü Seç Ctrl-A"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Delete\tDel"
-msgstr ""
+msgstr "Del'i Sil"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Insert\tCtrl-Shift-V"
-msgstr ""
+msgstr "Ekle Ctrl-Shift-V"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Paste\tCtrl-V"
-msgstr ""
+msgstr "Yapıştır Ctrl-V"
 
 #: src/robotide/editor/kweditor.py:104
 msgid "Create Keyword"
-msgstr ""
+msgstr "Anahtar Kelime Oluştur"
 
 #: src/robotide/editor/kweditor.py:105
 msgid "Extract Keyword"
-msgstr ""
+msgstr "Anahtar Kelimeyi Çıkarın"
 
 #: src/robotide/editor/kweditor.py:106
 msgid "Extract Variable"
-msgstr ""
+msgstr "Özüt Değişkeni"
 
 #: src/robotide/editor/kweditor.py:108
 msgid "Find Where Used"
-msgstr ""
+msgstr "Kullanıldığı Yeri Bul"
 
 #: src/robotide/editor/kweditor.py:109
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr ""
+msgstr "JSON Düzenleyici Ctrl-Shift-J"
 
 #: src/robotide/editor/kweditor.py:111
 msgid "Go to Definition\tCtrl-B"
-msgstr ""
+msgstr "Tanıma git Ctrl-B"
 
 #: src/robotide/editor/kweditor.py:113
 msgid "Undo\tCtrl-Z"
-msgstr ""
+msgstr "Geri Al Ctrl-Z"
 
 #: src/robotide/editor/kweditor.py:114
 msgid "Redo\tCtrl-Y"
-msgstr ""
+msgstr "Yinele Ctrl-Y"
 
 #: src/robotide/editor/kweditor.py:116
 msgid "Make Variable\tCtrl-1"
-msgstr ""
+msgstr "Değişken Yap Ctrl-1"
 
 #: src/robotide/editor/kweditor.py:117
 msgid "Make List Variable\tCtrl-2"
-msgstr ""
+msgstr "Liste Değişkeni Yap Ctrl-2"
 
 #: src/robotide/editor/kweditor.py:118
 msgid "Make Dict Variable\tCtrl-5"
-msgstr ""
+msgstr "Dict Değişkeni Yap Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
 msgid ""
@@ -1156,50 +1183,60 @@ msgid ""
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
+"<b>Anahtar kelime RIDE tarafından algılanmadı</b>\n"
+"        <br>Olası düzeltmeler:<br>\n"
+"        <ul>\n"
+"            <li>Anahtar sözcüğü içeren kütüphane veya kaynak dosyasını içe aktarın.</li>\n"
+"            <li>Kütüphane içe aktarma hataları için: Örneğin Java kütüphaneleri için anahtar kelime tamamlamayı\n"
+"            etkinleştirmek için kütüphane spec XML'ini\n"
+"            (Araçlar / Kütüphane Spec XML'ini İçe Aktar veya XML dosyasını\n"
+"            doğru adıyla PYTHONPATH'e ekleyerek) içe aktarmayı düşünün.\n"
+"            Kütüphane özellikleri XML'i, Robot Framework'teki libdoc aracı kullanılarak oluşturulabilir.</li>\n"
+"        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
 #: src/robotide/ui/treenodehandlers.py:243
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
-msgstr ""
+msgstr "Doğrulama Hatası"
 
 #: src/robotide/editor/kweditor.py:1218
 msgid "New name"
-msgstr ""
+msgstr "Yeni isim"
 
 #: src/robotide/editor/kweditor.py:1231
 msgid "Save"
-msgstr ""
+msgstr "Kaydet"
 
 #: src/robotide/editor/kweditor.py:1234
 #: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
-msgstr ""
+msgstr "İptal"
 
 #: src/robotide/editor/kweditor.py:1264
 msgid "Validation Error!"
-msgstr ""
+msgstr "Doğrulama Hatası!"
 
 #: src/robotide/editor/kweditor.py:1265
 msgid "Error in JSON:"
-msgstr ""
+msgstr "JSON'da hata:"
 
 #: src/robotide/editor/kweditor.py:1265
 msgid "Save anyway?"
-msgstr ""
+msgstr "Yine de kurtarmak mı?"
 
 #: src/robotide/editor/kweditor.py:1441
 msgid "Please select what you want to check for usage"
-msgstr ""
+msgstr "Lütfen neyi kontrol etmek istediğinizi seçin"
 
 #: src/robotide/editor/kweditor.py:1444
 msgid "Complete cell content"
-msgstr ""
+msgstr "Tam hücre içeriği"
 
 #: src/robotide/editor/kweditor.py:1445
 msgid "Variable "
-msgstr ""
+msgstr "Değişken "
 
 #: src/robotide/editor/kweditor.py:1457
 #: src/robotide/editor/texteditor.py:1119
@@ -1210,7 +1247,7 @@ msgstr ""
 #: src/robotide/ui/review.py:98
 #: src/robotide/ui/review.py:160
 msgid "Search"
-msgstr ""
+msgstr "Arama"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/tagdialogs.py:233
@@ -1218,70 +1255,70 @@ msgstr ""
 #: src/robotide/ui/treenodehandlers.py:688
 #: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
-msgstr ""
+msgstr "Silme"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
-msgstr ""
+msgstr "Yukarı Taşı Ctrl-Up"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
-msgstr ""
+msgstr "Aşağı Taşı Ctrl-Aşağı"
 
 #: src/robotide/editor/settingeditors.py:102
 #: src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
-msgstr ""
+msgstr "Temiz"
 
 #: src/robotide/editor/settingeditors.py:487
 msgid "Variable"
-msgstr ""
+msgstr "Değişken"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add Dict"
-msgstr ""
+msgstr "Dikte Ekle"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add List"
-msgstr ""
+msgstr "Liste Ekle"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add Scalar"
-msgstr ""
+msgstr "Skaler Ekle"
 
 #: src/robotide/editor/settingeditors.py:575
 msgid "Import"
-msgstr ""
+msgstr "İthalat"
 
 #: src/robotide/editor/settingeditors.py:575
 msgid "Name / Path"
-msgstr ""
+msgstr "İsim / Yol"
 
 #: src/robotide/editor/settingeditors.py:576
 msgid "Import Failed Help"
-msgstr ""
+msgstr "İçe Aktarma Başarısız Yardım"
 
 #: src/robotide/editor/settingeditors.py:590
 msgid "Add Import"
-msgstr ""
+msgstr "İçe Aktarma Ekle"
 
 #: src/robotide/editor/settingeditors.py:633
 msgid "Open Library Documentation"
-msgstr ""
+msgstr "Açık Kütüphane Dokümantasyonu"
 
 #: src/robotide/editor/settingeditors.py:636
 msgid "Install Library"
-msgstr ""
+msgstr "Kütüphane Kurun"
 
 #: src/robotide/editor/settingeditors.py:636
 #: src/robotide/spec/specimporter.py:34
 #: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
-msgstr ""
+msgstr "Kütüphane Spesifikasyon XML'ini İçe Aktar"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid ""
@@ -1300,52 +1337,66 @@ msgid ""
 "            </li>\n"
 "        </ul>"
 msgstr ""
+"<br>Olası düzeltmeler ve notlar:<br>\n"
+"        <ul>\n"
+"            <li>İçe aktarma hatası kırmızı renkle gösterilir.</li>\n"
+"            <li>Hata hakkında ayrıntılı bilgi için Araçlar / RIDE Günlüğünü Görüntüle bölümüne bakın.</li>\n"
+"            <li>İçe aktarma, RIDE'nin başlatmadığı bir değişken içeriyorsa,\n"
+"            değişkenini varsayılan bir değerle değişken tablosuna eklemeyi düşünün.</li>\n"
+"            <li>Kütüphane içe aktarma hatası için: Örneğin Java kütüphaneleri için anahtar kelime tamamlamayı\n"
+"            etkinleştirmek için kütüphane spec XML'ini içe aktarmayı düşünün (Araçlar / Kütüphane Spec XML'ini İçe Aktar veya\n"
+"            tarafından XML dosyasını doğru adla PYTHONPATH'e ekleyerek).\n"
+"            Kütüphane özellikleri XML'i Robot Framework'ten libdoc aracı kullanılarak oluşturulabilir.\n"
+"            Daha fazla bilgi için \n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a> adresine bakın.\n"
+"            </li>\n"
+"        </ul>"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
-msgstr ""
+msgstr "İçe aktarma hatası işleme"
 
 #: src/robotide/editor/settingeditors.py:740
 msgid "Add Metadata"
-msgstr ""
+msgstr "Meta Veri Ekleme"
 
 #: src/robotide/editor/texteditor.py:383
 msgid "Text Edit"
-msgstr ""
+msgstr "Metin Düzenleme"
 
 #: src/robotide/editor/texteditor.py:467
 #: src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
-msgstr ""
+msgstr "Kaynak: "
 
 #: src/robotide/editor/texteditor.py:909
 msgid "Can not apply changes from Text Editor"
-msgstr ""
+msgstr "Metin Düzenleyiciden değişiklikler uygulanamıyor"
 
 #: src/robotide/editor/texteditor.py:910
 msgid "ERROR: Data sanity check failed!"
-msgstr ""
+msgstr "HATA: Veri sağlık kontrolü başarısız oldu!"
 
 #: src/robotide/editor/texteditor.py:910
 msgid "Error at line"
-msgstr ""
+msgstr "Satırda hata"
 
 #: src/robotide/editor/texteditor.py:911
 msgid "Reset changes?"
-msgstr ""
+msgstr "Sıfırlama değişiklikleri?"
 
 #: src/robotide/editor/texteditor.py:1096
 msgid "Apply Changes"
-msgstr ""
+msgstr "Değişiklikleri Uygula"
 
 #: src/robotide/editor/texteditor.py:1131
 msgid "Syntax colorization disabled due to missing requirements."
-msgstr ""
+msgstr "Sözdizimi renklendirmesi eksik gereksinimler nedeniyle devre dışı bırakıldı."
 
 #: src/robotide/editor/texteditor.py:1132
 msgid "Get help"
-msgstr ""
+msgstr "Yardım alın"
 
 #: src/robotide/editor/texteditor.py:1147
 msgid ""
@@ -1375,438 +1426,465 @@ msgid ""
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>Sözdizimi renklendirme</h1>\n"
+"        <p>\n"
+"        Metin Düzenleme için sözdizimi renklendirmesi <a href='https://pygments.org/'>Pygments</a> sözdizimi vurgulayıcısını kullanır.\n"
+"        </p>\n"
+"        <p>\n"
+"        Pygments'i komut satırından şu şekilde yükleyin:\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"        Veya:\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        Ardından, RIDE'ı yeniden başlatın.\n"
+"        </p>\n"
+"        <p>\n"
+"        Eğer pip veya easy_install programınız yoksa,\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        >bu talimatları takip edin</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Pygments kurulumu hakkında daha fazla bilgi için <a href='https://pygments.org/download/'>siteye bakın</a>.\n"
+"        </p>\n"
+"        "
 
 #: src/robotide/editor/texteditor.py:1172
 msgid "Getting syntax colorization"
-msgstr ""
+msgstr "Sözdizimi renklendirmesi alma"
 
 #: src/robotide/editor/texteditor.py:1273
 msgid "No matches found."
-msgstr ""
+msgstr "Eşleşme bulunamadı."
 
 #: src/robotide/log/log.py:45
 msgid "RIDE Log"
-msgstr ""
+msgstr "RIDE Günlüğü"
 
 #: src/robotide/log/log.py:86
 msgid "View RIDE Log"
-msgstr ""
+msgstr "Sürüş Günlüğünü Görüntüle"
 
 #: src/robotide/parserlog/parserlog.py:45
 msgid "Parser Log"
-msgstr ""
+msgstr "Ayrıştırıcı Günlüğü"
 
 #: src/robotide/parserlog/parserlog.py:85
 msgid "View Parser Log"
-msgstr ""
+msgstr "Ayrıştırıcı Günlüğünü Görüntüle"
 
 #: src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
-msgstr ""
+msgstr "RIDE Masaüstü Kısayolu Oluşturma"
 
 #: src/robotide/preferences/editors.py:42
 msgid "Text background"
-msgstr ""
+msgstr "Metin arka planı"
 
 #: src/robotide/preferences/editors.py:85
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
-msgstr ""
+msgstr "Renkleri varsayılana sıfırla"
 
 #: src/robotide/preferences/editors.py:86
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
-msgstr ""
+msgstr "Ayarları Kaydet veya Yükle"
 
 #: src/robotide/preferences/editors.py:129
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
-msgstr ""
+msgstr "Yazı Tipi Boyutu"
 
 #: src/robotide/preferences/editors.py:138
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
-msgstr ""
+msgstr "Yakınlaştırma Faktörü"
 
 #: src/robotide/preferences/editors.py:143
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
-msgstr ""
+msgstr "Sabit genişlikte yazı tipi kullanın"
 
 #: src/robotide/preferences/editors.py:148
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
-msgstr ""
+msgstr "Yazı Yüzü"
 
 #: src/robotide/preferences/editors.py:159
 #: src/robotide/preferences/editors.py:162
 msgid "Text Editor"
-msgstr ""
+msgstr "Metin Düzenleyici"
 
 #: src/robotide/preferences/editors.py:163
 msgid "Text Editor Settings"
-msgstr ""
+msgstr "Metin Düzenleyici Ayarları"
 
 #: src/robotide/preferences/editors.py:174
 msgid "Argument foreground"
-msgstr ""
+msgstr "Argüman ön planı"
 
 #: src/robotide/preferences/editors.py:175
 msgid "Comment foreground"
-msgstr ""
+msgstr "Yorum ön plan"
 
 #: src/robotide/preferences/editors.py:176
 #: src/robotide/preferences/editors.py:392
 msgid "Error foreground"
-msgstr ""
+msgstr "Hata ön planı"
 
 #: src/robotide/preferences/editors.py:177
 msgid "Gherkin keyword foreground"
-msgstr ""
+msgstr "Gherkin anahtar kelimesi ön planda"
 
 #: src/robotide/preferences/editors.py:178
 msgid "Heading foreground"
-msgstr ""
+msgstr "Ön plan başlığı"
 
 #: src/robotide/preferences/editors.py:179
 msgid "Import foreground"
-msgstr ""
+msgstr "Ön planı içe aktar"
 
 #: src/robotide/preferences/editors.py:180
 msgid "Variable foreground"
-msgstr ""
+msgstr "Değişken ön plan"
 
 #: src/robotide/preferences/editors.py:181
 msgid "Keyword definition foreground"
-msgstr ""
+msgstr "Anahtar kelime tanımı ön plan"
 
 #: src/robotide/preferences/editors.py:182
 msgid "Keyword call foreground"
-msgstr ""
+msgstr "Anahtar kelime çağrı ön planı"
 
 #: src/robotide/preferences/editors.py:183
 msgid "Separator"
-msgstr ""
+msgstr "Ayırıcı"
 
 #: src/robotide/preferences/editors.py:184
 msgid "Setting foreground"
-msgstr ""
+msgstr "Ön planı ayarlama"
 
 #: src/robotide/preferences/editors.py:185
 msgid "Syntax characters"
-msgstr ""
+msgstr "Sözdizimi karakterleri"
 
 #: src/robotide/preferences/editors.py:190
 #: src/robotide/preferences/editors.py:390
 msgid "Text foreground"
-msgstr ""
+msgstr "Metin ön planı"
 
 #: src/robotide/preferences/editors.py:231
 #: src/robotide/preferences/editors.py:266
 msgid "Enable auto suggestions"
-msgstr ""
+msgstr "Otomatik önerileri etkinleştir"
 
 #: src/robotide/preferences/editors.py:238
 #: src/robotide/preferences/editors.py:241
 msgid "Grid Editor"
-msgstr ""
+msgstr "Izgara Düzenleyici"
 
 #: src/robotide/preferences/editors.py:242
 msgid "Grid Editor Settings"
-msgstr ""
+msgstr "Izgara Düzenleyici Ayarları"
 
 #: src/robotide/preferences/editors.py:251
 msgid "Default column size"
-msgstr ""
+msgstr "Varsayılan sütun boyutu"
 
 #: src/robotide/preferences/editors.py:255
 msgid "Auto size columns"
-msgstr ""
+msgstr "Sütunları otomatik boyutlandırma"
 
 #: src/robotide/preferences/editors.py:258
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
+"Maksimum sütun boyutu\n"
+"(otomatik boyut açıkken geçerlidir)"
 
 #: src/robotide/preferences/editors.py:262
 msgid "Word wrap and auto size rows"
-msgstr ""
+msgstr "Kelime kaydırma ve otomatik boyut satırları"
 
 #: src/robotide/preferences/editors.py:298
 msgid "User Keyword Foreground"
-msgstr ""
+msgstr "Kullanıcı Anahtar Sözcüğü Ön Plan"
 
 #: src/robotide/preferences/editors.py:299
 msgid "Library Keyword Foreground"
-msgstr ""
+msgstr "Kütüphane Anahtar Sözcüğü Ön Plan"
 
 #: src/robotide/preferences/editors.py:300
 msgid "Variable Foreground"
-msgstr ""
+msgstr "Değişken Ön Plan"
 
 #: src/robotide/preferences/editors.py:301
 msgid "Unknown Variable Foreground"
-msgstr ""
+msgstr "Bilinmiyor Değişken Ön Plan"
 
 #: src/robotide/preferences/editors.py:302
 msgid "Comments Foreground"
-msgstr ""
+msgstr "Yorumlar Ön Plan"
 
 #: src/robotide/preferences/editors.py:303
 msgid "Default Foreground"
-msgstr ""
+msgstr "Varsayılan Ön Plan"
 
 #: src/robotide/preferences/editors.py:304
 msgid "Empty Foreground"
-msgstr ""
+msgstr "Boş Ön Plan"
 
 #: src/robotide/preferences/editors.py:320
 msgid "Variable Background"
-msgstr ""
+msgstr "Değişken Arka Plan"
 
 #: src/robotide/preferences/editors.py:321
 msgid "Keyword Background"
-msgstr ""
+msgstr "Anahtar Kelime Arka Planı"
 
 #: src/robotide/preferences/editors.py:322
 msgid "Mandatory Field Background"
-msgstr ""
+msgstr "Zorunlu Alan Geçmişi"
 
 #: src/robotide/preferences/editors.py:323
 msgid "Optional Field Background"
-msgstr ""
+msgstr "İsteğe Bağlı Alan Arka Planı"
 
 #: src/robotide/preferences/editors.py:324
 msgid "Mandatory Empty Field Background"
-msgstr ""
+msgstr "Zorunlu Boş Alan Arka Planı"
 
 #: src/robotide/preferences/editors.py:325
 msgid "Unknown Background"
-msgstr ""
+msgstr "Bilinmeyen Arka Plan"
 
 #: src/robotide/preferences/editors.py:326
 msgid "Error Background"
-msgstr ""
+msgstr "Hata Arka Planı"
 
 #: src/robotide/preferences/editors.py:327
 msgid "Highlight Background"
-msgstr ""
+msgstr "Arka Planı Vurgula"
 
 #: src/robotide/preferences/editors.py:352
 #: src/robotide/preferences/editors.py:355
 msgid "Test Runner"
-msgstr ""
+msgstr "Test Koşucusu"
 
 #: src/robotide/preferences/editors.py:356
 msgid "Test Runner Settings"
-msgstr ""
+msgstr "Test Çalıştırıcısı Ayarları"
 
 #: src/robotide/preferences/editors.py:360
 msgid "Colors will be active after next RIDE restart."
-msgstr ""
+msgstr "Renkler bir sonraki RIDE yeniden başlatmasından sonra aktif olacaktır."
 
 #: src/robotide/preferences/editors.py:376
 msgid "Shows console colors set by"
-msgstr ""
+msgstr "Tarafından ayarlanan konsol renklerini gösterir"
 
 #: src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
+msgstr "Hiçbiri seçilmemişse tüm testleri çalıştırmak için onay ister "
 
 #: src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
-msgstr ""
+msgstr "Ön planda başarısız"
 
 #: src/robotide/preferences/editors.py:394
 msgid "Pass foreground"
-msgstr ""
+msgstr "Ön planı geç"
 
 #: src/robotide/preferences/editors.py:395
 msgid "Skip foreground"
-msgstr ""
+msgstr "Ön planı atla"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
 msgid "File Explorer"
-msgstr ""
+msgstr "Dosya Gezgini"
 
 #: src/robotide/preferences/fileexplorer.py:59
 msgid "File Explorer Settings"
-msgstr ""
+msgstr "Dosya Gezgini Ayarları"
 
 #: src/robotide/preferences/fileexplorer.py:96
 msgid "Use these colors definitions"
-msgstr ""
+msgstr "Bu renk tanımlarını kullanın"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "İşletim sistemi dosya gezginini kullanma"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
 msgid "Foreground"
-msgstr ""
+msgstr "Ön Plan"
 
 #: src/robotide/preferences/fileexplorer.py:119
 #: src/robotide/preferences/general.py:250
 msgid "Background"
-msgstr ""
+msgstr "Arka plan"
 
 #: src/robotide/preferences/fileexplorer.py:120
 #: src/robotide/preferences/general.py:251
 msgid "Secondary Foreground"
-msgstr ""
+msgstr "İkincil Ön Plan"
 
 #: src/robotide/preferences/fileexplorer.py:121
 #: src/robotide/preferences/general.py:252
 msgid "Secondary Background"
-msgstr ""
+msgstr "İkincil Arka Plan"
 
 #: src/robotide/preferences/general.py:98
 msgid "Apply to Project and File Explorer panels"
-msgstr ""
+msgstr "Proje ve Dosya Gezgini panellerine uygula"
 
 #: src/robotide/preferences/general.py:224
 #: src/robotide/ui/filedialogs.py:148
 msgid "Language"
-msgstr ""
+msgstr "Dil"
 
 #: src/robotide/preferences/general.py:236
 #: src/robotide/preferences/general.py:239
 #: src/robotide/preferences/general.py:242
 msgid "General"
-msgstr ""
+msgstr "Genel"
 
 #: src/robotide/preferences/general.py:240
 msgid "General Settings"
-msgstr ""
+msgstr "Genel Ayarlar"
 
 #: src/robotide/preferences/general.py:253
 msgid "Text Foreground"
-msgstr ""
+msgstr "Metin Ön Planı"
 
 #: src/robotide/preferences/general.py:254
 msgid "Help Background"
-msgstr ""
+msgstr "Yardım Arka Planı"
 
 #: src/robotide/preferences/imports.py:27
 #: src/robotide/preferences/imports.py:31
 msgid "Importing"
-msgstr ""
+msgstr "İthalat"
 
 #: src/robotide/preferences/imports.py:30
 msgid "Library imports and PYTHONPATH"
-msgstr ""
+msgstr "Kütüphane içe aktarımları ve PYTHONPATH"
 
 #: src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
+msgstr "Otomatik olarak içe aktarılacak kütüphanelerin virgülle ayrılmış listesi."
 
 #: src/robotide/preferences/imports.py:45
 msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
-msgstr ""
+msgstr "Kütüphaneler arandığında PYTHONPATH'e eklenecek dizinlerin virgülle ayrılmış listesi."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
+msgstr "Kütüphane özellik dosyalarını içeren dizinlerin virgülle ayrılmış listesi."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
-msgstr ""
+msgstr "Ayarları Kaydet veya Yükle"
 
 #: src/robotide/preferences/managesettingsdialog.py:48
 msgid "Load settings from file..."
-msgstr ""
+msgstr "Ayarları dosyadan yükle..."
 
 #: src/robotide/preferences/managesettingsdialog.py:49
 msgid "Save settings to file..."
-msgstr ""
+msgstr "Ayarları dosyaya kaydet..."
 
 #: src/robotide/preferences/managesettingsdialog.py:59
 msgid "Current directory:"
-msgstr ""
+msgstr "Geçerli dizin:"
 
 #: src/robotide/preferences/managesettingsdialog.py:77
 msgid "File with Settings to Load"
-msgstr ""
+msgstr "Yüklenecek Ayarları İçeren Dosya"
 
 #: src/robotide/preferences/managesettingsdialog.py:107
 msgid "Save Settings to file"
-msgstr ""
+msgstr "Ayarları dosyaya kaydet"
 
 #: src/robotide/preferences/managesettingsdialog.py:120
 msgid "Could not open settings file \"%s\" for writing"
-msgstr ""
+msgstr "\"%s\" ayar dosyası yazmak için açılamadı"
 
 #: src/robotide/preferences/managesettingsdialog.py:137
 msgid "Error trying to get '%s' from file %s"
-msgstr ""
+msgstr "%sdosyasından '%s' alınmaya çalışılırken hata oluştu"
 
 #: src/robotide/preferences/managesettingsdialog.py:152
 msgid "Invalid config file '%s': %s"
-msgstr ""
+msgstr "Geçersiz yapılandırma dosyası '%s': %s"
 
 #: src/robotide/preferences/saving.py:27
 #: src/robotide/preferences/saving.py:30
 #: src/robotide/preferences/saving.py:31
 #: src/robotide/preferences/saving.py:33
 msgid "Saving"
-msgstr ""
+msgstr "Tasarruf"
 
 #: src/robotide/preferences/saving.py:42
 #: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
-msgstr ""
+msgstr "Görev mi?"
 
 #: src/robotide/preferences/saving.py:43
 #: src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "Görevler veya Testler bölümleri için varsayılan."
 
 #: src/robotide/preferences/saving.py:44
 msgid "Reformat?"
-msgstr ""
+msgstr "Yeniden biçimlendirmek mi?"
 
 #: src/robotide/preferences/saving.py:45
 msgid "Should it recalculate identation on Save?"
-msgstr ""
+msgstr "Kaydet'te tanımlamayı yeniden hesaplamalı mı?"
 
 #: src/robotide/preferences/saving.py:58
 msgid "Default file format:"
-msgstr ""
+msgstr "Varsayılan dosya biçimi:"
 
 #: src/robotide/preferences/saving.py:61
 msgid "TXT format separator:"
-msgstr ""
+msgstr "TXT biçim ayırıcısı:"
 
 #: src/robotide/preferences/saving.py:64
 msgid "Line separator:"
-msgstr ""
+msgstr "Satır ayırıcı:"
 
 #: src/robotide/preferences/saving.py:66
 msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
+msgstr "Olası değerler yerel (mevcut işletim sisteminin) CRLF (Windows) ve LF (Unixy)"
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
-msgstr ""
+msgstr "Boşlukları ayırma"
 
 #: src/robotide/preferences/saving.py:70
 msgid "Number of spaces between cells when saving in txt format"
-msgstr ""
+msgstr "Txt biçiminde kaydederken hücreler arasındaki boşluk sayısı"
 
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
-msgstr ""
+msgstr "Son açılan dosyaları dosya menüsüne ekleyin."
 
 #: src/robotide/recentfiles/recentfiles.py:120
 msgid "No recent files"
-msgstr ""
+msgstr "Yeni dosya yok"
 
 #: src/robotide/recentfiles/recentfiles.py:120
 #: src/robotide/recentfiles/recentfiles.py:126
@@ -1815,17 +1893,17 @@ msgstr ""
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
-msgstr ""
+msgstr "Dosya"
 
 #: src/robotide/recentfiles/recentfiles.py:121
 #: src/robotide/recentfiles/recentfiles.py:127
 #: src/robotide/recentfiles/recentfiles.py:159
 msgid "Exit"
-msgstr ""
+msgstr "Çıkış"
 
 #: src/robotide/recentfiles/recentfiles.py:148
 msgid "Open %s"
-msgstr ""
+msgstr "Açık %s"
 
 #: src/robotide/run/configmanagerui.py:27
 msgid ""
@@ -1844,19 +1922,33 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
+"Belirtilen komut dizesi boşluklardan arındırılarak\n"
+"komutuna ve argümanlarına bölünür. Komut veya bağımsız değişkenlerden herhangi biri\n"
+"iç boşluk gerektiriyorsa, '<SPACE>' olarak yazılmalıdır.\n"
+"\n"
+"Komut, bir kabuk açmadan doğrudan sistemde çalıştırılacaktır.\n"
+"Bu, kabuk komutlarının ve uzantılarının kullanılamayacağı anlamına gelir. Örneğin, Windows toplu iş dosyalarında\n"
+"çalıştırmak için '.bat' uzantısını içermelidir ve 'dir'\n"
+"komutu çalışmaz.\n"
+"\n"
+"Örnekler:\n"
+"    robot.bat --include smoke C:\\my_tests\n"
+"    svn update /home/robot\n"
+"    C:\\Program<SPACE>Files\\App\\prg.exe argümanı<SPACE>ile<SPACE>boşluk,\n"
+"Çalıştırma yapılandırmaları RIDE ayar dosyasında saklanır.\n"
 
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
-msgstr ""
+msgstr "Çalıştırma Yapılandırmalarını Yönetme"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "New"
-msgstr ""
+msgstr "Yeni"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "Remove"
-msgstr ""
+msgstr "Kaldırmak"
 
 #: src/robotide/run/runanything.py:30
 msgid ""
@@ -1866,87 +1958,92 @@ msgid ""
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
 msgstr ""
+"Sistem üzerinde komutları yürütmek için bir eklenti.\n"
+"\n"
+"    Bu eklenti kalıcı çalıştırma yapılandırmalarının oluşturulmasını ve\n"
+"    bunların yürütülmesini sağlar. Yürütülen komutun çıktısı\n"
+"    ayrı bir sekmede görüntülenir."
 
 #: src/robotide/run/runanything.py:55
 #: src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
-msgstr ""
+msgstr "Makrolar"
 
 #: src/robotide/run/ui.py:27
 msgid "finished"
-msgstr ""
+msgstr "bitmiş"
 
 #: src/robotide/run/ui.py:28
 msgid "Run Again"
-msgstr ""
+msgstr "Tekrar Koş"
 
 #: src/robotide/run/ui.py:29
 msgid "running"
-msgstr ""
+msgstr "çalışan"
 
 #: src/robotide/searchtests/dialogsearchtests.py:36
 #: src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
-msgstr ""
+msgstr "Arama Testleri"
 
 #: src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
-msgstr ""
+msgstr "Etiket Arama"
 
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: src/robotide/searchtests/dialogsearchtests.py:66
 #: src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
-msgstr ""
+msgstr "Sonuçlar: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
 msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
-msgstr ""
+msgstr "Etiket kalıplarını kullanarak eşleşmeleri bulun. Daha fazla bilgi için RF Kullanıcı Kılavuzu'na veya 'robot --help'e bakın."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
 msgid "Include"
-msgstr ""
+msgstr "Dahil etmek"
 
 #: src/robotide/searchtests/dialogsearchtests.py:117
 #: src/robotide/ui/treenodehandlers.py:402
 #: src/robotide/ui/treenodehandlers.py:499
 #: src/robotide/ui/treenodehandlers.py:592
 msgid "Exclude"
-msgstr ""
+msgstr "Hariç tut"
 
 #: src/robotide/searchtests/dialogsearchtests.py:139
 #: src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
-msgstr ""
+msgstr "Tümünü seçililere ekle"
 
 #: src/robotide/searchtests/dialogsearchtests.py:156
 #: src/robotide/searchtests/dialogsearchtests.py:164
 #: src/robotide/ui/keywordsearch.py:211
 #: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
-msgstr ""
+msgstr "Sonuçlar: %d"
 
 #: src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
-msgstr ""
+msgstr "Bilgi. "
 
 #: src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
-msgstr ""
+msgstr "Test adına, belgelere ve/veya etikete göre eşleşmeleri bulun."
 
 #: src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
-msgstr ""
+msgstr "Arama terimi"
 
 #: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
+msgstr "Testleri isim, etiket ve belgelere göre aramak için bir eklenti"
 
 #: src/robotide/spec/libraryfinder.py:31
 msgid ""
@@ -1958,34 +2055,41 @@ msgid ""
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
+"Eksik kütüphaneleri yükleyin ve belgeleri açın.\n"
+"\n"
+"    Belgeler için URL ve yükleme komutu eklemek üzere settings.cfg dosyasını düzenleyebilirsiniz.\n"
+"    Bir Kütüphane adına sağ tıklayıp Belgeleri Açabilir veya Kütüphane Yükleyebilirsiniz.\n"
+"    Araçlar->Kütüphane Bulucu... veya Yardım->Kütüphane Belgelerini Aç... seçeneğinden\n"
+"    yüklenecek komutu veya belgelerin URL'sini doldurmak için bir iletişim kutusu göreceksiniz.\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr ""
+msgstr "Kütüphane Bulucu..."
 
 #: src/robotide/spec/libraryfinder.py:40
 msgid "Open Library Documentation..."
-msgstr ""
+msgstr "Açık Kütüphane Dokümantasyonu..."
 
 #: src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
-msgstr ""
+msgstr "Kütüphaneleri Kurmak için Bilgileri Hazırlayın"
 
 #: src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
-msgstr ""
+msgstr "Kütüphanelerin Dokümantasyonunu Açmak İçin Bilgi Hazırlayın"
 
 #: src/robotide/spec/libraryfinder.py:106
 msgid "Library Finder"
-msgstr ""
+msgstr "Kütüphane Bulucu"
 
 #: src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
-msgstr ""
+msgstr "Kütüphane Özellikleri XML|*.xml|Tüm Dosyalar|*.*"
 
 #: src/robotide/spec/specimporter.py:78
 msgid "Info"
-msgstr ""
+msgstr "Bilgi"
 
 #: src/robotide/spec/specimporter.py:79
 msgid ""
@@ -1993,411 +2097,422 @@ msgid ""
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
+"Kütüphane \"%s\" imported\n"
+"from \"%s\"\n"
+"Bu, RIDE'ın yeniden başlatılmasını gerektirebilir."
 
 #: src/robotide/spec/specimporter.py:83
 msgid "Import failed"
-msgstr ""
+msgstr "İçe aktarma başarısız"
 
 #: src/robotide/spec/specimporter.py:84
 msgid "Could not import library from file \"%s\""
-msgstr ""
+msgstr "\"%s\" dosyasından kütüphane içe aktarılamadı"
 
 #: src/robotide/ui/filedialogs.py:110
 msgid "Type"
-msgstr ""
+msgstr "Tip"
 
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/filedialogs.py:230
 msgid "Directory"
-msgstr ""
+msgstr "Rehber"
 
 #: src/robotide/ui/filedialogs.py:170
 #: src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
-msgstr ""
+msgstr "Yeni Kaynak Dosyası"
 
 #: src/robotide/ui/filedialogs.py:172
 #: src/robotide/ui/preview.py:117
 msgid "Format"
-msgstr ""
+msgstr "Biçim"
 
 #: src/robotide/ui/filedialogs.py:184
 #: src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
-msgstr ""
+msgstr "Ebeveyn Rehberi"
 
 #: src/robotide/ui/filedialogs.py:185
 msgid "Choose Parent Directory"
-msgstr ""
+msgstr "Ebeveyn Dizinini Seçin"
 
 #: src/robotide/ui/filedialogs.py:202
 msgid "Created Path"
-msgstr ""
+msgstr "Oluşturulan Yol"
 
 #: src/robotide/ui/filedialogs.py:287
 msgid "New Project"
-msgstr ""
+msgstr "Yeni Proje"
 
 #: src/robotide/ui/filedialogs.py:317
 msgid "Add Suite"
-msgstr ""
+msgstr "Süit Ekle"
 
 #: src/robotide/ui/filedialogs.py:341
 msgid "Add Directory"
-msgstr ""
+msgstr "Dizin Ekle"
 
 #: src/robotide/ui/filedialogs.py:353
 msgid "Set Data Format"
-msgstr ""
+msgstr "Veri Formatını Ayarla"
 
 #: src/robotide/ui/filedialogs.py:377
 msgid "Change recursively"
-msgstr ""
+msgstr "Özyinelemeli olarak değiştir"
 
 #: src/robotide/ui/filedialogs.py:396
 msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
 msgstr ""
+"\n"
+"\"%s\" dizinindeki başlatma dosyası için biçim sağlayın."
 
 #: src/robotide/ui/filedialogs.py:410
 #: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
-msgstr ""
+msgstr "Açık"
 
 #: src/robotide/ui/filedialogs.py:415
 msgid "Robot data (*.robot)|*.robot"
-msgstr ""
+msgstr "Robot verileri (*.robot)|*.robot"
 
 #: src/robotide/ui/filedialogs.py:416
 msgid "Robot data (*.txt)|*.txt"
-msgstr ""
+msgstr "Robot verileri (*.txt)|*.txt"
 
 #: src/robotide/ui/filedialogs.py:417
 msgid "Robot resource file (*.resource)|*.resource"
-msgstr ""
+msgstr "Robot kaynak dosyası (*.resource)|*.resource"
 
 #: src/robotide/ui/filedialogs.py:418
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
-msgstr ""
+msgstr "Robot Sekmeyle Ayrılmış veriler (*.tsv)|*.tsv"
 
 #: src/robotide/ui/filedialogs.py:420
 msgid "All files|*.*"
-msgstr ""
+msgstr "Tüm dosyalar|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
 msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr ""
+msgstr "Dosyalar ve Klasörler için bir ağaç görünümü sağlar. Seçili öğeyi fare sağ tıklamasıyla açar."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
 #: src/robotide/ui/treenodehandlers.py:502
 #: src/robotide/ui/treenodehandlers.py:595
 msgid "Open Containing Folder"
-msgstr ""
+msgstr "İçeren Klasörü Aç"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:317
 msgid "Files"
-msgstr ""
+msgstr "Dosyalar"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
-msgstr ""
+msgstr "Dosya Gezginini Görüntüle"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
 #: src/robotide/ui/treeplugin.py:113
 msgid "View"
-msgstr ""
+msgstr "Görünüm"
 
 #: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
-msgstr ""
+msgstr "Dosya Gezgini panelini göster"
 
 #: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<all keywords>"
 
 #: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<all user keywords>"
 
 #: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<all library keywords>"
 
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
-msgstr ""
+msgstr "Arama Anahtar Kelimeleri"
 
 #: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
+msgstr "Anahtar kelimeleri isme veya belgelere göre aramak için bir eklenti."
 
 #: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
-msgstr ""
+msgstr "Kütüphanelerden ve kaynaklardan anahtar kelimeleri arayın"
 
 #: src/robotide/ui/keywordsearch.py:173
 msgid "Search term: "
-msgstr ""
+msgstr "Arama terimi: "
 
 #: src/robotide/ui/keywordsearch.py:180
 msgid "Search documentation"
-msgstr ""
+msgstr "Arama belgeleri"
 
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Description"
-msgstr ""
+msgstr "Açıklama"
 
 #: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
-msgstr ""
+msgstr "[Dosya]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
+msgstr "!&Yeni Proje | Yeni bir üst düzey süit oluştur | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
+msgstr "!&Open Test Suite | Testleri içeren dosyayı aç | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr ""
+msgstr "!Open &Directory | Veri dosyalarını içeren dizini aç | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
+msgstr "!Harici Dosya Aç | Dosyayı Kod Düzenleyicide Aç | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
+msgstr "!&Save | Seçili veri dosyasını kaydet | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
+msgstr "!Save &All | Tüm değişiklikleri kaydet | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr ""
+msgstr "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 
 #: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr ""
+msgstr "!Kullanılmayan Anahtar Kelimeleri Ara | | | POZİSYON-54\n"
 
 #: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr ""
+msgstr "!Manage Plugins | | | POSITION-81\n"
 
 #: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr ""
+msgstr "!View All Tags | | F7 | | POSITION-82\n"
 
 #: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr ""
+msgstr "!Preferences | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
-msgstr ""
+msgstr "[Yardım]\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
-msgstr ""
+msgstr "!Kısayol tuşları | RIDE kısayol tuşları\n"
 
 #: src/robotide/ui/mainframe.py:76
 msgid "!User Guide | Robot Framework User Guide\n"
-msgstr ""
+msgstr "!Kullanıcı Kılavuzu | Robot Framework Kullanıcı Kılavuzu\n"
 
 #: src/robotide/ui/mainframe.py:77
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
-msgstr ""
+msgstr "!Wiki | RIDE Kullanıcı Kılavuzu (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
+msgstr "!Sorun Bildir | RIDE sorun izleyicisinde ARAMA yapmak için tarayıcıyı açın\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
-msgstr ""
+msgstr "!Hakkında | RIDE hakkında bilgi\n"
 
 #: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
+msgstr "!Check for Upgrade | Yeni yayınlanan sürüm için PyPi'ye bakar\n"
 
 #: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
-msgstr ""
+msgstr "Kaydedildi %s"
 
 #: src/robotide/ui/mainframe.py:196
 msgid "Saved all files"
-msgstr ""
+msgstr "Tüm dosyalar kaydedildi"
 
 #: src/robotide/ui/mainframe.py:224
 msgid "Modification prevented"
-msgstr ""
+msgstr "Değişiklik engellendi"
 
 #: src/robotide/ui/mainframe.py:225
 msgid "\"%s\" is read only"
-msgstr ""
+msgstr "\"%s\" yalnızca okunur"
 
 #: src/robotide/ui/mainframe.py:300
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
-msgstr ""
+msgstr "Test Süitleri"
 
 #: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
+"Kaydedilmemiş değişiklikler var.\n"
+"Çıkmadan önce değişikliklerinizi kaydetmek istiyor musunuz?"
 
 #: src/robotide/ui/mainframe.py:465
 #: src/robotide/ui/mainframe.py:559
 msgid "Warning"
-msgstr ""
+msgstr "Uyarı"
 
 #: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
+"Kaydedilmemiş değişiklikler var.\n"
+"Kaydetmeden devam etmek istiyor musunuz?"
 
 #: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
-msgstr ""
+msgstr "Robot dosyalarını içeren bir dizin seçin"
 
 #: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
-msgstr ""
+msgstr "Dosya sisteminde çalışma alanı değişiklikleri algılandı."
 
 #: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
-msgstr ""
+msgstr "Çalışma alanını yeniden yüklemek istiyor musunuz?"
 
 #: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
-msgstr ""
+msgstr "<Yes> adresini yanıtladığınızda kaydedilmemiş değişiklikler silinir."
 
 #: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
-msgstr ""
+msgstr "<No> adresinin yanıtlanması diskteki değişiklikleri yok sayacaktır."
 
 #: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
-msgstr ""
+msgstr "Diskte Değiştirilen Dosyalar"
 
 #: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
-msgstr ""
+msgstr "Özelleştir..."
 
 #: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
-msgstr ""
+msgstr "kullanılmayan anahtar kelimeleri arama"
 
 #: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
-msgstr ""
+msgstr "test çalışmasını durdur"
 
 #: src/robotide/ui/mainframe.py:898
 msgid "preview"
-msgstr ""
+msgstr "önizleme"
 
 #: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
-msgstr ""
+msgstr "sürüş günlüğünü görüntüle"
 
 #: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
-msgstr ""
+msgstr "RIDE için kısayol tuşları"
 
 #: src/robotide/ui/mainframe.py:978
 msgid "Show"
-msgstr ""
+msgstr "Göster"
 
 #: src/robotide/ui/mainframe.py:979
 msgid "Hide"
-msgstr ""
+msgstr "Gizle"
 
 #: src/robotide/ui/mainframe.py:980
 msgid "Close"
-msgstr ""
+msgstr "Kapat"
 
 #: src/robotide/ui/pluginmanager.py:48
 msgid "Manage Plugins"
-msgstr ""
+msgstr "Eklentileri Yönet"
 
 #: src/robotide/ui/pluginmanager.py:63
 msgid "Installed Plugins\n"
-msgstr ""
+msgstr "Yüklü Eklentiler\n"
 
 #: src/robotide/ui/pluginmanager.py:82
 msgid "Enabled"
-msgstr ""
+msgstr "Etkin"
 
 #: src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
-msgstr ""
+msgstr "Eklenti"
 
 #: src/robotide/ui/pluginmanager.py:92
 msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr ""
+msgstr "Bilgi. Eklentilerin etkinleştirilmesi ve devre dışı bırakılması, menülerin çalışması için RIDE'ın yeniden başlatılmasını gerektirebilir."
 
 #: src/robotide/ui/preview.py:32
 msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
+msgstr "(Eski) Test verilerinin HTML, TSV ve TXT formatlarında önizlemesini sağlar."
 
 #: src/robotide/ui/preview.py:41
 #: src/robotide/ui/preview.py:100
 msgid "Preview"
-msgstr ""
+msgstr "Önizleme"
 
 #: src/robotide/ui/preview.py:43
 msgid "Show preview of the current file"
-msgstr ""
+msgstr "Geçerli dosyanın önizlemesini göster"
 
 #: src/robotide/ui/preview.py:83
 msgid "Text (Pipes)"
-msgstr ""
+msgstr "Metin (Borular)"
 
 #: src/robotide/ui/preview.py:83
 msgid "Text (Spaces)"
-msgstr ""
+msgstr "Metin (Boşluklar)"
 
 #: src/robotide/ui/preview.py:123
 msgid "Print"
-msgstr ""
+msgstr "Yazdır"
 
 #: src/robotide/ui/review.py:39
 msgid "Search unused keywords"
-msgstr ""
+msgstr "Kullanılmayan anahtar kelimeleri arayın"
 
 #: src/robotide/ui/review.py:66
 msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
+"Bu iletişim kutusu, açtığınız proje içinde kullanılmayan anahtar kelimeleri bulmanıza yardımcı olur.\n"
+"İsterseniz, filtre ile aramayı bir dizi dosya ile kısıtlayabilirsiniz."
 
 #: src/robotide/ui/review.py:70
 msgid "Filter is"
-msgstr ""
+msgstr "Filtre"
 
 #: src/robotide/ui/review.py:71
 #: src/robotide/ui/review.py:242
 msgid "inactive"
-msgstr ""
+msgstr "aktif değil"
 
 #: src/robotide/ui/review.py:84
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #: src/robotide/ui/review.py:91
 msgid "Use RegEx"
-msgstr ""
+msgstr "RegEx kullanın"
 
 #: src/robotide/ui/review.py:93
 msgid ""
@@ -2405,256 +2520,265 @@ msgid ""
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
+"Burada virgülle ayrılmış bir veya daha fazla dize tanımlayabilirsiniz (örn. common,abc,123).\n"
+"Filtre, dosya adında en az bir dize varsa eşleşir.\n"
+"Herhangi bir dize girmezseniz, açılan tüm dosyalar dahil edilir"
 
 #: src/robotide/ui/review.py:101
 msgid "Test case files"
-msgstr ""
+msgstr "Test senaryosu dosyaları"
 
 #: src/robotide/ui/review.py:104
 msgid "Resource files"
-msgstr ""
+msgstr "Kaynak dosyaları"
 
 #: src/robotide/ui/review.py:106
 msgid "Mode"
-msgstr ""
+msgstr "Mod"
 
 #: src/robotide/ui/review.py:107
 msgid "exclude"
-msgstr ""
+msgstr "hariç tut"
 
 #: src/robotide/ui/review.py:107
 msgid "include"
-msgstr ""
+msgstr "şunları içerir"
 
 #: src/robotide/ui/review.py:109
 msgid "Test the filter"
-msgstr ""
+msgstr "Filtreyi test edin"
 
 #: src/robotide/ui/review.py:139
 msgid "Keyword"
-msgstr ""
+msgstr "Anahtar Kelime"
 
 #: src/robotide/ui/review.py:146
 msgid "Delete marked keywords"
-msgstr ""
+msgstr "İşaretli anahtar kelimeleri silme"
 
 #: src/robotide/ui/review.py:157
 #: src/robotide/ui/review.py:320
 msgid "Unused Keywords"
-msgstr ""
+msgstr "Kullanılmayan Anahtar Kelimeler"
 
 #: src/robotide/ui/review.py:163
 msgid "Abort"
-msgstr ""
+msgstr "İptal"
 
 #: src/robotide/ui/review.py:247
 msgid "active"
-msgstr ""
+msgstr "aktif"
 
 #: src/robotide/ui/review.py:270
 #: src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
-msgstr ""
+msgstr "Kullanılmayan Anahtar Kelimeler (%d)"
 
 #: src/robotide/ui/review.py:279
 msgid "(None)"
-msgstr ""
+msgstr "(Yok)"
 
 #: src/robotide/ui/review.py:282
 msgid ""
 "Keywords of the following files will be included in the search:\n"
 "\n"
 msgstr ""
+"Aşağıdaki dosyaların anahtar kelimeleri aramaya dahil edilecektir:\n"
+"\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
-msgstr ""
+msgstr "Dahil edilen dosyalar"
 
 #: src/robotide/ui/review.py:339
 msgid "Searching.%s \t- %s"
-msgstr ""
+msgstr "Aranıyor.%s \t- %s"
 
 #: src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
-msgstr ""
+msgstr "Arama tamamlandı - %d Kullanılmayan Anahtar Kelimeler Bulundu"
 
 #: src/robotide/ui/review.py:402
 msgid "listing datafiles"
-msgstr ""
+msgstr "veri dosyalarının listelenmesi"
 
 #: src/robotide/ui/review.py:405
 msgid "searching from "
-msgstr ""
+msgstr "arama "
 
 #: src/robotide/ui/tagdialogs.py:37
 msgid "View all tags"
-msgstr ""
+msgstr "Tüm etiketleri görüntüle"
 
 #: src/robotide/ui/tagdialogs.py:76
 msgid "Tag"
-msgstr ""
+msgstr "Etiket"
 
 #: src/robotide/ui/tagdialogs.py:77
 msgid "Occurrences"
-msgstr ""
+msgstr "Oluşumlar"
 
 #: src/robotide/ui/tagdialogs.py:82
 msgid "The List"
-msgstr ""
+msgstr "Liste"
 
 #: src/robotide/ui/tagdialogs.py:85
 msgid "Refresh"
-msgstr ""
+msgstr "Yenile"
 
 #: src/robotide/ui/tagdialogs.py:86
 msgid "Included Tag Search"
-msgstr ""
+msgstr "Etiket Araması Dahil"
 
 #: src/robotide/ui/tagdialogs.py:89
 msgid "Excluded Tag Search"
-msgstr ""
+msgstr "Hariç Tutulan Etiket Arama"
 
 #: src/robotide/ui/tagdialogs.py:147
 msgid ""
 "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
+"Toplam testler %d, Etiketli testler %d, Benzersiz etiketler %d\n"
+"Şu anda seçili testler %d"
 
 #: src/robotide/ui/tagdialogs.py:233
 msgid "Select all"
-msgstr ""
+msgstr "Tümünü seçin"
 
 #: src/robotide/ui/tagdialogs.py:233
 #: src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
-msgstr ""
+msgstr "Yeniden Adlandır"
 
 #: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests with this tag"
-msgstr ""
+msgstr "Bu etikete sahip testleri göster"
 
 #: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests without this tag"
-msgstr ""
+msgstr "Bu etiket olmadan testleri göster"
 
 #: src/robotide/ui/tagdialogs.py:261
 msgid "Renaming tag '%s'."
-msgstr ""
+msgstr "'%s' etiketini yeniden adlandırın."
 
 #: src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
-msgstr ""
+msgstr "Bir etiketi sil '%s' ?"
 
 #: src/robotide/ui/tagdialogs.py:276
 #: src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
-msgstr ""
+msgstr "Onaylayın"
 
 #: src/robotide/ui/treenodehandlers.py:254
 #: src/robotide/ui/treenodehandlers.py:360
 msgid "New Resource"
-msgstr ""
+msgstr "Yeni Kaynak"
 
 #: src/robotide/ui/treenodehandlers.py:358
 msgid "New Suite\tCtrl-Shift-F"
-msgstr ""
+msgstr "Yeni Süit Ctrl-Shift-F"
 
 #: src/robotide/ui/treenodehandlers.py:359
 msgid "New Directory"
-msgstr ""
+msgstr "Yeni Rehber"
 
 #: src/robotide/ui/treenodehandlers.py:362
 #: src/robotide/ui/treenodehandlers.py:485
 #: src/robotide/ui/treenodehandlers.py:573
 msgid "New User Keyword\tCtrl-Shift-K"
-msgstr ""
+msgstr "Yeni Kullanıcı Anahtar Sözcüğü Ctrl-Shift-K"
 
 #: src/robotide/ui/treenodehandlers.py:363
 #: src/robotide/ui/treenodehandlers.py:486
 #: src/robotide/ui/treenodehandlers.py:574
 msgid "New Scalar\tCtrl-Shift-V"
-msgstr ""
+msgstr "Yeni Skaler Ctrl-Shift-V"
 
 #: src/robotide/ui/treenodehandlers.py:364
 #: src/robotide/ui/treenodehandlers.py:487
 #: src/robotide/ui/treenodehandlers.py:575
 msgid "New List Variable\tCtrl-Shift-L"
-msgstr ""
+msgstr "Yeni Liste Değişkeni Ctrl-Shift-L"
 
 #: src/robotide/ui/treenodehandlers.py:365
 #: src/robotide/ui/treenodehandlers.py:488
 #: src/robotide/ui/treenodehandlers.py:576
 msgid "New Dictionary Variable"
-msgstr ""
+msgstr "Yeni Sözlük Değişkeni"
 
 #: src/robotide/ui/treenodehandlers.py:367
 #: src/robotide/ui/treenodehandlers.py:491
 #: src/robotide/ui/treenodehandlers.py:579
 msgid "Change Format"
-msgstr ""
+msgstr "Biçimi Değiştir"
 
 #: src/robotide/ui/treenodehandlers.py:389
 #: src/robotide/ui/treenodehandlers.py:587
 msgid "Select All Tests"
-msgstr ""
+msgstr "Tüm Testleri Seçin"
 
 #: src/robotide/ui/treenodehandlers.py:390
 #: src/robotide/ui/treenodehandlers.py:588
 msgid "Deselect All Tests"
-msgstr ""
+msgstr "Tüm Testlerin Seçimini Kaldır"
 
 #: src/robotide/ui/treenodehandlers.py:391
 #: src/robotide/ui/treenodehandlers.py:589
 msgid "Select Only Failed Tests"
-msgstr ""
+msgstr "Yalnızca Başarısız Testleri Seçin"
 
 #: src/robotide/ui/treenodehandlers.py:392
 #: src/robotide/ui/treenodehandlers.py:590
 msgid "Select Only Passed Tests"
-msgstr ""
+msgstr "Yalnızca Geçilen Testleri Seçin"
 
 #: src/robotide/ui/treenodehandlers.py:404
 msgid "Collapse all"
-msgstr ""
+msgstr "Tümünü daralt"
 
 #: src/robotide/ui/treenodehandlers.py:404
 msgid "Expand all"
-msgstr ""
+msgstr "Tümünü genişlet"
 
 #: src/robotide/ui/treenodehandlers.py:444
 msgid ""
 "Directory contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"Dizin kaydedilmemiş veri içeriyor!\n"
+"Dışlamadan önce verileri kaydetmelisiniz."
 
 #: src/robotide/ui/treenodehandlers.py:490
 #: src/robotide/ui/treenodehandlers.py:578
 #: src/robotide/ui/treenodehandlers.py:686
 #: src/robotide/ui/treenodehandlers.py:790
 msgid "Rename\tF2"
-msgstr ""
+msgstr "F2'yi yeniden adlandır"
 
 #: src/robotide/ui/treenodehandlers.py:492
 #: src/robotide/ui/treenodehandlers.py:497
 #: src/robotide/ui/treenodehandlers.py:580
 #: src/robotide/ui/treenodehandlers.py:585
 msgid "Sort Keywords"
-msgstr ""
+msgstr "Anahtar Kelimeleri Sırala"
 
 #: src/robotide/ui/treenodehandlers.py:494
 #: src/robotide/ui/treenodehandlers.py:581
 msgid "Delete\tCtrl-Shift-D"
-msgstr ""
+msgstr "Sil Ctrl-Shift-D"
 
 #: src/robotide/ui/treenodehandlers.py:496
 #: src/robotide/ui/treenodehandlers.py:583
 msgid "Sort Variables"
-msgstr ""
+msgstr "Değişkenleri Sırala"
 
 #: src/robotide/ui/treenodehandlers.py:501
 #: src/robotide/ui/treenodehandlers.py:594
 msgid "Remove Read Only"
-msgstr ""
+msgstr "Salt Okunurluğu Kaldır"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
@@ -2662,99 +2786,101 @@ msgid ""
 "File contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"Dosya kaydedilmemiş veri içeriyor!\n"
+"Hariç tutmadan önce verileri kaydetmelisiniz."
 
 #: src/robotide/ui/treenodehandlers.py:572
 msgid "New Test Case\tCtrl-Shift-T"
-msgstr ""
+msgstr "Yeni Test Örneği Ctrl-Shift-T"
 
 #: src/robotide/ui/treenodehandlers.py:584
 msgid "Sort Tests"
-msgstr ""
+msgstr "Sıralama Testleri"
 
 #: src/robotide/ui/treenodehandlers.py:661
 msgid "Delete test case file"
-msgstr ""
+msgstr "Test senaryosu dosyasını silme"
 
 #: src/robotide/ui/treenodehandlers.py:683
 msgid "Copy\tCtrl-Shift-C"
-msgstr ""
+msgstr "Kopyala Ctrl-Shift-C"
 
 #: src/robotide/ui/treenodehandlers.py:839
 msgid "Add Resource"
-msgstr ""
+msgstr "Kaynak Ekle"
 
 #: src/robotide/ui/treeplugin.py:62
 msgid "Provides a tree view for Test Suites "
-msgstr ""
+msgstr "Test Süitleri için bir ağaç görünümü sağlar "
 
 #: src/robotide/ui/treeplugin.py:113
 msgid "View Test Suites Explorer"
-msgstr ""
+msgstr "Test Paketleri Gezginini Görüntüle"
 
 #: src/robotide/ui/treeplugin.py:115
 msgid "Show Test Suites tree panel"
-msgstr ""
+msgstr "Test Paketleri ağaç panelini göster"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
-msgstr ""
+msgstr "Dış Kaynaklar"
 
 #: src/robotide/ui/treeplugin.py:428
 msgid "%s (excluded)"
-msgstr ""
+msgstr "%s (hariç)"
 
 #: src/robotide/ui/treeplugin.py:1298
 msgid "Invalid keyword name: "
-msgstr ""
+msgstr "Geçersiz anahtar sözcük adı: "
 
 #: src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
-msgstr ""
+msgstr "'%s' - %d eşleşmeleri bulundu -%saranıyor"
 
 #: src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
-msgstr ""
+msgstr "'%s' - %d eşleşmeler"
 
 #: src/robotide/usages/usagesdialog.py:93
 msgid "Go to definition"
-msgstr ""
+msgstr "Tanıma git"
 
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Location"
-msgstr ""
+msgstr "Konum"
 
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Usage"
-msgstr ""
+msgstr "Kullanım"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Imported Location"
-msgstr ""
+msgstr "İthal Edilen Konum"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Imported name"
-msgstr ""
+msgstr "İthal isim"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Location"
-msgstr ""
+msgstr "Konum İçe Aktarma"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Name"
-msgstr ""
+msgstr "İçe Aktarma Adı"
 
 #: src/robotide/validators/__init__.py:159
 msgid "%s cannot be empty"
-msgstr ""
+msgstr "%s boş olamaz"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "No"
-msgstr ""
+msgstr "Hayır"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "OK"
-msgstr ""
+msgstr "TAMAM."
 
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
-msgstr ""
+msgstr "Evet"

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -19,36 +19,36 @@ msgstr ""
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
-msgstr ""
+msgstr "Cài đặt toàn cầu"
 
 #: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
-msgstr ""
+msgstr "Cài đặt toàn cầu đã được phát hiện"
 
 #: src/robotide/application/application.py:216
 msgid "Project Settings"
-msgstr ""
+msgstr "Cài đặt dự án"
 
 #: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Cài đặt dự án đã được phát hiện"
 
 #: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "Khởi động lại RIDE?"
 
 #: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "RIDE phải được khởi động lại để sử dụng đầy đủ các tính năng này. "
 
 #: src/robotide/application/application.py:239
 msgid "Click OK to Restart RIDE!"
-msgstr ""
+msgstr "Nhấp vào OK để khởi động lại RIDE!"
 
 #: src/robotide/application/application.py:461
 #: src/robotide/application/application.py:466
 msgid "Found Robot Framework version %s from %s."
-msgstr ""
+msgstr "Đã tìm thấy phiên bản Robot Framework %s từ %s."
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:57
@@ -56,199 +56,201 @@ msgstr ""
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
-msgstr ""
+msgstr "Giúp đỡ"
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
-msgstr ""
+msgstr "Ghi chú phát hành"
 
 #: src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
-msgstr ""
+msgstr "Hiển thị ghi chú phát hành"
 
 #: src/robotide/application/releasenotes.py:57
 #: src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
-msgstr ""
+msgstr "Nhật ký thay đổi ngoại tuyến"
 
 #: src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
-msgstr ""
+msgstr "Hiển thị nhật ký thay đổi (CHANGELOG) khi offline"
 
 #: src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
-msgstr ""
+msgstr "Xem phiên bản trực tuyến tại "
 
 #: src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Mở lại RIDE để thay đổi ngôn ngữ"
 
 #: src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
+msgstr "Sự thay đổi ngôn ngữ chỉ được cập nhật chính xác sau khi mở lại RIDE."
 
 #: src/robotide/application/restartutil.py:32
 #: src/robotide/application/restartutil.py:50
 #: src/robotide/application/updatenotifier.py:203
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Bạn có muốn kết thúc chuyến đi ngay bây giờ không?"
 
 #: src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
-msgstr ""
+msgstr "Hoàn tất thay đổi ngôn ngữ"
 
 #: src/robotide/application/restartutil.py:49
 #: src/robotide/application/updatenotifier.py:202
 msgid "You should close this RIDE (Process ID = "
-msgstr ""
+msgstr "Bạn nên đóng RIDE này (ID quy trình = "
 
 #: src/robotide/application/updatenotifier.py:115
 msgid "New development version is available."
-msgstr ""
+msgstr "Phiên bản phát triển mới đã có sẵn."
 
 #: src/robotide/application/updatenotifier.py:115
 msgid "Upgrade?"
-msgstr ""
+msgstr "Nâng cấp?"
 
 #: src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
-msgstr ""
+msgstr "Bạn có thể cài đặt phiên bản %s bằng cách:"
 
 #: src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
-msgstr ""
+msgstr "Nhấp vào OK để nâng cấp ngay bây giờ!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
 msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr ""
+msgstr "Sau khi nâng cấp, bạn sẽ thấy một hộp thoại khác thông báo rằng cần đóng phiên bản RIDE này."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
-msgstr ""
+msgstr "Không có bản cập nhật nào có sẵn."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "You have the latest version of RIDE."
-msgstr ""
+msgstr "Bạn đang sử dụng phiên bản mới nhất của RIDE."
 
 #: src/robotide/application/updatenotifier.py:127
 msgid "              Have a nice day :)"
-msgstr ""
+msgstr "              Chúc bạn có một ngày tốt lành :)"
 
 #: src/robotide/application/updatenotifier.py:172
 msgid "An error occurred when installing new version"
-msgstr ""
+msgstr "Đã xảy ra lỗi trong quá trình cài đặt phiên bản mới."
 
 #: src/robotide/application/updatenotifier.py:172
 msgid "Failed to Upgrade"
-msgstr ""
+msgstr "Không thể nâng cấp"
 
 #: src/robotide/application/updatenotifier.py:202
 msgid "Completed Upgrade"
-msgstr ""
+msgstr "Cập nhật đã hoàn tất"
 
 #: src/robotide/application/updatenotifier.py:228
 msgid "Update available"
-msgstr ""
+msgstr "Có bản cập nhật sẵn sàng."
 
 #: src/robotide/application/updatenotifier.py:236
 msgid " available from "
-msgstr ""
+msgstr " có sẵn từ "
 
 #: src/robotide/application/updatenotifier.py:236
 msgid "New version "
-msgstr ""
+msgstr "Phiên bản mới "
 
 #: src/robotide/application/updatenotifier.py:237
 msgid "See this version "
-msgstr ""
+msgstr "Xem phiên bản này "
 
 #: src/robotide/application/updatenotifier.py:239
 msgid "You can update with the command:"
-msgstr ""
+msgstr "Bạn có thể cập nhật bằng lệnh:"
 
 #: src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr ""
+msgstr "Hoặc, nhấp vào <b>Nâng cấp ngay</b>"
 
 #: src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
-msgstr ""
+msgstr "Xem những cập nhật mới nhất "
 
 #: src/robotide/application/updatenotifier.py:247
 msgid ""
 "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr ""
+"Tôi đang sử dụng một phương pháp khác để cập nhật RIDE\n"
+" và không cần kiểm tra cập nhật tự động."
 
 #: src/robotide/application/updatenotifier.py:252
 msgid "remind me later"
-msgstr ""
+msgstr "Nhắc tôi sau."
 
 #: src/robotide/application/updatenotifier.py:258
 msgid "Upgrade Now"
-msgstr ""
+msgstr "Nâng cấp ngay"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
+msgstr "Đã bắt đầu sử dụng RIDE %s với phiên bản Python %s và phiên bản wx %s trong %s."
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
-msgstr ""
+msgstr "Cảm ơn tất cả các dịch giả RIDE: %s"
 
 #: src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
-msgstr ""
+msgstr "RIDE -- Trình chỉnh sửa dữ liệu thử nghiệm Robot Framework"
 
 #: src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
-msgstr ""
+msgstr "RIDE %s chạy trên Python %s."
 
 #: src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
-msgstr ""
+msgstr "RIDE là trình chỉnh sửa dữ liệu thử nghiệm cho %s."
 
 #: src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
-msgstr ""
+msgstr "Để biết thêm thông tin, vui lòng truy cập trang dự án tại %s."
 
 #: src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
-msgstr ""
+msgstr "Một số biểu tượng được lấy từ %s."
 
 #: src/robotide/context/__init__.py:80
 msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
-msgstr ""
+msgstr "%s Người duy trì dự án xin cảm ơn các tác giả ban đầu và tất cả người dùng và cộng tác viên."
 
 #: src/robotide/context/__init__.py:81
 msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
+msgstr "Xin chân thành cảm ơn %s đã tài trợ cho việc phát triển nội dung bộ thử nghiệm được dịch tương thích với %s Phiên bản 6.1, trong trang web %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
-msgstr ""
+msgstr "Tùy chọn ghi nhật ký"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:435
 msgid "Output directory: "
-msgstr ""
+msgstr "Thư mục đầu ra: "
 
 #: src/robotide/contrib/testrunner/runprofiles.py:455
 msgid "Add suite name to log names"
-msgstr ""
+msgstr "Thêm tên bộ sưu tập vào tên nhật ký"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:458
 msgid "Add timestamp to log names"
-msgstr ""
+msgstr "Thêm dấu thời gian vào tên nhật ký"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:461
 msgid "Save Console and Message logs"
-msgstr ""
+msgstr "Lưu nhật ký bảng điều khiển và nhật ký tin nhắn"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:479
 msgid "Select Logs Directory"
-msgstr ""
+msgstr "Chọn thư mục nhật ký"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:501
 #: src/robotide/editor/editordialogs.py:538
@@ -256,56 +258,56 @@ msgstr ""
 #: src/robotide/editor/editordialogs.py:683
 #: src/robotide/editor/settingeditors.py:575
 msgid "Arguments"
-msgstr ""
+msgstr "Luận điểm"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:514
 #: src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr ""
+msgstr "Tham số cho lần chạy thử nghiệm. Các tham số là danh sách các giá trị cách nhau bằng khoảng trắng."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
-msgstr ""
+msgstr "Không thực thi - tùy chọn trợ giúp hoặc phiên bản được cung cấp"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Unknown option(s):"
-msgstr ""
+msgstr "Tùy chọn không xác định:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:570
 msgid "Tests filters"
-msgstr ""
+msgstr "Kiểm tra bộ lọc"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:580
 msgid "Only run tests with these tags:"
-msgstr ""
+msgstr "Chỉ chạy các bài kiểm tra có các thẻ sau:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:583
 msgid "Skip tests with these tags:"
-msgstr ""
+msgstr "Bỏ qua các bài kiểm tra có các thẻ sau:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:681
 msgid "Script to run tests:"
-msgstr ""
+msgstr "Kịch bản để chạy các bài kiểm tra:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Stop a running test"
-msgstr ""
+msgstr "Dừng một bài kiểm tra đang chạy"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:101
 msgid "Step over"
-msgstr ""
+msgstr "Bước qua"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:132
 msgid "A plugin for running tests from within RIDE"
-msgstr ""
+msgstr "Một plugin để chạy các bài kiểm tra từ bên trong RIDE"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "Run"
-msgstr ""
+msgstr "Chạy"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 msgid "Run Tests"
-msgstr ""
+msgstr "Chạy các bài kiểm tra"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
@@ -322,252 +324,260 @@ msgstr ""
 #: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
-msgstr ""
+msgstr "Công cụ"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests"
-msgstr ""
+msgstr "Chạy các bài kiểm tra đã chọn"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 msgid "Run Tests with Debug"
-msgstr ""
+msgstr "Chạy các bài kiểm tra với chế độ gỡ lỗi"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:243
 msgid "Run the selected tests with Debug"
-msgstr ""
+msgstr "Chạy các bài kiểm tra đã chọn với chế độ gỡ lỗi."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
 msgid "Stop Test Run"
-msgstr ""
+msgstr "Dừng chạy thử nghiệm"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:332
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:336
 msgid "[ SENDING STOP SIGNAL ]\n"
-msgstr ""
+msgstr "[ GỬI TÍN HIỆU DỪNG ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:341
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING PAUSE SIGNAL ]\n"
-msgstr ""
+msgstr "[ GỬI TÍN HIỆU DỪNG ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:349
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:352
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr ""
+msgstr "[ GỬI TÍN HIỆU TIẾP TỤC ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:357
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:360
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
-msgstr ""
+msgstr "[ GỬI TÍN HIỆU BƯỚC TIẾP THEO ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:365
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:368
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr ""
+msgstr "[ GỬI TÍN HIỆU BƯỚC QUA ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:400
 msgid "command: %s\n"
-msgstr ""
+msgstr "Lệnh: %s\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:468
 msgid "Unsaved Modifications"
-msgstr ""
+msgstr "Các thay đổi chưa được lưu"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
 msgid ""
 "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
 msgstr ""
+"Có các thay đổi chưa được lưu.\n"
+"        Bạn có muốn lưu tất cả các thay đổi và chạy các bài kiểm tra không?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid "No tests selected"
-msgstr ""
+msgstr "Không có bài kiểm tra nào được chọn."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid ""
 "No tests selected. \n"
 "Continue anyway?"
 msgstr ""
+"Không có bài kiểm tra nào được chọn. \n"
+"Tiếp tục dù sao?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
 msgid ""
 "\n"
 "Test finished {}"
 msgstr ""
+"\n"
+"Kiểm tra hoàn tất {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr ""
+msgstr "Nhật ký tin nhắn đã vượt quá 80% bộ nhớ quá trình, tạm dừng tại đây..."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
-msgstr ""
+msgstr "Bắt đầu"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:768
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Start robot"
-msgstr ""
+msgstr "Bắt đầu robot"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:769
 msgid "Start running the robot test suite"
-msgstr ""
+msgstr "Bắt đầu chạy bộ kiểm thử robot."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Debug"
-msgstr ""
+msgstr "Gỡ lỗi"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr ""
+msgstr "Bắt đầu chạy bộ kiểm thử robot với mức ghi nhật ký DEBUG."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: src/robotide/run/ui.py:30
 msgid "Stop"
-msgstr ""
+msgstr "Dừng lại"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Pause"
-msgstr ""
+msgstr "Dừng lại"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:780
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Pause test execution"
-msgstr ""
+msgstr "Tạm dừng quá trình thực thi bài kiểm tra"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:782
 msgid "Continue"
-msgstr ""
+msgstr "Tiếp tục"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:785
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Continue test execution"
-msgstr ""
+msgstr "Tiếp tục thực thi bài kiểm tra"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Next"
-msgstr ""
+msgstr "Tiếp theo"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:788
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:789
 msgid "Step next"
-msgstr ""
+msgstr "Bước tiếp theo"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:826
 msgid "Execution Profile:  "
-msgstr ""
+msgstr "Hồ sơ thực thi:  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "Choose which method to use for running the tests"
-msgstr ""
+msgstr "Chọn phương pháp để chạy các bài kiểm tra."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:836
 msgid "Open Logs Directory"
-msgstr ""
+msgstr "Mở thư mục nhật ký"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:838
 msgid "View All Logs in Explorer"
-msgstr ""
+msgstr "Xem tất cả nhật ký trong Explorer"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Report"
-msgstr ""
+msgstr " Báo cáo"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "View Robot Report in Browser (CtrlCmd-R)"
-msgstr ""
+msgstr "Xem Báo cáo Robot trong Trình duyệt (CtrlCmd-R)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:842
 msgid " Log"
-msgstr ""
+msgstr " Nhật ký"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:843
 msgid "View Robot Log in Browser (CtrlCmd-L)"
-msgstr ""
+msgstr "Xem Nhật ký Robot trong Trình duyệt (CtrlCmd-L)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:850
 msgid " Autosave  "
-msgstr ""
+msgstr " Tự động lưu  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:851
 msgid "Automatically save all changes before running"
-msgstr ""
+msgstr "Tự động lưu tất cả các thay đổi trước khi chạy."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:856
 msgid " Pause after failure  "
-msgstr ""
+msgstr " Dừng lại sau khi thất bại  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:857
 msgid "Automatically pause after failing keyword"
-msgstr ""
+msgstr "Tự động tạm dừng sau khi không tìm thấy từ khóa."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
-msgstr ""
+msgstr "Cài đặt"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:973
 msgid "Console log"
-msgstr ""
+msgstr "Nhật ký hệ thống"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:977
 msgid "Message log"
-msgstr ""
+msgstr "Lịch sử tin nhắn"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1100
 msgid "Starting test:"
-msgstr ""
+msgstr "Bắt đầu kiểm tra:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
 msgid "Ending test:"
-msgstr ""
+msgstr "Kiểm tra kết thúc:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1113
 msgid "UNKNOWN STATUS:"
-msgstr ""
+msgstr "TÌNH TRẠNG KHÔNG RÕ:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1141
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1143
 msgid "<<  PAUSED  >>"
-msgstr ""
+msgstr "<<  PAUSED  >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1148
 msgid "<< CONTINUE >>"
-msgstr ""
+msgstr "<< CONTINUE >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
-msgstr ""
+msgstr "<<  CONTINUE  >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
-msgstr ""
+msgstr "Không có thư mục nhật ký"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
 msgstr ""
+"Không có thư mục logs. \n"
+"Vui lòng chạy các bài kiểm tra và thử lại."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
-msgstr ""
+msgstr "RIDE - Tùy chọn"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1298
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
-msgstr ""
+msgstr "Thời gian đã trôi qua: %s  Đã qua: %s  Bỏ qua: %s  Thất bại: %s"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1332
 msgid "  current keyword: "
-msgstr ""
+msgstr "  Từ khóa hiện tại: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
@@ -576,10 +586,14 @@ msgid ""
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
+"[Navigate]\n"
+"        !Go &Back | Quay lại vị trí trước đó trong cây | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Tiếp tục đến vị trí tiếp theo trong cây | Alt-%s | ART_GO_FORWARD\n"
+"        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
-msgstr ""
+msgstr "Thêm thẻ vào các mục đã chọn"
 
 #: src/robotide/controller/ui/treecontroller.py:56
 #: src/robotide/controller/ui/treecontroller.py:58
@@ -588,100 +602,100 @@ msgstr ""
 #: src/robotide/editor/settingeditors.py:659
 #: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
-msgstr ""
+msgstr "Chỉnh sửa"
 
 #: src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
-msgstr ""
+msgstr "Xóa các mục đã chọn"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
-msgstr ""
+msgstr "Thêm thẻ vào các mục đã chọn"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
-msgstr ""
+msgstr "Nhập tên thẻ"
 
 #: src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Chỉnh sửa]\n"
 
 #: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr ""
+msgstr "&Undo | Hủy bỏ thay đổi cuối cùng | Ctrl+Z\n"
 
 #: src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr ""
+msgstr "&Redo | Làm lại thay đổi | Ctrl+Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr ""
+msgstr "Cu&t | Cắt | Ctrl+Cmd+X\n"
 
 #: src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
-msgstr ""
+msgstr "&Copy | Copy | Ctrl+C\n"
 
 #: src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr ""
+msgstr "&Dán | Dán | Ctrl+Cmd+V\n"
 
 #: src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
-msgstr ""
+msgstr "&Chèn | Chèn | Shift-Ctrl-V\n"
 
 #: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr ""
+msgstr "&Xóa | Xóa | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr ""
+msgstr "Dòng bình luận | Chọn các dòng bình luận | Ctrlcmd-3\n"
 
 #: src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
+msgstr "Tế bào bình luận | Tế bào bình luận có # | Ctrlcmd-Shift-3\n"
 
 #: src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
+msgstr "Bỏ bình luận các hàng | Bỏ bình luận các hàng đã chọn | Ctrlcmd-4\n"
 
 #: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
+msgstr "Bỏ chú thích ô | Bỏ chú thích ô có dấu # | Ctrl+Shift+4\n"
 
 #: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr ""
+msgstr "Chèn ô | Chèn ô | Ctrl+Shift+I\n"
 
 #: src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr ""
+msgstr "Xóa ô | Xóa ô | Ctrl+Shift+D\n"
 
 #: src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr ""
+msgstr "Chèn hàng | Chèn hàng | Ctrlcmd-I\n"
 
 #: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr ""
+msgstr "Xóa hàng | Xóa hàng | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "Di chuyển hàng lên (Alt-Up hoặc Ctrl-Shift-Up) | Di chuyển hàng lên\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
+msgstr "Di chuyển các hàng xuống (Alt-Down hoặc Ctrl-Shift-Down) | Di chuyển các hàng xuống\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
-msgstr ""
+msgstr "[Công cụ]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr ""
+msgstr "Hỗ trợ nội dung (Ctrl-Space hoặc Ctrl-Alt-Space) | Hiển thị các đề xuất từ khóa và biến có thể hoàn thành | | | VỊ TRÍ-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -691,28 +705,35 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
+"Plugin trình soạn thảo mặc định. Còn được gọi là Grid hoặc Cell Editor.\n"
+"\n"
+"    Plugin này cung cấp các trình soạn thảo cho các thành phần khác nhau của Robot Framework\n"
+"    dữ liệu thử nghiệm.\n"
+"    "
 
 #: src/robotide/editor/__init__.py:95
 msgid "Editor"
-msgstr ""
+msgstr "Biên tập viên"
 
 #: src/robotide/editor/dialoghelps.py:31
 msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
+msgstr "Các ký tự đặc biệt trong giá trị phải được thoát bằng dấu gạch chéo ngược như '\\|'."
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
+msgstr "Tách các thẻ bằng ký tự gạch dọc như 'thẻ | thẻ thứ hai | thẻ thứ ba'."
 
 #: src/robotide/editor/dialoghelps.py:33
 msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
-msgstr ""
+msgstr "Tách các tham số có thể có bằng ký tự gạch dọc như 'My Keyword | arg 1 | arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
+"Sử dụng cú pháp thời gian như '1 phút 10 giây' hoặc '2 giờ' hoặc nhập giá trị dưới dạng giây.\n"
+"Trước phiên bản Robot v3.0.1, có thể chỉ định một tin nhắn tùy chọn như '3 phút | Tin nhắn của tôi ở đây'."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
@@ -721,196 +742,202 @@ msgid ""
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
+"Chỉ định các tham số được phân tách bằng ký tự gạch dọc như '${arg1} | ${arg2}'.\n"
+"Giá trị mặc định được chỉ định bằng dấu bằng (=) và tham số cuối cùng có thể là biến danh sách.\n"
+"Ví dụ: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+"Lưu ý. Bạn có thể sử dụng các phím tắt biến trong trường này."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
 "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
+"Alias có thể được sử dụng để nhập cùng một thư viện nhiều lần với các tên khác nhau.\n"
+"Alias được thêm vào trước: "
 
 #: src/robotide/editor/dialoghelps.py:43
 msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
+msgstr " Lưu ý rằng kể từ phiên bản Robot v6.0, các lệnh nhập (import) sử dụng cú pháp cũ WITH NAME đã được thay thế bằng AS."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
-msgstr ""
+msgstr "Đặt tên và giá trị cho biến."
 
 #: src/robotide/editor/dialoghelps.py:46
 msgid "Give name and value of the variable. Input list variable items into separate cells."
-msgstr ""
+msgstr "Nhập tên và giá trị của biến. Nhập các phần tử của biến danh sách vào các ô riêng biệt."
 
 #: src/robotide/editor/dialoghelps.py:48
 msgid "Give name and value of the variable. Input dictionary items into separate cells."
-msgstr ""
+msgstr "Nhập tên và giá trị của biến. Nhập các mục từ điển vào các ô riêng biệt."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
-msgstr ""
+msgstr "Các mục riêng lẻ phải có định dạng `key=value`"
 
 #: src/robotide/editor/dialoghelps.py:50
 msgid "Give name, optional arguments and optional alias of the library to import."
-msgstr ""
+msgstr "Nhập tên, các tham số tùy chọn và tên gọi khác (nếu có) của thư viện cần nhập."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr ""
+msgstr "Tách các đối số bằng ký tự gạch dọc như 'arg 1 | arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
+msgstr "Cung cấp tên thư viện, URL tài liệu thư viện và lệnh cài đặt."
 
 #: src/robotide/editor/dialoghelps.py:53
 msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
-msgstr ""
+msgstr "Trong lệnh, bạn có thể sử dụng `%%executable` làm ký tự đại diện để được thay thế bằng đường dẫn thực tế."
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
-msgstr ""
+msgstr " đến tệp thực thi Python."
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
+msgstr "Cung cấp đường dẫn và các tham số tùy chọn của tệp biến để nhập."
 
 #: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
-msgstr ""
+msgstr "Cung cấp đường dẫn đến tệp tài nguyên cần nhập."
 
 #: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
+msgstr "Các tài nguyên hiện có sẽ được tự động tải vào cây tài nguyên."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
-msgstr ""
+msgstr "Cung cấp tài liệu."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "New resources must be created separately."
-msgstr ""
+msgstr "Các tài nguyên mới phải được tạo riêng biệt."
 
 #: src/robotide/editor/dialoghelps.py:60
 msgid "Simple formatting like *bold* and _italic_ can be used."
-msgstr ""
+msgstr "Các định dạng đơn giản như *đậm* và _nghiêng_ có thể được sử dụng."
 
 #: src/robotide/editor/dialoghelps.py:61
 msgid "Additionally, URLs are converted to clickable links."
-msgstr ""
+msgstr "Ngoài ra, các URL được chuyển đổi thành các liên kết có thể nhấp chuột."
 
 #: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
+msgstr "Các thẻ này được áp dụng cho tất cả các trường hợp thử nghiệm trong bộ thử nghiệm này."
 
 #: src/robotide/editor/dialoghelps.py:64
 msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
-msgstr ""
+msgstr "Các thẻ này được áp dụng cho tất cả các trường hợp thử nghiệm trong bộ thử nghiệm này trừ khi các trường hợp thử nghiệm có thẻ riêng của mình."
 
 #: src/robotide/editor/dialoghelps.py:66
 msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
-msgstr ""
+msgstr "Các thẻ này được áp dụng cho tất cả các trường hợp thử nghiệm trong bộ thử nghiệm này. Trường này đã tồn tại kể từ Robot Framework 6.0 và sẽ thay thế các thẻ Force và Default sau phiên bản 7.0."
 
 #: src/robotide/editor/dialoghelps.py:70
 msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
-msgstr ""
+msgstr "Các thẻ này được áp dụng cho trường hợp thử nghiệm này ngoài các thẻ bắt buộc và chúng sẽ ghi đè lên các thẻ mặc định có thể có."
 
 #: src/robotide/editor/dialoghelps.py:73
 msgid "This keyword is executed before executing any of the test cases or lower level suites."
-msgstr ""
+msgstr "Từ khóa này được thực thi trước khi thực thi bất kỳ trường hợp thử nghiệm hoặc bộ thử nghiệm cấp thấp nào."
 
 #: src/robotide/editor/dialoghelps.py:75
 msgid "This keyword is executed after all test cases and lower level suites have been executed."
-msgstr ""
+msgstr "Từ khóa này được thực thi sau khi tất cả các trường hợp thử nghiệm và các bộ thử nghiệm cấp thấp đã được thực thi."
 
 #: src/robotide/editor/dialoghelps.py:77
 msgid "This keyword is executed before every test case in this suite unless test cases override it."
-msgstr ""
+msgstr "Từ khóa này được thực thi trước mỗi trường hợp thử nghiệm trong bộ thử nghiệm này trừ khi các trường hợp thử nghiệm ghi đè lên nó."
 
 #: src/robotide/editor/dialoghelps.py:79
 msgid "This keyword is executed after every test case in this suite unless test cases override it."
-msgstr ""
+msgstr "Từ khóa này được thực thi sau mỗi trường hợp thử nghiệm trong bộ thử nghiệm này trừ khi các trường hợp thử nghiệm ghi đè lên nó."
 
 #: src/robotide/editor/dialoghelps.py:81
 msgid "This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
+msgstr "Từ khóa này được thực thi trước các từ khóa khác trong trường hợp thử nghiệm hoặc từ khóa này."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
+msgstr "Trong các trường hợp thử nghiệm, có thể ghi đè cài đặt thử nghiệm được thiết lập ở cấp độ bộ thử nghiệm."
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
-msgstr ""
+msgstr "Tính năng thiết lập từ khóa đã có từ phiên bản Robot v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
 msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
-msgstr ""
+msgstr "Từ khóa này được thực thi sau các từ khóa khác trong trường hợp thử nghiệm hoặc từ khóa này, ngay cả khi thử nghiệm hoặc từ khóa đó thất bại."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
+msgstr "Trong các trường hợp thử nghiệm, có thể ghi đè cài đặt Test Teardown được thiết lập ở cấp độ bộ thử nghiệm."
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
+msgstr "Xác định từ khóa mẫu mặc định được sử dụng bởi các bài kiểm tra trong bộ kiểm tra này."
 
 #: src/robotide/editor/dialoghelps.py:89
 msgid "The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
+msgstr "Các trường hợp thử nghiệm sẽ chỉ chứa dữ liệu được sử dụng làm tham số cho từ khóa đó."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
-msgstr ""
+msgstr "Xác định từ khóa mẫu để sử dụng."
 
 #: src/robotide/editor/dialoghelps.py:91
 msgid "The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
+msgstr "Bản thân bài kiểm tra sẽ chỉ chứa dữ liệu để sử dụng làm tham số cho từ khóa đó."
 
 #: src/robotide/editor/dialoghelps.py:93
 msgid "Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
+msgstr "Xác định giá trị trả về. Sử dụng ký tự gạch dọc (|) để phân tách các giá trị."
 
 #: src/robotide/editor/dialoghelps.py:96
 msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
-msgstr ""
+msgstr "Thời gian tối đa mà các trường hợp thử nghiệm trong bộ thử nghiệm này được phép thực thi trước khi bị ngắt kết nối một cách cưỡng chế."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
+msgstr "Có thể bị ghi đè bởi các trường hợp thử nghiệm riêng lẻ thông qua cài đặt Thời gian chờ."
 
 #: src/robotide/editor/dialoghelps.py:98
 msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
-msgstr ""
+msgstr "Thời gian tối đa mà bài kiểm tra/từ khóa này được phép thực thi trước khi bị ngắt kết nối một cách cưỡng chế."
 
 #: src/robotide/editor/dialoghelps.py:99
 msgid "With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
+msgstr "Với các trường hợp thử nghiệm, cài đặt này sẽ ghi đè lên thời gian chờ thử nghiệm được đặt ở cấp độ bộ thử nghiệm."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
-msgstr ""
+msgstr "Đặt tên và giá trị cho metadata của bộ."
 
 #: src/robotide/editor/dialoghelps.py:101
 msgid "Give a name for the new test case."
-msgstr ""
+msgstr "Đặt tên cho trường hợp thử nghiệm mới."
 
 #: src/robotide/editor/dialoghelps.py:102
 msgid "Give a name and arguments for the new user keyword."
-msgstr ""
+msgstr "Đặt tên và các tham số cho từ khóa người dùng mới."
 
 #: src/robotide/editor/dialoghelps.py:103
 msgid "Give a name for the new user keyword."
-msgstr ""
+msgstr "Đặt tên cho từ khóa người dùng mới."
 
 #: src/robotide/editor/editordialogs.py:84
 #: src/robotide/editor/settingeditors.py:487
 #: src/robotide/editor/settingeditors.py:575
 #: src/robotide/editor/settingeditors.py:739
 msgid "Comment"
-msgstr ""
+msgstr "Bình luận"
 
 #: src/robotide/editor/editordialogs.py:135
 msgid "Scalar Variable"
-msgstr ""
+msgstr "Biến số vô hướng"
 
 #: src/robotide/editor/editordialogs.py:143
 #: src/robotide/editor/editordialogs.py:162
@@ -927,7 +954,7 @@ msgstr ""
 #: src/robotide/ui/filedialogs.py:331
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
-msgstr ""
+msgstr "Tên"
 
 #: src/robotide/editor/editordialogs.py:143
 #: src/robotide/editor/editordialogs.py:163
@@ -936,113 +963,113 @@ msgstr ""
 #: src/robotide/editor/settingeditors.py:487
 #: src/robotide/editor/settingeditors.py:739
 msgid "Value"
-msgstr ""
+msgstr "Giá trị"
 
 #: src/robotide/editor/editordialogs.py:155
 msgid "List Variable"
-msgstr ""
+msgstr "Biến danh sách"
 
 #: src/robotide/editor/editordialogs.py:175
 msgid "Dictionary Variable"
-msgstr ""
+msgstr "Biến từ điển"
 
 #: src/robotide/editor/editordialogs.py:199
 #: src/robotide/editor/editordialogs.py:230
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:666
 msgid "Library"
-msgstr ""
+msgstr "Thư viện"
 
 #: src/robotide/editor/editordialogs.py:209
 msgid "Alias"
-msgstr ""
+msgstr "Tên gọi khác"
 
 #: src/robotide/editor/editordialogs.py:209
 #: src/robotide/editor/editordialogs.py:278
 msgid "Args"
-msgstr ""
+msgstr "Tham số"
 
 #: src/robotide/editor/editordialogs.py:247
 #: src/robotide/editor/editordialogs.py:308
 #: src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
-msgstr ""
+msgstr "Tài liệu"
 
 #: src/robotide/editor/editordialogs.py:248
 #: src/robotide/run/configmanagerui.py:101
 msgid "Command"
-msgstr ""
+msgstr "Lệnh"
 
 #: src/robotide/editor/editordialogs.py:271
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:681
 msgid "Variables"
-msgstr ""
+msgstr "Biến"
 
 #: src/robotide/editor/editordialogs.py:277
 #: src/robotide/editor/editordialogs.py:295
 msgid "Path"
-msgstr ""
+msgstr "Đường"
 
 #: src/robotide/editor/editordialogs.py:290
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:673
 msgid "Resource"
-msgstr ""
+msgstr "Tài nguyên"
 
 #: src/robotide/editor/editordialogs.py:396
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
-msgstr ""
+msgstr "Thẻ"
 
 #: src/robotide/editor/editordialogs.py:424
 msgid "Suite Setup is run before any tests"
-msgstr ""
+msgstr "Cài đặt Suite được thực hiện trước khi chạy bất kỳ bài kiểm tra nào."
 
 #: src/robotide/editor/editordialogs.py:483
 msgid "Setup"
-msgstr ""
+msgstr "Cài đặt"
 
 #: src/robotide/editor/editordialogs.py:497
 msgid "Teardown"
-msgstr ""
+msgstr "Tháo dỡ"
 
 #: src/robotide/editor/editordialogs.py:511
 msgid "Template"
-msgstr ""
+msgstr "Mẫu"
 
 #: src/robotide/editor/editordialogs.py:571
 msgid "Test Timeout"
-msgstr ""
+msgstr "Thời gian chờ hết hạn"
 
 #: src/robotide/editor/editordialogs.py:585
 msgid "Timeout"
-msgstr ""
+msgstr "Thời gian chờ"
 
 #: src/robotide/editor/editordialogs.py:598
 #: src/robotide/editor/settingeditors.py:739
 msgid "Metadata"
-msgstr ""
+msgstr "Thông tin mô tả"
 
 #: src/robotide/editor/editordialogs.py:617
 msgid "New Test Case"
-msgstr ""
+msgstr "Trường hợp thử nghiệm mới"
 
 #: src/robotide/editor/editordialogs.py:642
 msgid "Copy User Keyword"
-msgstr ""
+msgstr "Sao chép từ khóa của người dùng"
 
 #: src/robotide/editor/editordialogs.py:671
 msgid "New User Keyword"
-msgstr ""
+msgstr "Từ khóa cho người dùng mới"
 
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
 #: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
-msgstr ""
+msgstr " (Chỉ đọc)"
 
 #: src/robotide/editor/editors.py:350
 #: src/robotide/searchtests/dialogsearchtests.py:61
@@ -1050,98 +1077,98 @@ msgstr ""
 #: src/robotide/ui/keywordsearch.py:357
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Source"
-msgstr ""
+msgstr "Nguồn"
 
 #: src/robotide/editor/editors.py:387
 #: src/robotide/ui/keywordsearch.py:207
 #: src/robotide/ui/treenodehandlers.py:493
 #: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
-msgstr ""
+msgstr "Tìm các cách sử dụng"
 
 #: src/robotide/editor/fieldeditors.py:191
 msgid "Columns"
-msgstr ""
+msgstr "Cột"
 
 #: src/robotide/editor/fieldeditors.py:195
 msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
-msgstr ""
+msgstr "Số cột được hiển thị trong trình soạn thảo này. Giá trị đã chọn được lưu trữ và sử dụng trên toàn hệ thống."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
-msgstr ""
+msgstr "Xóa ô    Ctrl-Shift-D"
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr ""
+msgstr "Chèn ô    Ctrl-Shift-I"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Copy\tCtrl-C"
-msgstr ""
+msgstr "Sao chép    Ctrl-C"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Cut\tCtrl-X"
-msgstr ""
+msgstr "Cắt    Ctrl-X"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Select All\tCtrl-A"
-msgstr ""
+msgstr "Chọn tất cả    Ctrl-A"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Delete\tDel"
-msgstr ""
+msgstr "Xóa    Xóa"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Insert\tCtrl-Shift-V"
-msgstr ""
+msgstr "Chèn    Ctrl-Shift-V"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Paste\tCtrl-V"
-msgstr ""
+msgstr "Dán    Ctrl-V"
 
 #: src/robotide/editor/kweditor.py:104
 msgid "Create Keyword"
-msgstr ""
+msgstr "Tạo từ khóa"
 
 #: src/robotide/editor/kweditor.py:105
 msgid "Extract Keyword"
-msgstr ""
+msgstr "Trích xuất từ khóa"
 
 #: src/robotide/editor/kweditor.py:106
 msgid "Extract Variable"
-msgstr ""
+msgstr "Trích xuất biến"
 
 #: src/robotide/editor/kweditor.py:108
 msgid "Find Where Used"
-msgstr ""
+msgstr "Tìm nơi sử dụng"
 
 #: src/robotide/editor/kweditor.py:109
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr ""
+msgstr "Trình chỉnh sửa JSON    Ctrl-Shift-J"
 
 #: src/robotide/editor/kweditor.py:111
 msgid "Go to Definition\tCtrl-B"
-msgstr ""
+msgstr "Đi đến Định nghĩa    Ctrl-B"
 
 #: src/robotide/editor/kweditor.py:113
 msgid "Undo\tCtrl-Z"
-msgstr ""
+msgstr "Hoàn tác    Ctrl-Z"
 
 #: src/robotide/editor/kweditor.py:114
 msgid "Redo\tCtrl-Y"
-msgstr ""
+msgstr "Làm lại    Ctrl-Y"
 
 #: src/robotide/editor/kweditor.py:116
 msgid "Make Variable\tCtrl-1"
-msgstr ""
+msgstr "Tạo biến    Ctrl-1"
 
 #: src/robotide/editor/kweditor.py:117
 msgid "Make List Variable\tCtrl-2"
-msgstr ""
+msgstr "Tạo danh sách biến    Ctrl-2"
 
 #: src/robotide/editor/kweditor.py:118
 msgid "Make Dict Variable\tCtrl-5"
-msgstr ""
+msgstr "Tạo biến Dict    Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
 msgid ""
@@ -1156,50 +1183,60 @@ msgid ""
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
+"<b>Từ khóa không được phát hiện bởi RIDE</b>\n"
+"        <br>Các đề xuất sửa lỗi:<br>\n"
+"        <ul>\n"
+"            <li>Nhập thư viện hoặc tệp tài nguyên chứa từ khóa.</li>\n"
+"            <li>\n"
+"            Đối với lỗi nhập thư viện: Xem xét nhập tệp XML thông số thư viện\n"
+"            (Công cụ / Nhập tệp XML thông số thư viện hoặc bằng cách thêm tệp XML có tên chính xác vào PYTHONPATH) để kích hoạt tính năng hoàn thành từ khóa\n"
+"            ví dụ cho các thư viện Java.\n"
+"            Tệp XML thông số thư viện có thể được tạo bằng công cụ libdoc từ Robot Framework.</li>\n"
+"        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
 #: src/robotide/ui/treenodehandlers.py:243
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
-msgstr ""
+msgstr "Lỗi xác thực"
 
 #: src/robotide/editor/kweditor.py:1218
 msgid "New name"
-msgstr ""
+msgstr "Tên mới"
 
 #: src/robotide/editor/kweditor.py:1231
 msgid "Save"
-msgstr ""
+msgstr "Lưu"
 
 #: src/robotide/editor/kweditor.py:1234
 #: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
-msgstr ""
+msgstr "Hủy"
 
 #: src/robotide/editor/kweditor.py:1264
 msgid "Validation Error!"
-msgstr ""
+msgstr "Lỗi xác thực!"
 
 #: src/robotide/editor/kweditor.py:1265
 msgid "Error in JSON:"
-msgstr ""
+msgstr "Lỗi trong JSON:"
 
 #: src/robotide/editor/kweditor.py:1265
 msgid "Save anyway?"
-msgstr ""
+msgstr "Vẫn muốn lưu?"
 
 #: src/robotide/editor/kweditor.py:1441
 msgid "Please select what you want to check for usage"
-msgstr ""
+msgstr "Vui lòng chọn những gì bạn muốn kiểm tra về việc sử dụng."
 
 #: src/robotide/editor/kweditor.py:1444
 msgid "Complete cell content"
-msgstr ""
+msgstr "Nội dung tế bào hoàn chỉnh"
 
 #: src/robotide/editor/kweditor.py:1445
 msgid "Variable "
-msgstr ""
+msgstr "Biến "
 
 #: src/robotide/editor/kweditor.py:1457
 #: src/robotide/editor/texteditor.py:1119
@@ -1210,7 +1247,7 @@ msgstr ""
 #: src/robotide/ui/review.py:98
 #: src/robotide/ui/review.py:160
 msgid "Search"
-msgstr ""
+msgstr "Tìm kiếm"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/tagdialogs.py:233
@@ -1218,70 +1255,70 @@ msgstr ""
 #: src/robotide/ui/treenodehandlers.py:688
 #: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
-msgstr ""
+msgstr "Xóa"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
-msgstr ""
+msgstr "Di chuyển lên    Ctrl-Up"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
-msgstr ""
+msgstr "Di chuyển xuống    Ctrl-Down"
 
 #: src/robotide/editor/settingeditors.py:102
 #: src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
-msgstr ""
+msgstr "Rõ ràng"
 
 #: src/robotide/editor/settingeditors.py:487
 msgid "Variable"
-msgstr ""
+msgstr "Biến"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add Dict"
-msgstr ""
+msgstr "Thêm từ điển"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add List"
-msgstr ""
+msgstr "Thêm Danh sách"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add Scalar"
-msgstr ""
+msgstr "Thêm số vô hướng"
 
 #: src/robotide/editor/settingeditors.py:575
 msgid "Import"
-msgstr ""
+msgstr "Nhập khẩu"
 
 #: src/robotide/editor/settingeditors.py:575
 msgid "Name / Path"
-msgstr ""
+msgstr "Tên / Đường dẫn"
 
 #: src/robotide/editor/settingeditors.py:576
 msgid "Import Failed Help"
-msgstr ""
+msgstr "Lỗi nhập dữ liệu - Hỗ trợ"
 
 #: src/robotide/editor/settingeditors.py:590
 msgid "Add Import"
-msgstr ""
+msgstr "Thêm Nhập khẩu"
 
 #: src/robotide/editor/settingeditors.py:633
 msgid "Open Library Documentation"
-msgstr ""
+msgstr "Tài liệu Thư viện Mở"
 
 #: src/robotide/editor/settingeditors.py:636
 msgid "Install Library"
-msgstr ""
+msgstr "Cài đặt Thư viện"
 
 #: src/robotide/editor/settingeditors.py:636
 #: src/robotide/spec/specimporter.py:34
 #: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
-msgstr ""
+msgstr "Nhập tệp XML thông số kỹ thuật thư viện"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid ""
@@ -1300,52 +1337,66 @@ msgid ""
 "            </li>\n"
 "        </ul>"
 msgstr ""
+"<br>Các chỉnh sửa và ghi chú có thể:<br>\n"
+"        <ul>\n"
+"            <li>Lỗi nhập dữ liệu được hiển thị bằng màu đỏ.</li>\n"
+"            <li>Xem Tools / View RIDE Log để xem thông tin chi tiết về lỗi.</li>\n"
+"            <li>Nếu quá trình nhập chứa một biến mà RIDE chưa khởi tạo, hãy xem xét thêm biến\n"
+"            vào bảng biến với giá trị mặc định.</li>\n"
+"            <li>Đối với lỗi nhập thư viện: Cân nhắc nhập tệp XML thông số thư viện (Tools / Import Library Spec XML hoặc bằng cách\n"
+"            thêm tệp XML có tên chính xác vào PYTHONPATH) để kích hoạt tính năng hoàn thành từ khóa\n"
+"            ví dụ cho các thư viện Java.\n"
+"            Tệp XML thông số thư viện có thể được tạo bằng công cụ libdoc từ Robot Framework.\n"
+"            Để biết thêm thông tin, xem \n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">             wiki</a>.\n"
+"            </li>\n"
+"        </ul>"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
-msgstr ""
+msgstr "Xử lý lỗi nhập dữ liệu"
 
 #: src/robotide/editor/settingeditors.py:740
 msgid "Add Metadata"
-msgstr ""
+msgstr "Thêm metadata"
 
 #: src/robotide/editor/texteditor.py:383
 msgid "Text Edit"
-msgstr ""
+msgstr "Chỉnh sửa văn bản"
 
 #: src/robotide/editor/texteditor.py:467
 #: src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
-msgstr ""
+msgstr "Nguồn: "
 
 #: src/robotide/editor/texteditor.py:909
 msgid "Can not apply changes from Text Editor"
-msgstr ""
+msgstr "Không thể áp dụng các thay đổi từ Trình soạn thảo văn bản."
 
 #: src/robotide/editor/texteditor.py:910
 msgid "ERROR: Data sanity check failed!"
-msgstr ""
+msgstr "LỖI: Kiểm tra tính hợp lệ của dữ liệu đã thất bại!"
 
 #: src/robotide/editor/texteditor.py:910
 msgid "Error at line"
-msgstr ""
+msgstr "Lỗi tại dòng"
 
 #: src/robotide/editor/texteditor.py:911
 msgid "Reset changes?"
-msgstr ""
+msgstr "Đặt lại các thay đổi?"
 
 #: src/robotide/editor/texteditor.py:1096
 msgid "Apply Changes"
-msgstr ""
+msgstr "Áp dụng các thay đổi"
 
 #: src/robotide/editor/texteditor.py:1131
 msgid "Syntax colorization disabled due to missing requirements."
-msgstr ""
+msgstr "Tính năng tô màu cú pháp đã bị vô hiệu hóa do thiếu các yêu cầu cần thiết."
 
 #: src/robotide/editor/texteditor.py:1132
 msgid "Get help"
-msgstr ""
+msgstr "Nhận trợ giúp"
 
 #: src/robotide/editor/texteditor.py:1147
 msgid ""
@@ -1375,438 +1426,465 @@ msgid ""
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>Tô màu cú pháp</h1>\n"
+"        <p>\n"
+"        Tính năng tô màu cú pháp cho Text Edit sử dụng trình tô màu cú pháp <a href='https://pygments.org/'>Pygments</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Cài đặt Pygments từ dòng lệnh với:\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"        Hoặc:\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        Sau đó, khởi động lại RIDE.\n"
+"        </p>\n"
+"        <p>\n"
+"        Nếu bạn không có pip hoặc easy_install,\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        >hãy làm theo các hướng dẫn này</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Để biết thêm thông tin về cách cài đặt Pygments, <a href='https://pygments.org/download/'>hãy truy cập trang web</a>.\n"
+"        </p>\n"
+"        "
 
 #: src/robotide/editor/texteditor.py:1172
 msgid "Getting syntax colorization"
-msgstr ""
+msgstr "Bật tính năng tô màu cú pháp"
 
 #: src/robotide/editor/texteditor.py:1273
 msgid "No matches found."
-msgstr ""
+msgstr "Không tìm thấy kết quả nào."
 
 #: src/robotide/log/log.py:45
 msgid "RIDE Log"
-msgstr ""
+msgstr "Nhật ký RIDE"
 
 #: src/robotide/log/log.py:86
 msgid "View RIDE Log"
-msgstr ""
+msgstr "Xem Nhật ký RIDE"
 
 #: src/robotide/parserlog/parserlog.py:45
 msgid "Parser Log"
-msgstr ""
+msgstr "Nhật ký phân tích cú pháp"
 
 #: src/robotide/parserlog/parserlog.py:85
 msgid "View Parser Log"
-msgstr ""
+msgstr "Xem nhật ký phân tích cú pháp"
 
 #: src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
-msgstr ""
+msgstr "Tạo lối tắt RIDE trên màn hình desktop"
 
 #: src/robotide/preferences/editors.py:42
 msgid "Text background"
-msgstr ""
+msgstr "Nền văn bản"
 
 #: src/robotide/preferences/editors.py:85
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
-msgstr ""
+msgstr "Đặt lại màu sắc về mặc định"
 
 #: src/robotide/preferences/editors.py:86
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
-msgstr ""
+msgstr "Lưu hoặc Tải cài đặt"
 
 #: src/robotide/preferences/editors.py:129
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
-msgstr ""
+msgstr "Kích thước phông chữ"
 
 #: src/robotide/preferences/editors.py:138
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
-msgstr ""
+msgstr "Hệ số thu phóng"
 
 #: src/robotide/preferences/editors.py:143
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
-msgstr ""
+msgstr "Sử dụng phông chữ có chiều rộng cố định"
 
 #: src/robotide/preferences/editors.py:148
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
-msgstr ""
+msgstr "Kiểu chữ"
 
 #: src/robotide/preferences/editors.py:159
 #: src/robotide/preferences/editors.py:162
 msgid "Text Editor"
-msgstr ""
+msgstr "Trình soạn thảo văn bản"
 
 #: src/robotide/preferences/editors.py:163
 msgid "Text Editor Settings"
-msgstr ""
+msgstr "Cài đặt Trình soạn thảo văn bản"
 
 #: src/robotide/preferences/editors.py:174
 msgid "Argument foreground"
-msgstr ""
+msgstr "Luận điểm chính"
 
 #: src/robotide/preferences/editors.py:175
 msgid "Comment foreground"
-msgstr ""
+msgstr "Bình luận nền trước"
 
 #: src/robotide/preferences/editors.py:176
 #: src/robotide/preferences/editors.py:392
 msgid "Error foreground"
-msgstr ""
+msgstr "Lỗi nền trước"
 
 #: src/robotide/preferences/editors.py:177
 msgid "Gherkin keyword foreground"
-msgstr ""
+msgstr "Từ khóa Gherkin ở vị trí nổi bật"
 
 #: src/robotide/preferences/editors.py:178
 msgid "Heading foreground"
-msgstr ""
+msgstr "Tiêu đề nền trước"
 
 #: src/robotide/preferences/editors.py:179
 msgid "Import foreground"
-msgstr ""
+msgstr "Nhập nền trước"
 
 #: src/robotide/preferences/editors.py:180
 msgid "Variable foreground"
-msgstr ""
+msgstr "Nền trước biến đổi"
 
 #: src/robotide/preferences/editors.py:181
 msgid "Keyword definition foreground"
-msgstr ""
+msgstr "Định nghĩa từ khóa: Nền trước"
 
 #: src/robotide/preferences/editors.py:182
 msgid "Keyword call foreground"
-msgstr ""
+msgstr "Từ khóa gọi nền trước"
 
 #: src/robotide/preferences/editors.py:183
 msgid "Separator"
-msgstr ""
+msgstr "Bộ tách"
 
 #: src/robotide/preferences/editors.py:184
 msgid "Setting foreground"
-msgstr ""
+msgstr "Đặt nền trước"
 
 #: src/robotide/preferences/editors.py:185
 msgid "Syntax characters"
-msgstr ""
+msgstr "Ký tự cú pháp"
 
 #: src/robotide/preferences/editors.py:190
 #: src/robotide/preferences/editors.py:390
 msgid "Text foreground"
-msgstr ""
+msgstr "Nền văn bản"
 
 #: src/robotide/preferences/editors.py:231
 #: src/robotide/preferences/editors.py:266
 msgid "Enable auto suggestions"
-msgstr ""
+msgstr "Bật tính năng đề xuất tự động"
 
 #: src/robotide/preferences/editors.py:238
 #: src/robotide/preferences/editors.py:241
 msgid "Grid Editor"
-msgstr ""
+msgstr "Trình chỉnh sửa lưới"
 
 #: src/robotide/preferences/editors.py:242
 msgid "Grid Editor Settings"
-msgstr ""
+msgstr "Cài đặt Trình chỉnh sửa lưới"
 
 #: src/robotide/preferences/editors.py:251
 msgid "Default column size"
-msgstr ""
+msgstr "Kích thước cột mặc định"
 
 #: src/robotide/preferences/editors.py:255
 msgid "Auto size columns"
-msgstr ""
+msgstr "Tự động điều chỉnh kích thước cột"
 
 #: src/robotide/preferences/editors.py:258
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
+"Kích thước cột tối đa\n"
+"(áp dụng khi chế độ tự động điều chỉnh kích thước được bật)"
 
 #: src/robotide/preferences/editors.py:262
 msgid "Word wrap and auto size rows"
-msgstr ""
+msgstr "Tự động xuống dòng và điều chỉnh kích thước hàng tự động"
 
 #: src/robotide/preferences/editors.py:298
 msgid "User Keyword Foreground"
-msgstr ""
+msgstr "Từ khóa của người dùng ở nền trước"
 
 #: src/robotide/preferences/editors.py:299
 msgid "Library Keyword Foreground"
-msgstr ""
+msgstr "Từ khóa thư viện nổi bật"
 
 #: src/robotide/preferences/editors.py:300
 msgid "Variable Foreground"
-msgstr ""
+msgstr "Biến nền trước"
 
 #: src/robotide/preferences/editors.py:301
 msgid "Unknown Variable Foreground"
-msgstr ""
+msgstr "Biến số không xác định ở vùng nền trước"
 
 #: src/robotide/preferences/editors.py:302
 msgid "Comments Foreground"
-msgstr ""
+msgstr "Bình luận Nền trước"
 
 #: src/robotide/preferences/editors.py:303
 msgid "Default Foreground"
-msgstr ""
+msgstr "Màu nền mặc định"
 
 #: src/robotide/preferences/editors.py:304
 msgid "Empty Foreground"
-msgstr ""
+msgstr "Phần nền trống"
 
 #: src/robotide/preferences/editors.py:320
 msgid "Variable Background"
-msgstr ""
+msgstr "Nền biến đổi"
 
 #: src/robotide/preferences/editors.py:321
 msgid "Keyword Background"
-msgstr ""
+msgstr "Nền tảng từ khóa"
 
 #: src/robotide/preferences/editors.py:322
 msgid "Mandatory Field Background"
-msgstr ""
+msgstr "Trường thông tin bắt buộc"
 
 #: src/robotide/preferences/editors.py:323
 msgid "Optional Field Background"
-msgstr ""
+msgstr "Trường thông tin tùy chọn"
 
 #: src/robotide/preferences/editors.py:324
 msgid "Mandatory Empty Field Background"
-msgstr ""
+msgstr "Trường thông tin bắt buộc phải để trống"
 
 #: src/robotide/preferences/editors.py:325
 msgid "Unknown Background"
-msgstr ""
+msgstr "Nền tảng không rõ"
 
 #: src/robotide/preferences/editors.py:326
 msgid "Error Background"
-msgstr ""
+msgstr "Lỗi nền"
 
 #: src/robotide/preferences/editors.py:327
 msgid "Highlight Background"
-msgstr ""
+msgstr "Nổi bật nền"
 
 #: src/robotide/preferences/editors.py:352
 #: src/robotide/preferences/editors.py:355
 msgid "Test Runner"
-msgstr ""
+msgstr "Trình chạy thử nghiệm"
 
 #: src/robotide/preferences/editors.py:356
 msgid "Test Runner Settings"
-msgstr ""
+msgstr "Cài đặt Trình chạy thử nghiệm"
 
 #: src/robotide/preferences/editors.py:360
 msgid "Colors will be active after next RIDE restart."
-msgstr ""
+msgstr "Màu sắc sẽ được kích hoạt sau lần khởi động lại RIDE tiếp theo."
 
 #: src/robotide/preferences/editors.py:376
 msgid "Shows console colors set by"
-msgstr ""
+msgstr "Hiển thị màu sắc của bảng điều khiển được đặt bởi"
 
 #: src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
+msgstr "Yêu cầu xác nhận để chạy tất cả các bài kiểm tra nếu không có bài kiểm tra nào được chọn. "
 
 #: src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
-msgstr ""
+msgstr "Lỗi nền trước"
 
 #: src/robotide/preferences/editors.py:394
 msgid "Pass foreground"
-msgstr ""
+msgstr "Chuyển sang nền trước"
 
 #: src/robotide/preferences/editors.py:395
 msgid "Skip foreground"
-msgstr ""
+msgstr "Bỏ qua nền trước"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
 msgid "File Explorer"
-msgstr ""
+msgstr "Trình quản lý tệp"
 
 #: src/robotide/preferences/fileexplorer.py:59
 msgid "File Explorer Settings"
-msgstr ""
+msgstr "Cài đặt Trình quản lý tệp"
 
 #: src/robotide/preferences/fileexplorer.py:96
 msgid "Use these colors definitions"
-msgstr ""
+msgstr "Sử dụng các định nghĩa màu sắc này"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Sử dụng Trình quản lý tệp của hệ điều hành"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
 msgid "Foreground"
-msgstr ""
+msgstr "Phần nền trước"
 
 #: src/robotide/preferences/fileexplorer.py:119
 #: src/robotide/preferences/general.py:250
 msgid "Background"
-msgstr ""
+msgstr "Bối cảnh"
 
 #: src/robotide/preferences/fileexplorer.py:120
 #: src/robotide/preferences/general.py:251
 msgid "Secondary Foreground"
-msgstr ""
+msgstr "Phần nền thứ cấp"
 
 #: src/robotide/preferences/fileexplorer.py:121
 #: src/robotide/preferences/general.py:252
 msgid "Secondary Background"
-msgstr ""
+msgstr "Nền tảng thứ cấp"
 
 #: src/robotide/preferences/general.py:98
 msgid "Apply to Project and File Explorer panels"
-msgstr ""
+msgstr "Áp dụng cho các bảng điều khiển Dự án và Trình khám phá tệp"
 
 #: src/robotide/preferences/general.py:224
 #: src/robotide/ui/filedialogs.py:148
 msgid "Language"
-msgstr ""
+msgstr "Ngôn ngữ"
 
 #: src/robotide/preferences/general.py:236
 #: src/robotide/preferences/general.py:239
 #: src/robotide/preferences/general.py:242
 msgid "General"
-msgstr ""
+msgstr "Tổng quát"
 
 #: src/robotide/preferences/general.py:240
 msgid "General Settings"
-msgstr ""
+msgstr "Cài đặt chung"
 
 #: src/robotide/preferences/general.py:253
 msgid "Text Foreground"
-msgstr ""
+msgstr "Nội dung nền trước"
 
 #: src/robotide/preferences/general.py:254
 msgid "Help Background"
-msgstr ""
+msgstr "Trợ giúp Thông tin"
 
 #: src/robotide/preferences/imports.py:27
 #: src/robotide/preferences/imports.py:31
 msgid "Importing"
-msgstr ""
+msgstr "Nhập khẩu"
 
 #: src/robotide/preferences/imports.py:30
 msgid "Library imports and PYTHONPATH"
-msgstr ""
+msgstr "Nhập thư viện và PYTHONPATH"
 
 #: src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
+msgstr "Danh sách các thư viện được phân tách bằng dấu phẩy để tự động nhập."
 
 #: src/robotide/preferences/imports.py:45
 msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
-msgstr ""
+msgstr "Danh sách các thư mục được phân tách bằng dấu phẩy để thêm vào PYTHONPATH khi tìm kiếm thư viện."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
+msgstr "Danh sách các thư mục được phân tách bằng dấu phẩy chứa các tệp thông số thư viện."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
-msgstr ""
+msgstr "Lưu hoặc Tải Cài đặt"
 
 #: src/robotide/preferences/managesettingsdialog.py:48
 msgid "Load settings from file..."
-msgstr ""
+msgstr "Tải cài đặt từ tệp..."
 
 #: src/robotide/preferences/managesettingsdialog.py:49
 msgid "Save settings to file..."
-msgstr ""
+msgstr "Lưu cài đặt vào tệp..."
 
 #: src/robotide/preferences/managesettingsdialog.py:59
 msgid "Current directory:"
-msgstr ""
+msgstr "Thư mục hiện tại:"
 
 #: src/robotide/preferences/managesettingsdialog.py:77
 msgid "File with Settings to Load"
-msgstr ""
+msgstr "Tệp có cài đặt để tải"
 
 #: src/robotide/preferences/managesettingsdialog.py:107
 msgid "Save Settings to file"
-msgstr ""
+msgstr "Lưu cài đặt vào tệp"
 
 #: src/robotide/preferences/managesettingsdialog.py:120
 msgid "Could not open settings file \"%s\" for writing"
-msgstr ""
+msgstr "Không thể mở tệp cài đặt \"%s\" để ghi."
 
 #: src/robotide/preferences/managesettingsdialog.py:137
 msgid "Error trying to get '%s' from file %s"
-msgstr ""
+msgstr "Lỗi khi cố gắng lấy '%s' từ tệp %s"
 
 #: src/robotide/preferences/managesettingsdialog.py:152
 msgid "Invalid config file '%s': %s"
-msgstr ""
+msgstr "Tệp cấu hình không hợp lệ '%s': %s"
 
 #: src/robotide/preferences/saving.py:27
 #: src/robotide/preferences/saving.py:30
 #: src/robotide/preferences/saving.py:31
 #: src/robotide/preferences/saving.py:33
 msgid "Saving"
-msgstr ""
+msgstr "Lưu trữ"
 
 #: src/robotide/preferences/saving.py:42
 #: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
-msgstr ""
+msgstr "Đó là nhiệm vụ?"
 
 #: src/robotide/preferences/saving.py:43
 #: src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "Mặc định cho các phần Nhiệm vụ hoặc Kiểm tra."
 
 #: src/robotide/preferences/saving.py:44
 msgid "Reformat?"
-msgstr ""
+msgstr "Định dạng lại?"
 
 #: src/robotide/preferences/saving.py:45
 msgid "Should it recalculate identation on Save?"
-msgstr ""
+msgstr "Nó có nên tính lại khoảng lề khi lưu không?"
 
 #: src/robotide/preferences/saving.py:58
 msgid "Default file format:"
-msgstr ""
+msgstr "Định dạng tệp mặc định:"
 
 #: src/robotide/preferences/saving.py:61
 msgid "TXT format separator:"
-msgstr ""
+msgstr "Dấu phân cách định dạng TXT:"
 
 #: src/robotide/preferences/saving.py:64
 msgid "Line separator:"
-msgstr ""
+msgstr "Dấu phân cách dòng:"
 
 #: src/robotide/preferences/saving.py:66
 msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
+msgstr "Các giá trị có thể là native (của hệ điều hành hiện tại), CRLF (Windows) và LF (Unixy)."
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
-msgstr ""
+msgstr "Khoảng cách phân cách"
 
 #: src/robotide/preferences/saving.py:70
 msgid "Number of spaces between cells when saving in txt format"
-msgstr ""
+msgstr "Số khoảng trống giữa các ô khi lưu ở định dạng txt"
 
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
-msgstr ""
+msgstr "Thêm các tệp đã mở gần đây vào menu tệp."
 
 #: src/robotide/recentfiles/recentfiles.py:120
 msgid "No recent files"
-msgstr ""
+msgstr "Không có tệp tin gần đây"
 
 #: src/robotide/recentfiles/recentfiles.py:120
 #: src/robotide/recentfiles/recentfiles.py:126
@@ -1815,17 +1893,17 @@ msgstr ""
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
-msgstr ""
+msgstr "Tệp"
 
 #: src/robotide/recentfiles/recentfiles.py:121
 #: src/robotide/recentfiles/recentfiles.py:127
 #: src/robotide/recentfiles/recentfiles.py:159
 msgid "Exit"
-msgstr ""
+msgstr "Thoát"
 
 #: src/robotide/recentfiles/recentfiles.py:148
 msgid "Open %s"
-msgstr ""
+msgstr "Mở %s"
 
 #: src/robotide/run/configmanagerui.py:27
 msgid ""
@@ -1844,19 +1922,33 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
+"Dòng lệnh được chỉ định sẽ được tách ra từ các khoảng trắng thành lệnh\n"
+"và các tham số của nó. Nếu lệnh hoặc bất kỳ tham số nào yêu cầu khoảng trắng bên trong (\n"
+"), chúng phải được viết dưới dạng '<SPACE>'.\n"
+"\n"
+"Lệnh sẽ được thực thi trực tiếp trong hệ thống mà không mở vỏ lệnh (shell).\n"
+"Điều này có nghĩa là các lệnh và tiện ích mở rộng của vỏ lệnh (shell) không khả dụng. Ví dụ,\n"
+"trong các tệp batch của Windows để thực thi phải chứa phần mở rộng '.bat' và lệnh 'dir'\n"
+"không hoạt động.\n"
+"\n"
+"Ví dụ:\n"
+"    robot.bat --include smoke C:\\my_tests\n"
+"    svn update /home/robot\n"
+"    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>với<SPACE>khoảng trắng,\n"
+"Các cấu hình chạy được lưu trữ trong tệp cài đặt RIDE.\n"
 
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
-msgstr ""
+msgstr "Quản lý cấu hình chạy"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "New"
-msgstr ""
+msgstr "Mới"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "Remove"
-msgstr ""
+msgstr "Xóa"
 
 #: src/robotide/run/runanything.py:30
 msgid ""
@@ -1866,87 +1958,92 @@ msgid ""
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
 msgstr ""
+"Một plugin để thực thi các lệnh trên hệ thống.\n"
+"\n"
+"    Plugin này cho phép tạo các cấu hình chạy cố định và\n"
+"    thực thi các cấu hình đó. Kết quả của lệnh được thực thi sẽ được hiển thị trong một\n"
+"    tab riêng biệt."
 
 #: src/robotide/run/runanything.py:55
 #: src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
-msgstr ""
+msgstr "Macros"
 
 #: src/robotide/run/ui.py:27
 msgid "finished"
-msgstr ""
+msgstr "Hoàn thành"
 
 #: src/robotide/run/ui.py:28
 msgid "Run Again"
-msgstr ""
+msgstr "Chạy lại"
 
 #: src/robotide/run/ui.py:29
 msgid "running"
-msgstr ""
+msgstr "chạy"
 
 #: src/robotide/searchtests/dialogsearchtests.py:36
 #: src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
-msgstr ""
+msgstr "Kiểm tra tìm kiếm"
 
 #: src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
-msgstr ""
+msgstr "Tìm kiếm theo thẻ"
 
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
-msgstr ""
+msgstr "Kiểm tra"
 
 #: src/robotide/searchtests/dialogsearchtests.py:66
 #: src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
-msgstr ""
+msgstr "Kết quả: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
 msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
-msgstr ""
+msgstr "Tìm các kết quả khớp bằng cách sử dụng mẫu thẻ. Xem Hướng dẫn sử dụng RF hoặc 'robot --help' để biết thêm thông tin."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
 msgid "Include"
-msgstr ""
+msgstr "Bao gồm"
 
 #: src/robotide/searchtests/dialogsearchtests.py:117
 #: src/robotide/ui/treenodehandlers.py:402
 #: src/robotide/ui/treenodehandlers.py:499
 #: src/robotide/ui/treenodehandlers.py:592
 msgid "Exclude"
-msgstr ""
+msgstr "Loại trừ"
 
 #: src/robotide/searchtests/dialogsearchtests.py:139
 #: src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
-msgstr ""
+msgstr "Thêm tất cả vào mục đã chọn"
 
 #: src/robotide/searchtests/dialogsearchtests.py:156
 #: src/robotide/searchtests/dialogsearchtests.py:164
 #: src/robotide/ui/keywordsearch.py:211
 #: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
-msgstr ""
+msgstr "Kết quả: %d"
 
 #: src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
-msgstr ""
+msgstr "Thông tin. "
 
 #: src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
-msgstr ""
+msgstr "Tìm các kết quả khớp theo tên bài kiểm tra, tài liệu và/hoặc thẻ."
 
 #: src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
-msgstr ""
+msgstr "Từ khóa tìm kiếm"
 
 #: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
+msgstr "Một plugin để tìm kiếm các bài kiểm tra dựa trên tên, thẻ và tài liệu."
 
 #: src/robotide/spec/libraryfinder.py:31
 msgid ""
@@ -1958,34 +2055,41 @@ msgid ""
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
+"Cài đặt các thư viện thiếu và mở tài liệu hướng dẫn.\n"
+"\n"
+"    Bạn có thể chỉnh sửa tệp settings.cfg để thêm URL cho tài liệu hướng dẫn và lệnh cài đặt.\n"
+"    Bạn có thể nhấp chuột phải vào tên thư viện và chọn \"Mở Tài liệu Hướng dẫn\" hoặc \"Cài đặt Thư viện\".\n"
+"    Từ menu Tools -> Library Finder... hoặc Help -> Open Library Documentation..., bạn sẽ có\n"
+"    một hộp thoại để nhập lệnh cài đặt hoặc URL cho tài liệu hướng dẫn.\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr ""
+msgstr "Tìm thư viện..."
 
 #: src/robotide/spec/libraryfinder.py:40
 msgid "Open Library Documentation..."
-msgstr ""
+msgstr "Tài liệu Thư viện Mở..."
 
 #: src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
-msgstr ""
+msgstr "Chuẩn bị thông tin để cài đặt thư viện"
 
 #: src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
-msgstr ""
+msgstr "Chuẩn bị thông tin để mở tài liệu của các thư viện"
 
 #: src/robotide/spec/libraryfinder.py:106
 msgid "Library Finder"
-msgstr ""
+msgstr "Tìm kiếm thư viện"
 
 #: src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
-msgstr ""
+msgstr "Thông số kỹ thuật thư viện XML|*.xml|Tất cả các tệp|*.*"
 
 #: src/robotide/spec/specimporter.py:78
 msgid "Info"
-msgstr ""
+msgstr "Thông tin"
 
 #: src/robotide/spec/specimporter.py:79
 msgid ""
@@ -1993,411 +2097,422 @@ msgid ""
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
+"Thư viện \"%s\" đã nhập \"\n"
+"\" từ \"%s\"\n"
+"Điều này có thể yêu cầu khởi động lại RIDE."
 
 #: src/robotide/spec/specimporter.py:83
 msgid "Import failed"
-msgstr ""
+msgstr "Quá trình nhập dữ liệu đã thất bại."
 
 #: src/robotide/spec/specimporter.py:84
 msgid "Could not import library from file \"%s\""
-msgstr ""
+msgstr "Không thể nhập thư viện từ tệp \"%s\""
 
 #: src/robotide/ui/filedialogs.py:110
 msgid "Type"
-msgstr ""
+msgstr "Loại"
 
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/filedialogs.py:230
 msgid "Directory"
-msgstr ""
+msgstr "Thư mục"
 
 #: src/robotide/ui/filedialogs.py:170
 #: src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
-msgstr ""
+msgstr "Tệp tài nguyên mới"
 
 #: src/robotide/ui/filedialogs.py:172
 #: src/robotide/ui/preview.py:117
 msgid "Format"
-msgstr ""
+msgstr "Định dạng"
 
 #: src/robotide/ui/filedialogs.py:184
 #: src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
-msgstr ""
+msgstr "Thư mục cha"
 
 #: src/robotide/ui/filedialogs.py:185
 msgid "Choose Parent Directory"
-msgstr ""
+msgstr "Chọn thư mục cha"
 
 #: src/robotide/ui/filedialogs.py:202
 msgid "Created Path"
-msgstr ""
+msgstr "Đường dẫn đã tạo"
 
 #: src/robotide/ui/filedialogs.py:287
 msgid "New Project"
-msgstr ""
+msgstr "Dự án mới"
 
 #: src/robotide/ui/filedialogs.py:317
 msgid "Add Suite"
-msgstr ""
+msgstr "Thêm gói"
 
 #: src/robotide/ui/filedialogs.py:341
 msgid "Add Directory"
-msgstr ""
+msgstr "Thêm thư mục"
 
 #: src/robotide/ui/filedialogs.py:353
 msgid "Set Data Format"
-msgstr ""
+msgstr "Định dạng dữ liệu"
 
 #: src/robotide/ui/filedialogs.py:377
 msgid "Change recursively"
-msgstr ""
+msgstr "Thay đổi theo cách đệ quy"
 
 #: src/robotide/ui/filedialogs.py:396
 msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
 msgstr ""
+"Cung cấp định dạng cho tệp khởi tạo trong thư mục `\n"
+"` \"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
 #: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
-msgstr ""
+msgstr "Mở"
 
 #: src/robotide/ui/filedialogs.py:415
 msgid "Robot data (*.robot)|*.robot"
-msgstr ""
+msgstr "Dữ liệu robot (*.robot)|*.robot"
 
 #: src/robotide/ui/filedialogs.py:416
 msgid "Robot data (*.txt)|*.txt"
-msgstr ""
+msgstr "Dữ liệu robot (*.txt)|*.txt"
 
 #: src/robotide/ui/filedialogs.py:417
 msgid "Robot resource file (*.resource)|*.resource"
-msgstr ""
+msgstr "Tệp tài nguyên robot (*.resource)|*.resource"
 
 #: src/robotide/ui/filedialogs.py:418
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
-msgstr ""
+msgstr "Dữ liệu phân tách bằng tab (*.tsv)|*.tsv"
 
 #: src/robotide/ui/filedialogs.py:420
 msgid "All files|*.*"
-msgstr ""
+msgstr "Tất cả các tệp|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
 msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr ""
+msgstr "Cung cấp giao diện cây cho Tệp và Thư mục. Mở mục đã chọn bằng cách nhấp chuột phải."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
 #: src/robotide/ui/treenodehandlers.py:502
 #: src/robotide/ui/treenodehandlers.py:595
 msgid "Open Containing Folder"
-msgstr ""
+msgstr "Mở thư mục chứa"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:317
 msgid "Files"
-msgstr ""
+msgstr "Tệp tin"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
-msgstr ""
+msgstr "Xem Trình quản lý tệp"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
 #: src/robotide/ui/treeplugin.py:113
 msgid "View"
-msgstr ""
+msgstr "Xem"
 
 #: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
-msgstr ""
+msgstr "Hiển thị bảng điều khiển File Explorer"
 
 #: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<all keywords>"
 
 #: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<all user keywords>"
 
 #: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<all library keywords>"
 
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
-msgstr ""
+msgstr "Từ khóa tìm kiếm"
 
 #: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
+msgstr "Một plugin để tìm kiếm từ khóa dựa trên tên hoặc tài liệu."
 
 #: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
-msgstr ""
+msgstr "Tìm kiếm từ khóa từ các thư viện và nguồn tài liệu"
 
 #: src/robotide/ui/keywordsearch.py:173
 msgid "Search term: "
-msgstr ""
+msgstr "Từ khóa tìm kiếm: "
 
 #: src/robotide/ui/keywordsearch.py:180
 msgid "Search documentation"
-msgstr ""
+msgstr "Tìm kiếm tài liệu"
 
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Description"
-msgstr ""
+msgstr "Mô tả"
 
 #: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
-msgstr ""
+msgstr "[Tệp]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
+msgstr "!&Dự án mới | Tạo bộ sưu tập cấp cao mới | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
+msgstr "!&Mở Bộ công cụ kiểm thử | Mở tệp chứa các bài kiểm thử | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr ""
+msgstr "!Mở &Thư mục | Mở thư mục chứa các tệp dữ liệu | Shift-Ctrl-Cmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
+msgstr "Mở tệp bên ngoài | Mở tệp trong Trình soạn thảo mã | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
+msgstr "!&Lưu | Lưu tệp dữ liệu đã chọn | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
+msgstr "!Lưu & Tất cả | Lưu tất cả thay đổi | Ctrl+Shift+S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr ""
+msgstr "!E&xit | Thoát RIDE | Ctrl+Cmd+Q\n"
 
 #: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr ""
+msgstr "Tìm kiếm từ khóa chưa sử dụng | | | | Vị trí 54\n"
 
 #: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr ""
+msgstr "Quản lý Plugin | | | | Vị trí 81\n"
 
 #: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr ""
+msgstr "Xem tất cả thẻ | | F7 | | VỊ TRÍ-82\n"
 
 #: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr ""
+msgstr "!Tùy chọn | | | | Vị trí-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
-msgstr ""
+msgstr "[Trợ giúp]\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
-msgstr ""
+msgstr "Phím tắt | Phím tắt RIDE\n"
 
 #: src/robotide/ui/mainframe.py:76
 msgid "!User Guide | Robot Framework User Guide\n"
-msgstr ""
+msgstr "Hướng dẫn sử dụng | Hướng dẫn sử dụng Robot Framework\n"
 
 #: src/robotide/ui/mainframe.py:77
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
-msgstr ""
+msgstr "!Wiki | Hướng dẫn sử dụng RIDE (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
+msgstr "!Báo cáo sự cố | Mở trình duyệt để tìm kiếm trên hệ thống theo dõi sự cố RIDE tại\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
-msgstr ""
+msgstr "!Giới thiệu | Thông tin về RIDE\n"
 
 #: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
+msgstr "Kiểm tra bản cập nhật | Kiểm tra trên PyPi để tìm phiên bản mới được phát hành\n"
 
 #: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
-msgstr ""
+msgstr "Đã lưu %s"
 
 #: src/robotide/ui/mainframe.py:196
 msgid "Saved all files"
-msgstr ""
+msgstr "Đã lưu tất cả các tệp"
 
 #: src/robotide/ui/mainframe.py:224
 msgid "Modification prevented"
-msgstr ""
+msgstr "Việc sửa đổi đã bị ngăn chặn."
 
 #: src/robotide/ui/mainframe.py:225
 msgid "\"%s\" is read only"
-msgstr ""
+msgstr "\"%s\" là chỉ đọc."
 
 #: src/robotide/ui/mainframe.py:300
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
-msgstr ""
+msgstr "Bộ thử nghiệm"
 
 #: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
+"Có các thay đổi chưa được lưu.\n"
+"Bạn có muốn lưu các thay đổi của mình trước khi thoát không?"
 
 #: src/robotide/ui/mainframe.py:465
 #: src/robotide/ui/mainframe.py:559
 msgid "Warning"
-msgstr ""
+msgstr "Cảnh báo"
 
 #: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
+"Có những thay đổi chưa được lưu.\n"
+"Bạn có muốn tiếp tục mà không lưu không?"
 
 #: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
-msgstr ""
+msgstr "Chọn một thư mục chứa các tệp Robot."
 
 #: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
-msgstr ""
+msgstr "Đã phát hiện các thay đổi trong không gian làm việc trên hệ thống tệp."
 
 #: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
-msgstr ""
+msgstr "Bạn có muốn tải lại không gian làm việc không?"
 
 #: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
-msgstr ""
+msgstr "Trả lời lệnh ` <Yes> ` sẽ xóa các thay đổi chưa được lưu."
 
 #: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
-msgstr ""
+msgstr "Khi trả lời lệnh ` <No> `, các thay đổi trên đĩa sẽ bị bỏ qua."
 
 #: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
-msgstr ""
+msgstr "Các tệp đã thay đổi trên đĩa"
 
 #: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
-msgstr ""
+msgstr "Tùy chỉnh..."
 
 #: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
-msgstr ""
+msgstr "Tìm kiếm các từ khóa chưa được sử dụng"
 
 #: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
-msgstr ""
+msgstr "Dừng chạy thử nghiệm"
 
 #: src/robotide/ui/mainframe.py:898
 msgid "preview"
-msgstr ""
+msgstr "Xem trước"
 
 #: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
-msgstr ""
+msgstr "Xem nhật ký chuyến đi"
 
 #: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
-msgstr ""
+msgstr "Phím tắt cho RIDE"
 
 #: src/robotide/ui/mainframe.py:978
 msgid "Show"
-msgstr ""
+msgstr "Hiển thị"
 
 #: src/robotide/ui/mainframe.py:979
 msgid "Hide"
-msgstr ""
+msgstr "Ẩn"
 
 #: src/robotide/ui/mainframe.py:980
 msgid "Close"
-msgstr ""
+msgstr "Đóng"
 
 #: src/robotide/ui/pluginmanager.py:48
 msgid "Manage Plugins"
-msgstr ""
+msgstr "Quản lý Plugin"
 
 #: src/robotide/ui/pluginmanager.py:63
 msgid "Installed Plugins\n"
-msgstr ""
+msgstr "Các plugin đã cài đặt\n"
 
 #: src/robotide/ui/pluginmanager.py:82
 msgid "Enabled"
-msgstr ""
+msgstr "Đã bật"
 
 #: src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: src/robotide/ui/pluginmanager.py:92
 msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr ""
+msgstr "Thông tin. Việc kích hoạt hoặc vô hiệu hóa các plugin có thể yêu cầu khởi động lại RIDE để các menu hoạt động bình thường."
 
 #: src/robotide/ui/preview.py:32
 msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
+msgstr "(Lỗi thời) Cung cấp bản xem trước dữ liệu thử nghiệm ở các định dạng HTML, TSV và TXT."
 
 #: src/robotide/ui/preview.py:41
 #: src/robotide/ui/preview.py:100
 msgid "Preview"
-msgstr ""
+msgstr "Xem trước"
 
 #: src/robotide/ui/preview.py:43
 msgid "Show preview of the current file"
-msgstr ""
+msgstr "Xem trước tệp hiện tại"
 
 #: src/robotide/ui/preview.py:83
 msgid "Text (Pipes)"
-msgstr ""
+msgstr "Văn bản (Ống)"
 
 #: src/robotide/ui/preview.py:83
 msgid "Text (Spaces)"
-msgstr ""
+msgstr "Văn bản (Khoảng trắng)"
 
 #: src/robotide/ui/preview.py:123
 msgid "Print"
-msgstr ""
+msgstr "In"
 
 #: src/robotide/ui/review.py:39
 msgid "Search unused keywords"
-msgstr ""
+msgstr "Tìm kiếm các từ khóa chưa được sử dụng"
 
 #: src/robotide/ui/review.py:66
 msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
+"Hộp thoại này giúp bạn tìm kiếm các từ khóa không được sử dụng trong dự án đang mở của bạn.\n"
+"Nếu muốn, bạn có thể giới hạn tìm kiếm trong một tập hợp các tệp bằng bộ lọc."
 
 #: src/robotide/ui/review.py:70
 msgid "Filter is"
-msgstr ""
+msgstr "Bộ lọc là"
 
 #: src/robotide/ui/review.py:71
 #: src/robotide/ui/review.py:242
 msgid "inactive"
-msgstr ""
+msgstr "không hoạt động"
 
 #: src/robotide/ui/review.py:84
 msgid "Filter"
-msgstr ""
+msgstr "Lọc"
 
 #: src/robotide/ui/review.py:91
 msgid "Use RegEx"
-msgstr ""
+msgstr "Sử dụng biểu thức chính quy (RegEx)"
 
 #: src/robotide/ui/review.py:93
 msgid ""
@@ -2405,256 +2520,265 @@ msgid ""
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
+"Ở đây, bạn có thể định nghĩa một hoặc nhiều chuỗi được phân tách bằng dấu phẩy (ví dụ: common,abc,123).\n"
+"Bộ lọc sẽ khớp nếu ít nhất một chuỗi là một phần của tên tệp.\n"
+"Nếu bạn không nhập bất kỳ chuỗi nào, tất cả các tệp đã mở sẽ được bao gồm."
 
 #: src/robotide/ui/review.py:101
 msgid "Test case files"
-msgstr ""
+msgstr "Tệp trường hợp thử nghiệm"
 
 #: src/robotide/ui/review.py:104
 msgid "Resource files"
-msgstr ""
+msgstr "Tệp tài nguyên"
 
 #: src/robotide/ui/review.py:106
 msgid "Mode"
-msgstr ""
+msgstr "Chế độ"
 
 #: src/robotide/ui/review.py:107
 msgid "exclude"
-msgstr ""
+msgstr "loại trừ"
 
 #: src/robotide/ui/review.py:107
 msgid "include"
-msgstr ""
+msgstr "bao gồm"
 
 #: src/robotide/ui/review.py:109
 msgid "Test the filter"
-msgstr ""
+msgstr "Kiểm tra bộ lọc"
 
 #: src/robotide/ui/review.py:139
 msgid "Keyword"
-msgstr ""
+msgstr "Từ khóa"
 
 #: src/robotide/ui/review.py:146
 msgid "Delete marked keywords"
-msgstr ""
+msgstr "Xóa các từ khóa đã đánh dấu"
 
 #: src/robotide/ui/review.py:157
 #: src/robotide/ui/review.py:320
 msgid "Unused Keywords"
-msgstr ""
+msgstr "Từ khóa chưa sử dụng"
 
 #: src/robotide/ui/review.py:163
 msgid "Abort"
-msgstr ""
+msgstr "Hủy bỏ"
 
 #: src/robotide/ui/review.py:247
 msgid "active"
-msgstr ""
+msgstr "hoạt động"
 
 #: src/robotide/ui/review.py:270
 #: src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
-msgstr ""
+msgstr "Từ khóa chưa sử dụng (%d)"
 
 #: src/robotide/ui/review.py:279
 msgid "(None)"
-msgstr ""
+msgstr "(Không có)"
 
 #: src/robotide/ui/review.py:282
 msgid ""
 "Keywords of the following files will be included in the search:\n"
 "\n"
 msgstr ""
+"Các từ khóa của các tệp sau đây sẽ được bao gồm trong quá trình tìm kiếm:\n"
+"\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
-msgstr ""
+msgstr "Các tệp tin được bao gồm"
 
 #: src/robotide/ui/review.py:339
 msgid "Searching.%s \t- %s"
-msgstr ""
+msgstr "Đang tìm kiếm.%s \t- %s"
 
 #: src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
-msgstr ""
+msgstr "Tìm kiếm hoàn tất - Tìm thấy %d Từ khóa chưa sử dụng"
 
 #: src/robotide/ui/review.py:402
 msgid "listing datafiles"
-msgstr ""
+msgstr "Danh sách các tệp dữ liệu"
 
 #: src/robotide/ui/review.py:405
 msgid "searching from "
-msgstr ""
+msgstr "Tìm kiếm từ "
 
 #: src/robotide/ui/tagdialogs.py:37
 msgid "View all tags"
-msgstr ""
+msgstr "Xem tất cả thẻ"
 
 #: src/robotide/ui/tagdialogs.py:76
 msgid "Tag"
-msgstr ""
+msgstr "Thẻ"
 
 #: src/robotide/ui/tagdialogs.py:77
 msgid "Occurrences"
-msgstr ""
+msgstr "Sự kiện"
 
 #: src/robotide/ui/tagdialogs.py:82
 msgid "The List"
-msgstr ""
+msgstr "Danh sách"
 
 #: src/robotide/ui/tagdialogs.py:85
 msgid "Refresh"
-msgstr ""
+msgstr "Cập nhật"
 
 #: src/robotide/ui/tagdialogs.py:86
 msgid "Included Tag Search"
-msgstr ""
+msgstr "Tìm kiếm theo thẻ được bao gồm"
 
 #: src/robotide/ui/tagdialogs.py:89
 msgid "Excluded Tag Search"
-msgstr ""
+msgstr "Tìm kiếm theo thẻ bị loại trừ"
 
 #: src/robotide/ui/tagdialogs.py:147
 msgid ""
 "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
+"Tổng số bài kiểm tra %d, Bài kiểm tra có thẻ %d, Thẻ duy nhất %d\n"
+"Bài kiểm tra hiện đang được chọn %d"
 
 #: src/robotide/ui/tagdialogs.py:233
 msgid "Select all"
-msgstr ""
+msgstr "Chọn tất cả"
 
 #: src/robotide/ui/tagdialogs.py:233
 #: src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
-msgstr ""
+msgstr "Đổi tên"
 
 #: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests with this tag"
-msgstr ""
+msgstr "Hiển thị các bài kiểm tra có thẻ này"
 
 #: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests without this tag"
-msgstr ""
+msgstr "Hiển thị các bài kiểm tra không có thẻ này"
 
 #: src/robotide/ui/tagdialogs.py:261
 msgid "Renaming tag '%s'."
-msgstr ""
+msgstr "Đổi tên thẻ '%s'."
 
 #: src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
-msgstr ""
+msgstr "Xóa thẻ '%s'?"
 
 #: src/robotide/ui/tagdialogs.py:276
 #: src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
-msgstr ""
+msgstr "Xác nhận"
 
 #: src/robotide/ui/treenodehandlers.py:254
 #: src/robotide/ui/treenodehandlers.py:360
 msgid "New Resource"
-msgstr ""
+msgstr "Nguồn tài nguyên mới"
 
 #: src/robotide/ui/treenodehandlers.py:358
 msgid "New Suite\tCtrl-Shift-F"
-msgstr ""
+msgstr "Bộ công cụ mới    Ctrl-Shift-F"
 
 #: src/robotide/ui/treenodehandlers.py:359
 msgid "New Directory"
-msgstr ""
+msgstr "Thư mục mới"
 
 #: src/robotide/ui/treenodehandlers.py:362
 #: src/robotide/ui/treenodehandlers.py:485
 #: src/robotide/ui/treenodehandlers.py:573
 msgid "New User Keyword\tCtrl-Shift-K"
-msgstr ""
+msgstr "Từ khóa cho người dùng mới    Ctrl-Shift-K"
 
 #: src/robotide/ui/treenodehandlers.py:363
 #: src/robotide/ui/treenodehandlers.py:486
 #: src/robotide/ui/treenodehandlers.py:574
 msgid "New Scalar\tCtrl-Shift-V"
-msgstr ""
+msgstr "New Scalar    Ctrl-Shift-V"
 
 #: src/robotide/ui/treenodehandlers.py:364
 #: src/robotide/ui/treenodehandlers.py:487
 #: src/robotide/ui/treenodehandlers.py:575
 msgid "New List Variable\tCtrl-Shift-L"
-msgstr ""
+msgstr "Biến danh sách mới    Ctrl-Shift-L"
 
 #: src/robotide/ui/treenodehandlers.py:365
 #: src/robotide/ui/treenodehandlers.py:488
 #: src/robotide/ui/treenodehandlers.py:576
 msgid "New Dictionary Variable"
-msgstr ""
+msgstr "Biến từ điển mới"
 
 #: src/robotide/ui/treenodehandlers.py:367
 #: src/robotide/ui/treenodehandlers.py:491
 #: src/robotide/ui/treenodehandlers.py:579
 msgid "Change Format"
-msgstr ""
+msgstr "Thay đổi định dạng"
 
 #: src/robotide/ui/treenodehandlers.py:389
 #: src/robotide/ui/treenodehandlers.py:587
 msgid "Select All Tests"
-msgstr ""
+msgstr "Chọn tất cả các bài kiểm tra"
 
 #: src/robotide/ui/treenodehandlers.py:390
 #: src/robotide/ui/treenodehandlers.py:588
 msgid "Deselect All Tests"
-msgstr ""
+msgstr "Bỏ chọn tất cả các bài kiểm tra"
 
 #: src/robotide/ui/treenodehandlers.py:391
 #: src/robotide/ui/treenodehandlers.py:589
 msgid "Select Only Failed Tests"
-msgstr ""
+msgstr "Chọn chỉ các bài kiểm tra không thành công"
 
 #: src/robotide/ui/treenodehandlers.py:392
 #: src/robotide/ui/treenodehandlers.py:590
 msgid "Select Only Passed Tests"
-msgstr ""
+msgstr "Chọn chỉ các bài kiểm tra đã đậu"
 
 #: src/robotide/ui/treenodehandlers.py:404
 msgid "Collapse all"
-msgstr ""
+msgstr "Thu gọn tất cả"
 
 #: src/robotide/ui/treenodehandlers.py:404
 msgid "Expand all"
-msgstr ""
+msgstr "Mở rộng tất cả"
 
 #: src/robotide/ui/treenodehandlers.py:444
 msgid ""
 "Directory contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"Thư mục chứa dữ liệu chưa được lưu!\n"
+"Bạn phải lưu dữ liệu trước khi loại trừ."
 
 #: src/robotide/ui/treenodehandlers.py:490
 #: src/robotide/ui/treenodehandlers.py:578
 #: src/robotide/ui/treenodehandlers.py:686
 #: src/robotide/ui/treenodehandlers.py:790
 msgid "Rename\tF2"
-msgstr ""
+msgstr "Đổi tên    F2"
 
 #: src/robotide/ui/treenodehandlers.py:492
 #: src/robotide/ui/treenodehandlers.py:497
 #: src/robotide/ui/treenodehandlers.py:580
 #: src/robotide/ui/treenodehandlers.py:585
 msgid "Sort Keywords"
-msgstr ""
+msgstr "Sắp xếp từ khóa"
 
 #: src/robotide/ui/treenodehandlers.py:494
 #: src/robotide/ui/treenodehandlers.py:581
 msgid "Delete\tCtrl-Shift-D"
-msgstr ""
+msgstr "Xóa    Ctrl-Shift-D"
 
 #: src/robotide/ui/treenodehandlers.py:496
 #: src/robotide/ui/treenodehandlers.py:583
 msgid "Sort Variables"
-msgstr ""
+msgstr "Sắp xếp biến"
 
 #: src/robotide/ui/treenodehandlers.py:501
 #: src/robotide/ui/treenodehandlers.py:594
 msgid "Remove Read Only"
-msgstr ""
+msgstr "Bỏ chế độ Chỉ đọc"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
@@ -2662,99 +2786,101 @@ msgid ""
 "File contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"Tệp chứa dữ liệu chưa được lưu!\n"
+"Bạn phải lưu dữ liệu trước khi loại trừ."
 
 #: src/robotide/ui/treenodehandlers.py:572
 msgid "New Test Case\tCtrl-Shift-T"
-msgstr ""
+msgstr "Trường hợp thử nghiệm mới    Ctrl-Shift-T"
 
 #: src/robotide/ui/treenodehandlers.py:584
 msgid "Sort Tests"
-msgstr ""
+msgstr "Sắp xếp các bài kiểm tra"
 
 #: src/robotide/ui/treenodehandlers.py:661
 msgid "Delete test case file"
-msgstr ""
+msgstr "Xóa tệp trường hợp thử nghiệm"
 
 #: src/robotide/ui/treenodehandlers.py:683
 msgid "Copy\tCtrl-Shift-C"
-msgstr ""
+msgstr "Sao chép    Ctrl-Shift-C"
 
 #: src/robotide/ui/treenodehandlers.py:839
 msgid "Add Resource"
-msgstr ""
+msgstr "Thêm tài nguyên"
 
 #: src/robotide/ui/treeplugin.py:62
 msgid "Provides a tree view for Test Suites "
-msgstr ""
+msgstr "Cung cấp giao diện cây cho các bộ thử nghiệm. "
 
 #: src/robotide/ui/treeplugin.py:113
 msgid "View Test Suites Explorer"
-msgstr ""
+msgstr "Xem Trình khám phá bộ thử nghiệm"
 
 #: src/robotide/ui/treeplugin.py:115
 msgid "Show Test Suites tree panel"
-msgstr ""
+msgstr "Hiển thị bảng điều khiển cây bộ thử nghiệm"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
-msgstr ""
+msgstr "Nguồn tài nguyên bên ngoài"
 
 #: src/robotide/ui/treeplugin.py:428
 msgid "%s (excluded)"
-msgstr ""
+msgstr "%s (không bao gồm)"
 
 #: src/robotide/ui/treeplugin.py:1298
 msgid "Invalid keyword name: "
-msgstr ""
+msgstr "Tên từ khóa không hợp lệ: "
 
 #: src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
-msgstr ""
+msgstr "'%s' - %d kết quả tìm thấy - Tìm kiếm%s"
 
 #: src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
-msgstr ""
+msgstr "'%s' - %d khớp"
 
 #: src/robotide/usages/usagesdialog.py:93
 msgid "Go to definition"
-msgstr ""
+msgstr "Đi đến định nghĩa"
 
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Location"
-msgstr ""
+msgstr "Vị trí"
 
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Usage"
-msgstr ""
+msgstr "Cách sử dụng"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Imported Location"
-msgstr ""
+msgstr "Vị trí nhập khẩu"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Imported name"
-msgstr ""
+msgstr "Tên nhập khẩu"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Location"
-msgstr ""
+msgstr "Nhập khẩu vị trí"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Name"
-msgstr ""
+msgstr "Nhập tên"
 
 #: src/robotide/validators/__init__.py:159
 msgid "%s cannot be empty"
-msgstr ""
+msgstr "%s Không thể để trống"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "No"
-msgstr ""
+msgstr "Không"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "OK"
-msgstr ""
+msgstr "Được rồi"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
-msgstr ""
+msgstr "Có"

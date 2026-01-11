@@ -243,7 +243,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 07/January/2026.</p>
+<p>RIDE {VERSION} was released on 11/January/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -19,36 +19,36 @@ msgstr ""
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
-msgstr ""
+msgstr "Глобални настройки"
 
 #: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
-msgstr ""
+msgstr "Открити са глобални настройки"
 
 #: src/robotide/application/application.py:216
 msgid "Project Settings"
-msgstr ""
+msgstr "Настройки на проекта"
 
 #: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "Открити настройки на проекта"
 
 #: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "Рестартиране на RIDE?"
 
 #: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
-msgstr ""
+msgstr "RIDE трябва да се рестартира, за да се използват напълно тези "
 
 #: src/robotide/application/application.py:239
 msgid "Click OK to Restart RIDE!"
-msgstr ""
+msgstr "Натиснете OK, за да рестартирате RIDE!"
 
 #: src/robotide/application/application.py:461
 #: src/robotide/application/application.py:466
 msgid "Found Robot Framework version %s from %s."
-msgstr ""
+msgstr "Намерена е версия на Robot Framework %s от %s."
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:57
@@ -56,199 +56,201 @@ msgstr ""
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
-msgstr ""
+msgstr "Помощ"
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
-msgstr ""
+msgstr "Бележки към изданието"
 
 #: src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
-msgstr ""
+msgstr "Показване на бележките към изданието"
 
 #: src/robotide/application/releasenotes.py:57
 #: src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
-msgstr ""
+msgstr "Офлайн дневник на промените"
 
 #: src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
-msgstr ""
+msgstr "Показване на офлайн CHANGELOG"
 
 #: src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
-msgstr ""
+msgstr "Проверете онлайн версията на адрес "
 
 #: src/robotide/application/restartutil.py:30
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Повторно отваряне на RIDE за промяна на езика"
 
 #: src/robotide/application/restartutil.py:31
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
+msgstr "Промяната на езика ще бъде коректна само след повторно отваряне на RIDE."
 
 #: src/robotide/application/restartutil.py:32
 #: src/robotide/application/restartutil.py:50
 #: src/robotide/application/updatenotifier.py:203
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Искате ли да ЗАТВОРИТЕ ПЪТУВАНЕТО сега?"
 
 #: src/robotide/application/restartutil.py:48
 msgid "Completed Language Change"
-msgstr ""
+msgstr "Завършена промяна на езика"
 
 #: src/robotide/application/restartutil.py:49
 #: src/robotide/application/updatenotifier.py:202
 msgid "You should close this RIDE (Process ID = "
-msgstr ""
+msgstr "Трябва да затворите този RIDE (ID на процеса = "
 
 #: src/robotide/application/updatenotifier.py:115
 msgid "New development version is available."
-msgstr ""
+msgstr "Налична е нова версия за разработка."
 
 #: src/robotide/application/updatenotifier.py:115
 msgid "Upgrade?"
-msgstr ""
+msgstr "Надграждане?"
 
 #: src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
-msgstr ""
+msgstr "Можете да инсталирате версия %s с:"
 
 #: src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
-msgstr ""
+msgstr "Натиснете OK, за да надстроите сега!"
 
 #: src/robotide/application/updatenotifier.py:118
 #: src/robotide/application/updatenotifier.py:241
 msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr ""
+msgstr "След обновяването ще се появи друг диалогов прозорец, който ще ви информира да затворите тази инстанция на RIDE."
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "No Upgrade Available"
-msgstr ""
+msgstr "Няма налична актуализация"
 
 #: src/robotide/application/updatenotifier.py:126
 msgid "You have the latest version of RIDE."
-msgstr ""
+msgstr "Имате най-новата версия на RIDE."
 
 #: src/robotide/application/updatenotifier.py:127
 msgid "              Have a nice day :)"
-msgstr ""
+msgstr "              Хубав ден :)"
 
 #: src/robotide/application/updatenotifier.py:172
 msgid "An error occurred when installing new version"
-msgstr ""
+msgstr "Възникна грешка при инсталирането на новата версия"
 
 #: src/robotide/application/updatenotifier.py:172
 msgid "Failed to Upgrade"
-msgstr ""
+msgstr "Неуспешно обновяване"
 
 #: src/robotide/application/updatenotifier.py:202
 msgid "Completed Upgrade"
-msgstr ""
+msgstr "Завършена актуализация"
 
 #: src/robotide/application/updatenotifier.py:228
 msgid "Update available"
-msgstr ""
+msgstr "Налична е актуализация"
 
 #: src/robotide/application/updatenotifier.py:236
 msgid " available from "
-msgstr ""
+msgstr " на разположение от "
 
 #: src/robotide/application/updatenotifier.py:236
 msgid "New version "
-msgstr ""
+msgstr "Нова версия "
 
 #: src/robotide/application/updatenotifier.py:237
 msgid "See this version "
-msgstr ""
+msgstr "Вижте тази версия "
 
 #: src/robotide/application/updatenotifier.py:239
 msgid "You can update with the command:"
-msgstr ""
+msgstr "Можете да актуализирате с командата:"
 
 #: src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr ""
+msgstr "Или щракнете върху <b>Актуализиране сега</b>"
 
 #: src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
-msgstr ""
+msgstr "Вижте най-новите разработки "
 
 #: src/robotide/application/updatenotifier.py:247
 msgid ""
 "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr ""
+"Използвам друг метод за актуализации на RIDE\n"
+" и не се нуждая от автоматични проверки за актуализация."
 
 #: src/robotide/application/updatenotifier.py:252
 msgid "remind me later"
-msgstr ""
+msgstr "напомни ми по-късно"
 
 #: src/robotide/application/updatenotifier.py:258
 msgid "Upgrade Now"
-msgstr ""
+msgstr "Актуализирайте сега"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
+msgstr "Започнат RIDE %s използване на python версия %s с wx версия %s в %s."
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
-msgstr ""
+msgstr "Благодаря на всички преводачи на RIDE: %s"
 
 #: src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
-msgstr ""
+msgstr "RIDE -- Редактор на данни за тестване на Robot Framework"
 
 #: src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
-msgstr ""
+msgstr "RIDE %s , работещ на Python %s."
 
 #: src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
-msgstr ""
+msgstr "RIDE е редактор на тестови данни за %s."
 
 #: src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
-msgstr ""
+msgstr "За повече информация вижте страниците на проекта на адрес %s."
 
 #: src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
-msgstr ""
+msgstr "Някои от иконите са от %s."
 
 #: src/robotide/context/__init__.py:80
 msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
-msgstr ""
+msgstr "%s поддържащият проекта благодари на оригиналните автори и на всички потребители и сътрудници."
 
 #: src/robotide/context/__init__.py:81
 msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
+msgstr "Специални благодарности на %s за това, че спонсорираха разработването на преведени тестови пакети, съвместими със съдържанието на %s Версия 6.1, в техния %s."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:426
 msgid "Log options"
-msgstr ""
+msgstr "Опции на дневника"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:435
 msgid "Output directory: "
-msgstr ""
+msgstr "Изходна директория: "
 
 #: src/robotide/contrib/testrunner/runprofiles.py:455
 msgid "Add suite name to log names"
-msgstr ""
+msgstr "Добавяне на името на пакета към имената на дневника"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:458
 msgid "Add timestamp to log names"
-msgstr ""
+msgstr "Добавяне на времеви печат към имената на дневника"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:461
 msgid "Save Console and Message logs"
-msgstr ""
+msgstr "Запазване на дневниците на конзолата и съобщенията"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:479
 msgid "Select Logs Directory"
-msgstr ""
+msgstr "Изберете директория за дневници"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:501
 #: src/robotide/editor/editordialogs.py:538
@@ -256,56 +258,56 @@ msgstr ""
 #: src/robotide/editor/editordialogs.py:683
 #: src/robotide/editor/settingeditors.py:575
 msgid "Arguments"
-msgstr ""
+msgstr "Аргументи"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:514
 #: src/robotide/contrib/testrunner/runprofiles.py:540
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr ""
+msgstr "Аргументи за провеждане на теста. Аргументите са списък, разделен с интервал."
 
 #: src/robotide/contrib/testrunner/runprofiles.py:559
 msgid "Does not execute - help or version option given"
-msgstr ""
+msgstr "Не се изпълнява - дадена е опция за помощ или версия"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Unknown option(s):"
-msgstr ""
+msgstr "Неизвестна(и) опция(и):"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:570
 msgid "Tests filters"
-msgstr ""
+msgstr "Тестове на филтри"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:580
 msgid "Only run tests with these tags:"
-msgstr ""
+msgstr "Изпълнявайте само тестове с тези етикети:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:583
 msgid "Skip tests with these tags:"
-msgstr ""
+msgstr "Пропуснете тестовете с тези етикети:"
 
 #: src/robotide/contrib/testrunner/runprofiles.py:681
 msgid "Script to run tests:"
-msgstr ""
+msgstr "Скрипт за изпълнение на тестове:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Stop a running test"
-msgstr ""
+msgstr "Спиране на текущ тест"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:101
 msgid "Step over"
-msgstr ""
+msgstr "Стъпка над"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:132
 msgid "A plugin for running tests from within RIDE"
-msgstr ""
+msgstr "Приставка за стартиране на тестове от RIDE"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "Run"
-msgstr ""
+msgstr "Изпълнявайте"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 msgid "Run Tests"
-msgstr ""
+msgstr "Извършване на тестове"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:236
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
@@ -322,252 +324,260 @@ msgstr ""
 #: src/robotide/ui/mainframe.py:896
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
-msgstr ""
+msgstr "Инструменти"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:238
 msgid "Run the selected tests"
-msgstr ""
+msgstr "Изпълнение на избраните тестове"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:240
 msgid "Run Tests with Debug"
-msgstr ""
+msgstr "Изпълнение на тестове с Debug"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:243
 msgid "Run the selected tests with Debug"
-msgstr ""
+msgstr "Изпълнение на избраните тестове с Debug"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:246
 msgid "Stop Test Run"
-msgstr ""
+msgstr "Спиране на изпълнението на теста"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:332
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:336
 msgid "[ SENDING STOP SIGNAL ]\n"
-msgstr ""
+msgstr "[ ИЗПРАЩАНЕ НА СИГНАЛ ЗА СПИРАНЕ ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:341
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING PAUSE SIGNAL ]\n"
-msgstr ""
+msgstr "[ ИЗПРАЩАНЕ НА СИГНАЛ ЗА ПАУЗА ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:349
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:352
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr ""
+msgstr "[ ИЗПРАЩАНЕ НА СИГНАЛ ЗА ПРОДЪЛЖАВАНЕ ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:357
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:360
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
-msgstr ""
+msgstr "[ ИЗПРАЩАНЕ НА СИГНАЛ ЗА СЛЕДВАЩА СТЪПКА ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:365
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:368
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr ""
+msgstr "[ ИЗПРАЩАНЕ НА СИГНАЛ ЗА ПРЕМИНАВАНЕ НА СТЪПКА ]\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:400
 msgid "command: %s\n"
-msgstr ""
+msgstr "команда: %s\n"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:468
 msgid "Unsaved Modifications"
-msgstr ""
+msgstr "Несъхранени модификации"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
 msgid ""
 "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
 msgstr ""
+"Съществуват неспасени модификации.\n"
+"        Искате ли да запазите всички промени и да стартирате тестовете?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid "No tests selected"
-msgstr ""
+msgstr "Няма избрани тестове"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
 msgid ""
 "No tests selected. \n"
 "Continue anyway?"
 msgstr ""
+"Няма избрани тестове. \n"
+"Продължавате ли все пак?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
 msgid ""
 "\n"
 "Test finished {}"
 msgstr ""
+"\n"
+"Тестът е завършен {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr ""
+msgstr "Регистърът на съобщенията е надхвърлил 80% от паметта на процеса, спирам за момента..."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:767
 msgid "Start"
-msgstr ""
+msgstr "Начало"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:768
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Start robot"
-msgstr ""
+msgstr "Стартирайте робота"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:769
 msgid "Start running the robot test suite"
-msgstr ""
+msgstr "Стартиране на набора от тестове за роботи"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:770
 msgid "Debug"
-msgstr ""
+msgstr "Отстраняване на грешки"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:772
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr ""
+msgstr "Стартиране на тестовия пакет за роботи с ниво на проследяване DEBUG"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:774
 #: src/robotide/run/ui.py:30
 msgid "Stop"
-msgstr ""
+msgstr "Спрете"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "Pause"
-msgstr ""
+msgstr "Пауза"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:780
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:781
 msgid "Pause test execution"
-msgstr ""
+msgstr "Спиране на изпълнението на теста"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:782
 msgid "Continue"
-msgstr ""
+msgstr "Продължи"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:785
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Continue test execution"
-msgstr ""
+msgstr "Продължаване на изпълнението на теста"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Next"
-msgstr ""
+msgstr "Следваща"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:788
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:789
 msgid "Step next"
-msgstr ""
+msgstr "Следващата стъпка"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:826
 msgid "Execution Profile:  "
-msgstr ""
+msgstr "Профил на изпълнение:  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:829
 msgid "Choose which method to use for running the tests"
-msgstr ""
+msgstr "Изберете кой метод да използвате за изпълнение на тестовете"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:836
 msgid "Open Logs Directory"
-msgstr ""
+msgstr "Отваряне на директорията с дневници"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:838
 msgid "View All Logs in Explorer"
-msgstr ""
+msgstr "Преглед на всички дневници в Explorer"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:839
 msgid " Report"
-msgstr ""
+msgstr " Доклад"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:840
 msgid "View Robot Report in Browser (CtrlCmd-R)"
-msgstr ""
+msgstr "Преглед на отчета за робота в браузъра (CtrlCmd-R)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:842
 msgid " Log"
-msgstr ""
+msgstr " Log"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:843
 msgid "View Robot Log in Browser (CtrlCmd-L)"
-msgstr ""
+msgstr "Преглед на дневника на робота в браузъра (CtrlCmd-L)"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:850
 msgid " Autosave  "
-msgstr ""
+msgstr " Автоматично запазване  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:851
 msgid "Automatically save all changes before running"
-msgstr ""
+msgstr "Автоматично запазване на всички промени преди стартиране"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:856
 msgid " Pause after failure  "
-msgstr ""
+msgstr " Пауза след неуспех  "
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:857
 msgid "Automatically pause after failing keyword"
-msgstr ""
+msgstr "Автоматична пауза след неуспешна ключова дума"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:973
 msgid "Console log"
-msgstr ""
+msgstr "Конзолен дневник"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:977
 msgid "Message log"
-msgstr ""
+msgstr "Регистър на съобщенията"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1100
 msgid "Starting test:"
-msgstr ""
+msgstr "Начален тест:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1105
 msgid "Ending test:"
-msgstr ""
+msgstr "Тест за приключване:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1113
 msgid "UNKNOWN STATUS:"
-msgstr ""
+msgstr "НЕИЗВЕСТЕН СТАТУС:"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1141
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1143
 msgid "<<  PAUSED  >>"
-msgstr ""
+msgstr "<<  PAUSED  >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1148
 msgid "<< CONTINUE >>"
-msgstr ""
+msgstr "<< CONTINUE >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1150
 msgid "<<  CONTINUE  >>"
-msgstr ""
+msgstr "<<  CONTINUE  >>"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid "No logs directory"
-msgstr ""
+msgstr "Няма директория с дневници"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
 msgstr ""
+"Няма директория с дневници. \n"
+"Моля, изпълнете тестовете и опитайте отново"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
-msgstr ""
+msgstr "RIDE - Предпочитания"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1298
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
-msgstr ""
+msgstr "изминало време: %s  преминаване: %s  пропускане: %s  отказ: %s"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1332
 msgid "  current keyword: "
-msgstr ""
+msgstr "  текуща ключова дума: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
 msgid ""
@@ -576,10 +586,14 @@ msgid ""
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
+"[Навигация]\n"
+"        !Върни се назад | Върни се към предишното местоположение в дървото | Alt-%s | ART_GO_BACK\n"
+"        !Върни се напред | Върни се напред към следващото местоположение в дървото | Alt-%s | ART_GO_FORWARD\n"
+"        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
-msgstr ""
+msgstr "Добавяне на етикет към избрания"
 
 #: src/robotide/controller/ui/treecontroller.py:56
 #: src/robotide/controller/ui/treecontroller.py:58
@@ -588,100 +602,100 @@ msgstr ""
 #: src/robotide/editor/settingeditors.py:659
 #: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
-msgstr ""
+msgstr "Редактиране на"
 
 #: src/robotide/controller/ui/treecontroller.py:58
 msgid "Clear Selected"
-msgstr ""
+msgstr "Изчистване на избраното"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Add Tag To Selected"
-msgstr ""
+msgstr "Добавяне на етикет към избраното"
 
 #: src/robotide/controller/ui/treecontroller.py:71
 msgid "Enter Tag Name"
-msgstr ""
+msgstr "Въведете името на етикета"
 
 #: src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Редактиране]\n"
 
 #: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr ""
+msgstr "&Undo | Отмяна на последната промяна | Ctrlcmd-Z\n"
 
 #: src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr ""
+msgstr "&Redo | Redo modification | Ctrlcmd-Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr ""
+msgstr "Cu&t | Cut | Ctrlcmd-X\n"
 
 #: src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
-msgstr ""
+msgstr "&Copy | Copy | Ctrlcmd-C\n"
 
 #: src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr ""
+msgstr "&Paste | Paste | Ctrlcmd-V\n"
 
 #: src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
-msgstr ""
+msgstr "&Insert | Insert | Shift-Ctrl-V\n"
 
 #: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr ""
+msgstr "&Delete | Delete | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr ""
+msgstr "Коментар на редове | Коментар на избрани редове | Ctrlcmd-3\n"
 
 #: src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
+msgstr "Коментарни клетки | Коментарни клетки с # | Ctrlcmd-Shift-3\n"
 
 #: src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
+msgstr "Разкоментиране на редове | Разкоментиране на избрани редове | Ctrlcmd-4\n"
 
 #: src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
+msgstr "Разкоментиране на клетките | Разкоментиране на клетките с # | Ctrlcmd-Shift-4\n"
 
 #: src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr ""
+msgstr "Вмъкване на клетки | Вмъкване на клетки | Ctrlcmd-Shift-I\n"
 
 #: src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr ""
+msgstr "Изтриване на клетки | Delete Cells | Ctrlcmd-Shift-D\n"
 
 #: src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr ""
+msgstr "Вмъкване на редове | Вмъкване на редове | Ctrlcmd-I\n"
 
 #: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr ""
+msgstr "Изтриване на редове | Изтриване на редове | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "Преместване на редове нагоре (Alt-Up или Ctrl-Shift-Up) | Преместване на редове нагоре\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
+msgstr "Преместване на редове надолу (Alt-Down или Ctrl-Shift-Down) | Преместване на редове надолу\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
-msgstr ""
+msgstr "[Инструменти]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
-msgstr ""
+msgstr "Помощ за съдържанието (Ctrl-Space или Ctrl-Alt-Space) | Показвайте възможните допълнения на ключови думи и променливи | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
 msgid ""
@@ -691,28 +705,35 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
+"Приставката за редактор по подразбиране. Известен също като Редактор на решетки или Редактор на клетки.\n"
+"\n"
+"    Тази приставка реализира редактори за различните елементи на тестовите данни на Robot Framework\n"
+"    .\n"
+"    "
 
 #: src/robotide/editor/__init__.py:95
 msgid "Editor"
-msgstr ""
+msgstr "Редактор"
 
 #: src/robotide/editor/dialoghelps.py:31
 msgid "Possible pipes in the value must be escaped with a backslash like '\\|'."
-msgstr ""
+msgstr "Възможните пискюли в стойността трябва да се избягват с обратна наклонена черта като '\\|'."
 
 #: src/robotide/editor/dialoghelps.py:32
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
+msgstr "Разделяйте таговете с пипета, например 'tag | second tag | 3rd'."
 
 #: src/robotide/editor/dialoghelps.py:33
 msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."
-msgstr ""
+msgstr "Разделете възможните аргументи със знака pipe, например 'My Keyword | arg 1 | arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
 msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
+"Използвайте синтаксис за време като \"1min 10s\" или \"2 часа\" или задайте стойността като секунди.\n"
+"Преди Robot v3.0.1 можеше да се зададе незадължително съобщение, например \"3 минути | Моето съобщение тук\"."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
@@ -721,196 +742,202 @@ msgid ""
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
+"Посочете аргументите, разделени със знака \"тръба\", например '${arg1} | ${arg2}'.\n"
+"Стойностите по подразбиране се задават със знак за равенство, а последният аргумент може да бъде променлива от списък.\n"
+"Пример: '${arg1} | ${arg2}=стойност по подразбиране | @{rest}\".\n"
+"Забележка. В това поле можете да използвате съкращения на променливи."
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
 "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
+"Псевдонимът може да се използва за многократно импортиране на една и съща библиотека с различни имена.\n"
+"Псевдонимът се допълва с: "
 
 #: src/robotide/editor/dialoghelps.py:43
 msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
+msgstr " . Обърнете внимание, че след Robot v6.0 импортите със старите WITH NAME се заменят с AS."
 
 #: src/robotide/editor/dialoghelps.py:45
 msgid "Give name and value of the variable."
-msgstr ""
+msgstr "Посочете името и стойността на променливата."
 
 #: src/robotide/editor/dialoghelps.py:46
 msgid "Give name and value of the variable. Input list variable items into separate cells."
-msgstr ""
+msgstr "Посочете името и стойността на променливата. Въведете елементите на списъка с променливи в отделни клетки."
 
 #: src/robotide/editor/dialoghelps.py:48
 msgid "Give name and value of the variable. Input dictionary items into separate cells."
-msgstr ""
+msgstr "Посочете името и стойността на променливата. Въведете елементите на речника в отделни клетки."
 
 #: src/robotide/editor/dialoghelps.py:49
 msgid "Individual items must be in format `key=value`"
-msgstr ""
+msgstr "Отделните елементи трябва да са във формат `ключ=стойност`."
 
 #: src/robotide/editor/dialoghelps.py:50
 msgid "Give name, optional arguments and optional alias of the library to import."
-msgstr ""
+msgstr "Дайте име, незадължителни аргументи и незадължителен псевдоним на библиотеката, която ще импортирате."
 
 #: src/robotide/editor/dialoghelps.py:51
 #: src/robotide/editor/dialoghelps.py:56
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr ""
+msgstr "Разделяйте няколко аргумента с помощта на символ за тръба, например 'arg 1 | arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:52
 msgid "Give library name, library documentation URL and command to install."
-msgstr ""
+msgstr "Посочете името на библиотеката, URL адреса на документацията на библиотеката и командата за инсталиране."
 
 #: src/robotide/editor/dialoghelps.py:53
 msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
-msgstr ""
+msgstr "В командата можете да използвате `%%executable` като заместител, който да бъде заменен с действителния път"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
-msgstr ""
+msgstr " на изпълним файл на Python."
 
 #: src/robotide/editor/dialoghelps.py:55
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
+msgstr "Посочете пътя и незадължителните аргументи на файла с променливи, който ще се импортира."
 
 #: src/robotide/editor/dialoghelps.py:57
 msgid "Give path to the resource file to import."
-msgstr ""
+msgstr "Дайте път до файла с ресурси за импортиране."
 
 #: src/robotide/editor/dialoghelps.py:58
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
+msgstr "Съществуващите ресурси ще бъдат заредени автоматично в дървото на ресурсите."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "Give the documentation."
-msgstr ""
+msgstr "Дайте документацията."
 
 #: src/robotide/editor/dialoghelps.py:59
 msgid "New resources must be created separately."
-msgstr ""
+msgstr "Новите ресурси трябва да се създават отделно."
 
 #: src/robotide/editor/dialoghelps.py:60
 msgid "Simple formatting like *bold* and _italic_ can be used."
-msgstr ""
+msgstr "Може да се използва обикновено форматиране като *bold* и _italic_."
 
 #: src/robotide/editor/dialoghelps.py:61
 msgid "Additionally, URLs are converted to clickable links."
-msgstr ""
+msgstr "Освен това URL адресите се преобразуват във връзки, върху които може да се клика."
 
 #: src/robotide/editor/dialoghelps.py:62
 msgid "These tags are set to all test cases in this test suite."
-msgstr ""
+msgstr "Тези тагове са зададени за всички тестови случаи в този пакет от тестове."
 
 #: src/robotide/editor/dialoghelps.py:64
 msgid "These tags are set to all test cases in this test suite unless test cases have their own tags."
-msgstr ""
+msgstr "Тези тагове се задават на всички тестови случаи в този пакет от тестове, освен ако тестовите случаи нямат свои собствени тагове."
 
 #: src/robotide/editor/dialoghelps.py:66
 msgid "These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will replace Force and Default Tags after version 7.0."
-msgstr ""
+msgstr "Тези етикети се прилагат към всички тестови случаи в този набор от тестове. Това поле съществува от Robot Framework 6.0 и ще замени Force и Default Tags след версия 7.0."
 
 #: src/robotide/editor/dialoghelps.py:70
 msgid "These tags are set to this test case in addition to Force Tags and they override possible Default Tags."
-msgstr ""
+msgstr "Тези тагове са зададени за този тестови случай в допълнение към Force Tags и отменят възможните Default Tags."
 
 #: src/robotide/editor/dialoghelps.py:73
 msgid "This keyword is executed before executing any of the test cases or lower level suites."
-msgstr ""
+msgstr "Тази ключова дума се изпълнява, преди да се изпълни някой от тестовите случаи или пакетите от по-ниско ниво."
 
 #: src/robotide/editor/dialoghelps.py:75
 msgid "This keyword is executed after all test cases and lower level suites have been executed."
-msgstr ""
+msgstr "Тази ключова дума се изпълнява, след като са изпълнени всички тестови случаи и пакети от по-ниско ниво."
 
 #: src/robotide/editor/dialoghelps.py:77
 msgid "This keyword is executed before every test case in this suite unless test cases override it."
-msgstr ""
+msgstr "Тази ключова дума се изпълнява преди всеки тестови случай в този пакет, освен ако тестовите случаи не я заместят."
 
 #: src/robotide/editor/dialoghelps.py:79
 msgid "This keyword is executed after every test case in this suite unless test cases override it."
-msgstr ""
+msgstr "Тази ключова дума се изпълнява след всеки тестови случай в този пакет, освен ако тестовите случаи не я заместят."
 
 #: src/robotide/editor/dialoghelps.py:81
 msgid "This keyword is executed before other keywords in this test case or keyword."
-msgstr ""
+msgstr "Тази ключова дума се изпълнява преди други ключови думи в този тестови случай или ключова дума."
 
 #: src/robotide/editor/dialoghelps.py:82
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr ""
+msgstr "В тестовите случаи отменя възможните настройки на теста, зададени на ниво пакет."
 
 #: src/robotide/editor/dialoghelps.py:83
 msgid "Setup in keywords exists since Robot v7.0."
-msgstr ""
+msgstr "Настройката в ключови думи съществува от версия Robot v7.0."
 
 #: src/robotide/editor/dialoghelps.py:84
 msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
-msgstr ""
+msgstr "Тази ключова дума се изпълнява след другите ключови думи в този тестови случай или ключова дума, дори ако тестът или ключовата дума не успеят."
 
 #: src/robotide/editor/dialoghelps.py:86
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr ""
+msgstr "В тестовите случаи отменя възможното Test Teardown, зададено на ниво пакет."
 
 #: src/robotide/editor/dialoghelps.py:88
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
+msgstr "Посочва ключовата дума на шаблона по подразбиране, използвана от тестовете в този пакет."
 
 #: src/robotide/editor/dialoghelps.py:89
 msgid "The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
+msgstr "Тестовите случаи ще съдържат само данни, които да се използват като аргументи за тази ключова дума."
 
 #: src/robotide/editor/dialoghelps.py:90
 msgid "Specifies the template keyword to use."
-msgstr ""
+msgstr "Посочва ключовата дума на шаблона, която да се използва."
 
 #: src/robotide/editor/dialoghelps.py:91
 msgid "The test itself will contain only data to use as arguments to that keyword."
-msgstr ""
+msgstr "Самият тест ще съдържа само данни, които да се използват като аргументи за тази ключова дума."
 
 #: src/robotide/editor/dialoghelps.py:93
 msgid "Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
+msgstr "Посочете стойността на връщане. Използвайте символа pipe, за да разделите няколко стойности."
 
 #: src/robotide/editor/dialoghelps.py:96
 msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
-msgstr ""
+msgstr "Максимално време, през което тестовите случаи в този пакет могат да се изпълняват, преди да бъдат прекъснати принудително."
 
 #: src/robotide/editor/dialoghelps.py:97
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
+msgstr "Може да бъде отменена от отделни тестови случаи чрез настройката Timeout."
 
 #: src/robotide/editor/dialoghelps.py:98
 msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
-msgstr ""
+msgstr "Максимално време, за което този тест/ключова дума може да се изпълни, преди да бъде прекъснат принудително."
 
 #: src/robotide/editor/dialoghelps.py:99
 msgid "With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
+msgstr "При тестовите случаи тази настройка има предимство пред Test Timeout, зададен на ниво пакет."
 
 #: src/robotide/editor/dialoghelps.py:100
 msgid "Give a name and a value for the suite metadata."
-msgstr ""
+msgstr "Дайте име и стойност за метаданните на пакета."
 
 #: src/robotide/editor/dialoghelps.py:101
 msgid "Give a name for the new test case."
-msgstr ""
+msgstr "Дайте име на новия тестови случай."
 
 #: src/robotide/editor/dialoghelps.py:102
 msgid "Give a name and arguments for the new user keyword."
-msgstr ""
+msgstr "Дайте име и аргументи за новата ключова дума на потребителя."
 
 #: src/robotide/editor/dialoghelps.py:103
 msgid "Give a name for the new user keyword."
-msgstr ""
+msgstr "Дайте име на новата ключова дума на потребителя."
 
 #: src/robotide/editor/editordialogs.py:84
 #: src/robotide/editor/settingeditors.py:487
 #: src/robotide/editor/settingeditors.py:575
 #: src/robotide/editor/settingeditors.py:739
 msgid "Comment"
-msgstr ""
+msgstr "Коментар"
 
 #: src/robotide/editor/editordialogs.py:135
 msgid "Scalar Variable"
-msgstr ""
+msgstr "Скаларна променлива"
 
 #: src/robotide/editor/editordialogs.py:143
 #: src/robotide/editor/editordialogs.py:162
@@ -927,7 +954,7 @@ msgstr ""
 #: src/robotide/ui/filedialogs.py:331
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Name"
-msgstr ""
+msgstr "Име"
 
 #: src/robotide/editor/editordialogs.py:143
 #: src/robotide/editor/editordialogs.py:163
@@ -936,113 +963,113 @@ msgstr ""
 #: src/robotide/editor/settingeditors.py:487
 #: src/robotide/editor/settingeditors.py:739
 msgid "Value"
-msgstr ""
+msgstr "Стойност"
 
 #: src/robotide/editor/editordialogs.py:155
 msgid "List Variable"
-msgstr ""
+msgstr "Променлива от списъка"
 
 #: src/robotide/editor/editordialogs.py:175
 msgid "Dictionary Variable"
-msgstr ""
+msgstr "Променлива в речника"
 
 #: src/robotide/editor/editordialogs.py:199
 #: src/robotide/editor/editordialogs.py:230
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:666
 msgid "Library"
-msgstr ""
+msgstr "Библиотека"
 
 #: src/robotide/editor/editordialogs.py:209
 msgid "Alias"
-msgstr ""
+msgstr "Псевдоним"
 
 #: src/robotide/editor/editordialogs.py:209
 #: src/robotide/editor/editordialogs.py:278
 msgid "Args"
-msgstr ""
+msgstr "Аргс"
 
 #: src/robotide/editor/editordialogs.py:247
 #: src/robotide/editor/editordialogs.py:308
 #: src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
-msgstr ""
+msgstr "Документация"
 
 #: src/robotide/editor/editordialogs.py:248
 #: src/robotide/run/configmanagerui.py:101
 msgid "Command"
-msgstr ""
+msgstr "Команда"
 
 #: src/robotide/editor/editordialogs.py:271
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:681
 msgid "Variables"
-msgstr ""
+msgstr "Променливи"
 
 #: src/robotide/editor/editordialogs.py:277
 #: src/robotide/editor/editordialogs.py:295
 msgid "Path"
-msgstr ""
+msgstr "Път"
 
 #: src/robotide/editor/editordialogs.py:290
 #: src/robotide/editor/settingeditors.py:576
 #: src/robotide/editor/settingeditors.py:673
 msgid "Resource"
-msgstr ""
+msgstr "Ресурс"
 
 #: src/robotide/editor/editordialogs.py:396
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
-msgstr ""
+msgstr "Етикети"
 
 #: src/robotide/editor/editordialogs.py:424
 msgid "Suite Setup is run before any tests"
-msgstr ""
+msgstr "Настройката на пакета се изпълнява преди всички тестове"
 
 #: src/robotide/editor/editordialogs.py:483
 msgid "Setup"
-msgstr ""
+msgstr "Настройка"
 
 #: src/robotide/editor/editordialogs.py:497
 msgid "Teardown"
-msgstr ""
+msgstr "Разглобяване"
 
 #: src/robotide/editor/editordialogs.py:511
 msgid "Template"
-msgstr ""
+msgstr "Шаблон"
 
 #: src/robotide/editor/editordialogs.py:571
 msgid "Test Timeout"
-msgstr ""
+msgstr "Време за изпитване"
 
 #: src/robotide/editor/editordialogs.py:585
 msgid "Timeout"
-msgstr ""
+msgstr "Timeout"
 
 #: src/robotide/editor/editordialogs.py:598
 #: src/robotide/editor/settingeditors.py:739
 msgid "Metadata"
-msgstr ""
+msgstr "Метаданни"
 
 #: src/robotide/editor/editordialogs.py:617
 msgid "New Test Case"
-msgstr ""
+msgstr "Нов тестови случай"
 
 #: src/robotide/editor/editordialogs.py:642
 msgid "Copy User Keyword"
-msgstr ""
+msgstr "Копиране на ключовата дума на потребителя"
 
 #: src/robotide/editor/editordialogs.py:671
 msgid "New User Keyword"
-msgstr ""
+msgstr "Ключова дума за нов потребител"
 
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
 #: src/robotide/ui/mainframe.py:214
 msgid " (READ ONLY)"
-msgstr ""
+msgstr " (САМО ЗА ЧЕТЕНЕ)"
 
 #: src/robotide/editor/editors.py:350
 #: src/robotide/searchtests/dialogsearchtests.py:61
@@ -1050,98 +1077,98 @@ msgstr ""
 #: src/robotide/ui/keywordsearch.py:357
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Source"
-msgstr ""
+msgstr "Източник:"
 
 #: src/robotide/editor/editors.py:387
 #: src/robotide/ui/keywordsearch.py:207
 #: src/robotide/ui/treenodehandlers.py:493
 #: src/robotide/ui/treenodehandlers.py:762
 msgid "Find Usages"
-msgstr ""
+msgstr "Намиране на употреби"
 
 #: src/robotide/editor/fieldeditors.py:191
 msgid "Columns"
-msgstr ""
+msgstr "Колони"
 
 #: src/robotide/editor/fieldeditors.py:195
 msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
-msgstr ""
+msgstr "Брой на колоните, които се показват в този редактор. Избраната стойност се съхранява и използва глобално."
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Delete Cells\tCtrl-Shift-D"
-msgstr ""
+msgstr "Изтриване на клетки Ctrl-Shift-D"
 
 #: src/robotide/editor/kweditor.py:98
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr ""
+msgstr "Вмъкване на клетки Ctrl-Shift-I"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Copy\tCtrl-C"
-msgstr ""
+msgstr "Копиране Ctrl-C"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Cut\tCtrl-X"
-msgstr ""
+msgstr "Изрязване Ctrl-X"
 
 #: src/robotide/editor/kweditor.py:100
 msgid "Select All\tCtrl-A"
-msgstr ""
+msgstr "Избиране на всички Ctrl-A"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Delete\tDel"
-msgstr ""
+msgstr "Изтриване Del"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Insert\tCtrl-Shift-V"
-msgstr ""
+msgstr "Вмъкване Ctrl-Shift-V"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Paste\tCtrl-V"
-msgstr ""
+msgstr "Вмъкване Ctrl-V"
 
 #: src/robotide/editor/kweditor.py:104
 msgid "Create Keyword"
-msgstr ""
+msgstr "Създаване на ключова дума"
 
 #: src/robotide/editor/kweditor.py:105
 msgid "Extract Keyword"
-msgstr ""
+msgstr "Извличане на ключова дума"
 
 #: src/robotide/editor/kweditor.py:106
 msgid "Extract Variable"
-msgstr ""
+msgstr "Променлива за извличане"
 
 #: src/robotide/editor/kweditor.py:108
 msgid "Find Where Used"
-msgstr ""
+msgstr "Намерете къде се използва"
 
 #: src/robotide/editor/kweditor.py:109
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr ""
+msgstr "Редактор на JSON Ctrl-Shift-J"
 
 #: src/robotide/editor/kweditor.py:111
 msgid "Go to Definition\tCtrl-B"
-msgstr ""
+msgstr "Преминаване към дефиниция Ctrl-B"
 
 #: src/robotide/editor/kweditor.py:113
 msgid "Undo\tCtrl-Z"
-msgstr ""
+msgstr "Отмяна на действието Ctrl-Z"
 
 #: src/robotide/editor/kweditor.py:114
 msgid "Redo\tCtrl-Y"
-msgstr ""
+msgstr "Повторно изпълнение Ctrl-Y"
 
 #: src/robotide/editor/kweditor.py:116
 msgid "Make Variable\tCtrl-1"
-msgstr ""
+msgstr "Създаване на променлива Ctrl-1"
 
 #: src/robotide/editor/kweditor.py:117
 msgid "Make List Variable\tCtrl-2"
-msgstr ""
+msgstr "Създаване на списък с променливи Ctrl-2"
 
 #: src/robotide/editor/kweditor.py:118
 msgid "Make Dict Variable\tCtrl-5"
-msgstr ""
+msgstr "Създаване на променлива на Dict Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
 msgid ""
@@ -1156,50 +1183,60 @@ msgid ""
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
+"<b>Ключовата дума не е открита от RIDE</b>\n"
+"        <br>Възможни корекции:<br>\n"
+"        <ul>\n"
+"            <li>Импортирайте библиотека или ресурсен файл, съдържащ ключовата дума.</li>\n"
+"            <li>За грешки при импортиране на библиотеки: Помислете за импортиране на XML спецификацията на библиотеката\n"
+"            (Tools / Import Library Spec XML или чрез добавяне на XML файла с правилното име\n"
+"            към PYTHONPATH), за да разрешите попълването на ключовата дума\n"
+"            , например за Java библиотеки.\n"
+"            Library spec XML може да се създаде с помощта на инструмента libdoc от Robot Framework.</li>\n"
+"        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
 #: src/robotide/ui/treenodehandlers.py:243
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
-msgstr ""
+msgstr "Грешка при валидиране"
 
 #: src/robotide/editor/kweditor.py:1218
 msgid "New name"
-msgstr ""
+msgstr "Ново име"
 
 #: src/robotide/editor/kweditor.py:1231
 msgid "Save"
-msgstr ""
+msgstr "Запазете"
 
 #: src/robotide/editor/kweditor.py:1234
 #: src/robotide/widgets/dialog.py:133
 msgid "Cancel"
-msgstr ""
+msgstr "Отмяна на"
 
 #: src/robotide/editor/kweditor.py:1264
 msgid "Validation Error!"
-msgstr ""
+msgstr "Грешка при валидиране!"
 
 #: src/robotide/editor/kweditor.py:1265
 msgid "Error in JSON:"
-msgstr ""
+msgstr "Грешка в JSON:"
 
 #: src/robotide/editor/kweditor.py:1265
 msgid "Save anyway?"
-msgstr ""
+msgstr "Все пак да запазите?"
 
 #: src/robotide/editor/kweditor.py:1441
 msgid "Please select what you want to check for usage"
-msgstr ""
+msgstr "Моля, изберете какво искате да проверите за използване"
 
 #: src/robotide/editor/kweditor.py:1444
 msgid "Complete cell content"
-msgstr ""
+msgstr "Пълно клетъчно съдържание"
 
 #: src/robotide/editor/kweditor.py:1445
 msgid "Variable "
-msgstr ""
+msgstr "Променлива "
 
 #: src/robotide/editor/kweditor.py:1457
 #: src/robotide/editor/texteditor.py:1119
@@ -1210,7 +1247,7 @@ msgstr ""
 #: src/robotide/ui/review.py:98
 #: src/robotide/ui/review.py:160
 msgid "Search"
-msgstr ""
+msgstr "Търсене"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/tagdialogs.py:233
@@ -1218,70 +1255,70 @@ msgstr ""
 #: src/robotide/ui/treenodehandlers.py:688
 #: src/robotide/ui/treenodehandlers.py:792
 msgid "Delete"
-msgstr ""
+msgstr "Изтриване на"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/treenodehandlers.py:684
 #: src/robotide/ui/treenodehandlers.py:788
 msgid "Move Up\tCtrl-Up"
-msgstr ""
+msgstr "Преместване нагоре Ctrl-Up"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/treenodehandlers.py:685
 #: src/robotide/ui/treenodehandlers.py:789
 msgid "Move Down\tCtrl-Down"
-msgstr ""
+msgstr "Преместване надолу Ctrl-Down"
 
 #: src/robotide/editor/settingeditors.py:102
 #: src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
-msgstr ""
+msgstr "Clear"
 
 #: src/robotide/editor/settingeditors.py:487
 msgid "Variable"
-msgstr ""
+msgstr "Променлива"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add Dict"
-msgstr ""
+msgstr "Добавяне на Dict"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add List"
-msgstr ""
+msgstr "Добавяне на списък"
 
 #: src/robotide/editor/settingeditors.py:488
 msgid "Add Scalar"
-msgstr ""
+msgstr "Добавяне на скалар"
 
 #: src/robotide/editor/settingeditors.py:575
 msgid "Import"
-msgstr ""
+msgstr "Внос"
 
 #: src/robotide/editor/settingeditors.py:575
 msgid "Name / Path"
-msgstr ""
+msgstr "Име / път"
 
 #: src/robotide/editor/settingeditors.py:576
 msgid "Import Failed Help"
-msgstr ""
+msgstr "Неуспешен внос Помощ"
 
 #: src/robotide/editor/settingeditors.py:590
 msgid "Add Import"
-msgstr ""
+msgstr "Добавяне на импортиране"
 
 #: src/robotide/editor/settingeditors.py:633
 msgid "Open Library Documentation"
-msgstr ""
+msgstr "Документация на отворената библиотека"
 
 #: src/robotide/editor/settingeditors.py:636
 msgid "Install Library"
-msgstr ""
+msgstr "Инсталиране на библиотека"
 
 #: src/robotide/editor/settingeditors.py:636
 #: src/robotide/spec/specimporter.py:34
 #: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
-msgstr ""
+msgstr "Импортиране на библиотека Spec XML"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid ""
@@ -1300,52 +1337,66 @@ msgid ""
 "            </li>\n"
 "        </ul>"
 msgstr ""
+"<br>Възможни корекции и бележки:<br>\n"
+"        <ul>\n"
+"            <li>Неуспехът при импортирането се показва с червен цвят.</li>\n"
+"            <li>Вижте Tools / View RIDE Log (Инструменти / Преглед на дневника на RIDE) за подробна информация за неуспеха.</li>\n"
+"            <li>Ако импортът съдържа променлива, която RIDE не е инициализирал, помислете за добавяне на променливата\n"
+"            в таблицата с променливи със стойност по подразбиране.</li>\n"
+"            <li>За неуспешен импорт на библиотека: Помислете за импортиране на XML спецификацията на библиотеката (Tools / Import Library Spec XML или чрез\n"
+"            добавяне на XML файла с правилното име към PYTHONPATH), за да активирате попълването на ключови думи\n"
+"            например за Java библиотеки.\n"
+"            Library spec XML може да се създаде с помощта на инструмента libdoc от Robot Framework.\n"
+"            За повече информация вижте \n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            </li>\n"
+"        </ul>"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
-msgstr ""
+msgstr "Обработка на грешки при импортиране"
 
 #: src/robotide/editor/settingeditors.py:740
 msgid "Add Metadata"
-msgstr ""
+msgstr "Добавяне на метаданни"
 
 #: src/robotide/editor/texteditor.py:383
 msgid "Text Edit"
-msgstr ""
+msgstr "Редактиране на текст"
 
 #: src/robotide/editor/texteditor.py:467
 #: src/robotide/editor/texteditor.py:1475
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
-msgstr ""
+msgstr "Източник: "
 
 #: src/robotide/editor/texteditor.py:909
 msgid "Can not apply changes from Text Editor"
-msgstr ""
+msgstr "Не мога да прилагам промени от текстовия редактор"
 
 #: src/robotide/editor/texteditor.py:910
 msgid "ERROR: Data sanity check failed!"
-msgstr ""
+msgstr "ГРЕШКА: Проверката за изправност на данните се провали!"
 
 #: src/robotide/editor/texteditor.py:910
 msgid "Error at line"
-msgstr ""
+msgstr "Грешка на ред"
 
 #: src/robotide/editor/texteditor.py:911
 msgid "Reset changes?"
-msgstr ""
+msgstr "Промени в нулирането?"
 
 #: src/robotide/editor/texteditor.py:1096
 msgid "Apply Changes"
-msgstr ""
+msgstr "Прилагане на промените"
 
 #: src/robotide/editor/texteditor.py:1131
 msgid "Syntax colorization disabled due to missing requirements."
-msgstr ""
+msgstr "Оцветяването на синтаксиса е деактивирано поради липсващи изисквания."
 
 #: src/robotide/editor/texteditor.py:1132
 msgid "Get help"
-msgstr ""
+msgstr "Потърсете помощ"
 
 #: src/robotide/editor/texteditor.py:1147
 msgid ""
@@ -1375,438 +1426,465 @@ msgid ""
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>Оцветяване на синтаксиса</h1>\n"
+"        <p>\n"
+"        Оцветяването на синтаксиса за текстовата редакция използва синтактичния маркер на <a href='https://pygments.org/'>Pygments</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Инсталирайте Pygments от командния ред с:\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"        Или:\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        След това рестартирайте RIDE.\n"
+"        </p>\n"
+"        <p>\n"
+"        Ако не разполагате с pip или easy_install,\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        >следвайте тези инструкции</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        За повече информация относно инсталирането на Pygments <a href='https://pygments.org/download/'>вижте сайта</a>.\n"
+"        </p>\n"
+"        "
 
 #: src/robotide/editor/texteditor.py:1172
 msgid "Getting syntax colorization"
-msgstr ""
+msgstr "Получаване на оцветяване на синтаксиса"
 
 #: src/robotide/editor/texteditor.py:1273
 msgid "No matches found."
-msgstr ""
+msgstr "Не са намерени съвпадения."
 
 #: src/robotide/log/log.py:45
 msgid "RIDE Log"
-msgstr ""
+msgstr "Дневник на пътуването"
 
 #: src/robotide/log/log.py:86
 msgid "View RIDE Log"
-msgstr ""
+msgstr "Преглед на дневника на RIDE"
 
 #: src/robotide/parserlog/parserlog.py:45
 msgid "Parser Log"
-msgstr ""
+msgstr "Дневник на парсера"
 
 #: src/robotide/parserlog/parserlog.py:85
 msgid "View Parser Log"
-msgstr ""
+msgstr "Преглед на дневника на парсера"
 
 #: src/robotide/postinstall/desktopshortcut.py:54
 msgid "Create RIDE Desktop Shortcut"
-msgstr ""
+msgstr "Създаване на пряк път на работния плот на RIDE"
 
 #: src/robotide/preferences/editors.py:42
 msgid "Text background"
-msgstr ""
+msgstr "Текстов фон"
 
 #: src/robotide/preferences/editors.py:85
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
-msgstr ""
+msgstr "Възстановяване на цветовете по подразбиране"
 
 #: src/robotide/preferences/editors.py:86
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
-msgstr ""
+msgstr "Записване или зареждане на настройките"
 
 #: src/robotide/preferences/editors.py:129
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
-msgstr ""
+msgstr "Размер на шрифта"
 
 #: src/robotide/preferences/editors.py:138
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
-msgstr ""
+msgstr "Фактор на увеличение"
 
 #: src/robotide/preferences/editors.py:143
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
-msgstr ""
+msgstr "Използване на шрифт с фиксирана ширина"
 
 #: src/robotide/preferences/editors.py:148
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
-msgstr ""
+msgstr "Лице на шрифта"
 
 #: src/robotide/preferences/editors.py:159
 #: src/robotide/preferences/editors.py:162
 msgid "Text Editor"
-msgstr ""
+msgstr "Текстов редактор"
 
 #: src/robotide/preferences/editors.py:163
 msgid "Text Editor Settings"
-msgstr ""
+msgstr "Настройки на текстовия редактор"
 
 #: src/robotide/preferences/editors.py:174
 msgid "Argument foreground"
-msgstr ""
+msgstr "Аргумент на преден план"
 
 #: src/robotide/preferences/editors.py:175
 msgid "Comment foreground"
-msgstr ""
+msgstr "Коментар на преден план"
 
 #: src/robotide/preferences/editors.py:176
 #: src/robotide/preferences/editors.py:392
 msgid "Error foreground"
-msgstr ""
+msgstr "Грешка на преден план"
 
 #: src/robotide/preferences/editors.py:177
 msgid "Gherkin keyword foreground"
-msgstr ""
+msgstr "Ключова дума Gherkin на преден план"
 
 #: src/robotide/preferences/editors.py:178
 msgid "Heading foreground"
-msgstr ""
+msgstr "Заглавие на преден план"
 
 #: src/robotide/preferences/editors.py:179
 msgid "Import foreground"
-msgstr ""
+msgstr "Импортиране на преден план"
 
 #: src/robotide/preferences/editors.py:180
 msgid "Variable foreground"
-msgstr ""
+msgstr "Променлива на преден план"
 
 #: src/robotide/preferences/editors.py:181
 msgid "Keyword definition foreground"
-msgstr ""
+msgstr "Определение на ключова дума на преден план"
 
 #: src/robotide/preferences/editors.py:182
 msgid "Keyword call foreground"
-msgstr ""
+msgstr "Извикване на ключова дума на преден план"
 
 #: src/robotide/preferences/editors.py:183
 msgid "Separator"
-msgstr ""
+msgstr "Сепаратор"
 
 #: src/robotide/preferences/editors.py:184
 msgid "Setting foreground"
-msgstr ""
+msgstr "Задаване на преден план"
 
 #: src/robotide/preferences/editors.py:185
 msgid "Syntax characters"
-msgstr ""
+msgstr "Символи на синтаксиса"
 
 #: src/robotide/preferences/editors.py:190
 #: src/robotide/preferences/editors.py:390
 msgid "Text foreground"
-msgstr ""
+msgstr "Текст на преден план"
 
 #: src/robotide/preferences/editors.py:231
 #: src/robotide/preferences/editors.py:266
 msgid "Enable auto suggestions"
-msgstr ""
+msgstr "Активиране на автоматични предложения"
 
 #: src/robotide/preferences/editors.py:238
 #: src/robotide/preferences/editors.py:241
 msgid "Grid Editor"
-msgstr ""
+msgstr "Редактор на решетки"
 
 #: src/robotide/preferences/editors.py:242
 msgid "Grid Editor Settings"
-msgstr ""
+msgstr "Настройки на редактора на решетки"
 
 #: src/robotide/preferences/editors.py:251
 msgid "Default column size"
-msgstr ""
+msgstr "Размер на колоната по подразбиране"
 
 #: src/robotide/preferences/editors.py:255
 msgid "Auto size columns"
-msgstr ""
+msgstr "Автоматичен размер на колоните"
 
 #: src/robotide/preferences/editors.py:258
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
+"Максимален размер на колоната\n"
+"(прилага се, когато е включен автоматичен размер)"
 
 #: src/robotide/preferences/editors.py:262
 msgid "Word wrap and auto size rows"
-msgstr ""
+msgstr "Обвиване на думата и автоматично оразмеряване на редовете"
 
 #: src/robotide/preferences/editors.py:298
 msgid "User Keyword Foreground"
-msgstr ""
+msgstr "Ключова дума на потребителя на преден план"
 
 #: src/robotide/preferences/editors.py:299
 msgid "Library Keyword Foreground"
-msgstr ""
+msgstr "Библиотека Ключова дума на преден план"
 
 #: src/robotide/preferences/editors.py:300
 msgid "Variable Foreground"
-msgstr ""
+msgstr "Променлив преден план"
 
 #: src/robotide/preferences/editors.py:301
 msgid "Unknown Variable Foreground"
-msgstr ""
+msgstr "Неизвестна променлива Преден план"
 
 #: src/robotide/preferences/editors.py:302
 msgid "Comments Foreground"
-msgstr ""
+msgstr "Коментари Преден план"
 
 #: src/robotide/preferences/editors.py:303
 msgid "Default Foreground"
-msgstr ""
+msgstr "Преден план по подразбиране"
 
 #: src/robotide/preferences/editors.py:304
 msgid "Empty Foreground"
-msgstr ""
+msgstr "Празен преден план"
 
 #: src/robotide/preferences/editors.py:320
 msgid "Variable Background"
-msgstr ""
+msgstr "Променлива Предистория"
 
 #: src/robotide/preferences/editors.py:321
 msgid "Keyword Background"
-msgstr ""
+msgstr "Фон на ключовата дума"
 
 #: src/robotide/preferences/editors.py:322
 msgid "Mandatory Field Background"
-msgstr ""
+msgstr "Задължително поле"
 
 #: src/robotide/preferences/editors.py:323
 msgid "Optional Field Background"
-msgstr ""
+msgstr "Поле по избор Фон"
 
 #: src/robotide/preferences/editors.py:324
 msgid "Mandatory Empty Field Background"
-msgstr ""
+msgstr "Задължително празно поле Фон"
 
 #: src/robotide/preferences/editors.py:325
 msgid "Unknown Background"
-msgstr ""
+msgstr "Неизвестен фон"
 
 #: src/robotide/preferences/editors.py:326
 msgid "Error Background"
-msgstr ""
+msgstr "Фонова информация за грешка"
 
 #: src/robotide/preferences/editors.py:327
 msgid "Highlight Background"
-msgstr ""
+msgstr "Подчертаване на фона"
 
 #: src/robotide/preferences/editors.py:352
 #: src/robotide/preferences/editors.py:355
 msgid "Test Runner"
-msgstr ""
+msgstr "Test Runner"
 
 #: src/robotide/preferences/editors.py:356
 msgid "Test Runner Settings"
-msgstr ""
+msgstr "Настройки на програмата за тестване"
 
 #: src/robotide/preferences/editors.py:360
 msgid "Colors will be active after next RIDE restart."
-msgstr ""
+msgstr "Цветовете ще бъдат активни след следващото рестартиране на RIDE."
 
 #: src/robotide/preferences/editors.py:376
 msgid "Shows console colors set by"
-msgstr ""
+msgstr "Показва цветовете на конзолата, зададени от"
 
 #: src/robotide/preferences/editors.py:378
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
+msgstr "Иска потвърждение за изпълнение на всички тестове, ако не е избран нито един. "
 
 #: src/robotide/preferences/editors.py:393
 msgid "Fail foreground"
-msgstr ""
+msgstr "Неуспех на преден план"
 
 #: src/robotide/preferences/editors.py:394
 msgid "Pass foreground"
-msgstr ""
+msgstr "Преминаване на преден план"
 
 #: src/robotide/preferences/editors.py:395
 msgid "Skip foreground"
-msgstr ""
+msgstr "Пропускане на преден план"
 
 #: src/robotide/preferences/fileexplorer.py:54
 #: src/robotide/preferences/fileexplorer.py:58
 msgid "File Explorer"
-msgstr ""
+msgstr "Изследовател на файлове"
 
 #: src/robotide/preferences/fileexplorer.py:59
 msgid "File Explorer Settings"
-msgstr ""
+msgstr "Настройки на File Explorer"
 
 #: src/robotide/preferences/fileexplorer.py:96
 msgid "Use these colors definitions"
-msgstr ""
+msgstr "Използвайте тези определения на цветове"
 
 #: src/robotide/preferences/fileexplorer.py:98
 msgid "Use operating system file explorer"
-msgstr ""
+msgstr "Използване на файлов изследовател на операционната система"
 
 #: src/robotide/preferences/fileexplorer.py:118
 #: src/robotide/preferences/general.py:249
 msgid "Foreground"
-msgstr ""
+msgstr "На преден план"
 
 #: src/robotide/preferences/fileexplorer.py:119
 #: src/robotide/preferences/general.py:250
 msgid "Background"
-msgstr ""
+msgstr "Фон"
 
 #: src/robotide/preferences/fileexplorer.py:120
 #: src/robotide/preferences/general.py:251
 msgid "Secondary Foreground"
-msgstr ""
+msgstr "Вторичен нов план"
 
 #: src/robotide/preferences/fileexplorer.py:121
 #: src/robotide/preferences/general.py:252
 msgid "Secondary Background"
-msgstr ""
+msgstr "Вторичен опит"
 
 #: src/robotide/preferences/general.py:98
 msgid "Apply to Project and File Explorer panels"
-msgstr ""
+msgstr "Прилагане към панелите на проекта и File Explorer"
 
 #: src/robotide/preferences/general.py:224
 #: src/robotide/ui/filedialogs.py:148
 msgid "Language"
-msgstr ""
+msgstr "Език"
 
 #: src/robotide/preferences/general.py:236
 #: src/robotide/preferences/general.py:239
 #: src/robotide/preferences/general.py:242
 msgid "General"
-msgstr ""
+msgstr "Обща информация"
 
 #: src/robotide/preferences/general.py:240
 msgid "General Settings"
-msgstr ""
+msgstr "Общи настройки"
 
 #: src/robotide/preferences/general.py:253
 msgid "Text Foreground"
-msgstr ""
+msgstr "Текст на преден план"
 
 #: src/robotide/preferences/general.py:254
 msgid "Help Background"
-msgstr ""
+msgstr "Помощ за фон"
 
 #: src/robotide/preferences/imports.py:27
 #: src/robotide/preferences/imports.py:31
 msgid "Importing"
-msgstr ""
+msgstr "Внос на"
 
 #: src/robotide/preferences/imports.py:30
 msgid "Library imports and PYTHONPATH"
-msgstr ""
+msgstr "Внос на библиотеки и PYTHONPATH"
 
 #: src/robotide/preferences/imports.py:43
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
+msgstr "Списък на библиотеките, които ще бъдат автоматично импортирани, разделен със запетая."
 
 #: src/robotide/preferences/imports.py:45
 msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
-msgstr ""
+msgstr "Списък с директории, разделени със запетая, които да се добавят към PYTHONPATH при търсене на библиотеки."
 
 #: src/robotide/preferences/imports.py:47
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
+msgstr "Списък, разделен със запетая, на директории, съдържащи файлове с библиотечни спецификации."
 
 #: src/robotide/preferences/managesettingsdialog.py:42
 msgid "Save or Load Settings"
-msgstr ""
+msgstr "Записване или зареждане на настройките"
 
 #: src/robotide/preferences/managesettingsdialog.py:48
 msgid "Load settings from file..."
-msgstr ""
+msgstr "Зареждане на настройките от файл..."
 
 #: src/robotide/preferences/managesettingsdialog.py:49
 msgid "Save settings to file..."
-msgstr ""
+msgstr "Записване на настройките във файл..."
 
 #: src/robotide/preferences/managesettingsdialog.py:59
 msgid "Current directory:"
-msgstr ""
+msgstr "Текуща директория:"
 
 #: src/robotide/preferences/managesettingsdialog.py:77
 msgid "File with Settings to Load"
-msgstr ""
+msgstr "Файл с настройки за зареждане"
 
 #: src/robotide/preferences/managesettingsdialog.py:107
 msgid "Save Settings to file"
-msgstr ""
+msgstr "Запазване на настройките във файл"
 
 #: src/robotide/preferences/managesettingsdialog.py:120
 msgid "Could not open settings file \"%s\" for writing"
-msgstr ""
+msgstr "Не може да се отвори файл с настройки \"%s\" за писане"
 
 #: src/robotide/preferences/managesettingsdialog.py:137
 msgid "Error trying to get '%s' from file %s"
-msgstr ""
+msgstr "Грешка при опит за получаване на '%s' от файл %s"
 
 #: src/robotide/preferences/managesettingsdialog.py:152
 msgid "Invalid config file '%s': %s"
-msgstr ""
+msgstr "Невалиден конфигурационен файл '%s': %s"
 
 #: src/robotide/preferences/saving.py:27
 #: src/robotide/preferences/saving.py:30
 #: src/robotide/preferences/saving.py:31
 #: src/robotide/preferences/saving.py:33
 msgid "Saving"
-msgstr ""
+msgstr "Спестяване на"
 
 #: src/robotide/preferences/saving.py:42
 #: src/robotide/ui/filedialogs.py:116
 msgid "Is Task?"
-msgstr ""
+msgstr "Задача ли е?"
 
 #: src/robotide/preferences/saving.py:43
 #: src/robotide/ui/filedialogs.py:116
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "По подразбиране за разделите Задачи или Тестове."
 
 #: src/robotide/preferences/saving.py:44
 msgid "Reformat?"
-msgstr ""
+msgstr "Преформатиране?"
 
 #: src/robotide/preferences/saving.py:45
 msgid "Should it recalculate identation on Save?"
-msgstr ""
+msgstr "Трябва ли да се преизчисли идентификацията при запазване?"
 
 #: src/robotide/preferences/saving.py:58
 msgid "Default file format:"
-msgstr ""
+msgstr "Формат на файла по подразбиране:"
 
 #: src/robotide/preferences/saving.py:61
 msgid "TXT format separator:"
-msgstr ""
+msgstr "Разделител на формат TXT:"
 
 #: src/robotide/preferences/saving.py:64
 msgid "Line separator:"
-msgstr ""
+msgstr "Разделител на линии:"
 
 #: src/robotide/preferences/saving.py:66
 msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
+msgstr "Възможните стойности са CRLF (Windows) и LF (Unixy)."
 
 #: src/robotide/preferences/saving.py:68
 msgid "Separating spaces"
-msgstr ""
+msgstr "Разделителни пространства"
 
 #: src/robotide/preferences/saving.py:70
 msgid "Number of spaces between cells when saving in txt format"
-msgstr ""
+msgstr "Брой на интервалите между клетките при запазване в txt формат"
 
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
-msgstr ""
+msgstr "Добавяне на наскоро отворени файлове към менюто с файлове."
 
 #: src/robotide/recentfiles/recentfiles.py:120
 msgid "No recent files"
-msgstr ""
+msgstr "Няма скорошни файлове"
 
 #: src/robotide/recentfiles/recentfiles.py:120
 #: src/robotide/recentfiles/recentfiles.py:126
@@ -1815,17 +1893,17 @@ msgstr ""
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/review.py:140
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: src/robotide/recentfiles/recentfiles.py:121
 #: src/robotide/recentfiles/recentfiles.py:127
 #: src/robotide/recentfiles/recentfiles.py:159
 msgid "Exit"
-msgstr ""
+msgstr "Изход"
 
 #: src/robotide/recentfiles/recentfiles.py:148
 msgid "Open %s"
-msgstr ""
+msgstr "Отвори %s"
 
 #: src/robotide/run/configmanagerui.py:27
 msgid ""
@@ -1844,19 +1922,33 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
+"Зададеният низ от команди ще бъде разделен от белите полета на команда\n"
+"и нейните аргументи. Ако командата или някой от аргументите изискват\n"
+"вътрешни интервали, те трябва да бъдат записани като '<SPACE>'.\n"
+"\n"
+"Командата ще бъде изпълнена директно в системата, без да се отваря шел.\n"
+"Това означава, че командите и разширенията на обвивката не са достъпни. Например,\n"
+"в Windows пакетните файлове за изпълнение трябва да съдържат разширението '.bat' и командата 'dir'\n"
+"не работи.\n"
+"\n"
+"Примери:\n"
+"    robot.bat --include smoke C:\\my_tests\n"
+"    svn update /home/robot\n"
+"    C:\\Program<SPACE>Files\\App\\prg.exe аргумент<SPACE>с<SPACE>пространство,\n"
+"Конфигурациите за изпълнение се съхраняват във файла с настройки на RIDE.\n"
 
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
-msgstr ""
+msgstr "Управление на конфигурациите за изпълнение"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "New"
-msgstr ""
+msgstr "Нов"
 
 #: src/robotide/run/configmanagerui.py:99
 msgid "Remove"
-msgstr ""
+msgstr "Премахване на"
 
 #: src/robotide/run/runanything.py:30
 msgid ""
@@ -1866,87 +1958,92 @@ msgid ""
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
 msgstr ""
+"Приставка за изпълнение на команди в системата.\n"
+"\n"
+"    Тази приставка дава възможност за създаване на постоянни конфигурации за изпълнение и\n"
+"    изпълнение на тези конфигурации. Изходните данни на изпълнената команда се показват в отделен\n"
+"    таб."
 
 #: src/robotide/run/runanything.py:55
 #: src/robotide/run/runanything.py:57
 #: src/robotide/run/runanything.py:65
 msgid "Macros"
-msgstr ""
+msgstr "Макроси"
 
 #: src/robotide/run/ui.py:27
 msgid "finished"
-msgstr ""
+msgstr "завършен"
 
 #: src/robotide/run/ui.py:28
 msgid "Run Again"
-msgstr ""
+msgstr "Тичай отново"
 
 #: src/robotide/run/ui.py:29
 msgid "running"
-msgstr ""
+msgstr "работи"
 
 #: src/robotide/searchtests/dialogsearchtests.py:36
 #: src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
-msgstr ""
+msgstr "Тестове за търсене"
 
 #: src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
-msgstr ""
+msgstr "Търсене на етикети"
 
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
-msgstr ""
+msgstr "Тест"
 
 #: src/robotide/searchtests/dialogsearchtests.py:66
 #: src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
-msgstr ""
+msgstr "Резултати: "
 
 #: src/robotide/searchtests/dialogsearchtests.py:82
 msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
-msgstr ""
+msgstr "Намиране на съвпадения с помощта на шаблони на етикети. За повече информация вижте Ръководството за потребителя на RF или 'robot --help'."
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
 #: src/robotide/ui/treenodehandlers.py:872
 msgid "Include"
-msgstr ""
+msgstr "Включете"
 
 #: src/robotide/searchtests/dialogsearchtests.py:117
 #: src/robotide/ui/treenodehandlers.py:402
 #: src/robotide/ui/treenodehandlers.py:499
 #: src/robotide/ui/treenodehandlers.py:592
 msgid "Exclude"
-msgstr ""
+msgstr "С изключение на"
 
 #: src/robotide/searchtests/dialogsearchtests.py:139
 #: src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
-msgstr ""
+msgstr "Добавяне на всички към избраното"
 
 #: src/robotide/searchtests/dialogsearchtests.py:156
 #: src/robotide/searchtests/dialogsearchtests.py:164
 #: src/robotide/ui/keywordsearch.py:211
 #: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
-msgstr ""
+msgstr "Резултати: %d"
 
 #: src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
-msgstr ""
+msgstr "Информация. "
 
 #: src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
-msgstr ""
+msgstr "Намиране на съвпадения по име на тест, документация и/или етикет."
 
 #: src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
-msgstr ""
+msgstr "Термин за търсене"
 
 #: src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
+msgstr "Плъгин за търсене на тестове въз основа на име, тагове и документация"
 
 #: src/robotide/spec/libraryfinder.py:31
 msgid ""
@@ -1958,34 +2055,41 @@ msgid ""
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
+"Инсталирайте липсващите библиотеки и отворете документацията.\n"
+"\n"
+"    Можете да редактирате файла settings.cfg, за да добавите URL за документацията и командата за инсталиране.\n"
+"    Можете да щракнете с десния бутон на мишката върху името на библиотека и да отворите документацията или да инсталирате библиотека.\n"
+"    От Tools->Library Finder... (Инструменти->Издирване на библиотеки...) или Help->Open Library Documentation... (Помощ->Отваряне на документацията на библиотеката...) ще имате\n"
+"    диалогов прозорец, в който да попълните командата за инсталиране или URL адреса за документацията.\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
-msgstr ""
+msgstr "Търсене на библиотека..."
 
 #: src/robotide/spec/libraryfinder.py:40
 msgid "Open Library Documentation..."
-msgstr ""
+msgstr "Отворена библиотека Документация..."
 
 #: src/robotide/spec/libraryfinder.py:44
 msgid "Prepare Info to Install Libraries"
-msgstr ""
+msgstr "Подготовка на информация за инсталиране на библиотеки"
 
 #: src/robotide/spec/libraryfinder.py:46
 msgid "Prepare Info to Open Documentation of Libraries"
-msgstr ""
+msgstr "Подготовка на информация за отваряне на документацията на библиотеките"
 
 #: src/robotide/spec/libraryfinder.py:106
 msgid "Library Finder"
-msgstr ""
+msgstr "Търсачка на библиотеки"
 
 #: src/robotide/spec/specimporter.py:61
 msgid "Library Spec XML|*.xml|All Files|*.*"
-msgstr ""
+msgstr "Библиотека Spec XML|*.xml|Всички файлове|*.*"
 
 #: src/robotide/spec/specimporter.py:78
 msgid "Info"
-msgstr ""
+msgstr "Информация"
 
 #: src/robotide/spec/specimporter.py:79
 msgid ""
@@ -1993,411 +2097,422 @@ msgid ""
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
+"Библиотека \"%s\" импортиран\n"
+"от \"%s\"\n"
+"Това може да изисква рестартиране на RIDE."
 
 #: src/robotide/spec/specimporter.py:83
 msgid "Import failed"
-msgstr ""
+msgstr "Импортирането е неуспешно"
 
 #: src/robotide/spec/specimporter.py:84
 msgid "Could not import library from file \"%s\""
-msgstr ""
+msgstr "Не може да се импортира библиотека от файл \"%s\""
 
 #: src/robotide/ui/filedialogs.py:110
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: src/robotide/ui/filedialogs.py:110
 #: src/robotide/ui/filedialogs.py:230
 msgid "Directory"
-msgstr ""
+msgstr "Директория"
 
 #: src/robotide/ui/filedialogs.py:170
 #: src/robotide/ui/filedialogs.py:303
 msgid "New Resource File"
-msgstr ""
+msgstr "Нов файл с ресурси"
 
 #: src/robotide/ui/filedialogs.py:172
 #: src/robotide/ui/preview.py:117
 msgid "Format"
-msgstr ""
+msgstr "Формат"
 
 #: src/robotide/ui/filedialogs.py:184
 #: src/robotide/ui/filedialogs.py:199
 msgid "Parent Directory"
-msgstr ""
+msgstr "Указател за родители"
 
 #: src/robotide/ui/filedialogs.py:185
 msgid "Choose Parent Directory"
-msgstr ""
+msgstr "Изберете директория на родителите"
 
 #: src/robotide/ui/filedialogs.py:202
 msgid "Created Path"
-msgstr ""
+msgstr "Създаден път"
 
 #: src/robotide/ui/filedialogs.py:287
 msgid "New Project"
-msgstr ""
+msgstr "Нов проект"
 
 #: src/robotide/ui/filedialogs.py:317
 msgid "Add Suite"
-msgstr ""
+msgstr "Добавяне на апартамент"
 
 #: src/robotide/ui/filedialogs.py:341
 msgid "Add Directory"
-msgstr ""
+msgstr "Добавяне на директория"
 
 #: src/robotide/ui/filedialogs.py:353
 msgid "Set Data Format"
-msgstr ""
+msgstr "Задаване на формат на данните"
 
 #: src/robotide/ui/filedialogs.py:377
 msgid "Change recursively"
-msgstr ""
+msgstr "Рекурсивна промяна"
 
 #: src/robotide/ui/filedialogs.py:396
 msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
 msgstr ""
+"Осигурете формат на файла за инициализация в директорията\n"
+"\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
 #: src/robotide/ui/fileexplorerplugin.py:79
 msgid "Open"
-msgstr ""
+msgstr "Отворете"
 
 #: src/robotide/ui/filedialogs.py:415
 msgid "Robot data (*.robot)|*.robot"
-msgstr ""
+msgstr "Данни за роботи (*.robot)|*.robot"
 
 #: src/robotide/ui/filedialogs.py:416
 msgid "Robot data (*.txt)|*.txt"
-msgstr ""
+msgstr "Данни за роботи (*.txt)|*.txt"
 
 #: src/robotide/ui/filedialogs.py:417
 msgid "Robot resource file (*.resource)|*.resource"
-msgstr ""
+msgstr "Файл с ресурси на робота (*.resource)|*.resource"
 
 #: src/robotide/ui/filedialogs.py:418
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
-msgstr ""
+msgstr "Робот Данни, разделени на табулатори (*.tsv)|*.tsv"
 
 #: src/robotide/ui/filedialogs.py:420
 msgid "All files|*.*"
-msgstr ""
+msgstr "Всички файлове|*.*"
 
 #: src/robotide/ui/fileexplorerplugin.py:39
 msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr ""
+msgstr "Осигурява дървовиден изглед за Файлове и папки. Отваря избрания елемент с десен бутон на мишката."
 
 #: src/robotide/ui/fileexplorerplugin.py:81
 #: src/robotide/ui/treenodehandlers.py:368
 #: src/robotide/ui/treenodehandlers.py:502
 #: src/robotide/ui/treenodehandlers.py:595
 msgid "Open Containing Folder"
-msgstr ""
+msgstr "Отваряне на съдържаща папка"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
 #: src/robotide/ui/mainframe.py:317
 msgid "Files"
-msgstr ""
+msgstr "Файлове"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
 msgid "View File Explorer"
-msgstr ""
+msgstr "Преглед на File Explorer"
 
 #: src/robotide/ui/fileexplorerplugin.py:109
 #: src/robotide/ui/treeplugin.py:113
 msgid "View"
-msgstr ""
+msgstr "Вижте"
 
 #: src/robotide/ui/fileexplorerplugin.py:111
 msgid "Show File Explorer panel"
-msgstr ""
+msgstr "Показване на панела File Explorer"
 
 #: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<all keywords>"
 
 #: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<all user keywords>"
 
 #: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<all library keywords>"
 
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
 msgid "Search Keywords"
-msgstr ""
+msgstr "Ключови думи за търсене"
 
 #: src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
+msgstr "Плъгин за търсене на ключови думи въз основа на име или документация."
 
 #: src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
-msgstr ""
+msgstr "Търсене на ключови думи от библиотеки и ресурси"
 
 #: src/robotide/ui/keywordsearch.py:173
 msgid "Search term: "
-msgstr ""
+msgstr "Термин за търсене: "
 
 #: src/robotide/ui/keywordsearch.py:180
 msgid "Search documentation"
-msgstr ""
+msgstr "Търсене в документацията"
 
 #: src/robotide/ui/keywordsearch.py:357
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
-msgstr ""
+msgstr "[Файл]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
+msgstr "!&New Project | Създаване на нов пакет от най-високо ниво | Ctrlcmd-N | ART_NEW\n"
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
+msgstr "!&Open Test Suite | Отваряне на файл, съдържащ тестове | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr ""
+msgstr "!Open &Directory | Отваряне на директория, съдържаща файлове с данни | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:65
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
+msgstr "!Отваряне на външен файл | Отваряне на файла в редактора на код | | ART_NORMAL_FILE\n"
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
+msgstr "!&Save | Запазване на избран файл с данни | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
+msgstr "!Save &All | Запазване на всички промени | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: src/robotide/ui/mainframe.py:68
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr ""
+msgstr "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 
 #: src/robotide/ui/mainframe.py:70
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr ""
+msgstr "!Търсене на неизползвани ключови думи | | | | POSITION-54\n"
 
 #: src/robotide/ui/mainframe.py:71
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr ""
+msgstr "!Управление на плъгини | | | | | POSITION-81\n"
 
 #: src/robotide/ui/mainframe.py:72
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr ""
+msgstr "!Преглед на всички етикети | | F7 | | POSITION-82\n"
 
 #: src/robotide/ui/mainframe.py:73
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr ""
+msgstr "!Предпочитания | | | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
-msgstr ""
+msgstr "[Помощ]\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
-msgstr ""
+msgstr "!Бързи клавиши | Бързи клавиши RIDE\n"
 
 #: src/robotide/ui/mainframe.py:76
 msgid "!User Guide | Robot Framework User Guide\n"
-msgstr ""
+msgstr "!Ръководство за потребителя | Ръководство за потребителя на Robot Framework\n"
 
 #: src/robotide/ui/mainframe.py:77
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
-msgstr ""
+msgstr "!Wiki | Ръководство за потребителя на RIDE (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
+msgstr "!Докладване на проблем | Отворете браузъра, за да търсите в системата за проследяване на проблеми на RIDE\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
-msgstr ""
+msgstr "!About | Информация за RIDE\n"
 
 #: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
+msgstr "!Проверка за ъпгрейд | Търси в PyPi нова версия\n"
 
 #: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
-msgstr ""
+msgstr "Запазено %s"
 
 #: src/robotide/ui/mainframe.py:196
 msgid "Saved all files"
-msgstr ""
+msgstr "Запазване на всички файлове"
 
 #: src/robotide/ui/mainframe.py:224
 msgid "Modification prevented"
-msgstr ""
+msgstr "Предотвратено модифициране"
 
 #: src/robotide/ui/mainframe.py:225
 msgid "\"%s\" is read only"
-msgstr ""
+msgstr "\"%s\" е само за четене"
 
 #: src/robotide/ui/mainframe.py:300
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
-msgstr ""
+msgstr "Комплекти за тестване"
 
 #: src/robotide/ui/mainframe.py:465
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
+"Съществуват неспасени модификации.\n"
+"Искате ли да запазите промените си, преди да излезете?"
 
 #: src/robotide/ui/mainframe.py:465
 #: src/robotide/ui/mainframe.py:559
 msgid "Warning"
-msgstr ""
+msgstr "Предупреждение"
 
 #: src/robotide/ui/mainframe.py:559
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
+"Съществуват неспасени модификации.\n"
+"Искате ли да продължите без запазване?"
 
 #: src/robotide/ui/mainframe.py:609
 msgid "Choose a directory containing Robot files"
-msgstr ""
+msgstr "Изберете директория, съдържаща файлове на Robot"
 
 #: src/robotide/ui/mainframe.py:761
 msgid "Workspace modifications detected on the file system."
-msgstr ""
+msgstr "Открити са модификации на работното пространство във файловата система."
 
 #: src/robotide/ui/mainframe.py:762
 msgid "Do you want to reload the workspace?"
-msgstr ""
+msgstr "Искате ли да презаредите работното пространство?"
 
 #: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
-msgstr ""
+msgstr "Ако отговорите на <Yes>, незаписаните промени ще бъдат изхвърлени."
 
 #: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
-msgstr ""
+msgstr "Отговорът на <No> ще игнорира промените на диска."
 
 #: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
-msgstr ""
+msgstr "Променени файлове на диска"
 
 #: src/robotide/ui/mainframe.py:809
 msgid "Customize..."
-msgstr ""
+msgstr "Персонализиране..."
 
 #: src/robotide/ui/mainframe.py:897
 msgid "search unused keywords"
-msgstr ""
+msgstr "търсене на неизползвани ключови думи"
 
 #: src/robotide/ui/mainframe.py:897
 msgid "stop test run"
-msgstr ""
+msgstr "спиране на тестовото изпълнение"
 
 #: src/robotide/ui/mainframe.py:898
 msgid "preview"
-msgstr ""
+msgstr "преглед"
 
 #: src/robotide/ui/mainframe.py:898
 msgid "view ride log"
-msgstr ""
+msgstr "Преглед на дневника на пътуването"
 
 #: src/robotide/ui/mainframe.py:940
 msgid "Shortcut keys for RIDE"
-msgstr ""
+msgstr "Бързи клавиши за RIDE"
 
 #: src/robotide/ui/mainframe.py:978
 msgid "Show"
-msgstr ""
+msgstr "Покажи"
 
 #: src/robotide/ui/mainframe.py:979
 msgid "Hide"
-msgstr ""
+msgstr "Скрий"
 
 #: src/robotide/ui/mainframe.py:980
 msgid "Close"
-msgstr ""
+msgstr "Затвори"
 
 #: src/robotide/ui/pluginmanager.py:48
 msgid "Manage Plugins"
-msgstr ""
+msgstr "Управление на плъгини"
 
 #: src/robotide/ui/pluginmanager.py:63
 msgid "Installed Plugins\n"
-msgstr ""
+msgstr "Инсталирани плъгини\n"
 
 #: src/robotide/ui/pluginmanager.py:82
 msgid "Enabled"
-msgstr ""
+msgstr "Разрешено"
 
 #: src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
-msgstr ""
+msgstr "Плъгин"
 
 #: src/robotide/ui/pluginmanager.py:92
 msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr ""
+msgstr "Информация. Активирането и деактивирането на плъгини може да изисква рестартиране на RIDE, за да работят менютата."
 
 #: src/robotide/ui/preview.py:32
 msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
+msgstr "(Остаряло) Осигурява предварителен преглед на тестовите данни във формати HTML, TSV и TXT."
 
 #: src/robotide/ui/preview.py:41
 #: src/robotide/ui/preview.py:100
 msgid "Preview"
-msgstr ""
+msgstr "Преглед"
 
 #: src/robotide/ui/preview.py:43
 msgid "Show preview of the current file"
-msgstr ""
+msgstr "Показване на предварителен преглед на текущия файл"
 
 #: src/robotide/ui/preview.py:83
 msgid "Text (Pipes)"
-msgstr ""
+msgstr "Текст (тръби)"
 
 #: src/robotide/ui/preview.py:83
 msgid "Text (Spaces)"
-msgstr ""
+msgstr "Текст (интервали)"
 
 #: src/robotide/ui/preview.py:123
 msgid "Print"
-msgstr ""
+msgstr "Отпечатване"
 
 #: src/robotide/ui/review.py:39
 msgid "Search unused keywords"
-msgstr ""
+msgstr "Търсене на неизползвани ключови думи"
 
 #: src/robotide/ui/review.py:66
 msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
+"Този диалогов прозорец ви помага да намерите неизползвани ключови думи в отворения проект.\n"
+"Ако искате, можете да ограничите търсенето до набор от файлове с помощта на филтъра."
 
 #: src/robotide/ui/review.py:70
 msgid "Filter is"
-msgstr ""
+msgstr "Филтърът е"
 
 #: src/robotide/ui/review.py:71
 #: src/robotide/ui/review.py:242
 msgid "inactive"
-msgstr ""
+msgstr "неактивен"
 
 #: src/robotide/ui/review.py:84
 msgid "Filter"
-msgstr ""
+msgstr "Филтър"
 
 #: src/robotide/ui/review.py:91
 msgid "Use RegEx"
-msgstr ""
+msgstr "Използване на RegEx"
 
 #: src/robotide/ui/review.py:93
 msgid ""
@@ -2405,256 +2520,265 @@ msgid ""
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
+"Тук можете да зададете един или повече низове, разделени със запетая (например common,abc,123).\n"
+"Филтърът съвпада, ако поне един низ е част от името на файла.\n"
+"Ако не въведете никакви низове, ще бъдат включени всички отворени файлове"
 
 #: src/robotide/ui/review.py:101
 msgid "Test case files"
-msgstr ""
+msgstr "Файлове с тестови случаи"
 
 #: src/robotide/ui/review.py:104
 msgid "Resource files"
-msgstr ""
+msgstr "Ресурсни файлове"
 
 #: src/robotide/ui/review.py:106
 msgid "Mode"
-msgstr ""
+msgstr "Режим"
 
 #: src/robotide/ui/review.py:107
 msgid "exclude"
-msgstr ""
+msgstr "изключване на"
 
 #: src/robotide/ui/review.py:107
 msgid "include"
-msgstr ""
+msgstr "включва"
 
 #: src/robotide/ui/review.py:109
 msgid "Test the filter"
-msgstr ""
+msgstr "Тестване на филтъра"
 
 #: src/robotide/ui/review.py:139
 msgid "Keyword"
-msgstr ""
+msgstr "Ключова дума"
 
 #: src/robotide/ui/review.py:146
 msgid "Delete marked keywords"
-msgstr ""
+msgstr "Изтриване на маркирани ключови думи"
 
 #: src/robotide/ui/review.py:157
 #: src/robotide/ui/review.py:320
 msgid "Unused Keywords"
-msgstr ""
+msgstr "Неизползвани ключови думи"
 
 #: src/robotide/ui/review.py:163
 msgid "Abort"
-msgstr ""
+msgstr "Прекратяване на"
 
 #: src/robotide/ui/review.py:247
 msgid "active"
-msgstr ""
+msgstr "активен"
 
 #: src/robotide/ui/review.py:270
 #: src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
-msgstr ""
+msgstr "Неизползвани ключови думи (%d)"
 
 #: src/robotide/ui/review.py:279
 msgid "(None)"
-msgstr ""
+msgstr "(Няма)"
 
 #: src/robotide/ui/review.py:282
 msgid ""
 "Keywords of the following files will be included in the search:\n"
 "\n"
 msgstr ""
+"Ключовите думи на следните файлове ще бъдат включени в търсенето:\n"
+"\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
-msgstr ""
+msgstr "Включени файлове"
 
 #: src/robotide/ui/review.py:339
 msgid "Searching.%s \t- %s"
-msgstr ""
+msgstr "Търсене.%s \t- %s"
 
 #: src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
-msgstr ""
+msgstr "Търсенето е завършено - намерени са %d неизползвани ключови думи"
 
 #: src/robotide/ui/review.py:402
 msgid "listing datafiles"
-msgstr ""
+msgstr "изброяване на файлове с данни"
 
 #: src/robotide/ui/review.py:405
 msgid "searching from "
-msgstr ""
+msgstr "търсене от "
 
 #: src/robotide/ui/tagdialogs.py:37
 msgid "View all tags"
-msgstr ""
+msgstr "Преглед на всички етикети"
 
 #: src/robotide/ui/tagdialogs.py:76
 msgid "Tag"
-msgstr ""
+msgstr "Етикет"
 
 #: src/robotide/ui/tagdialogs.py:77
 msgid "Occurrences"
-msgstr ""
+msgstr "Случаи"
 
 #: src/robotide/ui/tagdialogs.py:82
 msgid "The List"
-msgstr ""
+msgstr "Списъкът"
 
 #: src/robotide/ui/tagdialogs.py:85
 msgid "Refresh"
-msgstr ""
+msgstr "Обновяване"
 
 #: src/robotide/ui/tagdialogs.py:86
 msgid "Included Tag Search"
-msgstr ""
+msgstr "Включено търсене на етикети"
 
 #: src/robotide/ui/tagdialogs.py:89
 msgid "Excluded Tag Search"
-msgstr ""
+msgstr "Търсене на изключени етикети"
 
 #: src/robotide/ui/tagdialogs.py:147
 msgid ""
 "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
+"Общо тестове %d, Тестове с тагове %d, Уникални тагове %d\n"
+"Текущо избрани тестове %d"
 
 #: src/robotide/ui/tagdialogs.py:233
 msgid "Select all"
-msgstr ""
+msgstr "Изберете всички"
 
 #: src/robotide/ui/tagdialogs.py:233
 #: src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
-msgstr ""
+msgstr "Преименуване на"
 
 #: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests with this tag"
-msgstr ""
+msgstr "Показване на тестове с този етикет"
 
 #: src/robotide/ui/tagdialogs.py:234
 msgid "Show tests without this tag"
-msgstr ""
+msgstr "Показване на тестове без този таг"
 
 #: src/robotide/ui/tagdialogs.py:261
 msgid "Renaming tag '%s'."
-msgstr ""
+msgstr "Преименуване на тага '%s'."
 
 #: src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
-msgstr ""
+msgstr "Изтриване на таг '%s' ?"
 
 #: src/robotide/ui/tagdialogs.py:276
 #: src/robotide/ui/treenodehandlers.py:661
 msgid "Confirm"
-msgstr ""
+msgstr "Потвърдете"
 
 #: src/robotide/ui/treenodehandlers.py:254
 #: src/robotide/ui/treenodehandlers.py:360
 msgid "New Resource"
-msgstr ""
+msgstr "Нов ресурс"
 
 #: src/robotide/ui/treenodehandlers.py:358
 msgid "New Suite\tCtrl-Shift-F"
-msgstr ""
+msgstr "Нов апартамент Ctrl-Shift-F"
 
 #: src/robotide/ui/treenodehandlers.py:359
 msgid "New Directory"
-msgstr ""
+msgstr "Нова директория"
 
 #: src/robotide/ui/treenodehandlers.py:362
 #: src/robotide/ui/treenodehandlers.py:485
 #: src/robotide/ui/treenodehandlers.py:573
 msgid "New User Keyword\tCtrl-Shift-K"
-msgstr ""
+msgstr "Ключова дума за нов потребител Ctrl-Shift-K"
 
 #: src/robotide/ui/treenodehandlers.py:363
 #: src/robotide/ui/treenodehandlers.py:486
 #: src/robotide/ui/treenodehandlers.py:574
 msgid "New Scalar\tCtrl-Shift-V"
-msgstr ""
+msgstr "Нов скалар Ctrl-Shift-V"
 
 #: src/robotide/ui/treenodehandlers.py:364
 #: src/robotide/ui/treenodehandlers.py:487
 #: src/robotide/ui/treenodehandlers.py:575
 msgid "New List Variable\tCtrl-Shift-L"
-msgstr ""
+msgstr "Нова променлива на списъка Ctrl-Shift-L"
 
 #: src/robotide/ui/treenodehandlers.py:365
 #: src/robotide/ui/treenodehandlers.py:488
 #: src/robotide/ui/treenodehandlers.py:576
 msgid "New Dictionary Variable"
-msgstr ""
+msgstr "Нова променлива в речника"
 
 #: src/robotide/ui/treenodehandlers.py:367
 #: src/robotide/ui/treenodehandlers.py:491
 #: src/robotide/ui/treenodehandlers.py:579
 msgid "Change Format"
-msgstr ""
+msgstr "Промяна на формата"
 
 #: src/robotide/ui/treenodehandlers.py:389
 #: src/robotide/ui/treenodehandlers.py:587
 msgid "Select All Tests"
-msgstr ""
+msgstr "Изберете всички тестове"
 
 #: src/robotide/ui/treenodehandlers.py:390
 #: src/robotide/ui/treenodehandlers.py:588
 msgid "Deselect All Tests"
-msgstr ""
+msgstr "Премахване на всички тестове"
 
 #: src/robotide/ui/treenodehandlers.py:391
 #: src/robotide/ui/treenodehandlers.py:589
 msgid "Select Only Failed Tests"
-msgstr ""
+msgstr "Изберете само неуспешни тестове"
 
 #: src/robotide/ui/treenodehandlers.py:392
 #: src/robotide/ui/treenodehandlers.py:590
 msgid "Select Only Passed Tests"
-msgstr ""
+msgstr "Изберете само успешно преминали тестове"
 
 #: src/robotide/ui/treenodehandlers.py:404
 msgid "Collapse all"
-msgstr ""
+msgstr "Свиване на всички"
 
 #: src/robotide/ui/treenodehandlers.py:404
 msgid "Expand all"
-msgstr ""
+msgstr "Разширете всички"
 
 #: src/robotide/ui/treenodehandlers.py:444
 msgid ""
 "Directory contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"Директорията съдържа незаписани данни!\n"
+"Трябва да запазите данните, преди да ги изключите."
 
 #: src/robotide/ui/treenodehandlers.py:490
 #: src/robotide/ui/treenodehandlers.py:578
 #: src/robotide/ui/treenodehandlers.py:686
 #: src/robotide/ui/treenodehandlers.py:790
 msgid "Rename\tF2"
-msgstr ""
+msgstr "Преименуване на F2"
 
 #: src/robotide/ui/treenodehandlers.py:492
 #: src/robotide/ui/treenodehandlers.py:497
 #: src/robotide/ui/treenodehandlers.py:580
 #: src/robotide/ui/treenodehandlers.py:585
 msgid "Sort Keywords"
-msgstr ""
+msgstr "Сортиране на ключови думи"
 
 #: src/robotide/ui/treenodehandlers.py:494
 #: src/robotide/ui/treenodehandlers.py:581
 msgid "Delete\tCtrl-Shift-D"
-msgstr ""
+msgstr "Изтриване Ctrl-Shift-D"
 
 #: src/robotide/ui/treenodehandlers.py:496
 #: src/robotide/ui/treenodehandlers.py:583
 msgid "Sort Variables"
-msgstr ""
+msgstr "Сортиране на променливи"
 
 #: src/robotide/ui/treenodehandlers.py:501
 #: src/robotide/ui/treenodehandlers.py:594
 msgid "Remove Read Only"
-msgstr ""
+msgstr "Премахване само за четене"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
@@ -2662,99 +2786,101 @@ msgid ""
 "File contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"Файлът съдържа незаписани данни!\n"
+"Трябва да запазите данните преди изключване."
 
 #: src/robotide/ui/treenodehandlers.py:572
 msgid "New Test Case\tCtrl-Shift-T"
-msgstr ""
+msgstr "Нов тестови случай Ctrl-Shift-T"
 
 #: src/robotide/ui/treenodehandlers.py:584
 msgid "Sort Tests"
-msgstr ""
+msgstr "Сортиране на тестове"
 
 #: src/robotide/ui/treenodehandlers.py:661
 msgid "Delete test case file"
-msgstr ""
+msgstr "Изтриване на файла с тестовия случай"
 
 #: src/robotide/ui/treenodehandlers.py:683
 msgid "Copy\tCtrl-Shift-C"
-msgstr ""
+msgstr "Копиране Ctrl-Shift-C"
 
 #: src/robotide/ui/treenodehandlers.py:839
 msgid "Add Resource"
-msgstr ""
+msgstr "Добавяне на ресурс"
 
 #: src/robotide/ui/treeplugin.py:62
 msgid "Provides a tree view for Test Suites "
-msgstr ""
+msgstr "Осигурява дървовиден изглед за тестовите пакети "
 
 #: src/robotide/ui/treeplugin.py:113
 msgid "View Test Suites Explorer"
-msgstr ""
+msgstr "Преглед на тестови пакети Explorer"
 
 #: src/robotide/ui/treeplugin.py:115
 msgid "Show Test Suites tree panel"
-msgstr ""
+msgstr "Показване на дървовидния панел на тестовите пакети"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
-msgstr ""
+msgstr "Външни ресурси"
 
 #: src/robotide/ui/treeplugin.py:428
 msgid "%s (excluded)"
-msgstr ""
+msgstr "%s (изключено)"
 
 #: src/robotide/ui/treeplugin.py:1298
 msgid "Invalid keyword name: "
-msgstr ""
+msgstr "Невалидно име на ключова дума: "
 
 #: src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
-msgstr ""
+msgstr "'%s' - Намерени са съвпадения с %d - Търсене на%s"
 
 #: src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
-msgstr ""
+msgstr "'%s' - %d съвпадения"
 
 #: src/robotide/usages/usagesdialog.py:93
 msgid "Go to definition"
-msgstr ""
+msgstr "Отидете на дефиниция"
 
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Location"
-msgstr ""
+msgstr "Местоположение"
 
 #: src/robotide/usages/usagesdialog.py:151
 msgid "Usage"
-msgstr ""
+msgstr "Употреба"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Imported Location"
-msgstr ""
+msgstr "Внесено местоположение"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Imported name"
-msgstr ""
+msgstr "Внесено име"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Location"
-msgstr ""
+msgstr "Импортиране на местоположение"
 
 #: src/robotide/usages/usagesdialog.py:185
 msgid "Importing Name"
-msgstr ""
+msgstr "Импортиране на име"
 
 #: src/robotide/validators/__init__.py:159
 msgid "%s cannot be empty"
-msgstr ""
+msgstr "%s не може да бъде празен"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "No"
-msgstr ""
+msgstr "Не"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "OK"
-msgstr ""
+msgstr "ОК"
 
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
-msgstr ""
+msgstr "Да"

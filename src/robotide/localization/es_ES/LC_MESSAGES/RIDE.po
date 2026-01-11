@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -512,7 +512,7 @@ msgstr "Pausar automáticamente después de una palabra clave fallida"
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Ajustes"
@@ -566,7 +566,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferencias"
@@ -2812,14 +2812,12 @@ msgid "Provides a tree view for Test Suites "
 msgstr "Proporciona una vista de árbol para Test Suites "
 
 #: src/robotide/ui/treeplugin.py:113
-#, fuzzy
 msgid "View Test Suites Explorer"
-msgstr "Ver Explorador de Archivos"
+msgstr "Ver Explorador de Probar Suites"
 
 #: src/robotide/ui/treeplugin.py:115
-#, fuzzy
 msgid "Show Test Suites tree panel"
-msgstr "Mostrar panel del Explorador de Archivos"
+msgstr "Mostrar panel de árbol de Test Suites"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"

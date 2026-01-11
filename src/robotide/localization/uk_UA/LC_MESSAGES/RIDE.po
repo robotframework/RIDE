@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -113,7 +113,7 @@ msgstr "Оновити?"
 
 #: src/robotide/application/updatenotifier.py:116
 msgid "You may install version %s with:"
-msgstr ""
+msgstr "Ви можете встановити версію %s :"
 
 #: src/robotide/application/updatenotifier.py:117
 msgid "Click OK to Upgrade now!"
@@ -170,7 +170,7 @@ msgstr "Ви можете оновитися за допомогою коман�
 
 #: src/robotide/application/updatenotifier.py:240
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr ""
+msgstr "Або натисніть <b>Оновити зараз</b>"
 
 #: src/robotide/application/updatenotifier.py:242
 msgid "See the latest development "
@@ -392,6 +392,8 @@ msgid ""
 "No tests selected. \n"
 "Continue anyway?"
 msgstr ""
+"Ніяких тестів не вибрано. \n"
+"Все одно продовжимо?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
 msgid ""
@@ -510,7 +512,7 @@ msgstr "Автоматично призупинити після відмови 
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Налаштування"
@@ -564,7 +566,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - Параметри"
@@ -584,6 +586,10 @@ msgid ""
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
+"[Навігація]\n"
+"        !Go &Back | Повернутися до попереднього місця в дереві | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Перейти до наступного місця в дереві | Alt-%s | ART_GO_FORWARD\n"
+"        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
@@ -612,7 +618,7 @@ msgstr "Введіть назву мітки"
 
 #: src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Редагувати]\n"
 
 #: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
@@ -640,7 +646,7 @@ msgstr "&зазначити | Вставити | Shift-Ctrl-V\n"
 
 #: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr ""
+msgstr "&Delete | Delete | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
@@ -676,7 +682,7 @@ msgstr "Видалити рядки | Видалити рядок | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "Перемістити рядки вгору (Alt-Up або Ctrl-Shift-Up) | Перемістити рядки вгору\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
@@ -685,7 +691,7 @@ msgstr "Переміщення рядків вниз (Alt-Down або Ctrl-Shift
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
-msgstr ""
+msgstr "[Інструменти]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
@@ -699,6 +705,11 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
+"Плагін редактора за замовчуванням. Також відомий як редактор сітки або комірок.\n"
+"\n"
+"    Цей плагін реалізує редактори для різних елементів тестових даних Robot Framework\n"
+"    .\n"
+"    "
 
 #: src/robotide/editor/__init__.py:95
 msgid "Editor"
@@ -779,7 +790,7 @@ msgstr "Дайте ім'я бібліотеки, URL документації з
 
 #: src/robotide/editor/dialoghelps.py:53
 msgid "In the command, you can use `%%executable` as a placeholder to be replaced by the actual path"
-msgstr ""
+msgstr "У команді можна використовувати `%%executable` як заповнювач, який буде замінено на фактичний шлях"
 
 #: src/robotide/editor/dialoghelps.py:54
 msgid " to Python executable."
@@ -1172,6 +1183,16 @@ msgid ""
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
+"<b>Ключове слово не було виявлено RIDE</b>\n"
+"        <br>Можливі виправлення:<br>\n"
+"        <ul>\n"
+"            <li>Імпортуйте бібліотеку або файл ресурсів, що містить ключове слово.</li>\n"
+"            <li>Щодо помилок імпорту бібліотек: Розгляньте можливість імпорту бібліотечної специфікації XML\n"
+"            (Інструменти / Імпортувати бібліотечну специфікацію XML або додавши XML-файл з правильним ім'ям\n"
+"            до PYTHONPATH), щоб увімкнути завершення ключового слова\n"
+"            , наприклад, для бібліотек Java.\n"
+"            Бібліотечну специфікацію XML можна створити за допомогою інструменту libdoc з Robot Framework.</li>\n"
+"        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
@@ -1316,6 +1337,20 @@ msgid ""
 "            </li>\n"
 "        </ul>"
 msgstr ""
+"<br>Можливі виправлення та зауваження:<br>\n"
+"        <ul>\n"
+"            <li>Помилка імпорту позначена червоним кольором.</li>\n"
+"            <li>Детальну інформацію про помилку можна знайти у розділі Інструменти / Переглянути журнал RIDE.</li>\n"
+"            <li>Якщо імпорт містить змінну, яку RIDE не ініціалізував, спробуйте додати змінну\n"
+"            до таблиці змінних зі значенням за замовчуванням.</li>\n"
+"            <li>У разі помилки імпорту бібліотеки: Розгляньте можливість імпорту бібліотечної специфікації XML (Інструменти / Імпортувати бібліотечну специфікацію XML або за допомогою\n"
+"            , додавши XML-файл з правильною назвою до PYTHONPATH), щоб увімкнути завершення ключового слова\n"
+"            , наприклад, для бібліотек Java.\n"
+"            Бібліотечну специфікацію XML можна створити за допомогою інструменту libdoc з Robot Framework.\n"
+"            Для отримання додаткової інформації див. \n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            </li>\n"
+"        </ul>"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
@@ -1391,6 +1426,31 @@ msgid ""
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>Підсвічування синтаксису</h1>\n"
+"        <p>\n"
+"        Для підсвічування синтаксису у текстовому редакторі використовується підсвічування синтаксису <a href='https://pygments.org/'>Pygments</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Встановіть Pygments з командного рядка за допомогою:\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"        Або:\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        Потім перезапустіть RIDE.\n"
+"        </p>\n"
+"        <p>\n"
+"        Якщо у вас немає pip або easy_install,\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        >виконайте ці інструкції</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Для отримання додаткової інформації про встановлення Pygments <a href='https://pygments.org/download/'>дивіться сайт</a>.\n"
+"        </p>\n"
+"        "
 
 #: src/robotide/editor/texteditor.py:1172
 msgid "Getting syntax colorization"
@@ -1548,6 +1608,8 @@ msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
+"Максимальний розмір колонки\n"
+"(застосовується, якщо ввімкнено автоматичний розмір)"
 
 #: src/robotide/preferences/editors.py:262
 msgid "Word wrap and auto size rows"
@@ -1860,6 +1922,20 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
+"Вказаний командний рядок буде розбито з пробілів на команду\n"
+"та її аргументи. Якщо команда або будь-який з аргументів вимагає внутрішніх пробілів\n"
+", їх слід записати у вигляді '<SPACE>'.\n"
+"\n"
+"Команда буде виконана в системі безпосередньо, без відкриття оболонки.\n"
+"Це означає, що команди і розширення оболонки будуть недоступні. Наприклад,\n"
+"в командних файлах Windows для виконання повинен містити розширення '.bat' і 'dir'\n"
+"команда не працює.\n"
+"\n"
+"Приклади:\n"
+"    robot.bat --include smoke C:\\my_tests\n"
+"    svn update /home/robot\n"
+"    C:\\Program<SPACE>Files\\App\\prg.exe аргумент<SPACE>з<SPACE>пробілом,\n"
+"Конфігурації запуску зберігаються у файлі налаштувань RIDE.\n"
 
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
@@ -1951,7 +2027,7 @@ msgstr "Додати все до вибраних"
 #: src/robotide/ui/keywordsearch.py:211
 #: src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
-msgstr ""
+msgstr "Результати: %d"
 
 #: src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
@@ -1979,6 +2055,13 @@ msgid ""
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
+"Встановіть відсутні бібліотеки і відкрийте документацію.\n"
+"\n"
+"    Ви можете відредагувати settings.cfg, щоб додати URL-адресу для документації та команду для встановлення.\n"
+"    Ви можете клацнути правою кнопкою миші на назві бібліотеки і вибрати пункт Відкрити документацію або Встановити бібліотеку.\n"
+"    За допомогою пунктів меню Інструменти -> Пошук бібліотек... або Довідка -> Відкрити документацію до бібліотеки... ви отримаєте\n"
+"    діалогове вікно для введення команди для встановлення або URL-адреси документації.\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
@@ -2083,6 +2166,8 @@ msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
 msgstr ""
+"Вкажіть формат файлу ініціалізації в каталозі\n"
+"\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
 #: src/robotide/ui/fileexplorerplugin.py:79
@@ -2142,15 +2227,15 @@ msgstr "Показати панель Провідника Файлів"
 
 #: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<all keywords>"
 
 #: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<all user keywords>"
 
 #: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<all library keywords>"
 
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
@@ -2179,7 +2264,7 @@ msgstr "Опис"
 
 #: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
-msgstr ""
+msgstr "[Файл]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
@@ -2187,7 +2272,7 @@ msgstr "!&New Project | Створити новий набір верхньог�
 
 #: src/robotide/ui/mainframe.py:63
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
+msgstr "!&Open Test Suite | Відкрити файл з тестами | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: src/robotide/ui/mainframe.py:64
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
@@ -2199,7 +2284,7 @@ msgstr "!Open Зовнішній файл | Відкрити файл в ред�
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
+msgstr "!&Зберегти | Зберегти вибраний файл даних | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
@@ -2227,7 +2312,7 @@ msgstr "!Preferences | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
-msgstr ""
+msgstr "[Довідка]\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
@@ -2243,7 +2328,7 @@ msgstr "!Wiki | Посібник користувача (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
+msgstr "Повідомити про проблему | Відкрийте браузер і введіть ПОШУК на трекері проблем RIDE\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
@@ -2251,7 +2336,7 @@ msgstr "!About | Інформація про\n"
 
 #: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
+msgstr "!Check for Upgrade | Перевіряє PyPi на наявність нової версії\n"
 
 #: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
@@ -2729,14 +2814,12 @@ msgid "Provides a tree view for Test Suites "
 msgstr "Забезпечує вітриною для тестових наборів "
 
 #: src/robotide/ui/treeplugin.py:113
-#, fuzzy
 msgid "View Test Suites Explorer"
-msgstr "Переглянути файловий провідник"
+msgstr "Перегляд тестового Suites Explorer"
 
 #: src/robotide/ui/treeplugin.py:115
-#, fuzzy
 msgid "Show Test Suites tree panel"
-msgstr "Показати панель Провідника Файлів"
+msgstr "Показати панель дерева тестового Suites"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
@@ -2752,11 +2835,11 @@ msgstr "Хибне ім'я ключового слова: "
 
 #: src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
-msgstr ""
+msgstr "'%s' - Знайдено %d збіги - Пошук%s"
 
 #: src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
-msgstr ""
+msgstr "'%s' - %d збігається"
 
 #: src/robotide/usages/usagesdialog.py:93
 msgid "Go to definition"

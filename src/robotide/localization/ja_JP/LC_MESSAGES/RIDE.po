@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -194,7 +194,7 @@ msgstr "今すぐアップグレード"
 
 #: src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
+msgstr "%s の python バージョンと %s の wx バージョンを %sで使用して、RIDE %s を開始した。"
 
 #: src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
@@ -512,7 +512,7 @@ msgstr "キーワードに失敗した後に自動的に一時停止する"
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "設定"
@@ -566,7 +566,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "ライド - 設定"
@@ -586,6 +586,10 @@ msgid ""
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
+"[ナビゲート]\n"
+"        !Go &Back | ツリーの前の場所に戻る | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | ツリーの次の場所に進む | Alt-%s | ART_GO_FORWARD\n"
+"        "
 
 #: src/robotide/controller/ui/treecontroller.py:56
 msgid "Add Tag to selected"
@@ -622,7 +626,7 @@ msgstr "&Undo | 最後の変更を元に戻す | Ctrlcmd-Z\n"
 
 #: src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr ""
+msgstr "&Redo｜やり直し｜Ctrlcmd-Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
@@ -634,7 +638,7 @@ msgstr "&Copy | コピー | Ctrl+cmd-C\n"
 
 #: src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr ""
+msgstr "&Paste | Paste | Ctrlcmd-V\n"
 
 #: src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
@@ -674,15 +678,15 @@ msgstr "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 
 #: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr ""
+msgstr "行の削除｜Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
-msgstr ""
+msgstr "行を上に移動 (Alt-Up または Ctrl-Shift-Up) | 行を上に移動\n"
 
 #: src/robotide/editor/__init__.py:49
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
-msgstr ""
+msgstr "行を下に移動（Alt-DownまたはCtrl-Shift-Down）｜行を下に移動\n"
 
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
@@ -701,6 +705,11 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
+"デフォルトのエディタプラグイン。グリッドエディタ、セルエディタとも呼ばれます。\n"
+"\n"
+"    このプラグインは、Robot Framework\n"
+"    のテストデータの様々な項目のエディタを実装しています。\n"
+"    "
 
 #: src/robotide/editor/__init__.py:95
 msgid "Editor"
@@ -733,6 +742,10 @@ msgid ""
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
 msgstr ""
+"${arg1} | ${arg2}' のようにパイプ文字で区切って引数を指定する。\n"
+"デフォルト値は等号で指定し、最後の引数にはリスト変数を指定する。\n"
+"例： '${arg1} | ${arg2}=デフォルト値 | @{rest}'.\n"
+"注意このフィールドでは変数のショートカットを使用できます。"
 
 #: src/robotide/editor/dialoghelps.py:41
 msgid ""
@@ -1170,6 +1183,16 @@ msgid ""
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
+"<b>キーワードが RIDE で検出されませんでした</b>\n"
+"        <br>修正の可能性があります：<br>\n"
+"        <ul>\n"
+"            <li>キーワードを含むライブラリまたはリソースファイルをインポートします。</li>\n"
+"            <li>ライブラリのインポートエラーの場合：\n"
+"            (Tools / Import Library Spec XML or add the XML file with the\n"
+"            correct name to PYTHONPATH) をインポートして、キーワード補完を有効にすることを検討する\n"
+"            例えばJavaライブラリの場合。\n"
+"            ライブラリ仕様XMLはRobot Frameworkのlibdocツールを使って作成できます。</li>\n"
+"        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
@@ -1314,6 +1337,20 @@ msgid ""
 "            </li>\n"
 "        </ul>"
 msgstr ""
+"<br>修正と注釈の可能性<br>\n"
+"        <ul>\n"
+"            <li>インポートに失敗すると赤色で表示されます。</li>\n"
+"            <li>失敗の詳細については、Tools / View RIDE Logを参照してください。</li>\n"
+"            <li>インポートにRIDEが初期化していない変数が含まれている場合、その変数\n"
+"            をデフォルト値で変数テーブルに追加することを検討してください。</li>\n"
+"            <li>ライブラリのインポートに失敗した場合：キーワード補完を有効にするには、ライブラリ仕様XMLのインポート（ツール / ライブラリ仕様XMLのインポート、または\n"
+"            、正しい名前のXMLファイルをPYTHONPATHに追加）を検討してください（Javaライブラリなど）\n"
+"            。\n"
+"            ライブラリ仕様XMLはRobot Frameworkのlibdocツールを使って作成できます。\n"
+"            詳細は \n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a> を参照してください。\n"
+"            </li>\n"
+"        </ul>"
 
 #: src/robotide/editor/settingeditors.py:687
 msgid "Import failure handling"
@@ -1389,6 +1426,31 @@ msgid ""
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>構文のカラー化</h1>\n"
+"        <p>\n"
+"        Text Editのシンタックスカラー化は<a href='https://pygments.org/'>Pygments</a>シンタックスハイライターを使います。\n"
+"        </p>\n"
+"        <p>\n"
+"        コマンドラインからPygmentsを次のようにインストールします:\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"        または:\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        その後、RIDEを再起動します。\n"
+"        </p>\n"
+"        <p>\n"
+"        pipやeasy_installがない場合は、\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        >以下の指示に従ってください</a> 。\n"
+"        </p>\n"
+"        <p>\n"
+"        Pygmentsのインストールについての詳細は、<a href='https://pygments.org/download/'>サイトを参照して</a>ください。\n"
+"        </p>\n"
+"        "
 
 #: src/robotide/editor/texteditor.py:1172
 msgid "Getting syntax colorization"
@@ -1860,6 +1922,20 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
+"指定されたコマンド文字列は、空白からコマンド\n"
+"とその引数に分割される。コマンドまたは引数のいずれかが\n"
+"内部スペースを必要とする場合、それらは '<SPACE>' と記述しなければならない。\n"
+"\n"
+"コマンドは、シェルを開かずにシステムで直接実行される。\n"
+"つまり、シェルコマンドや拡張機能は利用できない。例えば、\n"
+"Windowsで実行するバッチファイルには'.bat'という拡張子が必要で、'dir'\n"
+"コマンドは使えない。\n"
+"\n"
+"例:\n"
+"    robot.bat --include smoke C: \\my_tests\n"
+"    svn update /home/robot\n"
+"    C:˶Program<SPACE>FilesAppprg.exe 引数<SPACE>with<SPACE>space,\n"
+"Run configurations are stored in the RIDE settings file.\n"
 
 #: src/robotide/run/configmanagerui.py:45
 #: src/robotide/run/runanything.py:55
@@ -1882,6 +1958,11 @@ msgid ""
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
 msgstr ""
+"システム上でコマンドを実行するためのプラグイン。\n"
+"\n"
+"    このプラグインは、永続的なラン・コンフィギュレーションの作成と、\n"
+"    その実行を可能にする。実行されたコマンドの出力は\n"
+"    別のタブに表示される。"
 
 #: src/robotide/run/runanything.py:55
 #: src/robotide/run/runanything.py:57
@@ -1974,6 +2055,13 @@ msgid ""
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
+"不足しているライブラリをインストールし、ドキュメントを開きます。\n"
+"\n"
+"    settings.cfgを編集して、ドキュメントのURLやインストールするコマンドを追加することができます。\n"
+"    ライブラリ名を右クリックし、「ドキュメントを開く」または「ライブラリをインストール」することができます。\n"
+"    ツール->ライブラリファインダー...またはヘルプ->ライブラリのドキュメントを開く...から、\n"
+"    、インストールするコマンドまたはドキュメントのURLを入力するダイアログが表示されます。\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
@@ -2196,7 +2284,7 @@ msgstr "!外部ファイルを開く | コードエディターでファイル�
 
 #: src/robotide/ui/mainframe.py:66
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
+msgstr "保存｜選択したデータファイルを保存｜Ctrlcmd-S｜ART_FILE_SAVE\n"
 
 #: src/robotide/ui/mainframe.py:67
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
@@ -2240,15 +2328,15 @@ msgstr "!Wiki | 利用ガイド (Wiki)\n"
 
 #: src/robotide/ui/mainframe.py:78
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr ""
+msgstr "問題を報告する｜ブラウザを開いてRIDE問題追跡サイトで検索\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
-msgstr ""
+msgstr "RIDEについて\n"
 
 #: src/robotide/ui/mainframe.py:80
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
+msgstr "!!アップグレードのチェック | PyPi で新しいリリースバージョンを探す\n"
 
 #: src/robotide/ui/mainframe.py:195
 msgid "Saved %s"
@@ -2432,6 +2520,9 @@ msgid ""
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
+"ここでは、カンマで区切られた1つ以上の文字列を定義することができる（例：common,abc,123）。\n"
+"フィルターは、少なくとも1つの文字列がファイル名の一部であればマッチします。\n"
+"文字列を入力しない場合は、オープンされているすべてのファイルが含まれます。"
 
 #: src/robotide/ui/review.py:101
 msgid "Test case files"
@@ -2723,14 +2814,12 @@ msgid "Provides a tree view for Test Suites "
 msgstr "スイートテスト用のツリービューを提供します "
 
 #: src/robotide/ui/treeplugin.py:113
-#, fuzzy
 msgid "View Test Suites Explorer"
-msgstr "ファイルエクスプローラを表示"
+msgstr "テストスイートエクスプローラを表示"
 
 #: src/robotide/ui/treeplugin.py:115
-#, fuzzy
 msgid "Show Test Suites tree panel"
-msgstr "ファイルエクスプローラーパネルを表示"
+msgstr "テストスイートツリーパネルを表示"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"

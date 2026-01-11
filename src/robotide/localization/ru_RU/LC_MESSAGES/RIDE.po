@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"POT-Creation-Date: 2026-01-11 15:32+0000\n"
+"PO-Revision-Date: 2026-01-11 00:37\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -400,6 +400,8 @@ msgid ""
 "\n"
 "Test finished {}"
 msgstr ""
+"\n"
+"Тест завершен {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
@@ -510,7 +512,7 @@ msgstr "Автоматически приостанавливать после �
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "Настройки"
@@ -557,12 +559,14 @@ msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
 msgstr ""
+"Отсутствует каталог журналов. \n"
+"Пожалуйста, запустите тесты и повторите попытку"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - настройки"
@@ -614,7 +618,7 @@ msgstr "Введите имя тега"
 
 #: src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Редактировать]\n"
 
 #: src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
@@ -687,7 +691,7 @@ msgstr "Переместить строки вниз (Alt-Down или Ctrl-Shift
 #: src/robotide/editor/__init__.py:50
 #: src/robotide/ui/mainframe.py:69
 msgid "[Tools]\n"
-msgstr ""
+msgstr "[Инструменты]\n"
 
 #: src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
@@ -728,6 +732,8 @@ msgid ""
 "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
 msgstr ""
+"Используйте синтаксис времени, например, '1мин 10с' или '2 часа', или укажите значение в секундах.\n"
+"До версии Robot v3.0.1 можно было указать необязательное сообщение, например '3 минуты | Мое сообщение здесь'."
 
 #: src/robotide/editor/dialoghelps.py:37
 msgid ""
@@ -746,6 +752,8 @@ msgid ""
 "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
 msgstr ""
+"Псевдоним можно использовать для импорта одной и той же библиотеки несколько раз с разными именами.\n"
+"Псевдоним дополняется символом: "
 
 #: src/robotide/editor/dialoghelps.py:43
 msgid " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
@@ -1175,6 +1183,16 @@ msgid ""
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
 msgstr ""
+"<b>Ключевое слово не было обнаружено RIDE</b>\n"
+"        <br>Возможные исправления:<br>\n"
+"        <ul>\n"
+"            <li>Импортируйте библиотеку или файл ресурса, содержащий ключевое слово.</li>\n"
+"            <li>Для ошибок импорта библиотек: Рассмотрите возможность импорта библиотечной спецификации XML\n"
+"            (Tools / Import Library Spec XML или путем добавления XML-файла с правильным именем\n"
+"            в PYTHONPATH), чтобы включить завершение ключевого слова\n"
+"            , например, для библиотек Java.\n"
+"            Спецификация библиотеки XML может быть создана с помощью инструмента libdoc из Robot Framework.</li>\n"
+"        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
@@ -1590,6 +1608,8 @@ msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
+"Максимальный размер колонки\n"
+"(применяется при включенном автоматическом определении размера)"
 
 #: src/robotide/preferences/editors.py:262
 msgid "Word wrap and auto size rows"
@@ -2035,6 +2055,13 @@ msgid ""
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
 msgstr ""
+"Установите недостающие библиотеки и откройте документацию.\n"
+"\n"
+"    Вы можете отредактировать файл settings.cfg, чтобы добавить URL для документации и команду для установки.\n"
+"    Вы можете щелкнуть правой кнопкой мыши на имени библиотеки и открыть документацию или установить библиотеку.\n"
+"    Из Tools->Library Finder... или Help->Open Library Documentation... вы получите\n"
+"    диалог для заполнения команды для установки или URL для документации.\n"
+"    "
 
 #: src/robotide/spec/libraryfinder.py:39
 msgid "Library Finder..."
@@ -2200,15 +2227,15 @@ msgstr "Показать панель Проводника Файлов"
 
 #: src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<all keywords>"
 
 #: src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<all user keywords>"
 
 #: src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<all library keywords>"
 
 #: src/robotide/ui/keywordsearch.py:39
 #: src/robotide/ui/keywordsearch.py:59
@@ -2237,7 +2264,7 @@ msgstr "Описание"
 
 #: src/robotide/ui/mainframe.py:60
 msgid "[File]\n"
-msgstr ""
+msgstr "[Файл]\n"
 
 #: src/robotide/ui/mainframe.py:61
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
@@ -2285,7 +2312,7 @@ msgstr "!Preferences | | | | POSITION-99\n"
 
 #: src/robotide/ui/mainframe.py:74
 msgid "[Help]\n"
-msgstr ""
+msgstr "[Помощь]\n"
 
 #: src/robotide/ui/mainframe.py:75
 msgid "!Shortcut keys | RIDE shortcut keys\n"
@@ -2367,11 +2394,11 @@ msgstr "Вы хотите перезагрузить рабочую област
 
 #: src/robotide/ui/mainframe.py:764
 msgid "Answering <Yes> will discard unsaved changes."
-msgstr ""
+msgstr "Ответ <Yes> приведет к отмене несохраненных изменений."
 
 #: src/robotide/ui/mainframe.py:765
 msgid "Answering <No> will ignore the changes on disk."
-msgstr ""
+msgstr "При ответе на <No> изменения на диске будут игнорироваться."
 
 #: src/robotide/ui/mainframe.py:766
 msgid "Files Changed On Disk"
@@ -2787,14 +2814,12 @@ msgid "Provides a tree view for Test Suites "
 msgstr "Предоставляет вид дерева для тестовых наборов "
 
 #: src/robotide/ui/treeplugin.py:113
-#, fuzzy
 msgid "View Test Suites Explorer"
-msgstr "Просмотр обозревателя файлов"
+msgstr "Просмотреть тестовый набор Проводник"
 
 #: src/robotide/ui/treeplugin.py:115
-#, fuzzy
 msgid "Show Test Suites tree panel"
-msgstr "Показать панель Проводника Файлов"
+msgstr "Показывать панель дерева тестовых Сундуков"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
