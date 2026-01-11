@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-11 15:32+0000\n"
-"PO-Revision-Date: 2026-01-11 00:37\n"
+"PO-Revision-Date: 2026-01-11 19:12\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
-"Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,8 +13,9 @@ msgstr ""
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: fi\n"
-"X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
-"X-Crowdin-File-ID: 14\n"
+"X-Crowdin-File: /develop/src/robotide/localization/RIDE.pot\n"
+"X-Crowdin-File-ID: 24\n"
+"Language: fi_FI\n"
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
@@ -177,8 +177,7 @@ msgid "See the latest development "
 msgstr "Katso viimeisin kehitys "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr "Käytän toista menetelmää RIDE:n päivittämiseen enkä tarvitse automaattisia päivitystarkistuksia."
 
@@ -374,11 +373,9 @@ msgid "Unsaved Modifications"
 msgstr "Tallentamattomat Muutokset"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"Muutoksia ei ole tallennettu.\n"
+msgstr "Muutoksia ei ole tallennettu.\n"
 "        Haluatko tallentaa kaikki muutokset ja suorittaa testit?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -386,19 +383,15 @@ msgid "No tests selected"
 msgstr "Testejä ei valittu"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
-msgstr ""
-"Ei valittuja testejä. \n"
+msgstr "Ei valittuja testejä. \n"
 "Jatketaanko silti?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "Testi päättynyt {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -553,11 +546,9 @@ msgid "No logs directory"
 msgstr "Ei lokihakemistoa"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"Ei ole lokihakemistoa. \n"
+msgstr "Ei ole lokihakemistoa. \n"
 "Ole hyvä ja suorita testit ja yritä uudelleen"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
@@ -578,13 +569,11 @@ msgid "  current keyword: "
 msgstr "  nykyinen avainsana: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
+msgid "[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[Navigate]\n"
+msgstr "[Navigate]\n"
 "        ! o &Takaisin | Mene takaisin edelliseen paikkaan puussa | Alt-%s | ART_GO_BACK\n"
 "        ! o &Eteenpäin | Siirry seuraavaan paikkaan puussa | Alt-%s | ART_GO_FORWARD\n"
 "        "
@@ -696,15 +685,11 @@ msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword
 msgstr "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Näytä mahdolliset avainsanat ja muuttujan täydennykset | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"Oletusmuokkaimen liitännäinen. Tunnetaan myös nimellä Grid tai Cell Editor.\n"
-"\n"
+msgstr "Oletusmuokkaimen liitännäinen. Tunnetaan myös nimellä Grid tai Cell Editor.\n\n"
 "    Tämä plugin toteuttaa editorit eri kohteita Robot Framework\n"
 "    testitulokset.\n"
 "    "
@@ -726,31 +711,25 @@ msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 
 msgstr "Erottele mahdolliset argumentit putkimerkillä kuten 'Oma avainsana' arg 1 ¶ arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr ""
-"Käytä aikasyntaksia kuten 1min 10 tai 2 tuntia, tai anna arvo sekunteina.\n"
+msgstr "Käytä aikasyntaksia kuten 1min 10 tai 2 tuntia, tai anna arvo sekunteina.\n"
 "Ennen Robottia v3. .1 valinnainen viesti olisi voitu määritellä, kuten '3 minuuttia'."
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
 "Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"Määrittele pystyviivalla erotellut argumentit, Esim. '${arg1} | ${arg2}'.\n"
+msgstr "Määrittele pystyviivalla erotellut argumentit, Esim. '${arg1} | ${arg2}'.\n"
 "Oletusarvot merkitään yhtäkuin-merkillä ja viimeinen argumentti voi olla muuttuja.\n"
 "Esim. '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Huom. Voit käyttää muuttujalyhenteitä tässä kentässä."
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"Alioita voidaan käyttää saman kirjaston tuomiseen useita kertoja eri nimillä.\n"
+msgstr "Alioita voidaan käyttää saman kirjaston tuomiseen useita kertoja eri nimillä.\n"
 "Alias on asetettu etusivulle: "
 
 #: src/robotide/editor/dialoghelps.py:43
@@ -1169,8 +1148,7 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Tee Dict Muuttuja      Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1180,8 +1158,7 @@ msgid ""
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>Avainsanaa ei havaittu RIDE</b>\n"
+msgstr "<b>Avainsanaa ei havaittu RIDE</b>\n"
 "        <br>Mahdolliset korjaukset:<br>\n"
 "        <ul>\n"
 "            <li>Tuo kirjasto tai resurssitiedosto, joka sisältää avainsanan.</li>\n"
@@ -1319,8 +1296,7 @@ msgid "Import Library Spec XML"
 msgstr "Tuo Kirjaston Spec XML"
 
 #: src/robotide/editor/settingeditors.py:687
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1334,8 +1310,7 @@ msgid ""
 "            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>Mahdolliset korjaukset ja huomautukset:<br>\n"
+msgstr "<br>Mahdolliset korjaukset ja huomautukset:<br>\n"
 "        <ul>\n"
 "            <li>Tuontivirhe näytetään punaisella värillä.</li>\n"
 "            <li>Katso Työkalut / Näytä RIDE Loki yksityiskohtaista tietoa epäonnistumisesta.</li>\n"
@@ -1397,8 +1372,7 @@ msgid "Get help"
 msgstr "Hae apua"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1423,8 +1397,7 @@ msgid ""
 "        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>Syntaksin väritys</h1>\n"
+msgstr "<h1>Syntaksin väritys</h1>\n"
 "        <p>\n"
 "        Syntaksin väritys tekstieditoinnille käyttää <a href='https://pygments.org/'>Pygments</a> syntaksin korostusta.\n"
 "        </p>\n"
@@ -1602,11 +1575,9 @@ msgid "Auto size columns"
 msgstr "Auto size columns"
 
 #: src/robotide/preferences/editors.py:258
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"Maksimi sarakkeen koko\n"
+msgstr "Maksimi sarakkeen koko\n"
 "(sovelletaan, kun automaattinen koko on)"
 
 #: src/robotide/preferences/editors.py:262
@@ -1904,16 +1875,13 @@ msgid "Open %s"
 msgstr "Avaa %s"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
 "The command will be executed in the system directly without opening a shell.\n"
 "This means that shell commands and extensions are not available. For example,\n"
 "in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n"
-"\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -1935,15 +1903,11 @@ msgid "Remove"
 msgstr "Poista"
 
 #: src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"Liitännäinen, jolla voit suorittaa komentoja järjestelmässä.\n"
-"\n"
+msgstr "Liitännäinen, jolla voit suorittaa komentoja järjestelmässä.\n\n"
 "    Tämä liitännäinen mahdollistaa jatkuvan ajon asetusten luomisen ja\n"
 "    suorituksen niistä. Suoritetun komennon ulostulo näytetään\n"
 "    erillisessä välilehdessä."
@@ -2030,17 +1994,13 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "Liitännäinen nimiin, tageihin ja dokumentaatioon perustuvien testien etsimiseen"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
+msgid "Install missing libraries and open documentation.\n\n"
 "    You can edit settings.cfg to add URL for documentation and command to install.\n"
 "    You can right-click on a Library name, and Open Documentation or Install Library.\n"
 "    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
-"Asenna puuttuvat kirjastot ja avaa dokumentaatio.\n"
-"\n"
+msgstr "Asenna puuttuvat kirjastot ja avaa dokumentaatio.\n\n"
 "    Voit muokata settings.cfg lisätäksesi URL-osoitteen ja dokumentaation asentamiseen.\n"
 "    Voit klikata hiiren kakkospainikkeella Kirjaston nimeä ja Open Documentation tai Asenna Kirjasto.\n"
 "    Työkaluista->Kirjaston Finder... tai apua->Avaa kirjaston dokumentaatio... sinulla on\n"
@@ -2076,12 +2036,10 @@ msgid "Info"
 msgstr "Tiedot"
 
 #: src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"Kirjasto \"%s\" tuotu\n"
+msgstr "Kirjasto \"%s\" tuotu\n"
 "\"%s\"\n"
 "Tämä saattaa edellyttää RIDE uudelleenkäynnistystä."
 
@@ -2146,11 +2104,9 @@ msgid "Change recursively"
 msgstr "Vaihda rekursiivisesti"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"Anna alustustiedoston muoto hakemistossa\n"
+msgstr "Anna alustustiedoston muoto hakemistossa\n"
 "\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2344,11 +2300,9 @@ msgid "Test Suites"
 msgstr "Testaa Sviitit"
 
 #: src/robotide/ui/mainframe.py:465
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"Muutoksia ei ole tallennettu.\n"
+msgstr "Muutoksia ei ole tallennettu.\n"
 "Haluatko tallentaa muutokset ennen poistumista?"
 
 #: src/robotide/ui/mainframe.py:465
@@ -2357,11 +2311,9 @@ msgid "Warning"
 msgstr "Varoitus"
 
 #: src/robotide/ui/mainframe.py:559
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"Muutoksia ei ole tallennettu.\n"
+msgstr "Muutoksia ei ole tallennettu.\n"
 "Haluatko jatkaa ilman tallennusta?"
 
 #: src/robotide/ui/mainframe.py:609
@@ -2474,11 +2426,9 @@ msgid "Search unused keywords"
 msgstr "Etsi käyttämättömiä avainsanoja"
 
 #: src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"Tämä ikkuna auttaa löytämään käyttämättömiä avainsanoja avatussa projektissa.\n"
+msgstr "Tämä ikkuna auttaa löytämään käyttämättömiä avainsanoja avatussa projektissa.\n"
 "Jos haluat, voit rajoittaa haun joukkoon tiedostoja, joissa on suodatin."
 
 #: src/robotide/ui/review.py:70
@@ -2499,12 +2449,10 @@ msgid "Use RegEx"
 msgstr "Käytä RegEx"
 
 #: src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"Tässä voit määritellä yhden tai useamman pilkulla erotellun merkkijonon (esim. yleinen, abc,123).\n"
+msgstr "Tässä voit määritellä yhden tai useamman pilkulla erotellun merkkijonon (esim. yleinen, abc,123).\n"
 "Suodatin sopii jos vähintään yksi merkkijono on osa tiedostonimeä.\n"
 "Jos et anna merkkijonoja, kaikki avatut tiedostot sisältyvät"
 
@@ -2563,12 +2511,8 @@ msgid "(None)"
 msgstr "(tyhjä)"
 
 #: src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"Haussa on mukana seuraavien tiedostojen avainsanat:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "Haussa on mukana seuraavien tiedostojen avainsanat:\n\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2619,11 +2563,9 @@ msgid "Excluded Tag Search"
 msgstr "Poistettu Tagin Haku"
 
 #: src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"Testit yhteensä: %d, Testit tunnisteilla %d, Unique tags %d\n"
+msgstr "Testit yhteensä: %d, Testit tunnisteilla %d, Unique tags %d\n"
 "Tällä hetkellä valitut testit %d"
 
 #: src/robotide/ui/tagdialogs.py:233
@@ -2728,11 +2670,9 @@ msgid "Expand all"
 msgstr "Laajenna kaikki"
 
 #: src/robotide/ui/treenodehandlers.py:444
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Hakemisto sisältää tallentamattomia tietoja!\n"
+msgstr "Hakemisto sisältää tallentamattomia tietoja!\n"
 "Sinun on tallennettava tiedot ennen poissulkemista."
 
 #: src/robotide/ui/treenodehandlers.py:490
@@ -2766,11 +2706,9 @@ msgstr "Poista Vain Luettu"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Tiedosto sisältää tallentamattomia tietoja!\n"
+msgstr "Tiedosto sisältää tallentamattomia tietoja!\n"
 "Sinun on tallennettava tiedot ennen poissulkemista."
 
 #: src/robotide/ui/treenodehandlers.py:572
@@ -2868,3 +2806,4 @@ msgstr "Ok"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "Kyllä"
+
