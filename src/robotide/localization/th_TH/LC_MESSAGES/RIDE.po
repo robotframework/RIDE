@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-11 15:32+0000\n"
-"PO-Revision-Date: 2026-01-11 23:55+0000\n"
+"PO-Revision-Date: 2026-01-12 00:34+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Thai\n"
 "Language: th_TH\n"
@@ -640,7 +640,7 @@ msgstr "&แทรก | แทรก | Shift-Ctrl-V\n"
 
 #: src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr "&ลบ | ลบ  | ลบ\n"
+msgstr "&ลบ | ลบ  | Del\n"
 
 #: src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
@@ -672,7 +672,7 @@ msgstr "แทรกแถว | แทรกแถว | Ctrlcmd-I\n"
 
 #: src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr "ลบแถว | ลบแถว | Ctrlcmd-D\n"
+msgstr "ลบแถว | ลบบแถว | Ctrlcmd-D\n"
 
 #: src/robotide/editor/__init__.py:48
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
@@ -1102,7 +1102,7 @@ msgstr "เลือกทั้งหมด\tCtrl-A"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Delete\tDel"
-msgstr "ลบ\tลบ"
+msgstr "ลบ\tDel"
 
 #: src/robotide/editor/kweditor.py:101
 msgid "Insert\tCtrl-Shift-V"
