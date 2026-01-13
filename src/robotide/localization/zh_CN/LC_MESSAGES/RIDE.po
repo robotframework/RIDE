@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2025-12-08 12:52\n"
+"PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
-"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,6 +15,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"Language: zh_CN\n"
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
@@ -177,11 +177,9 @@ msgid "See the latest development "
 msgstr "查看最新动态 "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"我正在使用另一种方法更新\n"
+msgstr "我正在使用另一种方法更新\n"
 " ，不需要自动更新检查"
 
 #: src/robotide/application/updatenotifier.py:252
@@ -376,11 +374,9 @@ msgid "Unsaved Modifications"
 msgstr "未保存的修改"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"您有未保存的修改！\n"
+msgstr "您有未保存的修改！\n"
 "        是否保存所有修改并运行测试？"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -388,19 +384,15 @@ msgid "No tests selected"
 msgstr "没有选择测试"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
-msgstr ""
-"没有选中任何测试。 \n"
+msgstr "没有选中任何测试。 \n"
 "是否仍然继续？"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "测试完成 {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -555,11 +547,9 @@ msgid "No logs directory"
 msgstr "没有日志目录"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"未找到日志目录。 \n"
+msgstr "未找到日志目录。 \n"
 "请先运行测试，然后再试一次"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
@@ -580,13 +570,11 @@ msgid "  current keyword: "
 msgstr "  当前关键字： "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
+msgid "[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[导航(&N)]\n"
+msgstr "[导航(&N)]\n"
 "        !返回(&B) | 返回树形视图的上一个位置 | Alt-%s | ART_GO_BACK\n"
 "        !前进(&F) | 前往树形视图的下一个位置 | Alt-%s | ART_GO_FORWARD\n"
 "        "
@@ -698,15 +686,11 @@ msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword
 msgstr "内容辅助(&O) (Ctrl-Space 或 Ctrl-Alt-Space) | 显示可能的关键词和变量补全 | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"默认编辑器插件。也称为网格或单元格编辑器。\n"
-"\n"
+msgstr "默认编辑器插件。也称为网格或单元格编辑器。\n\n"
 "    此插件实现了机器人框架\n"
 "    测试数据各种项目的编辑器。\n"
 "    "
@@ -728,31 +712,25 @@ msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 
 msgstr "用管道字符分隔参数，例如 'My Keyword | arg 1 | arg 2'。"
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr ""
-"使用时间语法，例如 '1min 10s' 或 '2 hours' 或以秒为单位给出值。\n"
+msgstr "使用时间语法，例如 '1min 10s' 或 '2 hours' 或以秒为单位给出值。\n"
 "Robot v3.0.1 以前的版本，可以指定一个可选消息，形如 '3 minutes | My message here'。"
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
 "Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"请使用管道符 '|' 来分隔指定的参数，如 '${arg1} | ${arg2}'。\n"
+msgstr "请使用管道符 '|' 来分隔指定的参数，如 '${arg1} | ${arg2}'。\n"
 "默认值使用等号指定，最后一个参数可以是列表变量。\n"
 "示例：'${arg1} | ${arg2}=默认值 | @{rest}'。\n"
 "注意：本字段支持使用变量别名。"
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"别名可用于以不同名称多次导入同一个库。\n"
+msgstr "别名可用于以不同名称多次导入同一个库。\n"
 "别名前置符号： "
 
 #: src/robotide/editor/dialoghelps.py:43
@@ -1171,8 +1149,7 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "使Dict 变量      Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1182,8 +1159,7 @@ msgid ""
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>RIDE 未检测到指定关键字</b>\n"
+msgstr "<b>RIDE 未检测到指定关键字</b>\n"
 "        <br>可能的解决方案：<br>\n"
 "        <ul>\n"
 "            <li>导入包含该关键字的库或资源文件。</li>\n"
@@ -1321,8 +1297,7 @@ msgid "Import Library Spec XML"
 msgstr "导入库规范 XML"
 
 #: src/robotide/editor/settingeditors.py:687
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1336,8 +1311,7 @@ msgid ""
 "            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>可能的修正和注意事项：<br>\n"
+msgstr "<br>可能的修正和注意事项：<br>\n"
 "        <ul>\n"
 "            <li>导入失败会以红色显示。</li>\n"
 "            <li>有关失败的详细信息，点击 \"工具/查看 RIDE 日志\"。</li>\n"
@@ -1398,8 +1372,7 @@ msgid "Get help"
 msgstr "获得帮助"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1424,8 +1397,7 @@ msgid ""
 "        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>语法颜色化format@@1\n"
+msgstr "<h1>语法颜色化format@@1\n"
 "        <p>\n"
 "        文本编辑语法颜色化使用 <a href='https://pygments.org/'>Pygments</a> 语法高亮。\n"
 "        </p>\n"
@@ -1433,8 +1405,7 @@ msgstr ""
 "        从命令行安装Pygments\n"
 "        <pre>\n"
 "            pip install pygments\n"
-"        </pre>\n"
-"\n"
+"        </pre>\n\n"
 "        <pre>\n"
 "            easy_install pygments\n"
 "        </pre>\n"
@@ -1603,11 +1574,9 @@ msgid "Auto size columns"
 msgstr "自动调整列宽"
 
 #: src/robotide/preferences/editors.py:258
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"最大列大小\n"
+msgstr "最大列大小\n"
 "(自动大小)"
 
 #: src/robotide/preferences/editors.py:262
@@ -1905,31 +1874,25 @@ msgid "Open %s"
 msgstr "打开 %s"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
 "The command will be executed in the system directly without opening a shell.\n"
 "This means that shell commands and extensions are not available. For example,\n"
 "in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n"
-"\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr ""
-"指定的命令字符串，将按空格分割为命令及其参数。\n"
+msgstr "指定的命令字符串，将按空格分割为命令及其参数。\n"
 "如果命令或任何参数需要包含空格，\n"
-"必须使用 '<SPACE>' 表示。\n"
-"\n"
+"必须使用 '<SPACE>' 表示。\n\n"
 "该命令将在系统中直接执行，而不会打开 shell。\n"
 "这意味着 shell 命令与扩展都不可用。例如，\n"
 "在 Windows 中，要执行的 batch 文件必须包含 '.bat' 扩展名，\n"
-"且 'dir' 命令不可用。\n"
-"\n"
+"且 'dir' 命令不可用。\n\n"
 "示例：\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -1950,15 +1913,11 @@ msgid "Remove"
 msgstr "删除"
 
 #: src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"在系统上执行命令的插件。\n"
-"\n"
+msgstr "在系统上执行命令的插件。\n\n"
 "    此插件允许创建持续运行的配置和\n"
 "    执行这些配置。 执行命令的输出显示在一个\n"
 "    单独标签页。"
@@ -2045,17 +2004,13 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "基于名称、标签和文档搜索测试的插件"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
+msgid "Install missing libraries and open documentation.\n\n"
 "    You can edit settings.cfg to add URL for documentation and command to install.\n"
 "    You can right-click on a Library name, and Open Documentation or Install Library.\n"
 "    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
-"安装缺失的库并打开文档。\n"
-"\n"
+msgstr "安装缺失的库并打开文档。\n\n"
 "    你可以编辑 settings.cfg 来添加 \"文档 URL\" 或 \"安装命令\"。\n"
 "    你可以右键点击库名称，然后选择 \"打开文档\" 或 \"安装库\"。\n"
 "    通过 工具->库查找器... 或 帮助->打开库文档...\n"
@@ -2091,12 +2046,10 @@ msgid "Info"
 msgstr "信息"
 
 #: src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"库 \"%s\"\n"
+msgstr "库 \"%s\"\n"
 "已从 \"%s\" 导入\n"
 "可能需要重启 RIDE。"
 
@@ -2161,11 +2114,9 @@ msgid "Change recursively"
 msgstr "递归更改"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"在目录\n"
+msgstr "在目录\n"
 "\"%s\"中提供初始化文件的格式。"
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2359,11 +2310,9 @@ msgid "Test Suites"
 msgstr "测试套件"
 
 #: src/robotide/ui/mainframe.py:465
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"您有有未保存的修改！\n"
+msgstr "您有有未保存的修改！\n"
 "在退出之前，您想保存所有更改吗？"
 
 #: src/robotide/ui/mainframe.py:465
@@ -2372,11 +2321,9 @@ msgid "Warning"
 msgstr "警告"
 
 #: src/robotide/ui/mainframe.py:559
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"您有有未保存的修改！\n"
+msgstr "您有有未保存的修改！\n"
 "确定要在不保存的情况下继续？"
 
 #: src/robotide/ui/mainframe.py:609
@@ -2489,11 +2436,9 @@ msgid "Search unused keywords"
 msgstr "搜索未使用的关键字"
 
 #: src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"此对话框帮助您在打开的项目中找到未使用的关键字。\n"
+msgstr "此对话框帮助您在打开的项目中找到未使用的关键字。\n"
 "如果您想要，您可以将搜索限制在带过滤器的一组文件中。"
 
 #: src/robotide/ui/review.py:70
@@ -2514,12 +2459,10 @@ msgid "Use RegEx"
 msgstr "使用正则表达式"
 
 #: src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"这里您可以定义一个或多个字符串，用逗号分隔(例如common,abc,123)。\n"
+msgstr "这里您可以定义一个或多个字符串，用逗号分隔(例如common,abc,123)。\n"
 "如果至少有一个字符串是文件名的一部分，过滤器匹配。\n"
 "如果您没有输入任何字符串，所有打开的文件都会被包含"
 
@@ -2578,12 +2521,8 @@ msgid "(None)"
 msgstr "(无)"
 
 #: src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"以下文件的关键字将被包含在搜索中：\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "以下文件的关键字将被包含在搜索中：\n\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2634,11 +2573,9 @@ msgid "Excluded Tag Search"
 msgstr "排除标签搜索"
 
 #: src/robotide/ui/tagdialogs.py:147
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"测试总计 %d, 测试标签 %d, 唯一标签 %d\n"
+msgstr "测试总计 %d, 测试标签 %d, 唯一标签 %d\n"
 "当前选择的测试 %d"
 
 #: src/robotide/ui/tagdialogs.py:233
@@ -2743,11 +2680,9 @@ msgid "Expand all"
 msgstr "展开所有"
 
 #: src/robotide/ui/treenodehandlers.py:444
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"目录包含未保存的数据！\n"
+msgstr "目录包含未保存的数据！\n"
 "您必须先保存数据才能排除。"
 
 #: src/robotide/ui/treenodehandlers.py:490
@@ -2781,11 +2716,9 @@ msgstr "移除只读"
 
 #: src/robotide/ui/treenodehandlers.py:531
 #: src/robotide/ui/treenodehandlers.py:634
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"文件包含未保存的数据！\n"
+msgstr "文件包含未保存的数据！\n"
 "您必须在排除之前保存数据。"
 
 #: src/robotide/ui/treenodehandlers.py:572
@@ -2813,14 +2746,12 @@ msgid "Provides a tree view for Test Suites "
 msgstr "提供测试套件树视图 "
 
 #: src/robotide/ui/treeplugin.py:113
-#, fuzzy
 msgid "View Test Suites Explorer"
-msgstr "显示文件资源面板(&V)"
+msgstr "查看测试套件浏览器"
 
 #: src/robotide/ui/treeplugin.py:115
-#, fuzzy
 msgid "Show Test Suites tree panel"
-msgstr "显示文件资源管理器面板"
+msgstr "显示测试套件树面板"
 
 #: src/robotide/ui/treeplugin.py:288
 msgid "External Resources"
@@ -2885,3 +2816,4 @@ msgstr "好的"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "否"
+
