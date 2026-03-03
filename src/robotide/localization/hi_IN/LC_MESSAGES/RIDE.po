@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-01-10 02:20+0000\n"
-"PO-Revision-Date: 2026-01-11 19:04\n"
+"PO-Revision-Date: 2026-03-03 21:50\n"
 "Last-Translator: \n"
 "Language-Team: Hindi\n"
 "MIME-Version: 1.0\n"
@@ -19,23 +19,23 @@ msgstr ""
 
 #: src/robotide/application/application.py:214
 msgid "Global Settings"
-msgstr ""
+msgstr "वैश्विक सेटिंग्स"
 
 #: src/robotide/application/application.py:215
 msgid "Global Settings Detected"
-msgstr ""
+msgstr "वैश्विक सेटिंग्स का पता चला"
 
 #: src/robotide/application/application.py:216
 msgid "Project Settings"
-msgstr ""
+msgstr "परियोजना सेटिंग्स"
 
 #: src/robotide/application/application.py:217
 msgid "Project Settings Detected"
-msgstr ""
+msgstr "परियोजना सेटिंग्स का पता चला"
 
 #: src/robotide/application/application.py:234
 msgid "Restart RIDE?"
-msgstr ""
+msgstr "क्या RIDE को पुनः प्रारंभ करें?"
 
 #: src/robotide/application/application.py:237
 msgid "RIDE must be restarted to fully use these "
@@ -56,7 +56,7 @@ msgstr ""
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/actiontriggers.py:65
 msgid "Help"
-msgstr ""
+msgstr "सहायता"
 
 #: src/robotide/application/releasenotes.py:54
 #: src/robotide/application/releasenotes.py:71
