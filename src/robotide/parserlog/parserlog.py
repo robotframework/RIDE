@@ -89,7 +89,7 @@ class ParserLogPlugin(Plugin):
         if self._panel:
             self._panel.update_log()
         if self.log_to_console:
-            print("{}".format(message_to_string(message, True)))  # >> sys.stdout, _message_to_string(message)
+            print(f"{message_to_string(message, True)}")
         if self.log_to_file:
             self._logfile.write(message_to_string(message, True))
             self._outfile.flush()
