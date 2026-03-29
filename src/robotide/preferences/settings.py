@@ -122,6 +122,8 @@ class SettingsMigrator(object):
             self.migrate_from_6_to_7(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 7:
             self.migrate_from_7_to_8(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 8:
+            self.migrate_from_8_to_9(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -207,6 +209,28 @@ class SettingsMigrator(object):
                 if os.path.exists(lib_xml_path):
                     os.remove(lib_xml_path)
         settings[self.SETTINGS_VERSION] = 8
+
+    def migrate_from_8_to_9(self, settings):
+        """Ensure General section exists with all required keys."""
+        if 'General' not in settings:
+            settings['General'] = {}
+        general = settings['General']
+        defaults = {
+            'font size': 11,
+            'font face': '',
+            'foreground': '#5E5C64',
+            'background': 'light grey',
+            'secondary foreground': '#DEDDDA',
+            'secondary background': '#0A4A8A',
+            'background help': '#A5F173',
+            'foreground text': '#080240',
+            'apply to panels': False,
+            'ui language': 'English'
+        }
+        for key, value in defaults.items():
+            if key not in general:
+                general[key] = value
+        settings[self.SETTINGS_VERSION] = 9
 
     @staticmethod
     def _key_with_underscore(settings, keyname, section=None):
