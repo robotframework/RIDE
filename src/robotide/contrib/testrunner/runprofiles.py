@@ -326,66 +326,32 @@ class PybotProfile(BaseProfile):
         return clean
 
     def _parse_windows_command(self):
-        from subprocess import Popen, PIPE
         try:
-            p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE,
-                      stderr=PIPE, shell=True)
-            output, _ = p.communicate()
-            from ctypes import cdll
-
-            code_page = cdll.kernel32.GetConsoleCP()
-            if code_page == 0:
-                os_encoding = os.getenv('RIDE_ENCODING', OUTPUT_ENCODING)
-            else:
-                os_encoding = 'cp' + str(code_page)
-            try:
-                output = output.decode(os_encoding)
-            except UnicodeDecodeError:
-                message_box = RIDEDialog(title="UnicodeDecodeError",
-                                         message=f"An UnicodeDecodeError occurred when processing the Arguments."
-                              f" The encoding used was '{os_encoding}'. You may try to define the environment variable"
-                              f" RIDE_ENCODING with a proper value. Other possibility, is to replace 'pythonw.exe' by "
-                              f"'python.exe' in the Desktop Shortcut.", style=wx.OK | wx.ICON_ERROR)
-                message_box.ShowModal()
-            output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').\
-                replace('\\""', '\"').strip()
-            # print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")
+            output = self.arguments
             even = True
             counter = 0
             for idx in range(0, len(output)):
                 if output[idx] == '"':
                     counter += 1
                     even = counter % 2 == 0
-                # print(f"DEBUG: run_profiles loop({idx} counter:{counter}")
-            self._defined_arguments = output.replace('\'', '')\
-                .replace('\\\\', '\\').replace('\\r\\n', '')
+            self._defined_arguments = output.replace('\\\\', '\\')
             if not even:
                 self._defined_arguments = self._defined_arguments.rstrip('"')
-        except IOError:
+        except Exception:
             pass
-
     def _parse_posix_command(self):
-        # print(f"DEBUG: run_profiles _parse_posix_command: ENTER  self.arguments={self.arguments}")
-        from subprocess import Popen, PIPE
         try:
-            p = Popen(['echo ' + self.arguments.replace('"', '\\"')], stdin=PIPE, stdout=PIPE,
-                      stderr=PIPE, shell=True)
-            output, _ = p.communicate()
-            # print(f"DEBUG: run_profiles _parse_posix_command: RAW output ={output}")
-            output = str(output).lstrip("b\'").replace('\\n', '').rstrip("\'").strip()
-            # print(f"DEBUG: run_profiles _parse_posix_command: output ={output}")
+            output = self.arguments
             even = True
             counter = 0
             for idx in range(0, len(output)):
                 if output[idx] == '"':
                     counter += 1
                     even = counter % 2 == 0
-                # print(f"DEBUG: run_profiles loop({idx} counter:{counter}")
-            self._defined_arguments = output.replace('\'', '')\
-                .replace('\\\\', '\\').replace('\\n', '')
+            self._defined_arguments = output.replace('\\\\', '\\')
             if not even:
                 self._defined_arguments = self._defined_arguments.rstrip('"')
-        except IOError:
+        except Exception:
             pass
 
     @staticmethod
