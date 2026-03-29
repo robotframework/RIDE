@@ -147,8 +147,9 @@ class RIDE(wx.App):
         self._controller = Project(self.namespace, self.settings)
         # print(f"DEBUG: application.py RIDE OnInit after defining controller= {self._controller}")
         # Try to get FontInfo as soon as possible
-        font_size = self.settings['General'].get('font size', 12)
-        font_face = self.settings['General'].get('font face', 'Helvetica')
+        general = self.settings.get('General', {})
+        font_size = general.get('font size', 12) if general else 12
+        font_face = general.get('font face', 'Helvetica') if general else 'Helvetica' 
         self.fontinfo = wx.FontInfo(font_size).FaceName(font_face).Bold(False)
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         self.frame = RideFrame(self, self._controller)
