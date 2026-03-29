@@ -422,27 +422,91 @@ class TagsEditor(SettingEditor):
         _ = message
         self._tags_display.saving()
 
+    def _create_controls(self):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add((5, 0))
+        width = max(len(self._controller.label), context.SETTING_LABEL_WIDTH)
+        label = Label(self, label=self._controller.label,
+                      size=(width, context.SETTING_ROW_HEIGHT))
+        label.SetToolTip(get_english_label(self._language, self._controller.label))
+        sizer.Add(label)
+        value_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._value_display = self._create_value_display()
+        self._comment_display = self._create_comment_display()
+        value_sizer.Add(self._value_display, 0, wx.EXPAND)
+        value_sizer.Add(self._comment_display, 0, wx.EXPAND)
+        self.update_value()
+        self._tooltip = self._get_tooltip()
+        sizer.Add(value_sizer, 1, wx.EXPAND)
+        self._add_edit(sizer)
+        sizer.Add(ButtonWithHandler(self, _('Clear'), mk_handler='Clear', handler=self.on_clear, fsize=self.font_size,
+                                    color_secondary_foreground=self.color_secondary_foreground,
+                                    color_secondary_background=self.color_secondary_background))
+        sizer.Layout()
+        self.SetSizer(sizer)
+
+    def _create_comment_display(self):
+        comment_display = CommentDisplay(self, self._controller)
+        comment_display.Bind(wx.EVT_LEFT_UP, self.on_left_up)
+        return comment_display
+
     def _value_display_control(self):
         self._tags_display = TagsDisplay(self, self._controller)
         self._tags_display.Bind(wx.EVT_LEFT_UP, self.on_left_up)
         self._tags_display.Bind(wx.EVT_KEY_DOWN, self.on_key)
         return self._tags_display
 
+    def update_value(self):
+        if self._controller is None:
+            return
+        if self._controller.is_set:
+            self._value_display.set_value(self._controller, self.plugin)
+            self._comment_display.set_value(self._controller)
+        else:
+            self._value_display.clear_field()
+            self._comment_display.clear()
+        self.Refresh()
+
     def contains(self, text):
         return False
 
     def highlight(self, text):
-        """ Just ignoring it """
         pass
 
     def clear_highlight(self):
-        """ Just ignoring it """
         pass
 
     def close(self):
         self._tags_display.close()
         self.plugin.unsubscribe(self._saving, RideSaving)
         SettingEditor.close(self)
+
+
+class CommentDisplay(wx.StaticText):
+    def __init__(self, parent, controller):
+        self._parent = parent
+        self._controller = controller
+        wx.StaticText.__init__(self, parent, label='')
+        self.SetForegroundColour(Colour(parent.color_secondary_foreground))
+        self.SetBackgroundColour(Colour(parent.color_background))
+        self.Hide()
+
+    def set_value(self, controller):
+        self._controller = controller
+        comment = controller.comment
+        if comment and len(comment) > 0:
+            comment_text = comment.as_list()
+            if comment_text:
+                comment_str = ' '.join(str(c).lstrip('# ').strip() for c in comment_text if c)
+                if comment_str:
+                    self.SetLabel('# ' + comment_str)
+                    self.Show()
+                    return
+        self.clear()
+
+    def clear(self):
+        self.SetLabel('')
+        self.Hide()
 
 
 class _AbstractListEditor(ListEditor):
