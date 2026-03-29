@@ -288,9 +288,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._RESOURCES_NODE_LABEL = _('External Resources')
         # print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
         #       f"translated label={self._RESOURCES_NODE_LABEL}")
-        self.theme = settings.get_without_default('General')
-        self.background = self.theme['background']
-        self.foreground = self.theme['foreground']
+        self.theme = settings.get('General', {}) if settings else {}
+        self.background = self.theme.get('background', 'light grey') if self.theme else 'light grey'
+        self.foreground = self.theme.get('foreground', '#5E5C64') if self.theme else '#5E5C64' 
         self._checkboxes_for_tests = False
         self._test_selection_controller = self._create_test_selection_controller()
         self.controller = TreeController(self, action_registerer, settings=settings,
