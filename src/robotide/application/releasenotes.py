@@ -179,6 +179,9 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added on Text Editor, (Preferences->Text Editor) options to <b>Enable visible spaces</b> and
+ <b>Enable visible newlines</b>.</li>
+<li>Added on External/Code Editor, both enabled, <b>visible spaces<b> and <b>visible newlines<b>.</li>
 <li>Fixed exception seen in console when selecting Tools->Library Finder... on a clean install.</li>
 <li>The Test Suites Explorer can be visible or hidden with F12 (View->View Test Suites Explorer). Pane can be made
  floating or docked, by dragging or by double-clicking its top bar.</li>
@@ -244,7 +247,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 28/March/2026.</p>
+<p>RIDE {VERSION} was released on 29/March/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>

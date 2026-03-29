@@ -226,11 +226,19 @@ class TextEditorPreferences(EditorPreferences):
 
     def _create_text_config_editor(self):
         settings = self._settings
-        sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        sizer = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         l_auto_suggest, editor = pdiag.boolean_editor(self, settings, 'enable auto suggestions',
                                                 _('Enable auto suggestions'))
         set_colors(l_auto_suggest, self.background_color, self.foreground_color)
         sizer.AddMany([l_auto_suggest, editor])
+        l_visible_spaces, editor = pdiag.boolean_editor(self, settings, 'enable visible spaces',
+                                                _('Enable visible spaces'))
+        set_colors(l_visible_spaces, self.background_color, self.foreground_color)
+        sizer.AddMany([l_visible_spaces, editor])
+        l_visible_newlines, editor = pdiag.boolean_editor(self, settings, 'enable visible newlines',
+                                                _('Enable visible newlines'))
+        set_colors(l_visible_newlines, self.background_color, self.foreground_color)
+        sizer.AddMany([l_visible_newlines, editor])
         return sizer
 
 

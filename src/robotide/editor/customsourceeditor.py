@@ -233,7 +233,7 @@ class CodeEditorPanel(wx.Panel):
         wx.Panel.__init__(self, parent, size=wx.Size(1, 1))
         self.mainFrame = main_frame
         self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2,
-                                                      'visible spaces':True, 'visible EOL':False})
+                                                      'visible spaces':True, 'visible EOL':True})
         self.editor.RegisterModifiedEvent(self.on_code_modified)
         parent.SetName(f'Code Editor: {filepath}')
         """

@@ -23,7 +23,10 @@ from robotide.preferences.settings import Settings, SectionError,\
     ConfigurationError, initialize_settings, SettingsMigrator
 from robotide.preferences.configobj.src.configobj import UnreprError
 
-from resources.setting_utils import TestSettingsHelper
+try:
+    from resources.setting_utils import TestSettingsHelper
+except ModuleNotFoundError:
+    from ..resources.setting_utils import TestSettingsHelper
 
 
 class TestInvalidSettings(TestSettingsHelper):
@@ -342,7 +345,7 @@ class TestInitializeSettings(TestSettingsHelper):
         initialize_settings(self.settings_path, 'user.cfg')
         self._check_content(
             {'foo': 'new value', 'hello': 'world',
-             SettingsMigrator.SETTINGS_VERSION: 8}, False)
+             SettingsMigrator.SETTINGS_VERSION: 9}, False)
 
     def test_initialize_settings_raises_exception_when_invalid_user_settings(
             self):

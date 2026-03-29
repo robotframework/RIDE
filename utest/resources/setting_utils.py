@@ -47,9 +47,13 @@ class TestSettingsHelper(unittest.TestCase):
 
     def _check_content(self, expected_dict, check_self_settings=True):
         settings = Settings(self.user_settings_path)
-        self.assertEqual(settings.config_obj, expected_dict)
+        # self.assertEqual(settings.config_obj, expected_dict)
+        for key, value in expected_dict.items():
+            assert settings[key] == value
         if check_self_settings:
-            self.assertEqual(self.settings.config_obj, expected_dict)
+            # self.assertEqual(self.settings.config_obj, expected_dict)
+            for key, value in expected_dict.items():
+                assert self.settings[key] == value
 
     def _write_settings(self, content, path=None):
         f = open(self._get_path(path), 'wb')

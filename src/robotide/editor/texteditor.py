@@ -3091,6 +3091,8 @@ class RobotStylizer(object):
         if section == PLUGIN_NAME:
             self.set_styles(self._readonly)  # DEBUG: When on read-only file changing background color ignores flag
             self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
+            self.editor.visible_spaces = self.settings[PLUGIN_NAME].get('enable visible spaces', True)
+            self.editor.visible_EOL = self.settings[PLUGIN_NAME].get('enable visible newlines', False)
             caret_colour = self.settings[PLUGIN_NAME].get('setting', 'black')
             caret_colour = self.editor.get_visible_color(caret_colour)
             self.editor.SetCaretForeground(Colour(caret_colour))
@@ -3179,6 +3181,8 @@ class RobotStylizer(object):
                                                                fore=foreground))
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.SetZoom(self._zoom_factor())
+        self.editor.SetViewWhiteSpace(self.editor.visible_spaces)
+        self.editor.SetViewEOL(self.editor.visible_EOL)
         self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):
