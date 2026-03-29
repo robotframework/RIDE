@@ -68,6 +68,10 @@ class SavingPreferences(PreferencesPanel):
             IntegerChoiceEditor(settings, 'txt number of spaces', _('Separating spaces'),
                                 [str(i) for i in range(2, 11)],
                                 _('Number of spaces between cells when saving in txt format')
+                                ),
+            IntegerChoiceEditor(settings, 'auto save interval', _('Auto save interval (minutes)'),
+                                ['0', '1', '2', '3', '5', '10', '15', '20', '30'],
+                                _('Automatically save all files after specified minutes (0 = disabled)')
                                 )
         ]
 
