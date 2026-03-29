@@ -559,13 +559,13 @@ class TestWritingConfigs(object):
             'key1 = Hello',
             '',
             '# section comment',
-            '[section]# inline comment',
+            '[section] # inline comment',
             '# key1 comment',
             'key1 = 6',
             '# key2 comment',
             'key2 = True',
             '# subsection comment',
-            '[[sub-section]]# inline comment',
+            '[[sub-section]] # inline comment',
             '# another key1 comment',
             'key1 = 3.0'
         ]
@@ -577,9 +577,9 @@ class TestWritingConfigs(object):
             'key2 =# a comment',
         ]
         cfg = ConfigObj(config_with_empty_values)
-        assert cfg.write() == ['', 'key1 = ""', 'key2 = ""# a comment']
+        assert cfg.write() == ['', 'key1 = ""', 'key2 = "" # a comment']
         cfg.write_empty_values = True
-        assert cfg.write() == ['', 'key1 = ', 'key2 = # a comment']
+        assert cfg.write() == ['', 'key1 = ', 'key2 =  # a comment']
 
 
 class TestUnrepr(object):

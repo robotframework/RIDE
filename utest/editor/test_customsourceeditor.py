@@ -32,6 +32,8 @@ class TestSourceCodeEditor(unittest.TestCase):
         self._settings.add_section(PLUGIN_NAME)
         self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
         self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
+        self.visible_spaces = self._settings[PLUGIN_NAME].get('enable visible spaces', True)
+        self.visible_EOL = self._settings[PLUGIN_NAME].get('enable visible newlines', True)
         self.frame = wx.Frame(None)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
         # self.frame.Show()
@@ -60,8 +62,9 @@ class TestSourceCodeEditor(unittest.TestCase):
         # self.panel.Center()
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.read()
-        self.editor = SourceCodeEditor(self.panel, options={'tab markers': True, 'fold symbols': 2})
-        self.editor.SetUpEditor()
+        self.editor = SourceCodeEditor(self.panel, options={'tab markers': True, 'fold symbols': 2,
+                                                            'visible spaces':True, 'visible EOL':True})
+        self.editor.SetUpEditor(eoptions={'visible spaces':True, 'visible EOL':True})
         self.editor.SetValue(content)
         self.editor.SetEditable(True)
         self.editor.Fit()
@@ -108,6 +111,8 @@ class TestCodeEditorPanel(unittest.TestCase):
         self._settings.add_section(PLUGIN_NAME)
         self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
         self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
+        self.visible_spaces = self._settings[PLUGIN_NAME].get('enable visible spaces', True)
+        self.visible_EOL = self._settings[PLUGIN_NAME].get('enable visible newlines', True)
         self.frame = wx.Frame(None)
         self.wkpath = None
         # Uncomment next line (and MainLoop in tests) if you want to see the app
@@ -218,7 +223,8 @@ class TestPythonCodeEditor(unittest.TestCase):
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.read()
         for style in range(4):
-            self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': style})
+            self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': style,
+                                                      'visible spaces':True, 'visible EOL':True})
         self.editor.SetSize(wx.Size(800, 600))
         self.editor.SetValue(content)
         self.editor.SetEditable(True)
@@ -243,7 +249,8 @@ class TestPythonCodeEditor(unittest.TestCase):
         wx.CallLater(10000, self.app.ExitMainLoop)
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.read()
-        self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': 2})
+        self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': 2,
+                                                      'visible spaces':True, 'visible EOL':True})
         self.editor.SetSize(wx.Size(800, 600))
         self.editor.SetValue(content)
         self.editor.SetEditable(True)
