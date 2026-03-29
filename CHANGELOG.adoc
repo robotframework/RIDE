@@ -8,6 +8,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Fixed
+- Fixed exception seen in console when selecting Tools->Library Finder... on a clean install.
+
 === Changed
 - Changed isbinary to be internal library, instead of being dependency.
 

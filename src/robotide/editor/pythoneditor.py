@@ -59,7 +59,10 @@ class PythonSTC(stc.StyledTextCtrl):
         self.SetProperty("tab.timmy.whinge.level", "1")
         self.SetMargins(2, 2)
 
-        self.SetViewWhiteSpace(False)
+        self.visible_spaces = options['visible spaces']
+        self.visible_EOL = options['visible EOL']
+        self.SetViewWhiteSpace(self.visible_spaces)
+        self.SetViewEOL(self.visible_EOL)
         self.SetEdgeMode(stc.STC_EDGE_BACKGROUND)
         self.SetEdgeColumn(78)
 

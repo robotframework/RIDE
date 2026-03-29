@@ -2641,8 +2641,11 @@ class RobotDataEditor(PythonSTC):
         self._settings = parent.source_editor_parent.app.settings
         self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
         self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
-        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols},
-                           style=style)
+        self.visible_spaces = self._settings[PLUGIN_NAME].get('enable visible spaces', True)
+        self.visible_EOL = self._settings[PLUGIN_NAME].get('enable visible newlines', False)
+        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols,
+                                                      'visible spaces':self.visible_spaces,
+                                                      'visible EOL':self.visible_EOL}, style=style)
         self._information_popup = None
         self._old_details = None
         self.readonly = readonly
@@ -2976,13 +2979,13 @@ class RobotDataEditor(PythonSTC):
         self.SetTabWidth(tab_size)               # Proscribed tab size for wx
         self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
         # White space
-        self.SetViewWhiteSpace(False)   # Don't view white space
+        self.SetViewWhiteSpace(self.visible_spaces)   # View white space
 
         # EOL: Since we are loading/saving ourselves, and the
         # strings will always have \n's in them, set the STC to
         # edit them that way.
         self.SetEOLMode(wx.stc.STC_EOL_LF)
-        self.SetViewEOL(False)
+        self.SetViewEOL(self.visible_EOL)
 
         # No right-edge mode indicator
         self.SetEdgeMode(stc.STC_EDGE_NONE)
