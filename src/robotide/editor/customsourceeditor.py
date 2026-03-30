@@ -301,9 +301,11 @@ class CodeEditorPanel(wx.Panel):
             return
         if filepath:
             if filepath != self.path and os.path.isfile(filepath):
-                overwrite_msg = "You are about to overwrite an existing file\n" + \
-                               "Do you want to continue?"
-                dlg = wx.MessageDialog(self, overwrite_msg, "Editor Writer",
+                overwrite_msg = _("You are about to overwrite an existing file.\n\n") + \
+                               _("File: %s\n\n") % filepath + \
+                               _("The existing file will be replaced and cannot be recovered.\n\n") + \
+                               _("Do you want to continue?")
+                dlg = wx.MessageDialog(self, overwrite_msg, _("Confirm Overwrite"),
                                        wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
                 dlg.SetBackgroundColour(Colour(200, 222, 40))
                 dlg.SetForegroundColour(Colour(7, 0, 70))
