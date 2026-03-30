@@ -120,10 +120,11 @@ the `robotide.pluginapi` module and plugins should import them there.
 
 import os
 
-from .messages import *
+from .messages import *  # Wildcard import OK: messages.py defines __all__
 from .publisher import PUBLISHER
 
 
 def get_html_message(name):
-    return open(os.path.join(
-        os.path.dirname(__file__), 'htmlmessages', '{}.html'.format(name))).read()
+    path = os.path.join(os.path.dirname(__file__), 'htmlmessages', f'{name}.html')
+    with open(path, encoding='utf-8') as f:
+        return f.read()
