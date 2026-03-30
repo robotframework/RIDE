@@ -460,8 +460,11 @@ class SortTests(_ReversibleCommand):
 class SortKeywords(_ReversibleCommand):
     index_difference = None
 
+    def __init__(self, case_insensitive=False):
+        self._case_insensitive = case_insensitive
+
     def _execute(self, context):
-        index_difference = context.sort_keywords()
+        index_difference = context.sort_keywords(case_insensitive=self._case_insensitive)
         self._undo_command = RestoreKeywordOrder(index_difference)
 
     def _get_undo_command(self):

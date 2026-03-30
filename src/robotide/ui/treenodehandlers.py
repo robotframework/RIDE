@@ -41,6 +41,7 @@ LABEL_NEW_USER_KEYWORD = 'New User Keyword\tCtrl-Shift-K'
 LABEL_SORT_VARIABLES = 'Sort Variables'
 LABEL_SORT_TESTS = 'Sort Tests'
 LABEL_SORT_KEYWORDS = 'Sort Keywords'
+LABEL_SORT_KEYWORDS_CI = 'Sort Keywords (Case Insensitive)'
 LABEL_NEW_SCALAR = 'New Scalar\tCtrl-Shift-V'
 LABEL_NEW_LIST_VARIABLE = 'New List Variable\tCtrl-Shift-L'
 LABEL_NEW_DICT_VARIABLE = 'New Dictionary Variable'
@@ -297,6 +298,11 @@ class TestDataHandler(_ActionHandler):
         """Sorts the keywords inside the treenode"""
         self.controller.execute(ctrlcommands.SortKeywords())
 
+    def on_sort_keywords_case_insensitive(self, event):
+        __ = event
+        """Sorts the keywords inside the treenode (case insensitive)"""
+        self.controller.execute(ctrlcommands.SortKeywords(case_insensitive=True))
+
     def on_sort_variables(self, event):
         __ = event
         """Sorts the variables inside the treenode"""
@@ -495,6 +501,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                          '---',
                          _('Sort Variables'),
                          _('Sort Keywords'),
+                         _('Sort Keywords (Case Insensitive)'),
                          '---',
                          _('Exclude'),
                          '---',
@@ -515,6 +522,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                             '---',
                             LABEL_SORT_VARIABLES,
                             LABEL_SORT_KEYWORDS,
+                            LABEL_SORT_KEYWORDS_CI,
                             '---',
                             LABEL_EXCLUDE,
                             '---',
