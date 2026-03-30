@@ -47,6 +47,7 @@ class Process(object):
         self._out_file = open(self._out_path, 'w+b')
         if not self._command:
             self._error = 'The command is missing from this run configuration.'
+            self._close_outputs()
             return
         try:
             self._process = subprocess.Popen(self._command, stdout=self._out_fd, stderr=subprocess.STDOUT)
@@ -54,6 +55,7 @@ class Process(object):
             RideRunnerStarted(process=self._pid).publish()
         except OSError as err:
             self._error = str(err)
+            self._close_outputs()
 
     def is_finished(self):
         return self._error is not None or self._process.poll() is not None
