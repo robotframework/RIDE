@@ -64,19 +64,8 @@ class GridEditor(grid.Grid):
         self.SetLabelBackgroundColour(Colour(self.color_secondary_background))
         self.SetLabelTextColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
-        """
-        DEBUG: This block adds aditional scrollbars in mains Grid Editor, making hard to focus on cells keeping the 
-               row numbers visible.
-        if hasattr(parent, 'SetupScrolling'):
-            parent.SetupScrolling(scrollToTop=True, scrollIntoView=True)
-            print("DEBUG: GridBase init at PARENT SetupScrolling\n")
-        elif
-        """
         if hasattr(self, 'SetupScrolling'):
             self.SetupScrolling(scrollToTop=True, scrollIntoView=True)
-            # print("DEBUG: GridBase init at SELF SetupScrolling\n")
-        # else:
-        #     print("DEBUG: GridBase init NO SetupScrolling\n")
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.on_select_cell)
@@ -99,12 +88,12 @@ class GridEditor(grid.Grid):
         self.SetCellValue(row, col, value)
 
     def _expand_if_necessary(self, row, col):
-        # Changed col and row fill because of blank spacing not changing color
-        # print(f"DEBUG: GridEditor ENTER_expand_if_necessary row={row}, col={col}")
-        while self.NumberRows <= max(1, row+1, 10-row):  # DEBUG 25 makes slower rendering
-            self.AppendRows(1)
-        while self.NumberCols <= max(1, col+1, 10-col):  # DEBUG 40 makes slower rendering
-            self.AppendCols(max(1, self._col_add_threshold))  # DEBUG: was infinite when value was 0
+        needed_rows = max(1, row + 2) - self.NumberRows
+        if needed_rows > 0:
+            self.AppendRows(needed_rows)
+        needed_cols = max(1, col + 2) - self.NumberCols
+        if needed_cols > 0:
+            self.AppendCols(max(needed_cols, self._col_add_threshold))
 
     def has_focus(self):
         return self.FindFocus() == self
