@@ -40,7 +40,7 @@ wildcard = "All files (*.*)|*.*|"                \
 class SourceCodeEditor(PythonSTC):
     def __init__(self, parent, options, style=wx.BORDER_NONE):
         PythonSTC.__init__(self, parent, -1, options, style=style)
-        self.SetUpEditor(options)
+        self.SetUpEditor()
 
     # Some methods to make it compatible with how the wxTextCtrl is used
     def SetValue(self, value):
@@ -90,7 +90,7 @@ class SourceCodeEditor(PythonSTC):
         end = self.GetLineEndPosition(line)
         self.SetSelection(start, end)
 
-    def SetUpEditor(self, eoptions: dict):
+    def SetUpEditor(self):
         """
         This method carries out the work of setting up the Code editor.
         It's seperate so as not to clutter up the init code.
@@ -122,13 +122,13 @@ class SourceCodeEditor(PythonSTC):
         self.SetTabWidth(4)               # Proscribed tab size for wx
         self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
         # White space
-        self.SetViewWhiteSpace(eoptions['visible spaces'])   # Don't view white space
+        self.SetViewWhiteSpace(False)   # Don't view white space
 
         # EOL: Since we are loading/saving ourselves, and the
         # strings will always have \n's in them, set the STC to
         # edit them that way.
         self.SetEOLMode(wx.stc.STC_EOL_LF)
-        self.SetViewEOL(eoptions['visible EOL'])
+        self.SetViewEOL(False)
 
         # No right-edge mode indicator
         self.SetEdgeMode(stc.STC_EDGE_NONE)
@@ -232,8 +232,7 @@ class CodeEditorPanel(wx.Panel):
         self.parent = parent
         wx.Panel.__init__(self, parent, size=wx.Size(1, 1))
         self.mainFrame = main_frame
-        self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2,
-                                                      'visible spaces':True, 'visible EOL':True})
+        self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2})
         self.editor.RegisterModifiedEvent(self.on_code_modified)
         parent.SetName(f'Code Editor: {filepath}')
         """
@@ -301,9 +300,11 @@ class CodeEditorPanel(wx.Panel):
             return
         if filepath:
             if filepath != self.path and os.path.isfile(filepath):
-                overwrite_msg = "You are about to overwrite an existing file\n" + \
-                               "Do you want to continue?"
-                dlg = wx.MessageDialog(self, overwrite_msg, "Editor Writer",
+                overwrite_msg = _("You are about to overwrite an existing file.\n\n") + \
+                               _("File: %s\n\n") % filepath + \
+                               _("The existing file will be replaced and cannot be recovered.\n\n") + \
+                               _("Do you want to continue?")
+                dlg = wx.MessageDialog(self, overwrite_msg, _("Confirm Overwrite"),
                                        wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
                 dlg.SetBackgroundColour(Colour(200, 222, 40))
                 dlg.SetForegroundColour(Colour(7, 0, 70))

@@ -776,11 +776,16 @@ class DataValidationHandler(object):
             self._editor._mark_file_dirty()
             return False
         # TODO: use widgets.Dialog
-        id = wx.MessageDialog(self._editor,
-                              'ERROR: Data sanity check failed!\n'
-                              'Reset changes?',
-                              'Can not apply changes from Txt Editor',
-                              style=wx.YES | wx.NO).ShowModal()
+        msg = _('ERROR: Data sanity check failed!') + '\n\n' + \
+              _('The text content could not be parsed correctly.') + '\n' + \
+              _('This may be caused by:') + '\n' + \
+              _('  - Invalid Robot Framework syntax') + '\n' + \
+              _('  - Malformed table or section headers') + '\n' + \
+              _('  - Incorrect indentation or spacing') + '\n\n' + \
+              _('Reset changes?')
+        id = wx.MessageDialog(self._editor, msg,
+                              _('Can not apply changes from Text Editor'),
+                              style=wx.YES | wx.NO | wx.ICON_ERROR).ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_YES:
@@ -907,8 +912,12 @@ class DataValidationHandler(object):
             # self.source_editor._mark_file_dirty(True)
             return False
         dlg = RIDEDialog(title=_("Can not apply changes from Text Editor"),
-                         message=f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
-                                 f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
+                         message=f"{_('ERROR: Data sanity check failed!')}\n\n"
+                                 f"{_('Error at line')} {message[1]}:\n"
+                                 f"  {message[0]}\n\n"
+                                 f"{_('This may be caused by invalid syntax or formatting.')}\n"
+                                 f"{_('Check the line and fix the error, or reset changes.')}\n\n"
+                                 f"{_('Reset changes?')}",
                          style=wx.ICON_ERROR | wx.YES_NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
@@ -2641,11 +2650,8 @@ class RobotDataEditor(PythonSTC):
         self._settings = parent.source_editor_parent.app.settings
         self.tab_markers = self._settings[PLUGIN_NAME].get('tab markers', True)
         self.fold_symbols = self._settings[PLUGIN_NAME].get('fold symbols', 2)
-        self.visible_spaces = self._settings[PLUGIN_NAME].get('enable visible spaces', True)
-        self.visible_EOL = self._settings[PLUGIN_NAME].get('enable visible newlines', False)
-        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols,
-                                                      'visible spaces':self.visible_spaces,
-                                                      'visible EOL':self.visible_EOL}, style=style)
+        PythonSTC.__init__(self, parent, -1, options={'tab markers':self.tab_markers, 'fold symbols':self.fold_symbols},
+                           style=style)
         self._information_popup = None
         self._old_details = None
         self.readonly = readonly
@@ -2979,13 +2985,13 @@ class RobotDataEditor(PythonSTC):
         self.SetTabWidth(tab_size)               # Proscribed tab size for wx
         self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
         # White space
-        self.SetViewWhiteSpace(self.visible_spaces)   # View white space
+        self.SetViewWhiteSpace(False)   # Don't view white space
 
         # EOL: Since we are loading/saving ourselves, and the
         # strings will always have \n's in them, set the STC to
         # edit them that way.
         self.SetEOLMode(wx.stc.STC_EOL_LF)
-        self.SetViewEOL(self.visible_EOL)
+        self.SetViewEOL(False)
 
         # No right-edge mode indicator
         self.SetEdgeMode(stc.STC_EDGE_NONE)
@@ -3091,8 +3097,6 @@ class RobotStylizer(object):
         if section == PLUGIN_NAME:
             self.set_styles(self._readonly)  # DEBUG: When on read-only file changing background color ignores flag
             self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
-            self.editor.visible_spaces = self.settings[PLUGIN_NAME].get('enable visible spaces', True)
-            self.editor.visible_EOL = self.settings[PLUGIN_NAME].get('enable visible newlines', False)
             caret_colour = self.settings[PLUGIN_NAME].get('setting', 'black')
             caret_colour = self.editor.get_visible_color(caret_colour)
             self.editor.SetCaretForeground(Colour(caret_colour))
@@ -3181,8 +3185,6 @@ class RobotStylizer(object):
                                                                fore=foreground))
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.SetZoom(self._zoom_factor())
-        self.editor.SetViewWhiteSpace(self.editor.visible_spaces)
-        self.editor.SetViewEOL(self.editor.visible_EOL)
         self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):
