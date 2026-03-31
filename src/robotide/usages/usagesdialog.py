@@ -30,6 +30,7 @@ class UsagesDialog(RIDEDialog):
         self._dots = None
         self._name = name
         self._selection_listeners = []
+        self._searching = False
         title = "'%s'" % name
         RIDEDialog.__init__(self, title=title, size=(650, 400))
         # set Left to Right direction (while we don't have localization)
@@ -51,19 +52,25 @@ class UsagesDialog(RIDEDialog):
 
     def begin_searching(self):
         from ..ui.searchdots import DottedSearch
+        self._searching = True
         self._dots = DottedSearch(self, self._update_searching)
         self._dots.start()
 
     def _update_searching(self, dots):
+        self.usages._searching = self._searching
         self.SetTitle(_("'%s' - %d matches found - Searching%s") % (self._name, self.usages.total_usages, dots))
         self.usage_list.refresh_items()
 
     def end_searching(self):
         self._dots.stop()
+        self._searching = False
+        self.usages._searching = False
         self.SetTitle(_("'%s' - %d matches") % (self._name, self.usages.total_usages))
         self.usage_list.refresh_items()
 
     def _usage_selected(self, idx):
+        if self._searching and idx == 0:
+            return
         for listener in self._selection_listeners:
             listener(self.usages.usage(idx).item.parent, self._name)
 
@@ -103,8 +110,9 @@ def resource_import_usage_dialog(name, highlight, controller):
 
 class _UsagesListModel(ListModel):
 
-    def __init__(self, usages):
+    def __init__(self, usages, searching=False):
         self._usages = usages
+        self._searching = searching
         self._create_image_list()
 
     def _create_image_list(self):
@@ -121,8 +129,12 @@ class _UsagesListModel(ListModel):
         return self._images
 
     def image(self, item):
+        if self._searching and item == 0:
+            return -1
+        offset = 1 if self._searching else 0
+        actual_item = item - offset
         # DEBUG: better mechanism for item type recognition
-        parent_type = self._usages[item].parent.__class__.__name__
+        parent_type = self._usages[actual_item].parent.__class__.__name__
         return {'TestCaseController': 0,
                 'UserKeywordController': 1,
                 'TestCaseFileController': 2,
@@ -133,7 +145,10 @@ class _UsagesListModel(ListModel):
         self._usages.append(usage)
 
     def usage(self, idx):
-        return self._usages[idx]
+        if self._searching and idx == 0:
+            return None
+        offset = 1 if self._searching else 0
+        return self._usages[idx - offset]
 
     @property
     def total_usages(self):
@@ -141,35 +156,47 @@ class _UsagesListModel(ListModel):
 
     @property
     def count(self):
-        return len(self._usages)
+        base_count = len(self._usages)
+        return base_count + 1 if self._searching else base_count
 
 
 class UsagesListModel(_UsagesListModel):
 
-    def __init__(self, usages):
-        _UsagesListModel.__init__(self, usages)
+    def __init__(self, usages, searching=False):
+        _UsagesListModel.__init__(self, usages, searching)
         self.headers = [_('Location'), _('Usage'), _('Source')]
 
     def item_text(self, row, col):
+        if self._searching and row == 0:
+            if col == 0:
+                return _("Searching...")
+            return ""
         u = self.usage(row)
         return [u.location,  u.usage, u.source][col]
 
 
 class ResourceImportListModel(_UsagesListModel):
 
-    def __init__(self, usages):
-        _UsagesListModel.__init__(self, usages)
+    def __init__(self, usages, searching=False):
+        _UsagesListModel.__init__(self, usages, searching)
         self.headers = ['Name', 'Location']
         # wxPyDeprecationWarning: Using deprecated class. Use ItemAttr instead
         self._cannot_rename_item_attr = wx.ItemAttr()  # wx.ListItemAttr()
         self._cannot_rename_item_attr.SetBackgroundColour(wx.Colour(255, 64, 64))
 
     def item_text(self, row, col):
+        if self._searching and row == 0:
+            if col == 0:
+                return _("Searching...")
+            return ""
         u = self.usage(row)
         return [u.name, u.location][col]
 
     def item_attributes(self, idx):
-        if self._usages[idx].can_be_renamed:
+        if self._searching and idx == 0:
+            return None
+        offset = 1 if self._searching else 0
+        if self._usages[idx - offset].can_be_renamed:
             return None
         return self._cannot_rename_item_attr
 
@@ -180,10 +207,14 @@ class ResourceImportListModel(_UsagesListModel):
 
 class RecursiveResourceImportListModel(_UsagesListModel):
 
-    def __init__(self, usages):
-        _UsagesListModel.__init__(self, usages)
+    def __init__(self, usages, searching=False):
+        _UsagesListModel.__init__(self, usages, searching)
         self.headers = [_('Imported name'), _('Imported Location'), _('Importing Name'), _('Importing Location')]
 
     def item_text(self, row, col):
+        if self._searching and row == 0:
+            if col == 0:
+                return _("Searching...")
+            return ""
         u = self.usage(row)
         return [u.res_name, u.res_src, u.name, u.location][col]

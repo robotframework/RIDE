@@ -17,6 +17,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Fixed exception seen in console when selecting Tools->Library Finder... on a clean install.
 
 === Changed
+- Improved visibility of the Search action in *Find Usages* by adding ``Search...`` on the first row of the results table.
 - Changed isbinary to be internal library, instead of being dependency.
 
 

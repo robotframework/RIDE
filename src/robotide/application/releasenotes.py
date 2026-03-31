@@ -159,7 +159,7 @@ RELEASE_NOTES = f"""
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
-version 4.2.1, 4.2.2, 4.2.3 and 4.2.4, which we now <em>recommend</em>.</li>
+version 4.2.1, 4.2.2, 4.2.3, 4.2.4 and 4.2.5 which we now <em>recommend</em>.</li>
 -->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
 and changes.</li>
@@ -179,6 +179,8 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Improved visibility of the Search action in <b>Find Usages</b> by adding <b>Search...</b> on the first row of the 
+results table.</li>
 <li>Added on Text Editor, (Preferences->Text Editor) options to <b>Enable visible spaces</b> and
  <b>Enable visible newlines</b>.</li>
 <li>Added on External/Code Editor, both enabled, <b>visible spaces<b> and <b>visible newlines<b>.</li>
@@ -247,7 +249,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 29/March/2026.</p>
+<p>RIDE {VERSION} was released on 31/March/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
