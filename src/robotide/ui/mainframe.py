@@ -380,7 +380,7 @@ class RideFrame(wx.Frame):
 
     def _on_auto_save(self, event):
         """Auto-save all files when timer fires."""
-        _ = event
+        __ = event 
         if self.controller and self.controller.is_dirty():
             RideBeforeSaving().publish()
             self.save_all()
