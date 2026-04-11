@@ -171,19 +171,19 @@ class LibraryFinderPlugin(Plugin):
             return []
         try:
             plug = self.global_settings['Plugins'][self.name][name]
-        except Exception:
+        except (KeyError, TypeError):
             plug = None
         if plug:
             try:
                 return plug['command']
-            except Exception:
+            except (KeyError, TypeError):
                 pass
         return []
 
     def parse_command(self, command: list) -> list:
         try:
             executable = self.global_settings['executable']
-        except Exception:
+        except (KeyError, TypeError):
             executable = sys.executable
         parsed = []
         for cmd in command:
@@ -205,12 +205,12 @@ class LibraryFinderPlugin(Plugin):
     def find_documentation_url(self, name):
         try:
             plug = self.global_settings['Plugins'][self.name][name]
-        except Exception:
+        except (KeyError, TypeError):
             plug = None
         if plug:
             try:
                 return plug['documentation']
-            except Exception:
+            except (KeyError, TypeError):
                 pass
         if self._is_std_library(name):
             if name == "Remote":
