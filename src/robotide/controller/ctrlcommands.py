@@ -465,6 +465,7 @@ class SortKeywords(_ReversibleCommand):
 
     def _execute(self, context):
         index_difference = context.sort_keywords(case_insensitive=self._case_insensitive)
+
         self._undo_command = RestoreKeywordOrder(index_difference, self._case_insensitive)
 
     def _get_undo_command(self):
