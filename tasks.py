@@ -166,7 +166,7 @@ wxPythonDownloadUrl = "https://wxpython.org/"
 
 # Developemnt tasks
 @task
-def devel(ctx, args=''):
+def devel(ctx, args:list=[]):
     """Start development version of RIDE."""
     _ = ctx
     _set_development_path()

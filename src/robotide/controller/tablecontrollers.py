@@ -374,9 +374,18 @@ class KeywordTableController(_MacroTable):
         if config:
             ctrl.arguments.set_value(config)
 
-    def sort(self):
-        """Sorts the keywords of the controller by name"""
-        keywords_sorted = sorted(self._table.keywords, key=lambda userkeyword: userkeyword.name)
+    def sort(self, case_insensitive=False):
+        """Sorts the keywords of the controller by name
+        
+        Args:
+            case_insensitive: If True, sort without regard to case
+        """
+        if case_insensitive:
+            keywords_sorted = sorted(self._table.keywords, 
+                                     key=lambda userkeyword: userkeyword.name.lower())
+        else:
+            keywords_sorted = sorted(self._table.keywords, 
+                                     key=lambda userkeyword: userkeyword.name)
         index_difference = self._index_difference(self._table.keywords, keywords_sorted)
         self._table.keywords = keywords_sorted
         return index_difference
