@@ -14,6 +14,6 @@
 #  limitations under the License.
 
 from .application import RIDE
-from .debugconsole import *
+from . import debugconsole
 from ..controller import Project
 from .editorprovider import EditorProvider
