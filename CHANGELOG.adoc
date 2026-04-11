@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added option on Tree (Project Explorer) context menu, to *Sort Keywords (Case Insensitive)*.
 - Added on Text Editor, (Preferences->Text Editor) option to *Enable visible spaces* configurable with ``enable visible spaces`` in settings.cfg, with default ``True``.
 - Added on Text Editor, (Preferences->Text Editor) option to *Enable visible newlines* configurable with ``enable visible newlines`` in settings.cfg, with default ``False``.
 - Added on External/Code Editor, both enabled, ``visible spaces`` and ``visible newlines``.

@@ -179,6 +179,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added option on Tree (Project Explorer) context menu, to <b>Sort Keywords (Case Insensitive)</b>.</li>
 <li>Improved visibility of the Search action in <b>Find Usages</b> by adding <b>Search...</b> on the first row of the 
 results table.</li>
 <li>Added on Text Editor, (Preferences->Text Editor) options to <b>Enable visible spaces</b> and
@@ -249,7 +250,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 31/March/2026.</p>
+<p>RIDE {VERSION} was released on 11/April/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
