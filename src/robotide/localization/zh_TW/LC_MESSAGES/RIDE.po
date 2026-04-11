@@ -1,10 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-01-10 02:20+0000\n"
+"POT-Creation-Date: 2026-04-11 15:41+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,38 +16,37 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"Language: zh_TW\n"
 
-#: src/robotide/application/application.py:214
+#: src/robotide/application/application.py:215
 msgid "Global Settings"
 msgstr "全局設定"
 
-#: src/robotide/application/application.py:215
+#: src/robotide/application/application.py:216
 msgid "Global Settings Detected"
 msgstr "偵測到全局設定"
 
-#: src/robotide/application/application.py:216
+#: src/robotide/application/application.py:217
 msgid "Project Settings"
 msgstr "專案設定"
 
-#: src/robotide/application/application.py:217
+#: src/robotide/application/application.py:218
 msgid "Project Settings Detected"
 msgstr "偵測到專案設定"
 
-#: src/robotide/application/application.py:234
+#: src/robotide/application/application.py:235
 msgid "Restart RIDE?"
 msgstr "重新啟動 RIDE？"
 
-#: src/robotide/application/application.py:237
+#: src/robotide/application/application.py:238
 msgid "RIDE must be restarted to fully use these "
 msgstr "必須重新啟動 RIDE 才能完全使用這些功能。 "
 
-#: src/robotide/application/application.py:239
+#: src/robotide/application/application.py:240
 msgid "Click OK to Restart RIDE!"
 msgstr "按一下「確定」重新啟動 RIDE！"
 
-#: src/robotide/application/application.py:461
-#: src/robotide/application/application.py:466
+#: src/robotide/application/application.py:462
+#: src/robotide/application/application.py:467
 msgid "Found Robot Framework version %s from %s."
 msgstr "發現 Robot Framework 版本 %s 來自 %s。"
 
@@ -177,9 +177,11 @@ msgid "See the latest development "
 msgstr "查看最新發展 "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid "I'm using another method for RIDE updates\n"
+msgid ""
+"I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr "我使用另一種方法進行 RIDE 更新\n"
+msgstr ""
+"我使用另一種方法進行 RIDE 更新\n"
 " ，不需要自動更新檢查"
 
 #: src/robotide/application/updatenotifier.py:252
@@ -374,9 +376,11 @@ msgid "Unsaved Modifications"
 msgstr "未儲存的修改"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr "有未儲存的修改。\n"
+msgstr ""
+"有未儲存的修改。\n"
 "        您要儲存所有修改並執行測試嗎？"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -384,15 +388,19 @@ msgid "No tests selected"
 msgstr "未選擇測試"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid "No tests selected. \n"
+msgid ""
+"No tests selected. \n"
 "Continue anyway?"
-msgstr "沒有選擇測試。 \n"
+msgstr ""
+"沒有選擇測試。 \n"
 "繼續嗎？"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid "\n"
+msgid ""
+"\n"
 "Test finished {}"
-msgstr "\n"
+msgstr ""
+"\n"
 "測試完成 {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -504,7 +512,7 @@ msgstr "關鍵字失敗後自動暫停"
 #: src/robotide/editor/editors.py:227
 #: src/robotide/editor/texteditor.py:1100
 #: src/robotide/preferences/editor.py:211
-#: src/robotide/ui/fileexplorerplugin.py:475
+#: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
 msgid "Settings"
 msgstr "設定"
@@ -547,16 +555,18 @@ msgid "No logs directory"
 msgstr "沒有日誌目錄"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid "There isn't logs directory. \n"
+msgid ""
+"There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr "沒有日誌目錄。 \n"
+msgstr ""
+"沒有日誌目錄。 \n"
 "請執行測試再試一次"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:273
+#: src/robotide/ui/fileexplorerplugin.py:274
 #: src/robotide/ui/mainframe.py:674
 msgid "RIDE - Preferences"
 msgstr "RIDE - 偏好設定"
@@ -570,11 +580,13 @@ msgid "  current keyword: "
 msgstr "  目前的關鍵字： "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid "[Navigate]\n"
+msgid ""
+"[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr "[Navigate]\n"
+msgstr ""
+"[Navigate]\n"
 "        !Go &Back | 回到樹狀結構中的上一個位置 | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | 前進到樹狀結構中的下一個位置 | Alt-%s | ART_GO_FORWARD\n"
 "        "
@@ -686,11 +698,15 @@ msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword
 msgstr "內容輔助 (Ctrl-Space 或 Ctrl-Alt-Space) | 顯示可能的關鍵字和變數補全 | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr "預設的編輯器外掛程式。也稱為 Grid 或 Cell Editor。\n\n"
+msgstr ""
+"預設的編輯器外掛程式。也稱為 Grid 或 Cell Editor。\n"
+"\n"
 "    這個外掛為 Robot Framework\n"
 "    測試資料的各個項目實作編輯器。\n"
 "    "
@@ -712,25 +728,31 @@ msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 
 msgstr "用管道符號分隔可能的參數，如 'My Keyword | arg 1 | arg 2'。"
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+msgid ""
+"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr "使用時間語法，如「1 分鐘 10 秒」或「2 小時」，或以秒為單位。\n"
+msgstr ""
+"使用時間語法，如「1 分鐘 10 秒」或「2 小時」，或以秒為單位。\n"
 "在 Robot v3.0.1 之前，可以指定可選的訊息，如「3 分鐘 | 我的訊息在此」。"
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+msgid ""
+"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
 "Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr "指定以管道符號分隔的參數，如 '${arg1} | ${arg2}'。\n"
+msgstr ""
+"指定以管道符號分隔的參數，如 '${arg1} | ${arg2}'。\n"
 "預設值使用等號，最後一個參數可以是清單變數。\n"
 "範例： 「${arg1} | ${arg2}= 預設值 | @{rest}」 。\n"
 "注意。您可以在此欄位中使用變數捷徑。"
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid "Alias can be used to import same library multiple times with different names.\n"
+msgid ""
+"Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr "別名可用於以不同的名稱多次匯入相同的函式庫。\n"
+msgstr ""
+"別名可用於以不同的名稱多次匯入相同的函式庫。\n"
 "別名的前綴為： "
 
 #: src/robotide/editor/dialoghelps.py:43
@@ -1053,14 +1075,14 @@ msgstr " (僅供閱讀)"
 #: src/robotide/searchtests/dialogsearchtests.py:61
 #: src/robotide/searchtests/dialogsearchtests.py:85
 #: src/robotide/ui/keywordsearch.py:357
-#: src/robotide/usages/usagesdialog.py:151
+#: src/robotide/usages/usagesdialog.py:167
 msgid "Source"
 msgstr "來源"
 
 #: src/robotide/editor/editors.py:387
 #: src/robotide/ui/keywordsearch.py:207
-#: src/robotide/ui/treenodehandlers.py:493
-#: src/robotide/ui/treenodehandlers.py:762
+#: src/robotide/ui/treenodehandlers.py:499
+#: src/robotide/ui/treenodehandlers.py:770
 msgid "Find Usages"
 msgstr "尋找用途"
 
@@ -1149,7 +1171,8 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "使 Dict 變數 Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid "<b>Keyword was not detected by RIDE</b>\n"
+msgid ""
+"<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1159,7 +1182,8 @@ msgid "<b>Keyword was not detected by RIDE</b>\n"
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr "<b>RIDE</b>\n"
+msgstr ""
+"<b>RIDE</b>\n"
 "        <br><b>未偵測到關鍵字</b>可能的修正：<br>\n"
 "        <ul>\n"
 "            <li>匯入包含關鍵字的函式庫或資源檔案。</li>\n"
@@ -1172,7 +1196,7 @@ msgstr "<b>RIDE</b>\n"
 
 #: src/robotide/editor/kweditor.py:1131
 #: src/robotide/ui/mainframe.py:219
-#: src/robotide/ui/treenodehandlers.py:243
+#: src/robotide/ui/treenodehandlers.py:244
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "驗證錯誤"
@@ -1227,21 +1251,21 @@ msgstr "搜尋"
 
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/ui/tagdialogs.py:233
-#: src/robotide/ui/treenodehandlers.py:384
-#: src/robotide/ui/treenodehandlers.py:688
-#: src/robotide/ui/treenodehandlers.py:792
+#: src/robotide/ui/treenodehandlers.py:390
+#: src/robotide/ui/treenodehandlers.py:696
+#: src/robotide/ui/treenodehandlers.py:800
 msgid "Delete"
 msgstr "刪除"
 
 #: src/robotide/editor/listeditor.py:40
-#: src/robotide/ui/treenodehandlers.py:684
-#: src/robotide/ui/treenodehandlers.py:788
+#: src/robotide/ui/treenodehandlers.py:692
+#: src/robotide/ui/treenodehandlers.py:796
 msgid "Move Up\tCtrl-Up"
 msgstr "向上移動 Ctrl-Up"
 
 #: src/robotide/editor/listeditor.py:40
-#: src/robotide/ui/treenodehandlers.py:685
-#: src/robotide/ui/treenodehandlers.py:789
+#: src/robotide/ui/treenodehandlers.py:693
+#: src/robotide/ui/treenodehandlers.py:797
 msgid "Move Down\tCtrl-Down"
 msgstr "向下移動 Ctrl-Down"
 
@@ -1297,7 +1321,8 @@ msgid "Import Library Spec XML"
 msgstr "匯入圖書館規格 XML"
 
 #: src/robotide/editor/settingeditors.py:687
-msgid "<br>Possible corrections and notes:<br>\n"
+msgid ""
+"<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1311,7 +1336,8 @@ msgid "<br>Possible corrections and notes:<br>\n"
 "            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr "<br>可能的更正和注意事項：<br>\n"
+msgstr ""
+"<br>可能的更正和注意事項：<br>\n"
 "        <ul>\n"
 "            <li>匯入失敗會以紅色顯示。</li>\n"
 "            <li>請參閱Tools / View RIDE Log以取得失敗的詳細資訊。</li>\n"
@@ -1373,7 +1399,8 @@ msgid "Get help"
 msgstr "尋求協助"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid "<h1>Syntax colorization</h1>\n"
+msgid ""
+"<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1398,7 +1425,8 @@ msgid "<h1>Syntax colorization</h1>\n"
 "        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr "<h1>語法著色</h1>\n"
+msgstr ""
+"<h1>語法著色</h1>\n"
 "        <p>\n"
 "        Text Edit 的語法著色使用<a href='https://pygments.org/'>Pygments</a>語法高亮器。\n"
 "        </p>\n"
@@ -1508,7 +1536,7 @@ msgid "Comment foreground"
 msgstr "評論前台"
 
 #: src/robotide/preferences/editors.py:176
-#: src/robotide/preferences/editors.py:392
+#: src/robotide/preferences/editors.py:400
 msgid "Error foreground"
 msgstr "錯誤前景"
 
@@ -1549,132 +1577,142 @@ msgid "Syntax characters"
 msgstr "語法字元"
 
 #: src/robotide/preferences/editors.py:190
-#: src/robotide/preferences/editors.py:390
+#: src/robotide/preferences/editors.py:398
 msgid "Text foreground"
 msgstr "文字前景"
 
 #: src/robotide/preferences/editors.py:231
-#: src/robotide/preferences/editors.py:266
+#: src/robotide/preferences/editors.py:274
 msgid "Enable auto suggestions"
 msgstr "啟用自動建議"
 
-#: src/robotide/preferences/editors.py:238
-#: src/robotide/preferences/editors.py:241
+#: src/robotide/preferences/editors.py:235
+msgid "Enable visible spaces"
+msgstr ""
+
+#: src/robotide/preferences/editors.py:239
+msgid "Enable visible newlines"
+msgstr ""
+
+#: src/robotide/preferences/editors.py:246
+#: src/robotide/preferences/editors.py:249
 msgid "Grid Editor"
 msgstr "網格編輯器"
 
-#: src/robotide/preferences/editors.py:242
+#: src/robotide/preferences/editors.py:250
 msgid "Grid Editor Settings"
 msgstr "網格編輯器設定"
 
-#: src/robotide/preferences/editors.py:251
+#: src/robotide/preferences/editors.py:259
 msgid "Default column size"
 msgstr "預設欄位大小"
 
-#: src/robotide/preferences/editors.py:255
+#: src/robotide/preferences/editors.py:263
 msgid "Auto size columns"
 msgstr "自動調整欄位大小"
 
-#: src/robotide/preferences/editors.py:258
-msgid "Max column size\n"
+#: src/robotide/preferences/editors.py:266
+msgid ""
+"Max column size\n"
 "(applies when auto size is on)"
-msgstr "最大欄位大小\n"
+msgstr ""
+"最大欄位大小\n"
 "(自動調整大小時適用)"
 
-#: src/robotide/preferences/editors.py:262
+#: src/robotide/preferences/editors.py:270
 msgid "Word wrap and auto size rows"
 msgstr "換行和自動調整大小"
 
-#: src/robotide/preferences/editors.py:298
+#: src/robotide/preferences/editors.py:306
 msgid "User Keyword Foreground"
 msgstr "使用者關鍵字前景"
 
-#: src/robotide/preferences/editors.py:299
+#: src/robotide/preferences/editors.py:307
 msgid "Library Keyword Foreground"
 msgstr "圖書館關鍵字前景"
 
-#: src/robotide/preferences/editors.py:300
+#: src/robotide/preferences/editors.py:308
 msgid "Variable Foreground"
 msgstr "可變前景"
 
-#: src/robotide/preferences/editors.py:301
+#: src/robotide/preferences/editors.py:309
 msgid "Unknown Variable Foreground"
 msgstr "未知 變數 前景"
 
-#: src/robotide/preferences/editors.py:302
+#: src/robotide/preferences/editors.py:310
 msgid "Comments Foreground"
 msgstr "評論 前景"
 
-#: src/robotide/preferences/editors.py:303
+#: src/robotide/preferences/editors.py:311
 msgid "Default Foreground"
 msgstr "預設前景"
 
-#: src/robotide/preferences/editors.py:304
+#: src/robotide/preferences/editors.py:312
 msgid "Empty Foreground"
 msgstr "空前景"
 
-#: src/robotide/preferences/editors.py:320
+#: src/robotide/preferences/editors.py:328
 msgid "Variable Background"
 msgstr "可變背景"
 
-#: src/robotide/preferences/editors.py:321
+#: src/robotide/preferences/editors.py:329
 msgid "Keyword Background"
 msgstr "關鍵字背景"
 
-#: src/robotide/preferences/editors.py:322
+#: src/robotide/preferences/editors.py:330
 msgid "Mandatory Field Background"
 msgstr "必修領域背景"
 
-#: src/robotide/preferences/editors.py:323
+#: src/robotide/preferences/editors.py:331
 msgid "Optional Field Background"
 msgstr "可選領域背景"
 
-#: src/robotide/preferences/editors.py:324
+#: src/robotide/preferences/editors.py:332
 msgid "Mandatory Empty Field Background"
 msgstr "強制性空字段背景"
 
-#: src/robotide/preferences/editors.py:325
+#: src/robotide/preferences/editors.py:333
 msgid "Unknown Background"
 msgstr "背景不明"
 
-#: src/robotide/preferences/editors.py:326
+#: src/robotide/preferences/editors.py:334
 msgid "Error Background"
 msgstr "錯誤背景"
 
-#: src/robotide/preferences/editors.py:327
+#: src/robotide/preferences/editors.py:335
 msgid "Highlight Background"
 msgstr "突出背景"
 
-#: src/robotide/preferences/editors.py:352
-#: src/robotide/preferences/editors.py:355
+#: src/robotide/preferences/editors.py:360
+#: src/robotide/preferences/editors.py:363
 msgid "Test Runner"
 msgstr "測試執行器"
 
-#: src/robotide/preferences/editors.py:356
+#: src/robotide/preferences/editors.py:364
 msgid "Test Runner Settings"
 msgstr "測試執行器設定"
 
-#: src/robotide/preferences/editors.py:360
+#: src/robotide/preferences/editors.py:368
 msgid "Colors will be active after next RIDE restart."
 msgstr "顏色會在下次重新啟動 RIDE 後生效。"
 
-#: src/robotide/preferences/editors.py:376
+#: src/robotide/preferences/editors.py:384
 msgid "Shows console colors set by"
 msgstr "顯示由"
 
-#: src/robotide/preferences/editors.py:378
+#: src/robotide/preferences/editors.py:386
 msgid "Asks for confirmation to run all tests if none selected "
 msgstr "如果沒有選擇測試，則要求確認是否執行所有測試 "
 
-#: src/robotide/preferences/editors.py:393
+#: src/robotide/preferences/editors.py:401
 msgid "Fail foreground"
 msgstr "前台失敗"
 
-#: src/robotide/preferences/editors.py:394
+#: src/robotide/preferences/editors.py:402
 msgid "Pass foreground"
 msgstr "通過前台"
 
-#: src/robotide/preferences/editors.py:395
+#: src/robotide/preferences/editors.py:403
 msgid "Skip foreground"
 msgstr "跳過前景"
 
@@ -1876,25 +1914,31 @@ msgid "Open %s"
 msgstr "開啟 %s"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid "The specified command string will be split from whitespaces into a command\n"
+msgid ""
+"The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n\n"
+"internal spaces, they must be written as '<SPACE>'.\n"
+"\n"
 "The command will be executed in the system directly without opening a shell.\n"
 "This means that shell commands and extensions are not available. For example,\n"
 "in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n\n"
+"command does not work.\n"
+"\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr "指定的命令字串將從空白分割成命令\n"
+msgstr ""
+"指定的命令字串將從空白分割成命令\n"
 "及其參數。如果命令或任何參數需要\n"
-"內部空格，則必須寫成 '<SPACE>'。\n\n"
+"內部空格，則必須寫成 '<SPACE>'。\n"
+"\n"
 "命令將直接在系統中執行，而不會開啟 shell。\n"
 "這表示 shell 命令和延伸功能無法使用。例如，在 Windows 批次檔案中執行的\n"
 "必須包含 '.bat「 副檔名，而 」dir'\n"
-"指令則無效。\n\n"
+"指令則無效。\n"
+"\n"
 "範例：\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -1915,11 +1959,15 @@ msgid "Remove"
 msgstr "移除"
 
 #: src/robotide/run/runanything.py:30
-msgid "A plugin for executing commands on the system.\n\n"
+msgid ""
+"A plugin for executing commands on the system.\n"
+"\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr "在系統上執行指令的外掛程式。\n\n"
+msgstr ""
+"在系統上執行指令的外掛程式。\n"
+"\n"
 "    此外掛可建立持久的執行組態，並\n"
 "    執行這些組態。執行命令的輸出顯示在\n"
 "    獨立的索引標籤中。"
@@ -1966,14 +2014,14 @@ msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for 
 msgstr "使用標籤模式尋找匹配。如需詳細資訊，請參閱 RF 使用者指南或「robot --help 」。"
 
 #: src/robotide/searchtests/dialogsearchtests.py:96
-#: src/robotide/ui/treenodehandlers.py:872
+#: src/robotide/ui/treenodehandlers.py:880
 msgid "Include"
 msgstr "包括"
 
 #: src/robotide/searchtests/dialogsearchtests.py:117
-#: src/robotide/ui/treenodehandlers.py:402
-#: src/robotide/ui/treenodehandlers.py:499
-#: src/robotide/ui/treenodehandlers.py:592
+#: src/robotide/ui/treenodehandlers.py:408
+#: src/robotide/ui/treenodehandlers.py:506
+#: src/robotide/ui/treenodehandlers.py:600
 msgid "Exclude"
 msgstr "排除"
 
@@ -2006,13 +2054,17 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "根據名稱、標籤和文件搜尋測試的外掛程式"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid "Install missing libraries and open documentation.\n\n"
+msgid ""
+"Install missing libraries and open documentation.\n"
+"\n"
 "    You can edit settings.cfg to add URL for documentation and command to install.\n"
 "    You can right-click on a Library name, and Open Documentation or Install Library.\n"
 "    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr "安裝遺失的函式庫並開啟說明文件。\n\n"
+msgstr ""
+"安裝遺失的函式庫並開啟說明文件。\n"
+"\n"
 "    您可以編輯 settings.cfg 來新增文件的 URL 和安裝指令。\n"
 "    您可以用滑鼠右鍵按一下函式庫名稱，然後開啟文件或安裝函式庫。\n"
 "    從 Tools->Library Finder... 或 Help->Open Library Documentation... 您會看到\n"
@@ -2048,10 +2100,13 @@ msgid "Info"
 msgstr "資訊"
 
 #: src/robotide/spec/specimporter.py:79
-msgid "Library \"%s\" imported\n"
+msgid ""
+"Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr "函式庫 \"%s「 從 」%s\" 匯入\n\n"
+msgstr ""
+"函式庫 \"%s「 從 」%s\" 匯入\n"
+"\n"
 "這可能需要重新啟動 RIDE。"
 
 #: src/robotide/spec/specimporter.py:83
@@ -2115,9 +2170,11 @@ msgid "Change recursively"
 msgstr "遞歸變更"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid "Provide format for initialization file in directory\n"
+msgid ""
+"Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr "提供目錄\n"
+msgstr ""
+"提供目錄\n"
 "\"%s\" 中初始化檔案的格式。"
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2150,9 +2207,9 @@ msgid "Provides a tree view for Files and Folders. Opens selected item with mous
 msgstr "提供檔案和資料夾的樹狀檢視。用滑鼠右鍵開啟選取的項目。"
 
 #: src/robotide/ui/fileexplorerplugin.py:81
-#: src/robotide/ui/treenodehandlers.py:368
-#: src/robotide/ui/treenodehandlers.py:502
-#: src/robotide/ui/treenodehandlers.py:595
+#: src/robotide/ui/treenodehandlers.py:374
+#: src/robotide/ui/treenodehandlers.py:509
+#: src/robotide/ui/treenodehandlers.py:603
 msgid "Open Containing Folder"
 msgstr "開啟包含的資料夾"
 
@@ -2283,7 +2340,8 @@ msgstr "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 
 #: src/robotide/ui/mainframe.py:79
 msgid "!About | Information about RIDE\n"
-msgstr "!About | 有關 RIDE\n"
+msgstr ""
+"!About | 有關 RIDE\n"
 "的資訊"
 
 #: src/robotide/ui/mainframe.py:80
@@ -2312,9 +2370,11 @@ msgid "Test Suites"
 msgstr "測試套件"
 
 #: src/robotide/ui/mainframe.py:465
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr "有未儲存的修改。\n"
+msgstr ""
+"有未儲存的修改。\n"
 "您要在退出前保存修改嗎？"
 
 #: src/robotide/ui/mainframe.py:465
@@ -2323,9 +2383,11 @@ msgid "Warning"
 msgstr "警告"
 
 #: src/robotide/ui/mainframe.py:559
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr "有未儲存的修改。\n"
+msgstr ""
+"有未儲存的修改。\n"
 "您要繼續而不儲存嗎？"
 
 #: src/robotide/ui/mainframe.py:609
@@ -2438,9 +2500,11 @@ msgid "Search unused keywords"
 msgstr "搜尋未使用的關鍵字"
 
 #: src/robotide/ui/review.py:66
-msgid "This dialog helps you finding unused keywords within your opened project.\n"
+msgid ""
+"This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr "此對話方塊可協助您在已開啟的專案中尋找未使用的關鍵字。\n"
+msgstr ""
+"此對話方塊可協助您在已開啟的專案中尋找未使用的關鍵字。\n"
 "如果您願意，可以使用篩選器將搜尋範圍限制為一組檔案。"
 
 #: src/robotide/ui/review.py:70
@@ -2461,10 +2525,12 @@ msgid "Use RegEx"
 msgstr "使用 RegEx"
 
 #: src/robotide/ui/review.py:93
-msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid ""
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr "您可以在此定義一個或多個以逗號分隔的字串 (例如 common,abc,123)。\n"
+msgstr ""
+"您可以在此定義一個或多個以逗號分隔的字串 (例如 common,abc,123)。\n"
 "如果至少有一個字串是檔案名稱的一部分，篩選器就會匹配。\n"
 "如果您沒有輸入任何字串，所有開啟的檔案都會包含在內。"
 
@@ -2523,8 +2589,12 @@ msgid "(None)"
 msgstr "(無)"
 
 #: src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n\n"
-msgstr "下列檔案的關鍵字將包含在搜尋中：\n\n"
+msgid ""
+"Keywords of the following files will be included in the search:\n"
+"\n"
+msgstr ""
+"下列檔案的關鍵字將包含在搜尋中：\n"
+"\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2575,9 +2645,11 @@ msgid "Excluded Tag Search"
 msgstr "排除標籤搜尋"
 
 #: src/robotide/ui/tagdialogs.py:147
-msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid ""
+"Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr "總測試 %d, 有標籤的測試 %d, 唯一標籤 %d\n"
+msgstr ""
+"總測試 %d, 有標籤的測試 %d, 唯一標籤 %d\n"
 "目前選取的測試 %d"
 
 #: src/robotide/ui/tagdialogs.py:233
@@ -2606,140 +2678,148 @@ msgid "Delete a tag '%s' ?"
 msgstr "刪除標籤 '%s' ?"
 
 #: src/robotide/ui/tagdialogs.py:276
-#: src/robotide/ui/treenodehandlers.py:661
+#: src/robotide/ui/treenodehandlers.py:669
 msgid "Confirm"
 msgstr "確認"
 
-#: src/robotide/ui/treenodehandlers.py:254
-#: src/robotide/ui/treenodehandlers.py:360
+#: src/robotide/ui/treenodehandlers.py:255
+#: src/robotide/ui/treenodehandlers.py:366
 msgid "New Resource"
 msgstr "新資源"
 
-#: src/robotide/ui/treenodehandlers.py:358
+#: src/robotide/ui/treenodehandlers.py:364
 msgid "New Suite\tCtrl-Shift-F"
 msgstr "新套件 Ctrl-Shift-F"
 
-#: src/robotide/ui/treenodehandlers.py:359
+#: src/robotide/ui/treenodehandlers.py:365
 msgid "New Directory"
 msgstr "新目錄"
 
-#: src/robotide/ui/treenodehandlers.py:362
-#: src/robotide/ui/treenodehandlers.py:485
-#: src/robotide/ui/treenodehandlers.py:573
+#: src/robotide/ui/treenodehandlers.py:368
+#: src/robotide/ui/treenodehandlers.py:491
+#: src/robotide/ui/treenodehandlers.py:581
 msgid "New User Keyword\tCtrl-Shift-K"
 msgstr "新使用者關鍵字 Ctrl-Shift-K"
 
-#: src/robotide/ui/treenodehandlers.py:363
-#: src/robotide/ui/treenodehandlers.py:486
-#: src/robotide/ui/treenodehandlers.py:574
+#: src/robotide/ui/treenodehandlers.py:369
+#: src/robotide/ui/treenodehandlers.py:492
+#: src/robotide/ui/treenodehandlers.py:582
 msgid "New Scalar\tCtrl-Shift-V"
 msgstr "新標量 Ctrl-Shift-V"
 
-#: src/robotide/ui/treenodehandlers.py:364
-#: src/robotide/ui/treenodehandlers.py:487
-#: src/robotide/ui/treenodehandlers.py:575
+#: src/robotide/ui/treenodehandlers.py:370
+#: src/robotide/ui/treenodehandlers.py:493
+#: src/robotide/ui/treenodehandlers.py:583
 msgid "New List Variable\tCtrl-Shift-L"
 msgstr "新增清單變數 Ctrl-Shift-L"
 
-#: src/robotide/ui/treenodehandlers.py:365
-#: src/robotide/ui/treenodehandlers.py:488
-#: src/robotide/ui/treenodehandlers.py:576
+#: src/robotide/ui/treenodehandlers.py:371
+#: src/robotide/ui/treenodehandlers.py:494
+#: src/robotide/ui/treenodehandlers.py:584
 msgid "New Dictionary Variable"
 msgstr "新字典變數"
 
-#: src/robotide/ui/treenodehandlers.py:367
-#: src/robotide/ui/treenodehandlers.py:491
-#: src/robotide/ui/treenodehandlers.py:579
+#: src/robotide/ui/treenodehandlers.py:373
+#: src/robotide/ui/treenodehandlers.py:497
+#: src/robotide/ui/treenodehandlers.py:587
 msgid "Change Format"
 msgstr "變更格式"
 
-#: src/robotide/ui/treenodehandlers.py:389
-#: src/robotide/ui/treenodehandlers.py:587
+#: src/robotide/ui/treenodehandlers.py:395
+#: src/robotide/ui/treenodehandlers.py:595
 msgid "Select All Tests"
 msgstr "選擇所有測試"
 
-#: src/robotide/ui/treenodehandlers.py:390
-#: src/robotide/ui/treenodehandlers.py:588
+#: src/robotide/ui/treenodehandlers.py:396
+#: src/robotide/ui/treenodehandlers.py:596
 msgid "Deselect All Tests"
 msgstr "取消選擇所有測試"
 
-#: src/robotide/ui/treenodehandlers.py:391
-#: src/robotide/ui/treenodehandlers.py:589
+#: src/robotide/ui/treenodehandlers.py:397
+#: src/robotide/ui/treenodehandlers.py:597
 msgid "Select Only Failed Tests"
 msgstr "僅選擇失敗的測試"
 
-#: src/robotide/ui/treenodehandlers.py:392
-#: src/robotide/ui/treenodehandlers.py:590
+#: src/robotide/ui/treenodehandlers.py:398
+#: src/robotide/ui/treenodehandlers.py:598
 msgid "Select Only Passed Tests"
 msgstr "僅選擇通過的測試"
 
-#: src/robotide/ui/treenodehandlers.py:404
+#: src/robotide/ui/treenodehandlers.py:410
 msgid "Collapse all"
 msgstr "全部折疊"
 
-#: src/robotide/ui/treenodehandlers.py:404
+#: src/robotide/ui/treenodehandlers.py:410
 msgid "Expand all"
 msgstr "全部展開"
 
-#: src/robotide/ui/treenodehandlers.py:444
-msgid "Directory contains unsaved data!\n"
+#: src/robotide/ui/treenodehandlers.py:450
+msgid ""
+"Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "目錄包含未儲存的資料！\n"
+msgstr ""
+"目錄包含未儲存的資料！\n"
 "您必須在排除之前儲存資料。"
 
-#: src/robotide/ui/treenodehandlers.py:490
-#: src/robotide/ui/treenodehandlers.py:578
-#: src/robotide/ui/treenodehandlers.py:686
-#: src/robotide/ui/treenodehandlers.py:790
+#: src/robotide/ui/treenodehandlers.py:496
+#: src/robotide/ui/treenodehandlers.py:586
+#: src/robotide/ui/treenodehandlers.py:694
+#: src/robotide/ui/treenodehandlers.py:798
 msgid "Rename\tF2"
 msgstr "重新命名 F2"
 
-#: src/robotide/ui/treenodehandlers.py:492
-#: src/robotide/ui/treenodehandlers.py:497
-#: src/robotide/ui/treenodehandlers.py:580
-#: src/robotide/ui/treenodehandlers.py:585
+#: src/robotide/ui/treenodehandlers.py:498
+#: src/robotide/ui/treenodehandlers.py:503
+#: src/robotide/ui/treenodehandlers.py:588
+#: src/robotide/ui/treenodehandlers.py:593
 msgid "Sort Keywords"
 msgstr "排序關鍵字"
 
-#: src/robotide/ui/treenodehandlers.py:494
-#: src/robotide/ui/treenodehandlers.py:581
+#: src/robotide/ui/treenodehandlers.py:500
+#: src/robotide/ui/treenodehandlers.py:589
 msgid "Delete\tCtrl-Shift-D"
 msgstr "刪除 Ctrl-Shift-D"
 
-#: src/robotide/ui/treenodehandlers.py:496
-#: src/robotide/ui/treenodehandlers.py:583
+#: src/robotide/ui/treenodehandlers.py:502
+#: src/robotide/ui/treenodehandlers.py:591
 msgid "Sort Variables"
 msgstr "排序變數"
 
-#: src/robotide/ui/treenodehandlers.py:501
-#: src/robotide/ui/treenodehandlers.py:594
+#: src/robotide/ui/treenodehandlers.py:504
+msgid "Sort Keywords (Case Insensitive)"
+msgstr ""
+
+#: src/robotide/ui/treenodehandlers.py:508
+#: src/robotide/ui/treenodehandlers.py:602
 msgid "Remove Read Only"
 msgstr "移除唯讀"
 
-#: src/robotide/ui/treenodehandlers.py:531
-#: src/robotide/ui/treenodehandlers.py:634
-msgid "File contains unsaved data!\n"
+#: src/robotide/ui/treenodehandlers.py:539
+#: src/robotide/ui/treenodehandlers.py:642
+msgid ""
+"File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "檔案包含未儲存的資料！\n"
+msgstr ""
+"檔案包含未儲存的資料！\n"
 "您必須先儲存資料，才能排除。"
 
-#: src/robotide/ui/treenodehandlers.py:572
+#: src/robotide/ui/treenodehandlers.py:580
 msgid "New Test Case\tCtrl-Shift-T"
 msgstr "新增測試案例 Ctrl-Shift-T"
 
-#: src/robotide/ui/treenodehandlers.py:584
+#: src/robotide/ui/treenodehandlers.py:592
 msgid "Sort Tests"
 msgstr "分類測試"
 
-#: src/robotide/ui/treenodehandlers.py:661
+#: src/robotide/ui/treenodehandlers.py:669
 msgid "Delete test case file"
 msgstr "刪除測試案例檔案"
 
-#: src/robotide/ui/treenodehandlers.py:683
+#: src/robotide/ui/treenodehandlers.py:691
 msgid "Copy\tCtrl-Shift-C"
 msgstr "複製 Ctrl-Shift-C"
 
-#: src/robotide/ui/treenodehandlers.py:839
+#: src/robotide/ui/treenodehandlers.py:847
 msgid "Add Resource"
 msgstr "新增資源"
 
@@ -2767,39 +2847,46 @@ msgstr "%s (排除在外)"
 msgid "Invalid keyword name: "
 msgstr "無效關鍵字名稱： "
 
-#: src/robotide/usages/usagesdialog.py:58
+#: src/robotide/usages/usagesdialog.py:61
 msgid "'%s' - %d matches found - Searching%s"
 msgstr "'%s' - 找到 %d 匹配 - 搜尋%s"
 
-#: src/robotide/usages/usagesdialog.py:63
+#: src/robotide/usages/usagesdialog.py:68
 msgid "'%s' - %d matches"
 msgstr "'%s' - %d 匹配"
 
-#: src/robotide/usages/usagesdialog.py:93
+#: src/robotide/usages/usagesdialog.py:100
 msgid "Go to definition"
 msgstr "前往定義"
 
-#: src/robotide/usages/usagesdialog.py:151
+#: src/robotide/usages/usagesdialog.py:167
 msgid "Location"
 msgstr "地點"
 
-#: src/robotide/usages/usagesdialog.py:151
+#: src/robotide/usages/usagesdialog.py:167
 msgid "Usage"
 msgstr "使用方式"
 
-#: src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:172
+#: src/robotide/usages/usagesdialog.py:190
+#: src/robotide/usages/usagesdialog.py:217
+#, fuzzy
+msgid "Searching..."
+msgstr "搜尋。%s \t- %s"
+
+#: src/robotide/usages/usagesdialog.py:212
 msgid "Imported Location"
 msgstr "進口地點"
 
-#: src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:212
 msgid "Imported name"
 msgstr "進口名稱"
 
-#: src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:212
 msgid "Importing Location"
 msgstr "匯入地點"
 
-#: src/robotide/usages/usagesdialog.py:185
+#: src/robotide/usages/usagesdialog.py:212
 msgid "Importing Name"
 msgstr "匯入名稱"
 
@@ -2818,4 +2905,3 @@ msgstr "確定"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "是"
-

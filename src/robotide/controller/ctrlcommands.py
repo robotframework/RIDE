@@ -465,7 +465,8 @@ class SortKeywords(_ReversibleCommand):
 
     def _execute(self, context):
         index_difference = context.sort_keywords(case_insensitive=self._case_insensitive)
-        self._undo_command = RestoreKeywordOrder(index_difference)
+
+        self._undo_command = RestoreKeywordOrder(index_difference, self._case_insensitive)
 
     def _get_undo_command(self):
         return self._undo_command
@@ -496,14 +497,15 @@ class RestoreTestOrder(_ReversibleCommand):
 
 class RestoreKeywordOrder(_ReversibleCommand):
 
-    def __init__(self, index_difference):
+    def __init__(self, index_difference, case_insensitive=False):
+        self._case_insensitive = case_insensitive
         self._index_difference = index_difference
 
     def _execute(self, context):
         context.restore_keyword_order(self._index_difference)
 
     def _get_undo_command(self):
-        return SortKeywords()
+        return SortKeywords(self._case_insensitive)
 
 
 class RestoreVariableOrder(_ReversibleCommand):
