@@ -1,0 +1,9 @@
+# The following are for local development
+invoke
+flake8
+autopep8
+Sphinx
+coverage
+tox
+hypothesis
+argparse

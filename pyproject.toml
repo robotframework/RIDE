@@ -45,7 +45,7 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-    "isbinary",
+    "chardet",
     "psutil",
     "Pygments",
     "PyPubSub",
@@ -54,7 +54,7 @@ dependencies = [
     "robotframework",
     "psutil",
     "packaging",
-    "requests>=2.32.4",
+    "requests>=2.33.0",
 ]
 
 [project.urls]

@@ -44,7 +44,7 @@ from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
 from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
-from isbinary import is_binary_file
+from ..lib.isbinary import is_binary_file
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -160,14 +160,14 @@ class RideFrame(wx.Frame):
         self.tasks = application.settings.get('tasks', False)
         self.doc_language = application.settings.get('doc language', '')
         self._notebook_theme = application.settings.get('notebook theme', 0)
-        self.general_settings = application.settings['General']  # .get_without_default('General')
-        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
-        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
-        self.color_background = self.general_settings.get_without_default('background')
-        self.color_foreground = self.general_settings.get_without_default('foreground')
-        self.font_face = self.general_settings.get('font face', '')
-        self.font_size = self.general_settings.get('font size', 11)
-        self.ui_language = self.general_settings.get('ui language', 'English')
+        self.general_settings = application.settings.get('General', {})
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80)) if self.general_settings else (240, 242, 80)
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70)) if self.general_settings else (7, 0, 70)
+        self.color_background = self.general_settings.get('background', 'light grey') if self.general_settings else 'light grey'
+        self.color_foreground = self.general_settings.get('foreground', '#5E5C64') if self.general_settings else '#5E5C64'
+        self.font_face = self.general_settings.get('font face', '') if self.general_settings else ''
+        self.font_size = self.general_settings.get('font size', 11) if self.general_settings else 11
+        self.ui_language = self.general_settings.get('ui language', 'English') if self.general_settings else 'English' 
         self.main_menu = None
         self._init_ui()
         self.SetIcon(wx.Icon(self._image_provider.RIDE_ICON))

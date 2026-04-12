@@ -110,12 +110,16 @@ class _ImportSuggester(_Suggester):
 
     def get_suggestions(self, name, *args):
         _ = args
+        if self._df_controller is None:
+            return []
         already_imported = self.get_already_imported()
         all_resources = self.get_all_available()
         suggestion_names = all_resources - already_imported
         return [self._suggestion(n) for n in sorted(suggestion_names) if name in n]
 
     def get_already_imported(self):
+        if self._df_controller is None:
+            return set()
         return set(imp.name for imp in self._df_controller.imports)
 
     def get_all_available(self):

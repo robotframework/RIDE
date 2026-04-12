@@ -31,16 +31,16 @@ class HtmlWindow(html.HtmlWindow):
         html.HtmlWindow.__init__(self, parent, size=size, style=html.HW_DEFAULT_STYLE)
         from ..preferences import RideSettings
         _settings = RideSettings()
-        self.general_settings = _settings['General']
-        self.color_background_help = color_background if color_background else self.general_settings['background help']
-        self.color_foreground_text = color_foreground if color_foreground else self.general_settings['foreground text']
+        self.general_settings = _settings.get('General', {})
+        self.color_background_help = color_background if color_background else (self.general_settings.get('background help', '#A5F173') if self.general_settings else '#A5F173')
+        self.color_foreground_text = color_foreground if color_foreground else (self.general_settings.get('foreground text', '#080240') if self.general_settings else '#080240')
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         if text:
             self.set_content(text)
         self.font = self.GetFont()
-        self.font.SetFaceName(self.general_settings['font face'])
-        self.font.SetPointSize(self.general_settings['font size'])
+        self.font.SetFaceName(self.general_settings.get('font face', '') if self.general_settings else '')
+        self.font.SetPointSize(self.general_settings.get('font size', 11) if self.general_settings else 11)
         self.SetFont(self.font)
         self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)

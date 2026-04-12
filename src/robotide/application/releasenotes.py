@@ -150,7 +150,7 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with some enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.4.1. However, 
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> current version, 7.4.2. However, 
  internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <ul class="simple">
 <li>This version supports Python 3.9 up to 3.14.</li>
@@ -159,7 +159,7 @@ RELEASE_NOTES = f"""
 <li>🐞 - When upgrading RIDE and activate Restart, some errors are visible about missing /language file, and behaviour
  is not normal. Better to close RIDE and start a new instance.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
-version 4.2.1, 4.2.2, 4.2.3 and 4.2.4, which we now <em>recommend</em>.</li>
+version 4.2.1, 4.2.2, 4.2.3, 4.2.4 and 4.2.5 which we now <em>recommend</em>.</li>
 -->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
 and changes.</li>
@@ -179,6 +179,13 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added option on Tree (Project Explorer) context menu, to <b>Sort Keywords (Case Insensitive)</b>.</li>
+<li>Improved visibility of the Search action in <b>Find Usages</b> by adding <b>Search...</b> on the first row of the 
+results table.</li>
+<li>Added on Text Editor, (Preferences->Text Editor) options to <b>Enable visible spaces</b> and
+ <b>Enable visible newlines</b>.</li>
+<li>Added on External/Code Editor, both enabled, <b>visible spaces<b> and <b>visible newlines<b>.</li>
+<li>Fixed exception seen in console when selecting Tools->Library Finder... on a clean install.</li>
 <li>The Test Suites Explorer can be visible or hidden with F12 (View->View Test Suites Explorer). Pane can be made
  floating or docked, by dragging or by double-clicking its top bar.</li>
 <li>In File Explorer opening non-text files is done by the operating system registered app.</li>
@@ -192,7 +199,7 @@ and changes.</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
-<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.4, which we recommend.
+<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.5, which we recommend.
 </strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
@@ -243,7 +250,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 07/January/2026.</p>
+<p>RIDE {VERSION} was released on 11/April/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>

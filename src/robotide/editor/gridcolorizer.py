@@ -16,7 +16,7 @@ import re
 import wx
 
 from ..controller.cellinfo import CellType, ContentType
-from ..controller.macrocontrollers import UserKeywordController
+# from ..controller.macrocontrollers import UserKeywordController
 
 
 # this import fails in HUDSON
@@ -58,6 +58,7 @@ class Colorizer(object):
             self._coloring_task(task_index, selection_content, row+1, 0)
 
     def _colorize_cell(self, row, col, selection_content):
+        from ..controller.macrocontrollers import UserKeywordController
         cell_info = self._controller.get_cell_info(row, col)
         if cell_info is None:
             self._set_default_colors(row, col)

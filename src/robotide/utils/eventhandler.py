@@ -114,7 +114,7 @@ class _RideFSWatcherHandler:
                 item = os.path.join(item, '')
                 try:
                     self._fs_watcher.RemoveTree(item)
-                except Exception:
+                except (OSError, RuntimeError):
                     pass
                 # Remove all files to the monitoring list
                 from wx import FileSystem
@@ -134,7 +134,7 @@ class _RideFSWatcherHandler:
                             pass
                         try:
                             self._fs_watcher.Remove(changing_file)
-                        except Exception:
+                        except (OSError, RuntimeError):
                             pass
                     try:
                         file_search = fs.FindNext()
@@ -152,7 +152,7 @@ class _RideFSWatcherHandler:
                         pass
                     try:
                         self._fs_watcher.Remove(item)
-                    except Exception:
+                    except (OSError, RuntimeError):
                         pass
 
     def exclude_listening(self, path):

@@ -85,7 +85,7 @@ class NoteBook(aui.AuiNotebook):
         oldselect = event.GetOldSelection()
         try:
             oldtitle = self.GetPageText(oldselect)
-        except Exception:
+        except (wx.wxAssertionError, RuntimeError):
             oldtitle = ""
         newindex = event.GetSelection()
         newtitle = self.GetPageText(event.GetSelection())

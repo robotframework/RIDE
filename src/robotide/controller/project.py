@@ -153,6 +153,10 @@ class Project(_BaseController, WithNamespace):
         return self.controller.data if self.controller else None
 
     @property
+    def datafile_controller(self):
+        return self.controller
+
+    @property
     def datafiles(self):
         return self._suites() + self.resources
 
