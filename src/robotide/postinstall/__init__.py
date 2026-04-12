@@ -29,7 +29,8 @@ except ImportError:
                      "or pip install wxPython")
     exit(-1)
 
-from os import environ, getlogin
+from getpass import getuser
+from os import environ
 from os.path import exists, join
 from robotide.widgets import RIDEDialog
 
@@ -254,7 +255,7 @@ def _create_desktop_shortcut_mac(frame=None):
         if exists(ride_app_pc_path):
             shutil.rmtree(ride_app_pc_path, True)
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
-        user = getlogin()
+        user = getuser()
         user_desktop_link = '/Users/' + user + '/Desktop/' + ride_app_name
         if exists(user_desktop_link):
             os.remove(user_desktop_link)

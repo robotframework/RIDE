@@ -213,7 +213,8 @@ class MessageDialogTestCase(unittest.TestCase):
         assert result is not None
 
 global option_f
-from os import environ, getlogin
+from getpass import getuser
+from os import environ
 from os.path import exists, join
 DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
 
@@ -221,7 +222,7 @@ def reset_shortcut():
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho", "zh": "Desktop"}
-    user = getlogin()
+    user = getuser()
     ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
     directory = join("/home", user, ndesktop)
     defaultdir = join("/home", user, "Desktop")
