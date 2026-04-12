@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-11 15:41+0100\n"
+"POT-Creation-Date: 2026-04-12 01:23+0100\n"
 "PO-Revision-Date: 2026-03-03 21:50\n"
 "Last-Translator: \n"
 "Language-Team: Hindi\n"
@@ -1213,7 +1213,7 @@ msgid "Search"
 msgstr ""
 
 #: src/robotide/editor/listeditor.py:40
-#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:239
 #: src/robotide/ui/treenodehandlers.py:390
 #: src/robotide/ui/treenodehandlers.py:696
 #: src/robotide/ui/treenodehandlers.py:800
@@ -1233,7 +1233,7 @@ msgid "Move Down\tCtrl-Down"
 msgstr ""
 
 #: src/robotide/editor/settingeditors.py:102
-#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:239
 msgid "Clear"
 msgstr ""
 
@@ -2498,62 +2498,66 @@ msgstr ""
 msgid "View all tags"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:76
+#: src/robotide/ui/tagdialogs.py:77
 msgid "Tag"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:77
+#: src/robotide/ui/tagdialogs.py:78
 msgid "Occurrences"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:82
+#: src/robotide/ui/tagdialogs.py:83
 msgid "The List"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:85
+#: src/robotide/ui/tagdialogs.py:86
+msgid "Info: Right-click on a tag for actions. Click on headers to change sorting."
+msgstr ""
+
+#: src/robotide/ui/tagdialogs.py:91
 msgid "Refresh"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:86
+#: src/robotide/ui/tagdialogs.py:92
 msgid "Included Tag Search"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:89
+#: src/robotide/ui/tagdialogs.py:95
 msgid "Excluded Tag Search"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:147
+#: src/robotide/ui/tagdialogs.py:153
 msgid ""
 "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:233
+#: src/robotide/ui/tagdialogs.py:239
 msgid "Select all"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:233
-#: src/robotide/ui/tagdialogs.py:262
+#: src/robotide/ui/tagdialogs.py:239
+#: src/robotide/ui/tagdialogs.py:268
 msgid "Rename"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:234
+#: src/robotide/ui/tagdialogs.py:240
 msgid "Show tests with this tag"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:234
+#: src/robotide/ui/tagdialogs.py:240
 msgid "Show tests without this tag"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:261
+#: src/robotide/ui/tagdialogs.py:267
 msgid "Renaming tag '%s'."
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:276
+#: src/robotide/ui/tagdialogs.py:282
 msgid "Delete a tag '%s' ?"
 msgstr ""
 
-#: src/robotide/ui/tagdialogs.py:276
+#: src/robotide/ui/tagdialogs.py:282
 #: src/robotide/ui/treenodehandlers.py:669
 msgid "Confirm"
 msgstr ""
