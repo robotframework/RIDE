@@ -179,6 +179,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added Auto-Save feature. Default is disabled with setting zero minutes in Preferences->Save.</li>
 <li>Added option on Tree (Project Explorer) context menu, to <b>Sort Keywords (Case Insensitive)</b>.</li>
 <li>Improved visibility of the Search action in <b>Find Usages</b> by adding <b>Search...</b> on the first row of the 
 results table.</li>

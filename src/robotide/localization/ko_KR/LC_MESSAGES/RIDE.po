@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-12 01:23+0100\n"
+"POT-Creation-Date: 2026-04-12 22:41+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
@@ -320,8 +320,8 @@ msgstr "테스트 실행"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:884
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:913
+#: src/robotide/ui/mainframe.py:925
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "도구"
@@ -567,7 +567,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:674
+#: src/robotide/ui/mainframe.py:703
 msgid "RIDE - Preferences"
 msgstr "RIDE - 환경설정"
 
@@ -1067,7 +1067,7 @@ msgstr "새 사용자 키워드"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:214
+#: src/robotide/ui/mainframe.py:218
 msgid " (READ ONLY)"
 msgstr " (읽기 전용)"
 
@@ -1195,7 +1195,7 @@ msgstr ""
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:219
+#: src/robotide/ui/mainframe.py:223
 #: src/robotide/ui/treenodehandlers.py:244
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
@@ -1886,6 +1886,14 @@ msgstr "공백 구분"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "텍스트 형식으로 저장할 때 셀 사이의 공백 수"
 
+#: src/robotide/preferences/saving.py:72
+msgid "Auto save interval (minutes)"
+msgstr ""
+
+#: src/robotide/preferences/saving.py:74
+msgid "Automatically save all files after specified minutes (0 = disabled)"
+msgstr ""
+
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
 msgstr "최근에 연 파일을 파일 메뉴에 추가합니다."
@@ -2216,7 +2224,7 @@ msgstr "포함 폴더 열기"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:317
+#: src/robotide/ui/mainframe.py:321
 msgid "Files"
 msgstr "파일"
 
@@ -2346,28 +2354,33 @@ msgstr "정보 | 라이드에 대한 정보\n"
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "업그레이드 확인 | 새로 출시된 버전의 PyPi를 확인합니다\n"
 
-#: src/robotide/ui/mainframe.py:195
+#: src/robotide/ui/mainframe.py:198
 msgid "Saved %s"
 msgstr "저장됨 %s"
 
-#: src/robotide/ui/mainframe.py:196
+#: src/robotide/ui/mainframe.py:199
 msgid "Saved all files"
 msgstr "모든 파일 저장"
 
-#: src/robotide/ui/mainframe.py:224
+#: src/robotide/ui/mainframe.py:228
 msgid "Modification prevented"
 msgstr "수정 방지"
 
-#: src/robotide/ui/mainframe.py:225
+#: src/robotide/ui/mainframe.py:229
 msgid "\"%s\" is read only"
 msgstr "\"%s\"는 읽기 전용입니다."
 
-#: src/robotide/ui/mainframe.py:300
+#: src/robotide/ui/mainframe.py:304
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "테스트 스위트"
 
-#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:387
+#, fuzzy
+msgid "Auto-saved all files"
+msgstr "모든 파일 저장"
+
+#: src/robotide/ui/mainframe.py:494
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2375,12 +2388,12 @@ msgstr ""
 "저장하지 않은 수정 사항이 있습니다.\n"
 "종료하기 전에 변경 사항을 저장하시겠습니까?"
 
-#: src/robotide/ui/mainframe.py:465
-#: src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:494
+#: src/robotide/ui/mainframe.py:588
 msgid "Warning"
 msgstr "경고"
 
-#: src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:588
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2388,63 +2401,63 @@ msgstr ""
 "저장하지 않은 수정 사항이 있습니다.\n"
 "저장하지 않고 계속 진행하시겠습니까?"
 
-#: src/robotide/ui/mainframe.py:609
+#: src/robotide/ui/mainframe.py:638
 msgid "Choose a directory containing Robot files"
 msgstr "로봇 파일이 포함된 디렉터리를 선택합니다."
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:790
 msgid "Workspace modifications detected on the file system."
 msgstr "파일 시스템에서 작업 영역 수정이 감지되었습니다."
 
-#: src/robotide/ui/mainframe.py:762
+#: src/robotide/ui/mainframe.py:791
 msgid "Do you want to reload the workspace?"
 msgstr "작업 공간을 다시 로드하시겠습니까?"
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:793
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "<Yes> 에 응답하면 저장되지 않은 변경 사항이 삭제됩니다."
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:794
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "<No> 에 응답하면 디스크의 변경 사항이 무시됩니다."
 
-#: src/robotide/ui/mainframe.py:766
+#: src/robotide/ui/mainframe.py:795
 msgid "Files Changed On Disk"
 msgstr "디스크에서 변경된 파일"
 
-#: src/robotide/ui/mainframe.py:809
+#: src/robotide/ui/mainframe.py:838
 msgid "Customize..."
 msgstr "사용자 지정..."
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:926
 msgid "search unused keywords"
 msgstr "사용하지 않는 키워드 검색"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:926
 msgid "stop test run"
 msgstr "테스트 실행 중지"
 
-#: src/robotide/ui/mainframe.py:898
+#: src/robotide/ui/mainframe.py:927
 msgid "preview"
 msgstr "미리 보기"
 
-#: src/robotide/ui/mainframe.py:898
+#: src/robotide/ui/mainframe.py:927
 msgid "view ride log"
 msgstr "라이딩 로그 보기"
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:969
 msgid "Shortcut keys for RIDE"
 msgstr "RIDE 단축키"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:1007
 msgid "Show"
 msgstr "표시"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:1008
 msgid "Hide"
 msgstr "숨기기"
 
-#: src/robotide/ui/mainframe.py:980
+#: src/robotide/ui/mainframe.py:1009
 msgid "Close"
 msgstr "닫기"
 

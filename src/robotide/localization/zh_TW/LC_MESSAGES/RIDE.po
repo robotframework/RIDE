@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-12 01:23+0100\n"
+"POT-Creation-Date: 2026-04-12 22:41+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
@@ -320,8 +320,8 @@ msgstr "執行測試"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:884
-#: src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:913
+#: src/robotide/ui/mainframe.py:925
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "工具"
@@ -567,7 +567,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:674
+#: src/robotide/ui/mainframe.py:703
 msgid "RIDE - Preferences"
 msgstr "RIDE - 偏好設定"
 
@@ -1067,7 +1067,7 @@ msgstr "新使用者關鍵字"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:214
+#: src/robotide/ui/mainframe.py:218
 msgid " (READ ONLY)"
 msgstr " (僅供閱讀)"
 
@@ -1195,7 +1195,7 @@ msgstr ""
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:219
+#: src/robotide/ui/mainframe.py:223
 #: src/robotide/ui/treenodehandlers.py:244
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
@@ -1886,6 +1886,14 @@ msgstr "分隔空間"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "以 txt 格式儲存時，儲存格之間的空格數目"
 
+#: src/robotide/preferences/saving.py:72
+msgid "Auto save interval (minutes)"
+msgstr ""
+
+#: src/robotide/preferences/saving.py:74
+msgid "Automatically save all files after specified minutes (0 = disabled)"
+msgstr ""
+
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
 msgstr "將最近開啟的檔案加入檔案功能表。"
@@ -2216,7 +2224,7 @@ msgstr "開啟包含的資料夾"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:317
+#: src/robotide/ui/mainframe.py:321
 msgid "Files"
 msgstr "檔案"
 
@@ -2348,28 +2356,33 @@ msgstr ""
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "!Check for Upgrade | 檢查 PyPi 是否有新發布的版本\n"
 
-#: src/robotide/ui/mainframe.py:195
+#: src/robotide/ui/mainframe.py:198
 msgid "Saved %s"
 msgstr "儲存 %s"
 
-#: src/robotide/ui/mainframe.py:196
+#: src/robotide/ui/mainframe.py:199
 msgid "Saved all files"
 msgstr "儲存所有檔案"
 
-#: src/robotide/ui/mainframe.py:224
+#: src/robotide/ui/mainframe.py:228
 msgid "Modification prevented"
 msgstr "防止修改"
 
-#: src/robotide/ui/mainframe.py:225
+#: src/robotide/ui/mainframe.py:229
 msgid "\"%s\" is read only"
 msgstr "\"%s\" 為唯讀"
 
-#: src/robotide/ui/mainframe.py:300
+#: src/robotide/ui/mainframe.py:304
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "測試套件"
 
-#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:387
+#, fuzzy
+msgid "Auto-saved all files"
+msgstr "儲存所有檔案"
+
+#: src/robotide/ui/mainframe.py:494
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2377,12 +2390,12 @@ msgstr ""
 "有未儲存的修改。\n"
 "您要在退出前保存修改嗎？"
 
-#: src/robotide/ui/mainframe.py:465
-#: src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:494
+#: src/robotide/ui/mainframe.py:588
 msgid "Warning"
 msgstr "警告"
 
-#: src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:588
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2390,63 +2403,63 @@ msgstr ""
 "有未儲存的修改。\n"
 "您要繼續而不儲存嗎？"
 
-#: src/robotide/ui/mainframe.py:609
+#: src/robotide/ui/mainframe.py:638
 msgid "Choose a directory containing Robot files"
 msgstr "選擇包含 Robot 檔案的目錄"
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:790
 msgid "Workspace modifications detected on the file system."
 msgstr "在檔案系統上偵測到工作區修改。"
 
-#: src/robotide/ui/mainframe.py:762
+#: src/robotide/ui/mainframe.py:791
 msgid "Do you want to reload the workspace?"
 msgstr "您要重新載入工作區嗎？"
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:793
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "回答<Yes> 會丟棄未儲存的變更。"
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:794
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "回答<No> 將忽略磁碟上的變更。"
 
-#: src/robotide/ui/mainframe.py:766
+#: src/robotide/ui/mainframe.py:795
 msgid "Files Changed On Disk"
 msgstr "磁碟上變更的檔案"
 
-#: src/robotide/ui/mainframe.py:809
+#: src/robotide/ui/mainframe.py:838
 msgid "Customize..."
 msgstr "自訂..."
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:926
 msgid "search unused keywords"
 msgstr "搜尋未使用的關鍵字"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:926
 msgid "stop test run"
 msgstr "停止測試執行"
 
-#: src/robotide/ui/mainframe.py:898
+#: src/robotide/ui/mainframe.py:927
 msgid "preview"
 msgstr "預覽"
 
-#: src/robotide/ui/mainframe.py:898
+#: src/robotide/ui/mainframe.py:927
 msgid "view ride log"
 msgstr "檢視騎乘記錄"
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:969
 msgid "Shortcut keys for RIDE"
 msgstr "RIDE 的捷徑鍵"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:1007
 msgid "Show"
 msgstr "顯示"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:1008
 msgid "Hide"
 msgstr "隱藏"
 
-#: src/robotide/ui/mainframe.py:980
+#: src/robotide/ui/mainframe.py:1009
 msgid "Close"
 msgstr "關閉"
 

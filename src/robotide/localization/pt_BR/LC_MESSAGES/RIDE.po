@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-12 01:23+0100\n"
-"PO-Revision-Date: 2026-04-12 01:30+0100\n"
+"POT-Creation-Date: 2026-04-12 22:41+0100\n"
+"PO-Revision-Date: 2026-04-12 22:56+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -317,7 +317,7 @@ msgstr "Executar Testes"
 #: src/robotide/searchtests/searchtests.py:41
 #: src/robotide/spec/libraryfinder.py:43 src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:884 src/robotide/ui/mainframe.py:896
+#: src/robotide/ui/mainframe.py:913 src/robotide/ui/mainframe.py:925
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Ferramentas"
@@ -561,7 +561,7 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:657
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:274 src/robotide/ui/mainframe.py:674
+#: src/robotide/ui/fileexplorerplugin.py:274 src/robotide/ui/mainframe.py:703
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferências"
 
@@ -1055,7 +1055,7 @@ msgid "New User Keyword"
 msgstr "Nova Palavra-Chave"
 
 #: src/robotide/editor/editors.py:163 src/robotide/editor/editors.py:400
-#: src/robotide/editor/macroeditors.py:135 src/robotide/ui/mainframe.py:214
+#: src/robotide/editor/macroeditors.py:135 src/robotide/ui/mainframe.py:218
 msgid " (READ ONLY)"
 msgstr " (APENAS LEITURA)"
 
@@ -1180,7 +1180,7 @@ msgstr ""
 "            Especificações de biblioteca XML podem ser criadas usando ferramenta libdoc do Robot Framework.</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1131 src/robotide/ui/mainframe.py:219
+#: src/robotide/editor/kweditor.py:1131 src/robotide/ui/mainframe.py:223
 #: src/robotide/ui/treenodehandlers.py:244 src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "Erro de Validação"
@@ -1854,6 +1854,14 @@ msgstr "Espaços de separação"
 msgid "Number of spaces between cells when saving in txt format"
 msgstr "Número de espaços entre células ao salvar em formato TXT"
 
+#: src/robotide/preferences/saving.py:72
+msgid "Auto save interval (minutes)"
+msgstr "Intervalo para salvar todos os arquivos (minutos)"
+
+#: src/robotide/preferences/saving.py:74
+msgid "Automatically save all files after specified minutes (0 = disabled)"
+msgstr "Salva automaticamente todos os arquivos após o tempo especificado (0 = desativo)"
+
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
 msgstr "Adiciona arquivos abertos recentemente ao menu Arquivo."
@@ -2171,7 +2179,7 @@ msgstr "Abrir a Pasta Correspondente"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
-#: src/robotide/ui/fileexplorerplugin.py:214 src/robotide/ui/mainframe.py:317
+#: src/robotide/ui/fileexplorerplugin.py:214 src/robotide/ui/mainframe.py:321
 msgid "Files"
 msgstr "Arquivos"
 
@@ -2299,27 +2307,31 @@ msgstr "!Acerca de | Informação acerca do RIDE\n"
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "!Verificar Se Há Atualização | Procura em PyPi por uma nova versão produzida\n"
 
-#: src/robotide/ui/mainframe.py:195
+#: src/robotide/ui/mainframe.py:198
 msgid "Saved %s"
 msgstr "Salvou-se %s"
 
-#: src/robotide/ui/mainframe.py:196
+#: src/robotide/ui/mainframe.py:199
 msgid "Saved all files"
 msgstr "Salvaram-se todos os arquivos"
 
-#: src/robotide/ui/mainframe.py:224
+#: src/robotide/ui/mainframe.py:228
 msgid "Modification prevented"
 msgstr "Modificação impedida"
 
-#: src/robotide/ui/mainframe.py:225
+#: src/robotide/ui/mainframe.py:229
 msgid "\"%s\" is read only"
 msgstr "\"%s\" é apenas de leitura"
 
-#: src/robotide/ui/mainframe.py:300 src/robotide/ui/treeplugin.py:107
+#: src/robotide/ui/mainframe.py:304 src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Suites de Teste"
 
-#: src/robotide/ui/mainframe.py:465
+#: src/robotide/ui/mainframe.py:387
+msgid "Auto-saved all files"
+msgstr "Salvaram-se todos os arquivos automaticamente"
+
+#: src/robotide/ui/mainframe.py:494
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2327,11 +2339,11 @@ msgstr ""
 "Existem modificações não salvadas.\n"
 "Você deseja salvar todas as alterações e executar os testes?"
 
-#: src/robotide/ui/mainframe.py:465 src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:494 src/robotide/ui/mainframe.py:588
 msgid "Warning"
 msgstr "Aviso"
 
-#: src/robotide/ui/mainframe.py:559
+#: src/robotide/ui/mainframe.py:588
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2339,63 +2351,63 @@ msgstr ""
 "Existem modificações não salvadas.\n"
 "Você deseja prosseguir sem salvar?"
 
-#: src/robotide/ui/mainframe.py:609
+#: src/robotide/ui/mainframe.py:638
 msgid "Choose a directory containing Robot files"
 msgstr "Escolha um diretório que contenha arquivos do Robot"
 
-#: src/robotide/ui/mainframe.py:761
+#: src/robotide/ui/mainframe.py:790
 msgid "Workspace modifications detected on the file system."
 msgstr "Modificações no espaço de trabalho detectadas no sistema de arquivos."
 
-#: src/robotide/ui/mainframe.py:762
+#: src/robotide/ui/mainframe.py:791
 msgid "Do you want to reload the workspace?"
 msgstr "Você deseja recarregar o espaço de trabalho?"
 
-#: src/robotide/ui/mainframe.py:764
+#: src/robotide/ui/mainframe.py:793
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Responder <Sim> irá descartar as alterações não salvadas."
 
-#: src/robotide/ui/mainframe.py:765
+#: src/robotide/ui/mainframe.py:794
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Responder <Não> irá ignorar as alterações no disco."
 
-#: src/robotide/ui/mainframe.py:766
+#: src/robotide/ui/mainframe.py:795
 msgid "Files Changed On Disk"
 msgstr "Arquivos Alterados no Disco"
 
-#: src/robotide/ui/mainframe.py:809
+#: src/robotide/ui/mainframe.py:838
 msgid "Customize..."
 msgstr "Personalizar..."
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:926
 msgid "search unused keywords"
 msgstr "pesquisar palavras-chave não utilizadas"
 
-#: src/robotide/ui/mainframe.py:897
+#: src/robotide/ui/mainframe.py:926
 msgid "stop test run"
 msgstr "parar execução de teste"
 
-#: src/robotide/ui/mainframe.py:898
+#: src/robotide/ui/mainframe.py:927
 msgid "preview"
 msgstr "pré-visualizar"
 
-#: src/robotide/ui/mainframe.py:898
+#: src/robotide/ui/mainframe.py:927
 msgid "view ride log"
 msgstr "ver registro do RIDE"
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:969
 msgid "Shortcut keys for RIDE"
 msgstr "Teclas de atalho para RIDE"
 
-#: src/robotide/ui/mainframe.py:978
+#: src/robotide/ui/mainframe.py:1007
 msgid "Show"
 msgstr "Mostrar"
 
-#: src/robotide/ui/mainframe.py:979
+#: src/robotide/ui/mainframe.py:1008
 msgid "Hide"
 msgstr "Esconder"
 
-#: src/robotide/ui/mainframe.py:980
+#: src/robotide/ui/mainframe.py:1009
 msgid "Close"
 msgstr "Fechar"
 
