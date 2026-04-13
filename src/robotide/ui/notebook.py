@@ -19,6 +19,7 @@ except ImportError:
     import wx.lib.agw.aui as aui
 
 from ..publish import RideNotebookTabChanging, RideNotebookTabChanged
+from wx import wxAssertionError
 
 
 class NoteBook(aui.AuiNotebook):
@@ -85,7 +86,7 @@ class NoteBook(aui.AuiNotebook):
         oldselect = event.GetOldSelection()
         try:
             oldtitle = self.GetPageText(oldselect)
-        except (wx.wxAssertionError, RuntimeError):
+        except (wxAssertionError, RuntimeError):
             oldtitle = ""
         newindex = event.GetSelection()
         newtitle = self.GetPageText(event.GetSelection())

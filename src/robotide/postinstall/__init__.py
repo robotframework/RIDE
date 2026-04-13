@@ -46,7 +46,6 @@ Usage: python ride_postinstall.py [options] <-install|-remove>
 # DEBUG: Add -remove, to remove desktop shortcut
 
 ROBOT_ICO = "robot.ico"
-DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
 
 
 def verify_install():
@@ -182,6 +181,9 @@ def _create_desktop_shortcut_linux(frame=None):
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho", "zh": "Desktop"}
     user = basename(expanduser('~'))
+    DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
+    if DEFAULT_LANGUAGE is None:
+        DEFAULT_LANGUAGE = ['en_US']
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
         directory = join(expanduser('~'), ndesktop)
