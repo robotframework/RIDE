@@ -335,7 +335,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                 try:
                     self.tree_ctrl.ExpandPath(self._controller.data.source)
                     self.tree_ctrl.TreeCtrl.EnsureVisible(self.tree_ctrl.TreeCtrl.GetSelection())
-                except (RuntimeError, AttributeError):
+                except (AssertionError, RuntimeError, AttributeError):
                     pass
                 # self.on_size(wx.EVT_SIZE)
                 self.Refresh()

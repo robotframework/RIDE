@@ -180,7 +180,7 @@ def _create_desktop_shortcut_linux(frame=None):
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho", "zh": "Desktop"}
-    user = basename(expanduser('~'))
+    user = getuser()
     DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
     if DEFAULT_LANGUAGE is None:
         DEFAULT_LANGUAGE = ['en_US']
