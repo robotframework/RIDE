@@ -73,7 +73,7 @@ install:
   - C:\Python311-x64\python -m pip install -r requirements.txt
   - C:\Python311-x64\python -m pip install robotframework
   - C:\Python311-x64\python -m build
-  - C:\Python311-x64\python -m pip install dist/*.whl
+  - C:\Python311-x64\python -m pip install .\dist\*.whl
 
 #---------------------------------#
 #       tests configuration       #
