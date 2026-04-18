@@ -3,7 +3,7 @@
 #---------------------------------#
 
 # version format
-version: 2.1.{build}
+version: 2.2.3.{build}
 
 # branches to build
 branches:
@@ -73,7 +73,8 @@ install:
   - C:\Python311-x64\python -m pip install -r requirements.txt
   - C:\Python311-x64\python -m pip install robotframework
   - C:\Python311-x64\python -m build
-  - C:\Python311-x64\python -m pip install .\dist\*.whl
+  # I don't know the exact name of wheel so use workaround
+  - powershell.exe C:\Python311-x64\python -m pip install (get-item .\dist\*.whl).FullName
 
 #---------------------------------#
 #       tests configuration       #
