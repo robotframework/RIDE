@@ -179,6 +179,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added comments field to show comments in Tags section of Test Suites in Grid Editor.</li>
 <li>Added Auto-Save feature. Default is disabled with setting zero minutes in Preferences->Save.</li>
 <li>Added option on Tree (Project Explorer) context menu, to <b>Sort Keywords (Case Insensitive)</b>.</li>
 <li>Improved visibility of the Search action in <b>Find Usages</b> by adding <b>Search...</b> on the first row of the 
@@ -251,7 +252,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 12/April/2026.</p>
+<p>RIDE {VERSION} was released on 20/April/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
