@@ -333,9 +333,10 @@ class KeywordEditorTest(unittest.TestCase):
         show = self._grid.kweditor.has_focus()
         assert show  # is not None
         # Uncomment next lines if you want to see the app
-        wx.CallLater(5000, self.app.ExitMainLoop)
+        wx.CallLater(9000, self.app.ExitMainLoop)
         self.app.MainLoop()
 
+    @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
     def test_on_comment_cells(self):
         self.setup_data()
         # self.frame.Show()
@@ -408,6 +409,7 @@ class KeywordEditorTest(unittest.TestCase):
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
+    @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
     def test_cut_block(self):
         self.setup_data()
         # self.frame.Show()
