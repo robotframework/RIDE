@@ -321,14 +321,14 @@ class KeywordEditorTest(unittest.TestCase):
         self.plugin.disable()
     """
 
-    # This was failing at AppVeyor
-    @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
+    # This was failing at AppVeyor @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
+
     def test_show(self):
         # self.setup_data()
         # self.frame.Show()
         self.app.tree.select_controller_node(self.test_case)
         show = self.frame.Children
-        print(f"DEBUG: test_show is children={[n.Name for n in show]}")
+        # Causes error print(f"DEBUG: test_show is children={[n.Name for n in show]}")
         tabs = self._grid.kweditor.GetParent().GetName()
         print(f"DEBUG: test_show Parent Name={tabs}")
         self._grid.kweditor.SetFocus()
