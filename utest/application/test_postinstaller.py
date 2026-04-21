@@ -213,7 +213,8 @@ class MessageDialogTestCase(unittest.TestCase):
         assert result is not None
 
 global option_f
-from os import environ, getlogin
+from getpass import getuser
+from os import environ
 from os.path import exists, join
 DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
 
@@ -221,15 +222,21 @@ def reset_shortcut():
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho", "zh": "Desktop"}
-    user = getlogin()
-    ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
+    user = getuser()
+    try:
+        if DEFAULT_LANGUAGE[0][:2] != 'C.':
+            ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
+        else:
+            ndesktop = desktop['en']
+    except KeyError:
+        ndesktop = desktop['en']
     directory = join("/home", user, ndesktop)
     defaultdir = join("/home", user, "Desktop")
     if not exists(directory):
         if exists(defaultdir):
             directory = defaultdir
         else:
-            directory = None
+            directory = '/tmp'  # Was None ut CI does not have home
     try:
         link = join(directory, "RIDE.desktop")
     except UnicodeError:

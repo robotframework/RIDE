@@ -84,8 +84,8 @@ class NoteBook(aui.AuiNotebook):
             return
         oldselect = event.GetOldSelection()
         try:
-            oldtitle = self.GetPageText(oldselect)
-        except Exception:
+            oldtitle = self.GetPageText(oldselect) if oldselect >= 0 else ""
+        except (AssertionError, RuntimeError):
             oldtitle = ""
         newindex = event.GetSelection()
         newtitle = self.GetPageText(event.GetSelection())

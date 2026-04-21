@@ -91,10 +91,20 @@ class UserKeywordControllerTest(_BaseWithSteps):
         uk = self.tcf.keyword_table.add('UK')
         uk.add_step(['No Operation'])
         uk2 = self.tcf.keyword_table.add('UK 2')
-        tablectrl = KeywordTableController(TestCaseFileController(self.tcf),
+        uk2.add_step(['No Operation'])
+        uk3 = self.tcf.keyword_table.add('Open Browser')
+        uk3.add_step(['No Operation'])
+        uk4 = self.tcf.keyword_table.add('open file')
+        uk4.add_step(['No Operation'])
+        uk5 = self.tcf.keyword_table.add('CLOSE Application')
+        uk5.add_step(['No Operation'])
+        self.tablectrl = KeywordTableController(TestCaseFileController(self.tcf),
                                            self.tcf.keyword_table)
-        self.ctrl = UserKeywordController(tablectrl, uk)
-        self.ctrl2 = UserKeywordController(tablectrl, uk2)
+        self.ctrl = UserKeywordController(self.tablectrl, uk)
+        self.ctrl2 = UserKeywordController(self.tablectrl, uk2)
+        self.ctrl3 = UserKeywordController(self.tablectrl, uk3)
+        self.ctrl4 = UserKeywordController(self.tablectrl, uk4)
+        self.ctrl5 = UserKeywordController(self.tablectrl, uk5)
 
     def test_keyword_settings(self):
         labels = [setting.label for setting in self.ctrl.settings]
@@ -121,15 +131,47 @@ class UserKeywordControllerTest(_BaseWithSteps):
         self._assert_uk_in(0, 'UK 2')
 
     def test_move_down(self):
-        assert not self.ctrl2.move_down()
-        self._assert_uk_in(1, 'UK 2')
+        assert not self.ctrl5.move_down()
+        self._assert_uk_in(4, 'CLOSE Application')
         assert self.ctrl.move_down()
         self._assert_uk_in(1, 'UK')
+        self._assert_uk_in(0, 'UK 2')
 
     def test_delete(self):
         self.ctrl.delete()
         assert not 'UK' in self.tcf.keyword_table.keywords
         self._assert_uk_in(0, 'UK 2')
+
+    def test_sort_case_sensitive(self):
+        self._assert_uk_in(0, 'UK')
+        self._assert_uk_in(1, 'UK 2')
+        self._assert_uk_in(2, 'Open Browser')
+        self._assert_uk_in(3, 'open file')
+        self._assert_uk_in(4, 'CLOSE Application')
+        index_list = self.tablectrl.sort()
+        assert index_list == [2, 3, 1, 4, 0]
+        print(f"DEBUG: test_sort_case_sensitive index={index_list[:]}")
+        self._assert_uk_in(0, 'CLOSE Application')
+        self._assert_uk_in(1, 'Open Browser')
+        self._assert_uk_in(2, 'UK')
+        self._assert_uk_in(3, 'UK 2')
+        self._assert_uk_in(4, 'open file')
+
+
+    def test_sort_case_insensitive(self):
+        self._assert_uk_in(0, 'UK')
+        self._assert_uk_in(1, 'UK 2')
+        self._assert_uk_in(2, 'Open Browser')
+        self._assert_uk_in(3, 'open file')
+        self._assert_uk_in(4, 'CLOSE Application')
+        index_list = self.tablectrl.sort(case_insensitive=True)
+        assert index_list == [3, 4, 1, 2, 0]
+        print(f"DEBUG: test_sort_case_sensitive index={index_list[:]}")
+        self._assert_uk_in(0, 'CLOSE Application')
+        self._assert_uk_in(1, 'Open Browser')
+        self._assert_uk_in(2, 'open file')
+        self._assert_uk_in(3, 'UK')
+        self._assert_uk_in(4, 'UK 2')
 
     def _assert_uk_in(self, index, name):
         assert self.tcf.keyword_table.keywords[index].name == name

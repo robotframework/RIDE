@@ -150,6 +150,7 @@ DIST_DIR = join(ROOT_DIR, 'dist')
 BUILD_DIR = join(ROOT_DIR, 'build')
 ROBOTIDE_PACKAGE = join(ROOT_DIR, 'src', 'robotide')
 BUNDLED_ROBOT_DIR = join(ROBOTIDE_PACKAGE, 'lib', 'robot')
+OSTYPE = sys.platform
 
 TEST_PROJECT_DIR = 'theproject'
 TEST_LIBS_GENERATED = 10
@@ -166,7 +167,7 @@ wxPythonDownloadUrl = "https://wxpython.org/"
 
 # Developemnt tasks
 @task
-def devel(ctx, args=''):
+def devel(ctx, args:list=[]):
     """Start development version of RIDE."""
     _ = ctx
     _set_development_path()
@@ -426,15 +427,23 @@ def test_ci(ctx, test_filter=''):
             "--ignore=utest/isbinary/fixtures",
             "--strict-markers"
             ]
- 
+
+        if OSTYPE == 'linux':
+            cov_prefix = ''
+        elif OSTYPE == 'win32':
+            cov_prefix = '1'
+        elif OSTYPE == 'darwin':
+            cov_prefix = '2'
+        else:
+            cov_prefix = '3'  # unkown
         # a = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.1", "-m", "pytest", "--cov-config=.coveragerc", "--cov=src", "--cov-report=xml:.coverage-reports/coverage_1.xml", "--cov-report=html:.coverage-reports/htmlcov", "--cov-branch", "--cov-context=test", "-k test_", "-v", "utest/application/test_app_main.py"])
-        a = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.1", "-m", "pytest", *pytest_args, "--html=.coverage-reports/pytest_report1.html", "--self-contained-html", "-k test_", "-v", "utest/application/test_app_main.py"])
+        a = subprocess.Popen(["coverage", "run", "-a", f"--data-file=.coverage.{cov_prefix}1", "-m", "pytest", *pytest_args, f"--html=.coverage-reports/pytest_report{cov_prefix}1.html", "--self-contained-html", "-k test_", "-v", "utest/application/test_app_main.py"])
         a.communicate(b'')
         # z = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.2", "-m", "pytest", "--cov-config=.coveragerc", "--cov=src", "--cov-report=xml:.coverage-reports/coverage_2.xml", "--cov-report=html:.coverage-reports/htmlcov", "--cov-branch", "--cov-context=test", "--cov-append", "-k test_", "-v", "utest/editor/test_z_kweditor_plugin.py"])
-        z = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.2", "-m", "pytest", *pytest_args, "--html=.coverage-reports/pytest_report2.html", "--self-contained-html", "-k test_", "-v", "utest/editor/test_z_kweditor_plugin.py"])
+        z = subprocess.Popen(["coverage", "run", "-a", f"--data-file=.coverage.{cov_prefix}2", "-m", "pytest", *pytest_args, f"--html=.coverage-reports/pytest_report{cov_prefix}2.html", "--self-contained-html", "-k test_", "-v", "utest/editor/test_z_kweditor_plugin.py"])
         z.communicate(b'')
         # b = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.3", "-m", "pytest", "--ignore=utest/application/test_app_main.py", "--ignore=utest/editor/test_z_kweditor_plugin.py", "--cov-config=.coveragerc", "--cov=src", "--cov-report=xml:.coverage-reports/coverage_3.xml", "--cov-report=html:.coverage-reports/htmlcov", "--cov-branch", "--cov-context=test", "--cov-append", "-k test_", "-v", TEST_DIR])
-        b = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.3", "-m", "pytest", *pytest_args, "--html=.coverage-reports/pytest_report3.html", "--self-contained-html", "--ignore=utest/application/test_app_main.py", "--ignore=utest/editor/test_z_kweditor_plugin.py", "-k test_", "-v", TEST_DIR])
+        b = subprocess.Popen(["coverage", "run", "-a", f"--data-file=.coverage.{cov_prefix}3", "-m", "pytest", *pytest_args, f"--html=.coverage-reports/pytest_report{cov_prefix}3.html", "--self-contained-html", "--ignore=utest/application/test_app_main.py", "--ignore=utest/editor/test_z_kweditor_plugin.py", "-k test_", "-v", TEST_DIR])
         b.communicate(b'')
         c = subprocess.Popen(["coverage", "combine", "--keep"])
         c.communicate(b'')

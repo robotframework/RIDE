@@ -167,7 +167,9 @@ class RideFrame(wx.Frame):
         self.color_foreground = self.general_settings.get('foreground', '#5E5C64') if self.general_settings else '#5E5C64'
         self.font_face = self.general_settings.get('font face', '') if self.general_settings else ''
         self.font_size = self.general_settings.get('font size', 11) if self.general_settings else 11
-        self.ui_language = self.general_settings.get('ui language', 'English') if self.general_settings else 'English' 
+        self.ui_language = self.general_settings.get('ui language', 'English') if self.general_settings else 'English'
+        self._auto_save_interval = application.settings.get('auto save interval', 0)
+        self._auto_save_timer = None
         self.main_menu = None
         self._init_ui()
         self.SetIcon(wx.Icon(self._image_provider.RIDE_ICON))
@@ -187,6 +189,7 @@ class RideFrame(wx.Frame):
         self.Bind(aui.EVT_AUI_PANE_DOCKING, self.OnFloatDock)
         self.Bind(aui.EVT_AUI_PANE_DOCKED, self.OnFloatDock)
         self._subscribe_messages()
+        self._start_auto_save_timer()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
         # DEBUG wx.CallAfter(self.OnSettingsChanged, self.general_settings)
 
@@ -197,7 +200,8 @@ class RideFrame(wx.Frame):
             (self._set_label, RideTreeSelection),
             (self._show_validation_error, RideInputValidationError),
             (self._show_modification_prevented_error, RideModificationPrevented),
-            (self.on_ui_language_changed, RideSettingsChanged)
+            (self.on_ui_language_changed, RideSettingsChanged),
+            (self._on_auto_save_settings_changed, RideSettingsChanged)
         ]:
             PUBLISHER.subscribe(listener, topic)
 
@@ -363,6 +367,31 @@ class RideFrame(wx.Frame):
 
     def get_selected_datafile_controller(self):
         return self.tree.get_selected_datafile_controller()
+
+    def _start_auto_save_timer(self):
+        """Start the auto-save timer if interval is set."""
+        if self._auto_save_timer:
+            self._auto_save_timer.Stop()
+            self._auto_save_timer = None
+        if self._auto_save_interval > 0:
+            self._auto_save_timer = wx.Timer(self)
+            self.Bind(wx.EVT_TIMER, self._on_auto_save, self._auto_save_timer)
+            self._auto_save_timer.Start(self._auto_save_interval * 60 * 1000)  # minutes to milliseconds
+
+    def _on_auto_save(self, event):
+        """Auto-save all files when timer fires."""
+        __ = event
+        if self.controller and self.controller.is_dirty():
+            RideBeforeSaving().publish()
+            self.save_all()
+            self.SetStatusText(_('Auto-saved all files'))
+            wx.CallAfter(self._start_auto_save_timer)
+
+    def _on_auto_save_settings_changed(self, message):
+        """Update auto-save timer when settings change."""
+        if message.keys and 'auto save interval' in message.keys:
+            self._auto_save_interval = self._application.settings.get('auto save interval', 0)
+            self._start_auto_save_timer()
 
     def on_close(self, event):
         from ..preferences import RideSettings

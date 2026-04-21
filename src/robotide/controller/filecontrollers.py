@@ -315,9 +315,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             return index_difference
         return None
 
-    def sort_keywords(self):
+    def sort_keywords(self, case_insensitive=False):
         if self.keywords:
-            index_difference = self.keywords.sort()
+            index_difference = self.keywords.sort(case_insensitive=case_insensitive)
             self.mark_dirty()
             RideDataFileSet(item=self).publish()
             return index_difference

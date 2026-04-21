@@ -29,7 +29,8 @@ except ImportError:
                      "or pip install wxPython")
     exit(-1)
 
-from os import environ, getlogin
+from getpass import getuser
+from os import environ
 from os.path import exists, join
 from robotide.widgets import RIDEDialog
 
@@ -45,7 +46,6 @@ Usage: python ride_postinstall.py [options] <-install|-remove>
 # DEBUG: Add -remove, to remove desktop shortcut
 
 ROBOT_ICO = "robot.ico"
-DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
 
 
 def verify_install():
@@ -180,7 +180,10 @@ def _create_desktop_shortcut_linux(frame=None):
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho", "zh": "Desktop"}
-    user = basename(expanduser('~'))
+    user = getuser()
+    DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
+    if DEFAULT_LANGUAGE is None:
+        DEFAULT_LANGUAGE = ['en_US']
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
         directory = join(expanduser('~'), ndesktop)
@@ -254,7 +257,7 @@ def _create_desktop_shortcut_mac(frame=None):
         if exists(ride_app_pc_path):
             shutil.rmtree(ride_app_pc_path, True)
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
-        user = getlogin()
+        user = getuser()
         user_desktop_link = '/Users/' + user + '/Desktop/' + ride_app_name
         if exists(user_desktop_link):
             os.remove(user_desktop_link)

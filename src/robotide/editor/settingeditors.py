@@ -466,6 +466,7 @@ class TagsEditor(SettingEditor):
             self._value_display.clear_field()
             self._comment_display.clear()
         self.Refresh()
+        wx.CallAfter(self.GetParent().Layout)
 
     def contains(self, text):
         return False

@@ -171,6 +171,44 @@ class TestMainFrame(_BaseDialogTest):
             for _ in range(16):  # Hoping to cover all 4 cases
                 start_external_app(__file__)
 
+    def test_on_auto_save_restarts_timer_after_save(self):
+        calls = []
+
+        class DirtyController:
+            @staticmethod
+            def is_dirty():
+                return True
+
+        class FakeBeforeSaving:
+            def publish(self):
+                calls.append("publish")
+
+        def restart_timer():
+            calls.append("restart")
+
+        def fake_call_after(callback, *args, **kwargs):
+            calls.append(("callafter", callback, args, kwargs))
+
+        self.frame.controller = DirtyController()
+        with MonkeyPatch().context() as m:
+            m.setattr(mainframe, 'RideBeforeSaving', FakeBeforeSaving)
+            m.setattr(wx, 'CallAfter', fake_call_after)
+            m.setattr(self.frame, 'save_all', lambda: calls.append("save_all"))
+            m.setattr(self.frame, 'SetStatusText', lambda text: calls.append(("status", text)))
+            m.setattr(self.frame, '_start_auto_save_timer', restart_timer)
+
+            self.frame._on_auto_save(object())
+
+        self.assertEqual(
+            calls,
+            [
+                "publish",
+                "save_all",
+                ("status", "Auto-saved all files"),
+                ("callafter", restart_timer, (), {}),
+            ],
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

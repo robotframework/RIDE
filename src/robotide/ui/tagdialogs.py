@@ -23,7 +23,7 @@ from wx import Colour
 from .. import utils
 from ..controller.ctrlcommands import ChangeTag
 from ..publish import RideOpenTagSearch
-from ..widgets import ButtonWithHandler, PopupMenuItems, RIDEDialog
+from ..widgets import ButtonWithHandler, PopupMenuItems, RIDEDialog, HelpLabel
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -61,6 +61,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
         self._build_tag_lister()
+        self._build_info_text()
         self._build_controls()
         self._build_footer()
         self.CenterOnParent()
@@ -80,6 +81,11 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self._tags_list.set_dialog(self)
         sizer_tag_vw.Add(self._tags_list, 1, wx.ALL | wx.EXPAND, 3)
         self._notebook.AddPage(panel_tag_vw, _("The List"))
+
+    def _build_info_text(self):
+        info_text = HelpLabel(self, _("Info: Right-click on a tag for actions. "
+                                      "Click on headers to change sorting."))
+        self.Sizer.Add(info_text, 0, wx.ALL, 3)
 
     def _build_controls(self):
         self._clear_button = ButtonWithHandler(self, _('Refresh'), handler=self.on_clear)
