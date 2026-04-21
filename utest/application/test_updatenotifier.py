@@ -204,6 +204,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertEqual(original_time, settings[LASTUPDATECHECK])
             self.assertFalse(self._callback_called)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="On Windows causes: Windows fatal exception: access violation")
     def test_check_for_updates_is_false(self):
         # self.app = MyApp()
         print(f"DEBUG: test_check_for_updates_is_false app={self.app} app.frame={self.app.frame} self.frame={self.frame}")

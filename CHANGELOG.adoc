@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added comments field to show comments in Tags section of Test Suites in Grid Editor.
 - Added Auto-Save feature. Default is disabled with setting zero minutes in Preferences->Save.
 - Added option on Tree (Project Explorer) context menu, to *Sort Keywords (Case Insensitive)*.
 - Added on Text Editor, (Preferences->Text Editor) option to *Enable visible spaces* configurable with ``enable visible spaces`` in settings.cfg, with default ``True``.

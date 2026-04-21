@@ -1,6 +1,9 @@
+[paths]
+source =
+    src/
+    %APPVEYOR_BUILD_FOLDER%\src
+
 [run]
-# include = ./src/* 
-source = src/
 branch = True
 relative_files = True
 dynamic_context = test_function
@@ -24,6 +27,7 @@ skip_empty = True
 exclude_lines =
     if __name__ == '__main__':
     if __name__ == '__main__' and 'robotide' not in sys.modules:
+ignore_errors = True
 
 [xml]
 output = .coverage-reports/coverage.xml

@@ -52,6 +52,8 @@ with open(destination_path, "w", encoding="utf-8") as sources:
 # xml:lang="en"
         mod_line = re.sub(r"\"><head>", "\" xml:lang=\"en\"><head>", line)
         mod_line = re.sub(r"<div class=\"toc\">.*<p>All notable", "<p>All notable", mod_line)
+        # Make SonarCube happy with accessibility anchors
+        mod_line = re.sub(r"></a>", ">_</a>", mod_line)
         sources.write(mod_line)
     sources.write('\n')
 

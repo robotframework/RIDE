@@ -27,6 +27,7 @@ class TagsDisplay(ScrolledPanel):
         self._controller = controller
         self._sizer = wx.BoxSizer()
         self._tag_boxes = []
+        self._comment_display = None
         self.SetAutoLayout(1)
         self.SetupScrolling(scroll_y=False, scrollIntoView=False)
         self.SetSizer(self._sizer)
@@ -63,10 +64,6 @@ class TagsDisplay(ScrolledPanel):
         if not self._tag_boxes:
             self._add_tags(list(controller))
         else:
-            # in GTK you can have focus in a dead object
-            # this causes Segmentation Faults
-            # Thus instead of clearing old values and adding new ones
-            # modify the ones that exist
             self._modify_values(controller)
         self.build()
 
@@ -118,8 +115,7 @@ class TagsDisplay(ScrolledPanel):
     def get_height(self):
         """ Seems that this method is never called """
         _, height = self._sizer.GetSize()
-        # print(f"DEBUG: tags height={height}")
-        return height  # DEBUG return self._sizer.height
+        return height
 
 
 class TagBox(wx.TextCtrl):
@@ -127,12 +123,6 @@ class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, tproperties):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER | wx.TE_NOHIDESEL)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         self._bind()
         self.set_properties(tproperties)
 
@@ -159,7 +149,7 @@ class TagBox(wx.TextCtrl):
 
     def _get_size(self):
         size = self.GetTextExtent(self.value)
-        offset = 13 if IS_WINDOWS else 26  # On GTK3 labels are bigger
+        offset = 13 if IS_WINDOWS else 26
         return wx.Size(max(size[0]+offset, 75), max(size[1]+3, 25))
 
     def _colorize(self):
@@ -182,8 +172,6 @@ class TagBox(wx.TextCtrl):
                 self.SetValue('')
 
         if event.GetKeyCode() != wx.WXK_RETURN:
-            # Don't send skip event if enter key is pressed
-            # On some platforms this event is sent too late and causes crash
             event.Skip()
 
     def _cancel_editing(self):
@@ -191,16 +179,12 @@ class TagBox(wx.TextCtrl):
         self._colorize()
 
     def on_char(self, event):
-        # For some reason at least ESC and F<num> keys are considered chars.
-        # We only special case ESC, though.
         if event.GetKeyCode() != wx.WXK_ESCAPE:
             self.tb_properties.activate(self)
         event.Skip()
 
     def on_kill_focus(self, event):
         self._update_value()
-        # Send skip event only if tagbox is empty and about to be destroyed
-        # On some platforms this event is sent too late and causes crash
         if self and self.value != '':
             event.Skip()
 
@@ -230,9 +214,8 @@ def properties(tag, controller):
 
 
 class _TagBoxProperties(object):
-    # DEBUG: Use colours from settings
-    foreground_color = 'black'  # Colour(7, 0, 70)  #
-    background_color = 'gray'  # Colour(200, 222, 40) 'white'
+    foreground_color = 'black'
+    background_color = 'gray'
     enabled = True
     add_new = False
 
@@ -256,7 +239,6 @@ class _TagBoxProperties(object):
             self._tag.controller.execute(ctrlcommands.ChangeTag(self._tag, value))
 
     def activate(self, tagbox):
-        """ Just ignore it """
         pass
 
 
@@ -265,8 +247,7 @@ class TagBoxProperties(_TagBoxProperties):
 
 
 class AddTagBoxProperties(_TagBoxProperties):
-    # DEBUG: Use colours from settings
-    foreground_color = 'gray'  # Colour(200, 222, 40)
+    foreground_color = 'gray'
     text = '<Add New>'
     tooltip = 'Click to add new tag'
     modifiable = False
@@ -282,21 +263,18 @@ class AddTagBoxProperties(_TagBoxProperties):
 
 
 class ForcedTagBoxProperties(_TagBoxProperties):
-    # DEBUG: Use colours from settings
     foreground_color = 'red'
-    background_color = '#D3D3D3'  # Colour(200, 222, 40)
+    background_color = '#D3D3D3'
     enabled = False
 
 
 class DefaultTagBoxProperties(_TagBoxProperties):
-    # DEBUG: Use colours from settings
     foreground_color = '#666666'
-    background_color = '#D3D3D3'  # Colour(200, 222, 40)
+    background_color = '#D3D3D3'
     enabled = False
 
 
 class TestTagBoxProperties(_TagBoxProperties):
-    # DEBUG: Use colours from settings
     foreground_color = 'orange'
-    background_color = '#D3D3D3'  # Colour(200, 222, 40)
+    background_color = '#D3D3D3'
     enabled = False

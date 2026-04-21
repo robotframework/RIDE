@@ -3,7 +3,7 @@
 #---------------------------------#
 
 # version format
-version: 2.1.{build}
+version: 2.2.3.{build}
 
 # branches to build
 branches:
@@ -68,10 +68,13 @@ build: off
 
 # scripts that run after cloning repository
 install:
+  - C:\Python311-x64\python -m pip install --upgrade pip
   - C:\Python311-x64\python -m pip install -r requirements-dev.txt
   - C:\Python311-x64\python -m pip install -r requirements.txt
   - C:\Python311-x64\python -m pip install robotframework
-  - C:\Python311-x64\python -m pip install .
+  - C:\Python311-x64\python -m build
+  # I don't know the exact name of wheel so use workaround
+  - powershell.exe C:\Python311-x64\python -m pip install (get-item .\dist\*.whl).FullName
 
 #---------------------------------#
 #       tests configuration       #
@@ -86,4 +89,7 @@ test_script:
 artifacts:
   - path: coverage_report.7z
     name: coverage_report
+  - path: dist\*.whl
+    name: package
+
 

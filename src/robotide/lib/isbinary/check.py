@@ -82,7 +82,7 @@ def is_decodable_as_unicode(bytes_to_check: bytes, /) -> bool:
         try:
             bytes_to_check.decode(encoding=detected_encoding["encoding"])
             decodable_as_unicode = True
-        except (LookupError, UnicodeDecodeError):
+        except (LookupError, UnicodeDecodeError, TypeError):
             pass
 
     return decodable_as_unicode
