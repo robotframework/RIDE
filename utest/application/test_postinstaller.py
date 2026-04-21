@@ -236,7 +236,7 @@ def reset_shortcut():
         if exists(defaultdir):
             directory = defaultdir
         else:
-            directory = None
+            directory = '/tmp'  # Was None ut CI does not have home
     try:
         link = join(directory, "RIDE.desktop")
     except UnicodeError:
