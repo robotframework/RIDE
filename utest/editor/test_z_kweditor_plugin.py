@@ -321,6 +321,8 @@ class KeywordEditorTest(unittest.TestCase):
         self.plugin.disable()
     """
 
+    # This was failing at AppVeyor
+    @pytest.mark.skipif(IS_WINDOWS, reason="On Windows causes: Windows fatal exception: access violation")
     def test_show(self):
         # self.setup_data()
         # self.frame.Show()
