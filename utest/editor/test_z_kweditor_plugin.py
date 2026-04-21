@@ -322,7 +322,7 @@ class KeywordEditorTest(unittest.TestCase):
     """
 
     # This was failing at AppVeyor
-    @pytest.mark.skipif(IS_WINDOWS, reason="On Windows causes: Windows fatal exception: access violation")
+    @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
     def test_show(self):
         # self.setup_data()
         # self.frame.Show()
