@@ -384,8 +384,22 @@ class RideFrame(wx.Frame):
         if self.controller and self.controller.is_dirty():
             RideBeforeSaving().publish()
             self.save_all()
-            self.SetStatusText(_('Auto-saved all files'))
             wx.CallAfter(self._start_auto_save_timer)
+            import threading
+            x = threading.Thread(target=self._status_scroller, args=(_('Auto-saved all files'),))
+            x.start()
+
+    def _status_scroller(self, status_msg:str):
+            self.SetStatusText(status_msg)
+            from time import sleep
+            sleep(10.0)
+            tstatus = status_msg + 4 * ' '
+            tsize = len(tstatus)
+            for t in range(tsize):
+                tstatus = ' ' + tstatus[0:tsize-t-1]
+                self.SetStatusText(tstatus)
+                sleep(0.2)
+            self.SetStatusText('')
 
     def _on_auto_save_settings_changed(self, message):
         """Update auto-save timer when settings change."""
