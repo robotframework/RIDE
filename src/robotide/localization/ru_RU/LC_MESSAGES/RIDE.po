@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-12 22:41+0100\n"
+"POT-Creation-Date: 2026-04-22 01:16+0100\n"
 "PO-Revision-Date: 2026-04-11 17:03+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Russian\n"
@@ -257,7 +257,7 @@ msgstr "Выберите папку журналов"
 #: src/robotide/editor/editordialogs.py:538
 #: src/robotide/editor/editordialogs.py:542
 #: src/robotide/editor/editordialogs.py:683
-#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:640
 msgid "Arguments"
 msgstr "Аргументы"
 
@@ -321,8 +321,8 @@ msgstr "Запустить тесты"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:913
-#: src/robotide/ui/mainframe.py:925
+#: src/robotide/ui/mainframe.py:927
+#: src/robotide/ui/mainframe.py:939
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Инструменты"
@@ -568,7 +568,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:703
+#: src/robotide/ui/mainframe.py:717
 msgid "RIDE - Preferences"
 msgstr "RIDE - настройки"
 
@@ -600,7 +600,7 @@ msgstr "Добавить тег к выбранному"
 #: src/robotide/controller/ui/treecontroller.py:58
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/editor/settingeditors.py:110
-#: src/robotide/editor/settingeditors.py:659
+#: src/robotide/editor/settingeditors.py:724
 #: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr "Редактирование"
@@ -930,9 +930,9 @@ msgid "Give a name for the new user keyword."
 msgstr "Укажите имя для нового ключевого слова пользователя."
 
 #: src/robotide/editor/editordialogs.py:84
-#: src/robotide/editor/settingeditors.py:487
-#: src/robotide/editor/settingeditors.py:575
-#: src/robotide/editor/settingeditors.py:739
+#: src/robotide/editor/settingeditors.py:552
+#: src/robotide/editor/settingeditors.py:640
+#: src/robotide/editor/settingeditors.py:804
 msgid "Comment"
 msgstr "Комментарий"
 
@@ -961,8 +961,8 @@ msgstr "Наименование"
 #: src/robotide/editor/editordialogs.py:163
 #: src/robotide/editor/editordialogs.py:183
 #: src/robotide/editor/editordialogs.py:604
-#: src/robotide/editor/settingeditors.py:487
-#: src/robotide/editor/settingeditors.py:739
+#: src/robotide/editor/settingeditors.py:552
+#: src/robotide/editor/settingeditors.py:804
 msgid "Value"
 msgstr "Значение"
 
@@ -976,8 +976,8 @@ msgstr "Словарная переменная"
 
 #: src/robotide/editor/editordialogs.py:199
 #: src/robotide/editor/editordialogs.py:230
-#: src/robotide/editor/settingeditors.py:576
-#: src/robotide/editor/settingeditors.py:666
+#: src/robotide/editor/settingeditors.py:641
+#: src/robotide/editor/settingeditors.py:731
 msgid "Library"
 msgstr "Библиотека"
 
@@ -1002,8 +1002,8 @@ msgid "Command"
 msgstr "Команда"
 
 #: src/robotide/editor/editordialogs.py:271
-#: src/robotide/editor/settingeditors.py:576
-#: src/robotide/editor/settingeditors.py:681
+#: src/robotide/editor/settingeditors.py:641
+#: src/robotide/editor/settingeditors.py:746
 msgid "Variables"
 msgstr "Переменные"
 
@@ -1013,8 +1013,8 @@ msgid "Path"
 msgstr "Путь"
 
 #: src/robotide/editor/editordialogs.py:290
-#: src/robotide/editor/settingeditors.py:576
-#: src/robotide/editor/settingeditors.py:673
+#: src/robotide/editor/settingeditors.py:641
+#: src/robotide/editor/settingeditors.py:738
 msgid "Resource"
 msgstr "Ресурс"
 
@@ -1049,7 +1049,7 @@ msgid "Timeout"
 msgstr "Таймаут"
 
 #: src/robotide/editor/editordialogs.py:598
-#: src/robotide/editor/settingeditors.py:739
+#: src/robotide/editor/settingeditors.py:804
 msgid "Metadata"
 msgstr "Метаданные"
 
@@ -1271,57 +1271,58 @@ msgid "Move Down\tCtrl-Down"
 msgstr "Переместить вниз\tCtrl-Down"
 
 #: src/robotide/editor/settingeditors.py:102
+#: src/robotide/editor/settingeditors.py:442
 #: src/robotide/ui/tagdialogs.py:239
 msgid "Clear"
 msgstr "Очистить"
 
-#: src/robotide/editor/settingeditors.py:487
+#: src/robotide/editor/settingeditors.py:552
 msgid "Variable"
 msgstr "Переменная"
 
-#: src/robotide/editor/settingeditors.py:488
+#: src/robotide/editor/settingeditors.py:553
 msgid "Add Dict"
 msgstr "Добавить словарь"
 
-#: src/robotide/editor/settingeditors.py:488
+#: src/robotide/editor/settingeditors.py:553
 msgid "Add List"
 msgstr "Добавить список"
 
-#: src/robotide/editor/settingeditors.py:488
+#: src/robotide/editor/settingeditors.py:553
 msgid "Add Scalar"
 msgstr "Добавить скалярный"
 
-#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:640
 msgid "Import"
 msgstr "Импорт"
 
-#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:640
 msgid "Name / Path"
 msgstr "Имя / Путь"
 
-#: src/robotide/editor/settingeditors.py:576
+#: src/robotide/editor/settingeditors.py:641
 msgid "Import Failed Help"
 msgstr "Ошибка импорта"
 
-#: src/robotide/editor/settingeditors.py:590
+#: src/robotide/editor/settingeditors.py:655
 msgid "Add Import"
 msgstr "Добавить импорт"
 
-#: src/robotide/editor/settingeditors.py:633
+#: src/robotide/editor/settingeditors.py:698
 msgid "Open Library Documentation"
 msgstr "Документация Open Library"
 
-#: src/robotide/editor/settingeditors.py:636
+#: src/robotide/editor/settingeditors.py:701
 msgid "Install Library"
 msgstr "Установить библиотеку"
 
-#: src/robotide/editor/settingeditors.py:636
+#: src/robotide/editor/settingeditors.py:701
 #: src/robotide/spec/specimporter.py:34
 #: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr "Импортировать библиотеку Spec XML"
 
-#: src/robotide/editor/settingeditors.py:687
+#: src/robotide/editor/settingeditors.py:752
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -1353,11 +1354,11 @@ msgstr ""
 "            </li>\n"
 "        </ul>"
 
-#: src/robotide/editor/settingeditors.py:687
+#: src/robotide/editor/settingeditors.py:752
 msgid "Import failure handling"
 msgstr "Сбой при импорте"
 
-#: src/robotide/editor/settingeditors.py:740
+#: src/robotide/editor/settingeditors.py:805
 msgid "Add Metadata"
 msgstr "Добавить метаданные"
 
@@ -2376,12 +2377,12 @@ msgstr "\"%s\" только для чтения"
 msgid "Test Suites"
 msgstr "Наборы тестов"
 
-#: src/robotide/ui/mainframe.py:387
+#: src/robotide/ui/mainframe.py:389
 #, fuzzy
 msgid "Auto-saved all files"
 msgstr "Все файлы сохранены"
 
-#: src/robotide/ui/mainframe.py:494
+#: src/robotide/ui/mainframe.py:508
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2389,12 +2390,12 @@ msgstr ""
 "Есть несохраненные изменения.\n"
 "Вы хотите сохранить ваши изменения перед выходом?"
 
-#: src/robotide/ui/mainframe.py:494
-#: src/robotide/ui/mainframe.py:588
+#: src/robotide/ui/mainframe.py:508
+#: src/robotide/ui/mainframe.py:602
 msgid "Warning"
 msgstr "Предупреждение"
 
-#: src/robotide/ui/mainframe.py:588
+#: src/robotide/ui/mainframe.py:602
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2402,63 +2403,63 @@ msgstr ""
 "Есть несохраненные изменения.\n"
 "Вы хотите продолжить без сохранения?"
 
-#: src/robotide/ui/mainframe.py:638
+#: src/robotide/ui/mainframe.py:652
 msgid "Choose a directory containing Robot files"
 msgstr "Выберите каталог, содержащий файлы робота"
 
-#: src/robotide/ui/mainframe.py:790
+#: src/robotide/ui/mainframe.py:804
 msgid "Workspace modifications detected on the file system."
 msgstr "Обнаружены изменения рабочей области в файловой системе."
 
-#: src/robotide/ui/mainframe.py:791
+#: src/robotide/ui/mainframe.py:805
 msgid "Do you want to reload the workspace?"
 msgstr "Вы хотите перезагрузить рабочую область?"
 
-#: src/robotide/ui/mainframe.py:793
+#: src/robotide/ui/mainframe.py:807
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Ответ <Yes> приведет к отмене несохраненных изменений."
 
-#: src/robotide/ui/mainframe.py:794
+#: src/robotide/ui/mainframe.py:808
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "При ответе на <No> изменения на диске будут игнорироваться."
 
-#: src/robotide/ui/mainframe.py:795
+#: src/robotide/ui/mainframe.py:809
 msgid "Files Changed On Disk"
 msgstr "Файлы изменены на диске"
 
-#: src/robotide/ui/mainframe.py:838
+#: src/robotide/ui/mainframe.py:852
 msgid "Customize..."
 msgstr "Настроить..."
 
-#: src/robotide/ui/mainframe.py:926
+#: src/robotide/ui/mainframe.py:940
 msgid "search unused keywords"
 msgstr "поиск неиспользованных ключевых слов"
 
-#: src/robotide/ui/mainframe.py:926
+#: src/robotide/ui/mainframe.py:940
 msgid "stop test run"
 msgstr "остановить запуск теста"
 
-#: src/robotide/ui/mainframe.py:927
+#: src/robotide/ui/mainframe.py:941
 msgid "preview"
 msgstr "предпросмотр"
 
-#: src/robotide/ui/mainframe.py:927
+#: src/robotide/ui/mainframe.py:941
 msgid "view ride log"
 msgstr "просмотр журнала RIDE"
 
-#: src/robotide/ui/mainframe.py:969
+#: src/robotide/ui/mainframe.py:983
 msgid "Shortcut keys for RIDE"
 msgstr "Горячие клавиши для RIDE"
 
-#: src/robotide/ui/mainframe.py:1007
+#: src/robotide/ui/mainframe.py:1021
 msgid "Show"
 msgstr "Показать"
 
-#: src/robotide/ui/mainframe.py:1008
+#: src/robotide/ui/mainframe.py:1022
 msgid "Hide"
 msgstr "Скрыть"
 
-#: src/robotide/ui/mainframe.py:1009
+#: src/robotide/ui/mainframe.py:1023
 msgid "Close"
 msgstr "Закрыть"
 

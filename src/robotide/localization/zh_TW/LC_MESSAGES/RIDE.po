@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-12 22:41+0100\n"
+"POT-Creation-Date: 2026-04-22 01:16+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
@@ -256,7 +256,7 @@ msgstr "選擇記錄目錄"
 #: src/robotide/editor/editordialogs.py:538
 #: src/robotide/editor/editordialogs.py:542
 #: src/robotide/editor/editordialogs.py:683
-#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:640
 msgid "Arguments"
 msgstr "論點"
 
@@ -320,8 +320,8 @@ msgstr "執行測試"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:913
-#: src/robotide/ui/mainframe.py:925
+#: src/robotide/ui/mainframe.py:927
+#: src/robotide/ui/mainframe.py:939
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "工具"
@@ -567,7 +567,7 @@ msgstr ""
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:703
+#: src/robotide/ui/mainframe.py:717
 msgid "RIDE - Preferences"
 msgstr "RIDE - 偏好設定"
 
@@ -599,7 +599,7 @@ msgstr "新增標籤至選取的"
 #: src/robotide/controller/ui/treecontroller.py:58
 #: src/robotide/editor/listeditor.py:40
 #: src/robotide/editor/settingeditors.py:110
-#: src/robotide/editor/settingeditors.py:659
+#: src/robotide/editor/settingeditors.py:724
 #: src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr "編輯"
@@ -929,9 +929,9 @@ msgid "Give a name for the new user keyword."
 msgstr "為新使用者關鍵字命名。"
 
 #: src/robotide/editor/editordialogs.py:84
-#: src/robotide/editor/settingeditors.py:487
-#: src/robotide/editor/settingeditors.py:575
-#: src/robotide/editor/settingeditors.py:739
+#: src/robotide/editor/settingeditors.py:552
+#: src/robotide/editor/settingeditors.py:640
+#: src/robotide/editor/settingeditors.py:804
 msgid "Comment"
 msgstr "評論"
 
@@ -960,8 +960,8 @@ msgstr "名稱"
 #: src/robotide/editor/editordialogs.py:163
 #: src/robotide/editor/editordialogs.py:183
 #: src/robotide/editor/editordialogs.py:604
-#: src/robotide/editor/settingeditors.py:487
-#: src/robotide/editor/settingeditors.py:739
+#: src/robotide/editor/settingeditors.py:552
+#: src/robotide/editor/settingeditors.py:804
 msgid "Value"
 msgstr "價值"
 
@@ -975,8 +975,8 @@ msgstr "字典變數"
 
 #: src/robotide/editor/editordialogs.py:199
 #: src/robotide/editor/editordialogs.py:230
-#: src/robotide/editor/settingeditors.py:576
-#: src/robotide/editor/settingeditors.py:666
+#: src/robotide/editor/settingeditors.py:641
+#: src/robotide/editor/settingeditors.py:731
 msgid "Library"
 msgstr "圖書館"
 
@@ -1001,8 +1001,8 @@ msgid "Command"
 msgstr "指令"
 
 #: src/robotide/editor/editordialogs.py:271
-#: src/robotide/editor/settingeditors.py:576
-#: src/robotide/editor/settingeditors.py:681
+#: src/robotide/editor/settingeditors.py:641
+#: src/robotide/editor/settingeditors.py:746
 msgid "Variables"
 msgstr "變數"
 
@@ -1012,8 +1012,8 @@ msgid "Path"
 msgstr "路徑"
 
 #: src/robotide/editor/editordialogs.py:290
-#: src/robotide/editor/settingeditors.py:576
-#: src/robotide/editor/settingeditors.py:673
+#: src/robotide/editor/settingeditors.py:641
+#: src/robotide/editor/settingeditors.py:738
 msgid "Resource"
 msgstr "資源"
 
@@ -1048,7 +1048,7 @@ msgid "Timeout"
 msgstr "超時"
 
 #: src/robotide/editor/editordialogs.py:598
-#: src/robotide/editor/settingeditors.py:739
+#: src/robotide/editor/settingeditors.py:804
 msgid "Metadata"
 msgstr "元資料"
 
@@ -1270,57 +1270,58 @@ msgid "Move Down\tCtrl-Down"
 msgstr "向下移動 Ctrl-Down"
 
 #: src/robotide/editor/settingeditors.py:102
+#: src/robotide/editor/settingeditors.py:442
 #: src/robotide/ui/tagdialogs.py:239
 msgid "Clear"
 msgstr "清除"
 
-#: src/robotide/editor/settingeditors.py:487
+#: src/robotide/editor/settingeditors.py:552
 msgid "Variable"
 msgstr "可變"
 
-#: src/robotide/editor/settingeditors.py:488
+#: src/robotide/editor/settingeditors.py:553
 msgid "Add Dict"
 msgstr "新增字典"
 
-#: src/robotide/editor/settingeditors.py:488
+#: src/robotide/editor/settingeditors.py:553
 msgid "Add List"
 msgstr "新增清單"
 
-#: src/robotide/editor/settingeditors.py:488
+#: src/robotide/editor/settingeditors.py:553
 msgid "Add Scalar"
 msgstr "新增標量"
 
-#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:640
 msgid "Import"
 msgstr "進口"
 
-#: src/robotide/editor/settingeditors.py:575
+#: src/robotide/editor/settingeditors.py:640
 msgid "Name / Path"
 msgstr "名稱 / 路徑"
 
-#: src/robotide/editor/settingeditors.py:576
+#: src/robotide/editor/settingeditors.py:641
 msgid "Import Failed Help"
 msgstr "匯入失敗說明"
 
-#: src/robotide/editor/settingeditors.py:590
+#: src/robotide/editor/settingeditors.py:655
 msgid "Add Import"
 msgstr "新增匯入"
 
-#: src/robotide/editor/settingeditors.py:633
+#: src/robotide/editor/settingeditors.py:698
 msgid "Open Library Documentation"
 msgstr "開放式圖書館文件"
 
-#: src/robotide/editor/settingeditors.py:636
+#: src/robotide/editor/settingeditors.py:701
 msgid "Install Library"
 msgstr "安裝圖書館"
 
-#: src/robotide/editor/settingeditors.py:636
+#: src/robotide/editor/settingeditors.py:701
 #: src/robotide/spec/specimporter.py:34
 #: src/robotide/spec/specimporter.py:63
 msgid "Import Library Spec XML"
 msgstr "匯入圖書館規格 XML"
 
-#: src/robotide/editor/settingeditors.py:687
+#: src/robotide/editor/settingeditors.py:752
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -1352,11 +1353,11 @@ msgstr ""
 "            </li>\n"
 "        </ul>"
 
-#: src/robotide/editor/settingeditors.py:687
+#: src/robotide/editor/settingeditors.py:752
 msgid "Import failure handling"
 msgstr "匯入失敗處理"
 
-#: src/robotide/editor/settingeditors.py:740
+#: src/robotide/editor/settingeditors.py:805
 msgid "Add Metadata"
 msgstr "新增元資料"
 
@@ -2377,12 +2378,12 @@ msgstr "\"%s\" 為唯讀"
 msgid "Test Suites"
 msgstr "測試套件"
 
-#: src/robotide/ui/mainframe.py:387
+#: src/robotide/ui/mainframe.py:389
 #, fuzzy
 msgid "Auto-saved all files"
 msgstr "儲存所有檔案"
 
-#: src/robotide/ui/mainframe.py:494
+#: src/robotide/ui/mainframe.py:508
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2390,12 +2391,12 @@ msgstr ""
 "有未儲存的修改。\n"
 "您要在退出前保存修改嗎？"
 
-#: src/robotide/ui/mainframe.py:494
-#: src/robotide/ui/mainframe.py:588
+#: src/robotide/ui/mainframe.py:508
+#: src/robotide/ui/mainframe.py:602
 msgid "Warning"
 msgstr "警告"
 
-#: src/robotide/ui/mainframe.py:588
+#: src/robotide/ui/mainframe.py:602
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2403,63 +2404,63 @@ msgstr ""
 "有未儲存的修改。\n"
 "您要繼續而不儲存嗎？"
 
-#: src/robotide/ui/mainframe.py:638
+#: src/robotide/ui/mainframe.py:652
 msgid "Choose a directory containing Robot files"
 msgstr "選擇包含 Robot 檔案的目錄"
 
-#: src/robotide/ui/mainframe.py:790
+#: src/robotide/ui/mainframe.py:804
 msgid "Workspace modifications detected on the file system."
 msgstr "在檔案系統上偵測到工作區修改。"
 
-#: src/robotide/ui/mainframe.py:791
+#: src/robotide/ui/mainframe.py:805
 msgid "Do you want to reload the workspace?"
 msgstr "您要重新載入工作區嗎？"
 
-#: src/robotide/ui/mainframe.py:793
+#: src/robotide/ui/mainframe.py:807
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "回答<Yes> 會丟棄未儲存的變更。"
 
-#: src/robotide/ui/mainframe.py:794
+#: src/robotide/ui/mainframe.py:808
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "回答<No> 將忽略磁碟上的變更。"
 
-#: src/robotide/ui/mainframe.py:795
+#: src/robotide/ui/mainframe.py:809
 msgid "Files Changed On Disk"
 msgstr "磁碟上變更的檔案"
 
-#: src/robotide/ui/mainframe.py:838
+#: src/robotide/ui/mainframe.py:852
 msgid "Customize..."
 msgstr "自訂..."
 
-#: src/robotide/ui/mainframe.py:926
+#: src/robotide/ui/mainframe.py:940
 msgid "search unused keywords"
 msgstr "搜尋未使用的關鍵字"
 
-#: src/robotide/ui/mainframe.py:926
+#: src/robotide/ui/mainframe.py:940
 msgid "stop test run"
 msgstr "停止測試執行"
 
-#: src/robotide/ui/mainframe.py:927
+#: src/robotide/ui/mainframe.py:941
 msgid "preview"
 msgstr "預覽"
 
-#: src/robotide/ui/mainframe.py:927
+#: src/robotide/ui/mainframe.py:941
 msgid "view ride log"
 msgstr "檢視騎乘記錄"
 
-#: src/robotide/ui/mainframe.py:969
+#: src/robotide/ui/mainframe.py:983
 msgid "Shortcut keys for RIDE"
 msgstr "RIDE 的捷徑鍵"
 
-#: src/robotide/ui/mainframe.py:1007
+#: src/robotide/ui/mainframe.py:1021
 msgid "Show"
 msgstr "顯示"
 
-#: src/robotide/ui/mainframe.py:1008
+#: src/robotide/ui/mainframe.py:1022
 msgid "Hide"
 msgstr "隱藏"
 
-#: src/robotide/ui/mainframe.py:1009
+#: src/robotide/ui/mainframe.py:1023
 msgid "Close"
 msgstr "關閉"
 
