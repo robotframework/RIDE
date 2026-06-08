@@ -17,7 +17,7 @@ import re
 
 from .. import robotapi, utils
 from .basecontroller import _BaseController
-from .cellinfo import CellPosition, CellType, CellInfo, CellContent, ContentType, UPPERCASE_KWS
+from .cellinfo import CellPosition, CellType, CellInfo, CellContent, ContentType, CONTROL_MARKERS
 from ..publish.messages import RideItemNameChanged
 from ..namespace.local_namespace import local_namespace
 from ..utils import variablematcher
@@ -140,7 +140,7 @@ class StepController(_BaseController):
 
     def _build_cell_info(self, content, position):
         # print(f"DEBUG: stepcontrollers.py StepController _build_cell_info call CellInfo content={content} position={position}")
-        return CellInfo(content, position)
+        return CellInfo(content, position, for_loop=content.value=='FOR')
 
     def _get_cell_position(self, column):
         col = column
@@ -151,18 +151,22 @@ class StepController(_BaseController):
         info = self.get_keyword_info(value_at_col)  # Getting info for the keyword cell
         keyword_col = col if col >= self._keyword_column else self._keyword_column
         if info:
-            casesensitive = (value_at_col.upper() != value_at_col and value_at_col.upper() in UPPERCASE_KWS)
+            casesensitive = (value_at_col.upper() != value_at_col and value_at_col.upper() in CONTROL_MARKERS)
             if casesensitive:
                 return CellPosition(CellType.UNKNOWN, ContentType.STRING)
+            elif value_at_col in CONTROL_MARKERS:
+                return CellPosition(CellType.CONTROL_MARKER, None)
             return CellPosition(CellType.KEYWORD, None)
         else:
             while not info and keyword_col > 0 and keyword_col > self._keyword_column:
                 keyword_col -= 1
                 value_at_col = self.get_value(keyword_col)
                 info = self.get_keyword_info(value_at_col)  # Getting info for the previous cell
-            casesensitive = (value_at_col.upper() != value_at_col and value_at_col.upper() in UPPERCASE_KWS)
+            casesensitive = (value_at_col.upper() != value_at_col and value_at_col.upper() in CONTROL_MARKERS)
             if casesensitive:
                 return CellPosition(CellType.UNKNOWN, None)
+            # elif value_at_col in CONTROL_MARKERS:
+            #     return CellPosition(CellType.CONTROL_MARKER, None)
         if info:
             args = info.arguments
         else:
@@ -254,13 +258,11 @@ class StepController(_BaseController):
         if self.is_user_keyword(value):
             kw_info = self.get_keyword_info(value)
             source = kw_info.source
-            # print(f"DEBUG: stepcontrollers.py StepController file={self.display_name} "
-            #       f"call get_keyword_info value={value}, source={source} PRIVATE={kw_info.private}")
             return CellContent(ContentType.USER_KEYWORD, value, source=source, private=kw_info.private)
+        if value in CONTROL_MARKERS:
+            return CellContent(ContentType.LIBRARY_KEYWORD, value, source=self.get_keyword_info(value).source)
         if self.is_library_keyword(value):
             return CellContent(ContentType.LIBRARY_KEYWORD, value, source=self.get_keyword_info(value).source)
-        if value == 'END':  # DEBUG Don't consider start column (col == 0 and)
-            return CellContent(ContentType.END, value)
         return CellContent(ContentType.STRING, value)
 
     def _is_unknow_variable(self, value, position):
@@ -685,7 +687,7 @@ class ForLoopStepController(StepController):
         until_range = len(self.step_controller_step.vars) + 1
         flavor = self.step_controller_step.flavor
         if col == self._keyword_column:
-            return CellPosition(CellType.KEYWORD, None)
+            return CellPosition(CellType.CONTROL_MARKER, None)
         if col < self._keyword_column + until_range:
             return CellPosition(CellType.ASSIGN, self.step_controller_step.vars[:])
         if col == self._keyword_column + until_range:

@@ -124,6 +124,8 @@ class SettingsMigrator(object):
             self.migrate_from_7_to_8(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 8:
             self.migrate_from_8_to_9(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 9:
+            self.migrate_from_9_to_10(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -231,6 +233,40 @@ class SettingsMigrator(object):
             if key not in general:
                 general[key] = value
         settings[self.SETTINGS_VERSION] = 9
+
+    def migrate_from_9_to_10(self, settings):
+        """Ensure Grid section exists with all required keys."""
+        if 'Grid' not in settings:
+            settings['Grid'] = {}
+        grid = settings['Grid']
+        defaults = {
+            'font size': 11,
+            'font face': '',
+            'text user keyword': 'blue',
+            'text library keyword' : '#0080C0',
+            'text control marker' : '#902020',
+            'text variable' : 'forest green',
+            'text unknown variable' : 'purple',
+            'text commented' : 'firebrick',
+            'text string' : 'black',
+            'text empty' : 'black',
+            'background assign ' : '#CADEF7',
+            'background keyword' : '#CADEF7',
+            'background control marker' : '#CADEF7',
+            'background mandatory' : '#D3D3D3',
+            'background optional' : '#F9D7BA',
+            'background must be empty' : '#C0C0C0',
+            'background unknown' : '#E8B636',
+            'background error' : '#FF9385',
+            'background highlight' : '#FFFF77',
+            'word wrap' : True,
+            'enable auto suggestions': True,
+            'filter newlines': False
+        }
+        for key, value in defaults.items():
+            if key not in grid:
+                grid[key] = value
+        settings[self.SETTINGS_VERSION] = 10
 
     @staticmethod
     def _key_with_underscore(settings, keyname, section=None):

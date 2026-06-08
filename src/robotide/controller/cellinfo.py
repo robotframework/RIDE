@@ -53,6 +53,10 @@ class CellInfo(object):
     def arg_name(self):
         return self._cell_position.argument_name
 
+    @property
+    def value(self):
+        return self._cell_content.value
+
     def has_error(self):
         return self.argument_missing() or self.too_many_arguments() or self._error_state == PrivateError.invalid
 
@@ -96,6 +100,7 @@ class _TooltipMessage(object):
     MISSING_ARGUMENT = "Missing argument:  %s"
 
     KEYWORD = "Keyword from:  %s\n\n" + ("Press <%s> for details" % CTRL_LABEL)
+    CONTROL_MARKER = "Control Marker from:  %s\n\n" + ("Press <%s> for details" % CTRL_LABEL)
 
     def __init__(self, cell):
         self.message = self._get_message(cell)
@@ -106,13 +111,30 @@ class _TooltipMessage(object):
         handlers = {
             CellType.ASSIGN: self._assign,
             CellType.KEYWORD: self._keyword,
+            CellType.CONTROL_MARKER: self._control_marker,
             CellType.MANDATORY: self._mandatory,
             CellType.OPTIONAL: self._optional,
             CellType.MUST_BE_EMPTY: self._must_be_empty,
             CellType.UNKNOWN: self._unknown,
-            CellType.END: self._keyword,
-            CellType.FOR: self._keyword,
-            CellType.VAR: self._assign
+            CellType.AND: self._control_marker,
+            CellType.BREAK: self._control_marker,
+            CellType.CONTINUE: self._control_marker,
+            CellType.ELSE: self._control_marker,
+            CellType.ELSEIF: self._control_marker,
+            CellType.END: self._control_marker,
+            CellType.EXCEPT: self._control_marker,
+            CellType.FINALLY: self._control_marker,
+            CellType.FOR: self._control_marker,
+            CellType.GROUP: self._control_marker,
+            CellType.IF: self._control_marker,
+            CellType.IN: self._control_marker,
+            CellType.INENUMERATE: self._control_marker,
+            CellType.INRANGE: self._control_marker,
+            CellType.INZIP: self._control_marker,
+            CellType.RETURN: self._control_marker,
+            CellType.TRY: self._control_marker,
+            CellType.VAR: self._assign,
+            CellType.WHILE: self._control_marker
         }
         return (handlers[cell.cell_type](cell) + message).strip()
 
@@ -134,6 +156,13 @@ class _TooltipMessage(object):
             return self.KEYWORD_NOT_FOUND
         if cell.content_type in ContentType.KEYWORDS:
             return self.KEYWORD % cell.source
+        return ''
+
+    def _control_marker(self, cell):
+        if cell.content_type == ContentType.STRING:
+            return self.KEYWORD_NOT_FOUND
+        if cell.value in ContentType.CONTROL_MARKERS:
+            return self.CONTROL_MARKER % cell.source
         return ''
 
     def _assign(self, cell):
@@ -171,18 +200,29 @@ class CellPosition(object):
 class ContentType:
     USER_KEYWORD = 'USER_KEYWORD'
     LIBRARY_KEYWORD = 'LIBRARY_KEYWORD'
-    END = 'END'
-    FOR = 'FOR'
-    IF = 'IF'
-    ELSE = 'ELSE'
-    ELSEIF = 'ELSE IF'
-    WHILE = 'WHILE'
-    TRY = 'TRY'
-    EXCEPT = 'EXCEPT'
+    CONTROL_MARKER = 'CONTROL_MARKER'
+    AND = 'AND'
     BREAK = 'BREAK'
     CONTINUE = 'CONTINUE'
+    ELSE = 'ELSE'
+    ELSEIF = 'ELSE IF'
+    END = 'END'
+    EXCEPT = 'EXCEPT'
+    FINALLY = 'FINALLY'
+    FOR = 'FOR'
+    GROUP = 'GROUP'
+    IF = 'IF'
+    IN = 'IN'
+    INENUMERATE = 'IN ENUMERATE'
+    INRANGE = 'IN RANGE'
+    INZIP = 'IN ZIP'
+    RETURN = 'RETURN'
+    TRY = 'TRY'
     VAR = 'VAR'
-    KEYWORDS = (USER_KEYWORD, LIBRARY_KEYWORD, END, FOR, IF, ELSE, ELSEIF, WHILE, TRY, EXCEPT, BREAK, CONTINUE, VAR)
+    WHILE = 'WHILE'
+    KEYWORDS = (USER_KEYWORD, LIBRARY_KEYWORD)
+    CONTROL_MARKERS = (AND, BREAK, CONTINUE, ELSE, ELSEIF, END, EXCEPT, FINALLY, FOR,
+                       GROUP, IF, IN, INENUMERATE, INRANGE, INZIP, RETURN, TRY, VAR, WHILE)
     VARIABLE = 'VARIABLE'
     UNKNOWN_VARIABLE = 'UNKNOWN_VARIABLE'
     COMMENTED = 'COMMENTED'
@@ -193,23 +233,34 @@ class ContentType:
 class CellType:
     ASSIGN = 'ASSIGN'
     KEYWORD = 'KEYWORD'
+    CONTROL_MARKER = 'CONTROL_MARKER'
     MANDATORY = 'MANDATORY'
     OPTIONAL = 'OPTIONAL'
     MUST_BE_EMPTY = 'MUST_BE_EMPTY'
     UNKNOWN = 'UNKNOWN'
-    FOR = 'KEYWORD'
-    END = 'KEYWORD'
-    IF = 'KEYWORD'
-    ELSE = 'KEYWORD'
-    ELSEIF = 'KEYWORD'
-    WHILE = 'KEYWORD'
-    TRY = 'KEYWORD'
-    EXCEPT = 'KEYWORD'
-    BREAK = 'KEYWORD'
-    CONTINUE = 'KEYWORD'
+    AND = 'CONTROL_MARKER'
+    BREAK = 'CONTROL_MARKER'
+    CONTINUE = 'CONTROL_MARKER'
+    ELSE = 'CONTROL_MARKER'
+    ELSEIF = 'CONTROL_MARKER'
+    END = 'CONTROL_MARKER'
+    EXCEPT = 'CONTROL_MARKER'
+    FINALLY = 'CONTROL_MARKER'
+    FOR = 'CONTROL_MARKER'
+    GROUP = 'CONTROL_MARKER'
+    IF = 'CONTROL_MARKER'
+    IN = 'CONTROL_MARKER'
+    INENUMERATE = 'CONTROL_MARKER'
+    INRANGE = 'CONTROL_MARKER'
+    INZIP = 'CONTROL_MARKER'
+    RETURN = 'CONTROL_MARKER'
+    TRY = 'CONTROL_MARKER'
     VAR = 'ASSIGN'
+    WHILE = 'CONTROL_MARKER'
 
 
-UPPERCASE_KWS = [ContentType.END, ContentType.FOR, ContentType.IF, ContentType.ELSE,
-                 ContentType.ELSEIF, ContentType.WHILE, ContentType.TRY, ContentType.EXCEPT,
-                 ContentType.BREAK, ContentType.CONTINUE, ContentType.VAR, 'IN', 'IN RANGE', 'IN ENUMERATE', 'IN ZIP']
+CONTROL_MARKERS = [ContentType.AND, ContentType.BREAK, ContentType.CONTINUE, ContentType.ELSE,
+                   ContentType.ELSEIF, ContentType.END, ContentType.EXCEPT, ContentType.FINALLY,
+                   ContentType.FOR, ContentType.GROUP, ContentType.IF, ContentType.IN,
+                   ContentType.INENUMERATE, ContentType.INRANGE, ContentType.INZIP, ContentType.RETURN,
+                   ContentType.TRY, ContentType.VAR, ContentType.WHILE]

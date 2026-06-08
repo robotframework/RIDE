@@ -46,11 +46,11 @@ from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDia
 
 from robotide.lib.compat.parsing.language import Language
 robotframeworklexer = None
-if Language:
-    try:  # import our modified version
-        from robotide.lib.compat.pygments import robotframework as robotframeworklexer
-    except ImportError:
-        robotframeworklexer = None
+# if Language:
+try:  # import our modified version
+    from ..lib.compat.pygments import robotframework as robotframeworklexer
+except ImportError:
+    robotframeworklexer = None
 
 if not robotframeworklexer:
     try:  # import original version
@@ -90,7 +90,7 @@ def obtain_language(existing, content):
     try:
         set_lang = shared_memory.ShareableList(name="language")
     except Exception as e: # AttributeError:  # Unittests fails here
-        print(f"DEBUG: texteditor.py obtain_language EXCEPTION: {e}")
+        # print(f"DEBUG: texteditor.py obtain_language EXCEPTION: {e}")
         set_lang = []
     doc_lang = read_language(content)
     adoc_lang = []
@@ -119,7 +119,7 @@ def _get_lang(set_lang:list, adoc_lang: list) -> list:
         try:
             mlang = Language.from_name(lang.replace('_', '-').strip())
         except ValueError as e:
-            print(f"DEBUG: TextEditor, could not find Language:{lang}")
+            # print(f"DEBUG: TextEditor, could not find Language:{lang}")
             raise e
         set_lang[idx] = get_rf_lang_code(mlang.code) # .code.replace('-','_')
     return set_lang
@@ -355,9 +355,9 @@ def transform_standard_keywords(new_lang: str, content: str) -> str:
         return content
 
     path_to_exclusion = f"{PATH_EXCLUSIONS}/../localization/{lang_code}/restore_keywords.json"
-    print(f"DEBUG: texteditor.py transform_standard_keywords path={path_to_exclusion}\n"
-          f"{lang_code=}\n"
-          f"{mlang.code=}")
+    # print(f"DEBUG: texteditor.py transform_standard_keywords path={path_to_exclusion}\n"
+    #       f"{lang_code=}\n"
+    #       f"{mlang.code=}")
     import json
 
     try:
@@ -505,7 +505,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._save_flag = 2
         if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
             self._save_flag = 3
-            print(f"DEBUG: textedit.py TextEditorPlugin _check_message call undirty, {message}")
+            # print(f"DEBUG: textedit.py TextEditorPlugin _check_message call undirty, {message}")
             # wx.CallAfter(self._editor.mark_file_dirty, False)
             self._editor.mark_file_dirty(False)
             self.tree._data_undirty(message)
@@ -3135,6 +3135,10 @@ class RobotStylizer(object):
                 },
                 robotframeworklexer.COMMENT: {
                     'fore': color_settings.get('comment', 'black')
+                },
+                robotframeworklexer.CONTROL: {
+                    'fore': color_settings.get('control_marker', '#902020'),
+                    'bold': 'true'
                 },
                 robotframeworklexer.ERROR: {
                     'fore': color_settings.get('error', 'black')

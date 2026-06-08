@@ -26,10 +26,16 @@ from ..widgets import Label
 from .managesettingsdialog import SaveLoadSettings
 from functools import lru_cache
 
-try:  # import installed version first
-    from pygments.lexers import robotframework as robotframeworklexer
-except ImportError:  # Pygments is not installed
+try:  # import our modified version
+    from ..lib.compat.pygments import robotframework as robotframeworklexer
+except ImportError:
     robotframeworklexer = None
+
+if not robotframeworklexer:
+    try:  # import installed version next
+        from pygments.lexers import robotframework as robotframeworklexer
+    except ImportError:  # Pygments is not installed
+        robotframeworklexer = None
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -180,6 +186,7 @@ class TextEditorPreferences(EditorPreferences):
                 ('variable', _('Variable foreground')),
                 ('tc_kw_name', _('Keyword definition foreground')),
                 ('keyword', _('Keyword call foreground')),
+                ('control_marker', _('Control marker foreground')),
                 ('separator', _('Separator')),
                 ('setting', _('Setting foreground')),
                 ('syntax', _('Syntax characters')),
@@ -305,6 +312,7 @@ class GridEditorPreferences(EditorPreferences):
         for key, label in (
             ('text user keyword', _('User Keyword Foreground')),
             ('text library keyword', _('Library Keyword Foreground')),
+            ('text control marker', _('Control Marker Foreground')),
             ('text variable', _('Variable Foreground')),
             ('text unknown variable', _('Unknown Variable Foreground')),
             ('text commented', _('Comments Foreground')),
@@ -327,6 +335,7 @@ class GridEditorPreferences(EditorPreferences):
         for key, label in (
                 ('background assign', _('Variable Background')),
                 ('background keyword', _('Keyword Background')),
+                ('background control marker', _('Control Marker Background')),
                 ('background mandatory', _('Mandatory Field Background')),
                 ('background optional', _('Optional Field Background')),
                 ('background must be empty', _('Mandatory Empty Field Background')),

@@ -63,7 +63,6 @@ class Colorizer(object):
         if cell_info is None:
             self._set_default_colors(row, col)
             return
-        # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell cell_info={cell_info}")
         if cell_info.cell_type == CellType.KEYWORD and cell_info.content_type==ContentType.USER_KEYWORD:
             source = self._controller.display_name
             parent = self._controller.parent
@@ -109,7 +108,7 @@ class Colorizer(object):
 
     @staticmethod
     def _get_weight(cell_info):
-        if cell_info.cell_type == CellType.KEYWORD:
+        if cell_info.cell_type in (CellType.KEYWORD, CellType.CONTROL_MARKER):
             return wx.FONTWEIGHT_BOLD
         return wx.FONTWEIGHT_NORMAL
 

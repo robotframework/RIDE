@@ -223,6 +223,10 @@ class LibraryCache(object):
         obj19 = BlockKeywordInfo('GROUP', group_doc, 'ROBOT', 'BuiltIn',
                                  '*name_of_group')
         kws.append(obj19)
+        obj20 = BlockKeywordInfo('AND',
+                                'To combine keywords execution in `Run Keywords`. See `BuiltIn.Run Keywords` docs at\n '
+                                'https://robotframework.org/robotframework/latest/libraries/BuiltIn.html#Run%20Keywords.')
+        kws.append(obj20)
         return kws
 
     def _get_default_libraries(self):

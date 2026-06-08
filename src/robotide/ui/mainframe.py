@@ -385,7 +385,9 @@ class RideFrame(wx.Frame):
             RideBeforeSaving().publish()
             self.save_all()
             wx.CallAfter(self._start_auto_save_timer)
-            wx.CallAfter(self._status_scroller, status_msg=_('Auto-saved all files'))
+            import threading
+            x = threading.Thread(target=self._status_scroller, args=(_('Auto-saved all files'),))
+            x.start()
 
     def _status_scroller(self, status_msg:str):
             self.SetStatusText(status_msg)

@@ -262,8 +262,8 @@ class Namespace(object):
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
-        from ..controller.cellinfo import UPPERCASE_KWS
-        casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in UPPERCASE_KWS)
+        from ..controller.cellinfo import CONTROL_MARKERS
+        casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in CONTROL_MARKERS)
         kwds = self._retriever.get_keywords_cached(datafile, self._context_factory, caseless=not casesensitive)
         # print(f"DEBUG: namespace.py Namespace find_keyword will GET kw_name=={kw_name} casesensitive={casesensitive}")
         #      f"\n PRIVATE? {self.is_private(datafile, kw_name)}")

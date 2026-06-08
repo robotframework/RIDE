@@ -204,8 +204,8 @@ class TestMainFrame(_BaseDialogTest):
             [
                 "publish",
                 "save_all",
-                ("status", "Auto-saved all files"),
                 ("callafter", restart_timer, (), {}),
+                ("status", "Auto-saved all files")
             ],
         )
 
