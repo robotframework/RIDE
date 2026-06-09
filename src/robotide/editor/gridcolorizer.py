@@ -63,6 +63,8 @@ class Colorizer(object):
         if cell_info is None:
             self._set_default_colors(row, col)
             return
+        # print(f"DEBUG: gridcolorizer.py Colorizer _colorize_cell ENTER cell_info.cell_type={cell_info.cell_type} "
+        #       f"CELL cell_info.content_type=={cell_info.content_type} content={cell_info.value}")
         if cell_info.cell_type == CellType.KEYWORD and cell_info.content_type==ContentType.USER_KEYWORD:
             source = self._controller.display_name
             parent = self._controller.parent
@@ -90,7 +92,8 @@ class Colorizer(object):
         self._grid.SetCellBackgroundColour(row, col, self._colors.DEFAULT_BACKGROUND)
 
     def _get_text_color(self, cell_info):
-        return self._colors.get_text_color(cell_info.content_type)
+        return self._colors.get_text_color(cell_info.content_type if cell_info.cell_type!=CellType.CONTROL_MARKER
+                                           else CellType.CONTROL_MARKER)
 
     def _get_background_color(self, cell_info, selection_content):
         if cell_info.matches(selection_content):
