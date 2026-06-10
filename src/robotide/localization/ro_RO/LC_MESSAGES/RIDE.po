@@ -2,10 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2026-06-10 15:26+0100\n"
-"PO-Revision-Date: 2026-01-11 19:04\n"
+"PO-Revision-Date: 2026-06-10 17:19\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
-"Language: ro_RO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,6 +15,7 @@ msgstr ""
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"Language: ro_RO\n"
 
 #: src/robotide/application/application.py:215
 msgid "Global Settings"
@@ -177,11 +177,9 @@ msgid "See the latest development "
 msgstr "Vezi cea mai recentă dezvoltare "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid ""
-"I'm using another method for RIDE updates\n"
+msgid "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr ""
-"Folosesc o altă metodă pentru actualizările RIDE\n"
+msgstr "Folosesc o altă metodă pentru actualizările RIDE\n"
 " și nu necesită verificări automate ale actualizărilor"
 
 #: src/robotide/application/updatenotifier.py:252
@@ -376,11 +374,9 @@ msgid "Unsaved Modifications"
 msgstr "Modificări nesalvate"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr ""
-"Există modificări nesalvate.\n"
+msgstr "Există modificări nesalvate.\n"
 "        Doriţi să salvaţi toate modificările şi să executaţi testele?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -388,19 +384,15 @@ msgid "No tests selected"
 msgstr "Nicio testare selectată"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid ""
-"No tests selected. \n"
+msgid "No tests selected. \n"
 "Continue anyway?"
-msgstr ""
-"Nici un test selectat. \n"
+msgstr "Nici un test selectat. \n"
 "Continuați oricum?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid ""
-"\n"
+msgid "\n"
 "Test finished {}"
-msgstr ""
-"\n"
+msgstr "\n"
 "Test terminat {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -555,11 +547,9 @@ msgid "No logs directory"
 msgstr "Nu există jurnal"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid ""
-"There isn't logs directory. \n"
+msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr ""
-"Directorul de jurnale nu există. \n"
+msgstr "Directorul de jurnale nu există. \n"
 "Vă rugăm să rulați testele și să încercați din nou"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
@@ -580,13 +570,11 @@ msgid "  current keyword: "
 msgstr "  Cuvânt cheie curent: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid ""
-"[Navigate]\n"
+msgid "[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr ""
-"[Navigate]\n"
+msgstr "[Navigate]\n"
 "        ! o &Întoarce-te | la locația anterioară din arbore | Alt-%s | ART_GO_BACK\n"
 "        ! &Du-te inainte | la urmatoarea locatie in arbore | Alt-%s | ART_GO_FORWARD\n"
 "        "
@@ -630,8 +618,7 @@ msgstr "&Refacere |Refacere modificare | Ctrlcmd-Y\n"
 
 #: src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr ""
-"&NORM\n"
+msgstr "&NORM\n"
 " Cut Ctrlcmd-X"
 
 #: src/robotide/editor/__init__.py:36
@@ -700,15 +687,11 @@ msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword
 msgstr "Conținutul de asistență (Ctrl-Space sau Ctrl-Alt-Space) | Afișați cuvântul cheie posibil și completările variabile | | | POSITION-70\n"
 
 #: src/robotide/editor/__init__.py:88
-msgid ""
-"The default editor plugin. Also known as Grid or Cell Editor.\n"
-"\n"
+msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
-"Editorul implicit de editor. De asemenea cunoscut ca Grid sau Editor de celule.\n"
-"\n"
+msgstr "Editorul implicit de editor. De asemenea cunoscut ca Grid sau Editor de celule.\n\n"
 "    Acest plugin implementează editori pentru diferitele elemente ale Robot Framework\n"
 "    .\n"
 "    "
@@ -730,31 +713,25 @@ msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 
 msgstr "Separați posibilele argumente cu un caracter de țeavă ca 'Cuvintele mele cheie 1 <unk> arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid ""
-"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr ""
-"Utilizați sintaxa timpului ca '1min 10s' sau '2 ore' sau dați valoarea ca secunde.\n"
+msgstr "Utilizați sintaxa timpului ca '1min 10s' sau '2 ore' sau dați valoarea ca secunde.\n"
 "Înainte de Robot v3. .1 un mesaj opţional ar fi putut fi specificat ca \"3 minute <unk> Mesajul meu aici\"."
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid ""
-"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
 "Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr ""
-"Specificați argumentele separate cu un caracter de țeavă ca '${arg1} <unk> ${arg2}'.\n"
+msgstr "Specificați argumentele separate cu un caracter de țeavă ca '${arg1} <unk> ${arg2}'.\n"
 "Valorile implicite sunt date folosind semnul egal și ultimul argument poate fi o variabilă de listă.\n"
 "Exemplu: '${arg1} <unk> ${arg2}=valoare implicită <unk> @{rest}'.\n"
 "Notă. Puteți utiliza scurtăturile variabile în acest câmp."
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid ""
-"Alias can be used to import same library multiple times with different names.\n"
+msgid "Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr ""
-"Aliasul poate fi folosit pentru a importa aceeași bibliotecă de mai multe ori cu nume diferite.\n"
+msgstr "Aliasul poate fi folosit pentru a importa aceeași bibliotecă de mai multe ori cu nume diferite.\n"
 "Aliasul este preatașat cu: "
 
 #: src/robotide/editor/dialoghelps.py:43
@@ -1173,8 +1150,7 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Creează o Variabilă Dict\tCtrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid ""
-"<b>Keyword was not detected by RIDE</b>\n"
+msgid "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1184,8 +1160,7 @@ msgid ""
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
-"<b>Cuvântul cheie nu a fost detectat de RIDE</b>\n"
+msgstr "<b>Cuvântul cheie nu a fost detectat de RIDE</b>\n"
 "        <br>Corecții posibile:<br>\n"
 "        <ul>\n"
 "            <li>Importul librăriei sau a fișierului cu resurse ce conține cuvântul cheie.</li>\n"
@@ -1324,8 +1299,7 @@ msgid "Import Library Spec XML"
 msgstr "Importă Viteza Bibliotecii XML"
 
 #: src/robotide/editor/settingeditors.py:752
-msgid ""
-"<br>Possible corrections and notes:<br>\n"
+msgid "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1339,8 +1313,7 @@ msgid ""
 "            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr ""
-"<br>Eșecuri posibile și note:<br>\n"
+msgstr "<br>Eșecuri posibile și note:<br>\n"
 "        <ul>\n"
 "            <li>Eșecul importului este afișat cu culoare roșie.</li>\n"
 "            <li>Vezi Instrumente / Vezi RIDE Log pentru informaţii detaliate despre eşec.</li>\n"
@@ -1402,8 +1375,7 @@ msgid "Get help"
 msgstr "Obțineți ajutor"
 
 #: src/robotide/editor/texteditor.py:1147
-msgid ""
-"<h1>Syntax colorization</h1>\n"
+msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1428,8 +1400,7 @@ msgid ""
 "        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr ""
-"<h1>Colorația de Sintaxă</h1>\n"
+msgstr "<h1>Colorația de Sintaxă</h1>\n"
 "        <p>\n"
 "        Colorația de Sintaxă pentru Editarea Text folosește evidențierea sintaxei <a href='https://pygments.org/'>Pygments</a> .\n"
 "        </p>\n"
@@ -1568,9 +1539,8 @@ msgid "Keyword call foreground"
 msgstr "Apel cu cuvânt cheie în prim-plan"
 
 #: src/robotide/preferences/editors.py:189
-#, fuzzy
 msgid "Control marker foreground"
-msgstr "Comentariu în prim-plan"
+msgstr "Marcajul de control în prim-plan"
 
 #: src/robotide/preferences/editors.py:190
 msgid "Separator"
@@ -1596,11 +1566,11 @@ msgstr "Activează sugestii automate"
 
 #: src/robotide/preferences/editors.py:242
 msgid "Enable visible spaces"
-msgstr ""
+msgstr "Activează spaţiile vizibile"
 
 #: src/robotide/preferences/editors.py:246
 msgid "Enable visible newlines"
-msgstr ""
+msgstr "Activează noutățile vizibile"
 
 #: src/robotide/preferences/editors.py:253
 #: src/robotide/preferences/editors.py:256
@@ -1620,11 +1590,9 @@ msgid "Auto size columns"
 msgstr "Auto size columns"
 
 #: src/robotide/preferences/editors.py:273
-msgid ""
-"Max column size\n"
+msgid "Max column size\n"
 "(applies when auto size is on)"
-msgstr ""
-"Dimensiunea maximă a coloanei\n"
+msgstr "Dimensiunea maximă a coloanei\n"
 "(se aplică când dimensiunea automată este on)"
 
 #: src/robotide/preferences/editors.py:277
@@ -1640,9 +1608,8 @@ msgid "Library Keyword Foreground"
 msgstr "Cuvânt cheie bibliotecă în prim-plan"
 
 #: src/robotide/preferences/editors.py:315
-#, fuzzy
 msgid "Control Marker Foreground"
-msgstr "Comentarii prim-plan"
+msgstr "Marcajul de control prim-plan"
 
 #: src/robotide/preferences/editors.py:316
 msgid "Variable Foreground"
@@ -1673,9 +1640,8 @@ msgid "Keyword Background"
 msgstr "Fundal cuvânt cheie"
 
 #: src/robotide/preferences/editors.py:338
-#, fuzzy
 msgid "Control Marker Background"
-msgstr "Fundal eroare"
+msgstr "Fundal Marker Control"
 
 #: src/robotide/preferences/editors.py:339
 msgid "Mandatory Field Background"
@@ -1906,11 +1872,11 @@ msgstr "Numărul de spații dintre celule la salvarea în format txt"
 
 #: src/robotide/preferences/saving.py:72
 msgid "Auto save interval (minutes)"
-msgstr ""
+msgstr "Interval salvare automată (minute)"
 
 #: src/robotide/preferences/saving.py:74
 msgid "Automatically save all files after specified minutes (0 = disabled)"
-msgstr ""
+msgstr "Salvează automat toate fișierele după câteva minute specificate (0 = dezactivat)"
 
 #: src/robotide/recentfiles/recentfiles.py:42
 msgid "Add recently opened files to the file menu."
@@ -1940,31 +1906,25 @@ msgid "Open %s"
 msgstr "Deschide %s"
 
 #: src/robotide/run/configmanagerui.py:27
-msgid ""
-"The specified command string will be split from whitespaces into a command\n"
+msgid "The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n"
-"\n"
+"internal spaces, they must be written as '<SPACE>'.\n\n"
 "The command will be executed in the system directly without opening a shell.\n"
 "This means that shell commands and extensions are not available. For example,\n"
 "in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n"
-"\n"
+"command does not work.\n\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr ""
-"Șirul de comandă specificat va fi împărțit din spații albe în comanda\n"
+msgstr "Șirul de comandă specificat va fi împărțit din spații albe în comanda\n"
 "și argumentele sale. În cazul în care comanda sau oricare dintre argumente necesită spaţiu\n"
-"intern, acestea trebuie să fie scrise ca '<SPACE>'.\n"
-"\n"
+"intern, acestea trebuie să fie scrise ca '<SPACE>'.\n\n"
 "Comanda va fi executată direct în sistem fără a deschide o cochilie.\n"
 "Acest lucru înseamnă că comenzile de shell și extensiile nu sunt disponibile. De exemplu,\n"
 "în fişierele de serie Windows pentru a fi executate trebuie să conţină '. Extensia 'dir' și comanda 'dir'\n"
-"nu funcționează.\n"
-"\n"
+"nu funcționează.\n\n"
 "Exemple:\n"
 "    robot. la --include fum C:\\my_test\n"
 "    svn actualizează /home/robot\n"
@@ -1985,15 +1945,11 @@ msgid "Remove"
 msgstr "Elimină"
 
 #: src/robotide/run/runanything.py:30
-msgid ""
-"A plugin for executing commands on the system.\n"
-"\n"
+msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
-"Un plugin pentru executarea de comenzi în sistem.\n"
-"\n"
+msgstr "Un plugin pentru executarea de comenzi în sistem.\n\n"
 "    Acest plugin permite crearea de configurații persistente de execuție și\n"
 "    a acestora. Ieșirea comenzii executate este afișată într-o filă separată\n"
 "."
@@ -2080,17 +2036,13 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "Un plugin pentru căutarea de teste pe baza numelui, etichetelor și documentației"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid ""
-"Install missing libraries and open documentation.\n"
-"\n"
+msgid "Install missing libraries and open documentation.\n\n"
 "    You can edit settings.cfg to add URL for documentation and command to install.\n"
 "    You can right-click on a Library name, and Open Documentation or Install Library.\n"
 "    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr ""
-"Instalați bibliotecile lipsă și deschideți documentația.\n"
-"\n"
+msgstr "Instalați bibliotecile lipsă și deschideți documentația.\n\n"
 "    Puteți edita setările.cfg pentru a adăuga URL-ul pentru documentație și comandă pentru a instala.\n"
 "    Puteți da click dreapta pe un nume al bibliotecii și să deschideți documentația sau să instalați Librăria.\n"
 "    De la Unelte>Finder Librărie... sau Help->Deschide Documentația Bibliotecii... veţi avea\n"
@@ -2126,12 +2078,10 @@ msgid "Info"
 msgstr "Info"
 
 #: src/robotide/spec/specimporter.py:79
-msgid ""
-"Library \"%s\" imported\n"
+msgid "Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr ""
-"Biblioteca%s\" importată\n"
+msgstr "Biblioteca%s\" importată\n"
 "din \"%s\"\n"
 "Acest lucru poate necesita repornire RIDE."
 
@@ -2196,11 +2146,9 @@ msgid "Change recursively"
 msgstr "Modificare recursivă"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid ""
-"Provide format for initialization file in directory\n"
+msgid "Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr ""
-"Furnizați formatul pentru fișierul de inițializare în directorul\n"
+msgstr "Furnizați formatul pentru fișierul de inițializare în directorul\n"
 "\"%s\"."
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2394,16 +2342,13 @@ msgid "Test Suites"
 msgstr "Suite de test"
 
 #: src/robotide/ui/mainframe.py:389
-#, fuzzy
 msgid "Auto-saved all files"
-msgstr "Toate fişierele salvate"
+msgstr "Toate fişierele salvate automat"
 
 #: src/robotide/ui/mainframe.py:508
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr ""
-"Există modificări nesalvate.\n"
+msgstr "Există modificări nesalvate.\n"
 "Doriţi să salvaţi modificările înainte de a ieşi?"
 
 #: src/robotide/ui/mainframe.py:508
@@ -2412,11 +2357,9 @@ msgid "Warning"
 msgstr "Avertizare"
 
 #: src/robotide/ui/mainframe.py:602
-msgid ""
-"There are unsaved modifications.\n"
+msgid "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr ""
-"Există modificări nesalvate.\n"
+msgstr "Există modificări nesalvate.\n"
 "Doriţi să continuaţi fără a salva?"
 
 #: src/robotide/ui/mainframe.py:652
@@ -2529,11 +2472,9 @@ msgid "Search unused keywords"
 msgstr "Căutare cuvinte cheie neutilizate"
 
 #: src/robotide/ui/review.py:66
-msgid ""
-"This dialog helps you finding unused keywords within your opened project.\n"
+msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
-"Acest dialog vă ajută să găsiți cuvinte cheie neutilizate în cadrul proiectului dvs. deschis.\n"
+msgstr "Acest dialog vă ajută să găsiți cuvinte cheie neutilizate în cadrul proiectului dvs. deschis.\n"
 "Dacă doriți, puteți restricționa căutarea la un set de fișiere cu filtrul."
 
 #: src/robotide/ui/review.py:70
@@ -2554,12 +2495,10 @@ msgid "Use RegEx"
 msgstr "Folosește RegEx"
 
 #: src/robotide/ui/review.py:93
-msgid ""
-"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
-"Aici puteţi defini una sau mai multe şiruri separate prin virgulă (de ex. common,abc,123).\n"
+msgstr "Aici puteţi defini una sau mai multe şiruri separate prin virgulă (de ex. common,abc,123).\n"
 "Filtrul se potrivește dacă cel puțin un șir face parte din numele fișierului.\n"
 "Dacă nu introduceţi nici un şir, toate fişierele deschise sunt incluse"
 
@@ -2618,12 +2557,8 @@ msgid "(None)"
 msgstr "Niciuna)"
 
 #: src/robotide/ui/review.py:282
-msgid ""
-"Keywords of the following files will be included in the search:\n"
-"\n"
-msgstr ""
-"Cuvintele cheie ale următoarelor fișiere vor fi incluse în căutare:\n"
-"\n"
+msgid "Keywords of the following files will be included in the search:\n\n"
+msgstr "Cuvintele cheie ale următoarelor fișiere vor fi incluse în căutare:\n\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2663,7 +2598,7 @@ msgstr "Lista"
 
 #: src/robotide/ui/tagdialogs.py:86
 msgid "Info: Right-click on a tag for actions. Click on headers to change sorting."
-msgstr ""
+msgstr "Informații: Faceți clic dreapta pe o etichetă pentru acțiuni. Faceți clic pe antete pentru a schimba sortarea."
 
 #: src/robotide/ui/tagdialogs.py:91
 msgid "Refresh"
@@ -2678,11 +2613,9 @@ msgid "Excluded Tag Search"
 msgstr "Caută etichete excluse"
 
 #: src/robotide/ui/tagdialogs.py:153
-msgid ""
-"Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr ""
-"Total teste %d, teste cu tag-uri %d, tag-uri unice %d\n"
+msgstr "Total teste %d, teste cu tag-uri %d, tag-uri unice %d\n"
 "Testele selectate în prezent %d"
 
 #: src/robotide/ui/tagdialogs.py:239
@@ -2787,11 +2720,9 @@ msgid "Expand all"
 msgstr "Extinde tot"
 
 #: src/robotide/ui/treenodehandlers.py:450
-msgid ""
-"Directory contains unsaved data!\n"
+msgid "Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Directorul conține date nesalvate!\n"
+msgstr "Directorul conține date nesalvate!\n"
 "Trebuie să salvați datele înainte de a le exclude."
 
 #: src/robotide/ui/treenodehandlers.py:496
@@ -2820,7 +2751,7 @@ msgstr "Sortați variabilele"
 
 #: src/robotide/ui/treenodehandlers.py:504
 msgid "Sort Keywords (Case Insensitive)"
-msgstr ""
+msgstr "Sortează cuvintele cheie (caz insensibil)"
 
 #: src/robotide/ui/treenodehandlers.py:508
 #: src/robotide/ui/treenodehandlers.py:602
@@ -2829,11 +2760,9 @@ msgstr "Elimină doar citire"
 
 #: src/robotide/ui/treenodehandlers.py:539
 #: src/robotide/ui/treenodehandlers.py:642
-msgid ""
-"File contains unsaved data!\n"
+msgid "File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr ""
-"Fișierul conține date nesalvate!\n"
+msgstr "Fișierul conține date nesalvate!\n"
 "Trebuie să salvați date înainte de a fi exclus."
 
 #: src/robotide/ui/treenodehandlers.py:580
@@ -2903,9 +2832,8 @@ msgstr "Utilizare"
 #: src/robotide/usages/usagesdialog.py:172
 #: src/robotide/usages/usagesdialog.py:190
 #: src/robotide/usages/usagesdialog.py:217
-#, fuzzy
 msgid "Searching..."
-msgstr "Căutare.%s \t- %s"
+msgstr "Căutare..."
 
 #: src/robotide/usages/usagesdialog.py:212
 msgid "Imported Location"
@@ -2938,3 +2866,4 @@ msgstr "Ok"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "Da"
+
