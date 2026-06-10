@@ -74,7 +74,7 @@ ERROR = Token.Error
 
 FORSEP = ('IN', 'IN ENUMERATE', 'IN RANGE', 'IN ZIP')
 CONTROLS = ('AND', 'BREAK', 'CONTINUE', 'ELSE', 'ELSE IF', 'END', 'EXCEPT',
-            'FINALLY', 'GROUP', 'IF', FORSEP[:], 'RETURN', 'TRY', 'VAR', 'WHILE')
+            'FINALLY', 'FOR', 'GROUP', 'IF', FORSEP[:], 'RETURN', 'TRY', 'VAR', 'WHILE')
 
 def get_key_by_value(table: dict, value: str) -> str:
     for k, v in table.items():
@@ -90,7 +90,7 @@ def normalize(string, remove='', strip=True):
     return string if not strip else string.strip()
 
 def is_control(value):
-    return value in CONTROLS and value not in FORSEP
+    return value in CONTROLS  # and value not in FORSEP
 
 class RobotFrameworkLexer(Lexer):
     """
