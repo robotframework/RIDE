@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-22 01:16+0100\n"
+"POT-Creation-Date: 2026-06-10 15:26+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
@@ -1481,138 +1481,143 @@ msgstr "Ayrıştırıcı Günlüğünü Görüntüle"
 msgid "Create RIDE Desktop Shortcut"
 msgstr "RIDE Masaüstü Kısayolu Oluşturma"
 
-#: src/robotide/preferences/editors.py:42
+#: src/robotide/preferences/editors.py:48
 msgid "Text background"
 msgstr "Metin arka planı"
 
-#: src/robotide/preferences/editors.py:85
+#: src/robotide/preferences/editors.py:91
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
 msgstr "Renkleri varsayılana sıfırla"
 
-#: src/robotide/preferences/editors.py:86
+#: src/robotide/preferences/editors.py:92
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
 msgstr "Ayarları Kaydet veya Yükle"
 
-#: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/editors.py:135
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "Yazı Tipi Boyutu"
 
-#: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/editors.py:144
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "Yakınlaştırma Faktörü"
 
-#: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/editors.py:149
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "Sabit genişlikte yazı tipi kullanın"
 
-#: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/editors.py:154
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "Yazı Yüzü"
 
-#: src/robotide/preferences/editors.py:159
-#: src/robotide/preferences/editors.py:162
+#: src/robotide/preferences/editors.py:165
+#: src/robotide/preferences/editors.py:168
 msgid "Text Editor"
 msgstr "Metin Düzenleyici"
 
-#: src/robotide/preferences/editors.py:163
+#: src/robotide/preferences/editors.py:169
 msgid "Text Editor Settings"
 msgstr "Metin Düzenleyici Ayarları"
 
-#: src/robotide/preferences/editors.py:174
+#: src/robotide/preferences/editors.py:180
 msgid "Argument foreground"
 msgstr "Argüman ön planı"
 
-#: src/robotide/preferences/editors.py:175
+#: src/robotide/preferences/editors.py:181
 msgid "Comment foreground"
 msgstr "Yorum ön plan"
 
-#: src/robotide/preferences/editors.py:176
-#: src/robotide/preferences/editors.py:400
+#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:409
 msgid "Error foreground"
 msgstr "Hata ön planı"
 
-#: src/robotide/preferences/editors.py:177
+#: src/robotide/preferences/editors.py:183
 msgid "Gherkin keyword foreground"
 msgstr "Gherkin anahtar kelimesi ön planda"
 
-#: src/robotide/preferences/editors.py:178
+#: src/robotide/preferences/editors.py:184
 msgid "Heading foreground"
 msgstr "Ön plan başlığı"
 
-#: src/robotide/preferences/editors.py:179
+#: src/robotide/preferences/editors.py:185
 msgid "Import foreground"
 msgstr "Ön planı içe aktar"
 
-#: src/robotide/preferences/editors.py:180
+#: src/robotide/preferences/editors.py:186
 msgid "Variable foreground"
 msgstr "Değişken ön plan"
 
-#: src/robotide/preferences/editors.py:181
+#: src/robotide/preferences/editors.py:187
 msgid "Keyword definition foreground"
 msgstr "Anahtar kelime tanımı ön plan"
 
-#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:188
 msgid "Keyword call foreground"
 msgstr "Anahtar kelime çağrı ön planı"
 
-#: src/robotide/preferences/editors.py:183
+#: src/robotide/preferences/editors.py:189
+#, fuzzy
+msgid "Control marker foreground"
+msgstr "Yorum ön plan"
+
+#: src/robotide/preferences/editors.py:190
 msgid "Separator"
 msgstr "Ayırıcı"
 
-#: src/robotide/preferences/editors.py:184
+#: src/robotide/preferences/editors.py:191
 msgid "Setting foreground"
 msgstr "Ön planı ayarlama"
 
-#: src/robotide/preferences/editors.py:185
+#: src/robotide/preferences/editors.py:192
 msgid "Syntax characters"
 msgstr "Sözdizimi karakterleri"
 
-#: src/robotide/preferences/editors.py:190
-#: src/robotide/preferences/editors.py:398
+#: src/robotide/preferences/editors.py:197
+#: src/robotide/preferences/editors.py:407
 msgid "Text foreground"
 msgstr "Metin ön planı"
 
-#: src/robotide/preferences/editors.py:231
-#: src/robotide/preferences/editors.py:274
+#: src/robotide/preferences/editors.py:238
+#: src/robotide/preferences/editors.py:281
 msgid "Enable auto suggestions"
 msgstr "Otomatik önerileri etkinleştir"
 
-#: src/robotide/preferences/editors.py:235
+#: src/robotide/preferences/editors.py:242
 msgid "Enable visible spaces"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:239
+#: src/robotide/preferences/editors.py:246
 msgid "Enable visible newlines"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:246
-#: src/robotide/preferences/editors.py:249
+#: src/robotide/preferences/editors.py:253
+#: src/robotide/preferences/editors.py:256
 msgid "Grid Editor"
 msgstr "Izgara Düzenleyici"
 
-#: src/robotide/preferences/editors.py:250
+#: src/robotide/preferences/editors.py:257
 msgid "Grid Editor Settings"
 msgstr "Izgara Düzenleyici Ayarları"
 
-#: src/robotide/preferences/editors.py:259
+#: src/robotide/preferences/editors.py:266
 msgid "Default column size"
 msgstr "Varsayılan sütun boyutu"
 
-#: src/robotide/preferences/editors.py:263
+#: src/robotide/preferences/editors.py:270
 msgid "Auto size columns"
 msgstr "Sütunları otomatik boyutlandırma"
 
-#: src/robotide/preferences/editors.py:266
+#: src/robotide/preferences/editors.py:273
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
@@ -1620,100 +1625,110 @@ msgstr ""
 "Maksimum sütun boyutu\n"
 "(otomatik boyut açıkken geçerlidir)"
 
-#: src/robotide/preferences/editors.py:270
+#: src/robotide/preferences/editors.py:277
 msgid "Word wrap and auto size rows"
 msgstr "Kelime kaydırma ve otomatik boyut satırları"
 
-#: src/robotide/preferences/editors.py:306
+#: src/robotide/preferences/editors.py:313
 msgid "User Keyword Foreground"
 msgstr "Kullanıcı Anahtar Sözcüğü Ön Plan"
 
-#: src/robotide/preferences/editors.py:307
+#: src/robotide/preferences/editors.py:314
 msgid "Library Keyword Foreground"
 msgstr "Kütüphane Anahtar Sözcüğü Ön Plan"
 
-#: src/robotide/preferences/editors.py:308
+#: src/robotide/preferences/editors.py:315
+#, fuzzy
+msgid "Control Marker Foreground"
+msgstr "Yorumlar Ön Plan"
+
+#: src/robotide/preferences/editors.py:316
 msgid "Variable Foreground"
 msgstr "Değişken Ön Plan"
 
-#: src/robotide/preferences/editors.py:309
+#: src/robotide/preferences/editors.py:317
 msgid "Unknown Variable Foreground"
 msgstr "Bilinmiyor Değişken Ön Plan"
 
-#: src/robotide/preferences/editors.py:310
+#: src/robotide/preferences/editors.py:318
 msgid "Comments Foreground"
 msgstr "Yorumlar Ön Plan"
 
-#: src/robotide/preferences/editors.py:311
+#: src/robotide/preferences/editors.py:319
 msgid "Default Foreground"
 msgstr "Varsayılan Ön Plan"
 
-#: src/robotide/preferences/editors.py:312
+#: src/robotide/preferences/editors.py:320
 msgid "Empty Foreground"
 msgstr "Boş Ön Plan"
 
-#: src/robotide/preferences/editors.py:328
+#: src/robotide/preferences/editors.py:336
 msgid "Variable Background"
 msgstr "Değişken Arka Plan"
 
-#: src/robotide/preferences/editors.py:329
+#: src/robotide/preferences/editors.py:337
 msgid "Keyword Background"
 msgstr "Anahtar Kelime Arka Planı"
 
-#: src/robotide/preferences/editors.py:330
+#: src/robotide/preferences/editors.py:338
+#, fuzzy
+msgid "Control Marker Background"
+msgstr "Hata Arka Planı"
+
+#: src/robotide/preferences/editors.py:339
 msgid "Mandatory Field Background"
 msgstr "Zorunlu Alan Geçmişi"
 
-#: src/robotide/preferences/editors.py:331
+#: src/robotide/preferences/editors.py:340
 msgid "Optional Field Background"
 msgstr "İsteğe Bağlı Alan Arka Planı"
 
-#: src/robotide/preferences/editors.py:332
+#: src/robotide/preferences/editors.py:341
 msgid "Mandatory Empty Field Background"
 msgstr "Zorunlu Boş Alan Arka Planı"
 
-#: src/robotide/preferences/editors.py:333
+#: src/robotide/preferences/editors.py:342
 msgid "Unknown Background"
 msgstr "Bilinmeyen Arka Plan"
 
-#: src/robotide/preferences/editors.py:334
+#: src/robotide/preferences/editors.py:343
 msgid "Error Background"
 msgstr "Hata Arka Planı"
 
-#: src/robotide/preferences/editors.py:335
+#: src/robotide/preferences/editors.py:344
 msgid "Highlight Background"
 msgstr "Arka Planı Vurgula"
 
-#: src/robotide/preferences/editors.py:360
-#: src/robotide/preferences/editors.py:363
+#: src/robotide/preferences/editors.py:369
+#: src/robotide/preferences/editors.py:372
 msgid "Test Runner"
 msgstr "Test Koşucusu"
 
-#: src/robotide/preferences/editors.py:364
+#: src/robotide/preferences/editors.py:373
 msgid "Test Runner Settings"
 msgstr "Test Çalıştırıcısı Ayarları"
 
-#: src/robotide/preferences/editors.py:368
+#: src/robotide/preferences/editors.py:377
 msgid "Colors will be active after next RIDE restart."
 msgstr "Renkler bir sonraki RIDE yeniden başlatmasından sonra aktif olacaktır."
 
-#: src/robotide/preferences/editors.py:384
+#: src/robotide/preferences/editors.py:393
 msgid "Shows console colors set by"
 msgstr "Tarafından ayarlanan konsol renklerini gösterir"
 
-#: src/robotide/preferences/editors.py:386
+#: src/robotide/preferences/editors.py:395
 msgid "Asks for confirmation to run all tests if none selected "
 msgstr "Hiçbiri seçilmemişse tüm testleri çalıştırmak için onay ister "
 
-#: src/robotide/preferences/editors.py:401
+#: src/robotide/preferences/editors.py:410
 msgid "Fail foreground"
 msgstr "Ön planda başarısız"
 
-#: src/robotide/preferences/editors.py:402
+#: src/robotide/preferences/editors.py:411
 msgid "Pass foreground"
 msgstr "Ön planı geç"
 
-#: src/robotide/preferences/editors.py:403
+#: src/robotide/preferences/editors.py:412
 msgid "Skip foreground"
 msgstr "Ön planı atla"
 

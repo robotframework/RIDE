@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-22 01:16+0100\n"
+"POT-Creation-Date: 2026-06-10 15:26+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
@@ -1480,138 +1480,143 @@ msgstr "Voir le journal de l'Analyseur"
 msgid "Create RIDE Desktop Shortcut"
 msgstr "Créer un raccourci bureau de RIDE"
 
-#: src/robotide/preferences/editors.py:42
+#: src/robotide/preferences/editors.py:48
 msgid "Text background"
 msgstr "Arrière-plan du texte"
 
-#: src/robotide/preferences/editors.py:85
+#: src/robotide/preferences/editors.py:91
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
 msgstr "Réinitialiser les couleurs par défaut"
 
-#: src/robotide/preferences/editors.py:86
+#: src/robotide/preferences/editors.py:92
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
 msgstr "Enregistrer ou charger les paramètres"
 
-#: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/editors.py:135
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "Taille de police"
 
-#: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/editors.py:144
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "Facteur de zoom"
 
-#: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/editors.py:149
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "Utiliser la police de largeur fixe"
 
-#: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/editors.py:154
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "Font Face"
 
-#: src/robotide/preferences/editors.py:159
-#: src/robotide/preferences/editors.py:162
+#: src/robotide/preferences/editors.py:165
+#: src/robotide/preferences/editors.py:168
 msgid "Text Editor"
 msgstr "Éditeur de texte"
 
-#: src/robotide/preferences/editors.py:163
+#: src/robotide/preferences/editors.py:169
 msgid "Text Editor Settings"
 msgstr "Paramètres de l'éditeur de texte"
 
-#: src/robotide/preferences/editors.py:174
+#: src/robotide/preferences/editors.py:180
 msgid "Argument foreground"
 msgstr "Premier plan de l'argument"
 
-#: src/robotide/preferences/editors.py:175
+#: src/robotide/preferences/editors.py:181
 msgid "Comment foreground"
 msgstr "Premier plan du commentaire"
 
-#: src/robotide/preferences/editors.py:176
-#: src/robotide/preferences/editors.py:400
+#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:409
 msgid "Error foreground"
 msgstr "Premier plan de l'erreur"
 
-#: src/robotide/preferences/editors.py:177
+#: src/robotide/preferences/editors.py:183
 msgid "Gherkin keyword foreground"
 msgstr "Mot-clé Gherkin au premier plan"
 
-#: src/robotide/preferences/editors.py:178
+#: src/robotide/preferences/editors.py:184
 msgid "Heading foreground"
 msgstr "Premier-plan de l'en-tête"
 
-#: src/robotide/preferences/editors.py:179
+#: src/robotide/preferences/editors.py:185
 msgid "Import foreground"
 msgstr "Importer au premier plan"
 
-#: src/robotide/preferences/editors.py:180
+#: src/robotide/preferences/editors.py:186
 msgid "Variable foreground"
 msgstr "Premier plan variable"
 
-#: src/robotide/preferences/editors.py:181
+#: src/robotide/preferences/editors.py:187
 msgid "Keyword definition foreground"
 msgstr "Premier plan de définition de mot clé"
 
-#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:188
 msgid "Keyword call foreground"
 msgstr "Premier plan de l'appel de mots clés"
 
-#: src/robotide/preferences/editors.py:183
+#: src/robotide/preferences/editors.py:189
+#, fuzzy
+msgid "Control marker foreground"
+msgstr "Premier plan du commentaire"
+
+#: src/robotide/preferences/editors.py:190
 msgid "Separator"
 msgstr "Séparateur"
 
-#: src/robotide/preferences/editors.py:184
+#: src/robotide/preferences/editors.py:191
 msgid "Setting foreground"
 msgstr "Réglage du premier plan"
 
-#: src/robotide/preferences/editors.py:185
+#: src/robotide/preferences/editors.py:192
 msgid "Syntax characters"
 msgstr "Caractères de syntaxe"
 
-#: src/robotide/preferences/editors.py:190
-#: src/robotide/preferences/editors.py:398
+#: src/robotide/preferences/editors.py:197
+#: src/robotide/preferences/editors.py:407
 msgid "Text foreground"
 msgstr "Premier plan du texte"
 
-#: src/robotide/preferences/editors.py:231
-#: src/robotide/preferences/editors.py:274
+#: src/robotide/preferences/editors.py:238
+#: src/robotide/preferences/editors.py:281
 msgid "Enable auto suggestions"
 msgstr "Activer les suggestions automatiques"
 
-#: src/robotide/preferences/editors.py:235
+#: src/robotide/preferences/editors.py:242
 msgid "Enable visible spaces"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:239
+#: src/robotide/preferences/editors.py:246
 msgid "Enable visible newlines"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:246
-#: src/robotide/preferences/editors.py:249
+#: src/robotide/preferences/editors.py:253
+#: src/robotide/preferences/editors.py:256
 msgid "Grid Editor"
 msgstr "Éditeur de grille"
 
-#: src/robotide/preferences/editors.py:250
+#: src/robotide/preferences/editors.py:257
 msgid "Grid Editor Settings"
 msgstr "Paramètres de l'éditeur de grille"
 
-#: src/robotide/preferences/editors.py:259
+#: src/robotide/preferences/editors.py:266
 msgid "Default column size"
 msgstr "Taille de colonne par défaut"
 
-#: src/robotide/preferences/editors.py:263
+#: src/robotide/preferences/editors.py:270
 msgid "Auto size columns"
 msgstr "Taille de colonne auto"
 
-#: src/robotide/preferences/editors.py:266
+#: src/robotide/preferences/editors.py:273
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
@@ -1619,100 +1624,110 @@ msgstr ""
 "Taille maximale des colonnes\n"
 "(s'applique lorsque la taille automatique est activée)"
 
-#: src/robotide/preferences/editors.py:270
+#: src/robotide/preferences/editors.py:277
 msgid "Word wrap and auto size rows"
 msgstr "Raccourci de mots et lignes de taille automatique"
 
-#: src/robotide/preferences/editors.py:306
+#: src/robotide/preferences/editors.py:313
 msgid "User Keyword Foreground"
 msgstr "Premier plan du mot clé utilisateur"
 
-#: src/robotide/preferences/editors.py:307
+#: src/robotide/preferences/editors.py:314
 msgid "Library Keyword Foreground"
 msgstr "Pré-plan des mots-clés de la bibliothèque"
 
-#: src/robotide/preferences/editors.py:308
+#: src/robotide/preferences/editors.py:315
+#, fuzzy
+msgid "Control Marker Foreground"
+msgstr "Premier plan des commentaires"
+
+#: src/robotide/preferences/editors.py:316
 msgid "Variable Foreground"
 msgstr "Premier plan variable"
 
-#: src/robotide/preferences/editors.py:309
+#: src/robotide/preferences/editors.py:317
 msgid "Unknown Variable Foreground"
 msgstr "Premier plan de variable inconnue"
 
-#: src/robotide/preferences/editors.py:310
+#: src/robotide/preferences/editors.py:318
 msgid "Comments Foreground"
 msgstr "Premier plan des commentaires"
 
-#: src/robotide/preferences/editors.py:311
+#: src/robotide/preferences/editors.py:319
 msgid "Default Foreground"
 msgstr "Premier plan par défaut"
 
-#: src/robotide/preferences/editors.py:312
+#: src/robotide/preferences/editors.py:320
 msgid "Empty Foreground"
 msgstr "Premier plan vide"
 
-#: src/robotide/preferences/editors.py:328
+#: src/robotide/preferences/editors.py:336
 msgid "Variable Background"
 msgstr "Arrière-plan variable"
 
-#: src/robotide/preferences/editors.py:329
+#: src/robotide/preferences/editors.py:337
 msgid "Keyword Background"
 msgstr "Arrière-plan des mots clés"
 
-#: src/robotide/preferences/editors.py:330
+#: src/robotide/preferences/editors.py:338
+#, fuzzy
+msgid "Control Marker Background"
+msgstr "Arrière-plan de l'erreur"
+
+#: src/robotide/preferences/editors.py:339
 msgid "Mandatory Field Background"
 msgstr "Arrière-plan du champ obligatoire"
 
-#: src/robotide/preferences/editors.py:331
+#: src/robotide/preferences/editors.py:340
 msgid "Optional Field Background"
 msgstr "Arrière-plan du champ optionnel"
 
-#: src/robotide/preferences/editors.py:332
+#: src/robotide/preferences/editors.py:341
 msgid "Mandatory Empty Field Background"
 msgstr "Arrière-plan de champ vide obligatoire"
 
-#: src/robotide/preferences/editors.py:333
+#: src/robotide/preferences/editors.py:342
 msgid "Unknown Background"
 msgstr "Arrière-plan inconnu"
 
-#: src/robotide/preferences/editors.py:334
+#: src/robotide/preferences/editors.py:343
 msgid "Error Background"
 msgstr "Arrière-plan de l'erreur"
 
-#: src/robotide/preferences/editors.py:335
+#: src/robotide/preferences/editors.py:344
 msgid "Highlight Background"
 msgstr "Surligner l'arrière-plan"
 
-#: src/robotide/preferences/editors.py:360
-#: src/robotide/preferences/editors.py:363
+#: src/robotide/preferences/editors.py:369
+#: src/robotide/preferences/editors.py:372
 msgid "Test Runner"
 msgstr "Exécuteur de test"
 
-#: src/robotide/preferences/editors.py:364
+#: src/robotide/preferences/editors.py:373
 msgid "Test Runner Settings"
 msgstr "Paramètres de l’exécuteur de test"
 
-#: src/robotide/preferences/editors.py:368
+#: src/robotide/preferences/editors.py:377
 msgid "Colors will be active after next RIDE restart."
 msgstr "Les couleurs seront actives après le prochain redémarrage de RIDE."
 
-#: src/robotide/preferences/editors.py:384
+#: src/robotide/preferences/editors.py:393
 msgid "Shows console colors set by"
 msgstr "Affiche les couleurs de la console définies par"
 
-#: src/robotide/preferences/editors.py:386
+#: src/robotide/preferences/editors.py:395
 msgid "Asks for confirmation to run all tests if none selected "
 msgstr "Demande de confirmation pour exécuter tous les tests si aucun n'est sélectionné "
 
-#: src/robotide/preferences/editors.py:401
+#: src/robotide/preferences/editors.py:410
 msgid "Fail foreground"
 msgstr "Défaut au premier plan"
 
-#: src/robotide/preferences/editors.py:402
+#: src/robotide/preferences/editors.py:411
 msgid "Pass foreground"
 msgstr "Passer au premier plan"
 
-#: src/robotide/preferences/editors.py:403
+#: src/robotide/preferences/editors.py:412
 msgid "Skip foreground"
 msgstr "Ignorer le premier plan"
 

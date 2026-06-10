@@ -47,7 +47,7 @@ classifiers = [
 dependencies = [
     "chardet",
     "psutil",
-    "Pygments",
+    "Pygments>=2.20.0",
     "PyPubSub",
     "Pywin32; platform_system == 'Windows'",
     "wxPython",
@@ -97,11 +97,11 @@ dependencies = [
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.13"]
-version = ["2.2"]
+version = ["2.2.3"]
 
 [tool.poetry]
 name = "robotframework-ride"
-version = "2.2"
+version = "2.2.3"
 description = "RIDE :: Robot Framework Test Data Editor"
 authors = ["Robot Framework Developers <robotframework@gmail.com>"]
 license = "Apache-2.0 license"
@@ -112,7 +112,7 @@ packages = [{include = "robotide"}]
 python = "^3.8"
 wxPython = "^4.1.1"
 pywin32 = { version = "*", markers = "sys_platform == 'win32'" }
-pygments = "*"
+pygments = "^2.20.0"
 robotframework = "*"
 pypubsub = "*"
 psutil = "*"

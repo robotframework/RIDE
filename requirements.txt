@@ -1,7 +1,7 @@
 wxPython
 # Only for Windows to have a shortcut created (install before RIDE)
 Pywin32; sys_platform == 'win32'
-Pygments # This enables syntax highlighted in Text Editor
+Pygments>=2.20.0   # This enables syntax highlighted in Text Editor
 robotframework
 Pypubsub
 psutil

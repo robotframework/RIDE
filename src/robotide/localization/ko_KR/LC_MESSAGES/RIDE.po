@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-22 01:16+0100\n"
+"POT-Creation-Date: 2026-06-10 15:26+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
@@ -1481,138 +1481,143 @@ msgstr "구문 분석기 로그 보기"
 msgid "Create RIDE Desktop Shortcut"
 msgstr "RIDE 데스크톱 바로 가기 만들기"
 
-#: src/robotide/preferences/editors.py:42
+#: src/robotide/preferences/editors.py:48
 msgid "Text background"
 msgstr "텍스트 배경"
 
-#: src/robotide/preferences/editors.py:85
+#: src/robotide/preferences/editors.py:91
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
 msgstr "색상을 기본값으로 재설정"
 
-#: src/robotide/preferences/editors.py:86
+#: src/robotide/preferences/editors.py:92
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
 msgstr "설정 저장 또는 로드"
 
-#: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/editors.py:135
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "글꼴 크기"
 
-#: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/editors.py:144
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "줌 팩터"
 
-#: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/editors.py:149
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "고정 너비 글꼴 사용"
 
-#: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/editors.py:154
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "글꼴 얼굴"
 
-#: src/robotide/preferences/editors.py:159
-#: src/robotide/preferences/editors.py:162
+#: src/robotide/preferences/editors.py:165
+#: src/robotide/preferences/editors.py:168
 msgid "Text Editor"
 msgstr "텍스트 편집기"
 
-#: src/robotide/preferences/editors.py:163
+#: src/robotide/preferences/editors.py:169
 msgid "Text Editor Settings"
 msgstr "텍스트 편집기 설정"
 
-#: src/robotide/preferences/editors.py:174
+#: src/robotide/preferences/editors.py:180
 msgid "Argument foreground"
 msgstr "인수 전경"
 
-#: src/robotide/preferences/editors.py:175
+#: src/robotide/preferences/editors.py:181
 msgid "Comment foreground"
 msgstr "댓글 전경"
 
-#: src/robotide/preferences/editors.py:176
-#: src/robotide/preferences/editors.py:400
+#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:409
 msgid "Error foreground"
 msgstr "오류 전경"
 
-#: src/robotide/preferences/editors.py:177
+#: src/robotide/preferences/editors.py:183
 msgid "Gherkin keyword foreground"
 msgstr "거킨 키워드 전경"
 
-#: src/robotide/preferences/editors.py:178
+#: src/robotide/preferences/editors.py:184
 msgid "Heading foreground"
 msgstr "제목 전경"
 
-#: src/robotide/preferences/editors.py:179
+#: src/robotide/preferences/editors.py:185
 msgid "Import foreground"
 msgstr "전경 가져오기"
 
-#: src/robotide/preferences/editors.py:180
+#: src/robotide/preferences/editors.py:186
 msgid "Variable foreground"
 msgstr "가변 전경"
 
-#: src/robotide/preferences/editors.py:181
+#: src/robotide/preferences/editors.py:187
 msgid "Keyword definition foreground"
 msgstr "키워드 정의 전경"
 
-#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:188
 msgid "Keyword call foreground"
 msgstr "키워드 통화 전경"
 
-#: src/robotide/preferences/editors.py:183
+#: src/robotide/preferences/editors.py:189
+#, fuzzy
+msgid "Control marker foreground"
+msgstr "댓글 전경"
+
+#: src/robotide/preferences/editors.py:190
 msgid "Separator"
 msgstr "구분 기호"
 
-#: src/robotide/preferences/editors.py:184
+#: src/robotide/preferences/editors.py:191
 msgid "Setting foreground"
 msgstr "전경 설정"
 
-#: src/robotide/preferences/editors.py:185
+#: src/robotide/preferences/editors.py:192
 msgid "Syntax characters"
 msgstr "구문 문자"
 
-#: src/robotide/preferences/editors.py:190
-#: src/robotide/preferences/editors.py:398
+#: src/robotide/preferences/editors.py:197
+#: src/robotide/preferences/editors.py:407
 msgid "Text foreground"
 msgstr "텍스트 전경"
 
-#: src/robotide/preferences/editors.py:231
-#: src/robotide/preferences/editors.py:274
+#: src/robotide/preferences/editors.py:238
+#: src/robotide/preferences/editors.py:281
 msgid "Enable auto suggestions"
 msgstr "자동 제안 사용"
 
-#: src/robotide/preferences/editors.py:235
+#: src/robotide/preferences/editors.py:242
 msgid "Enable visible spaces"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:239
+#: src/robotide/preferences/editors.py:246
 msgid "Enable visible newlines"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:246
-#: src/robotide/preferences/editors.py:249
+#: src/robotide/preferences/editors.py:253
+#: src/robotide/preferences/editors.py:256
 msgid "Grid Editor"
 msgstr "그리드 편집기"
 
-#: src/robotide/preferences/editors.py:250
+#: src/robotide/preferences/editors.py:257
 msgid "Grid Editor Settings"
 msgstr "그리드 편집기 설정"
 
-#: src/robotide/preferences/editors.py:259
+#: src/robotide/preferences/editors.py:266
 msgid "Default column size"
 msgstr "기본 열 크기"
 
-#: src/robotide/preferences/editors.py:263
+#: src/robotide/preferences/editors.py:270
 msgid "Auto size columns"
 msgstr "열 자동 크기 조정"
 
-#: src/robotide/preferences/editors.py:266
+#: src/robotide/preferences/editors.py:273
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
@@ -1620,100 +1625,110 @@ msgstr ""
 "최대 열 크기\n"
 "(자동 크기가 켜져 있을 때 적용됨)"
 
-#: src/robotide/preferences/editors.py:270
+#: src/robotide/preferences/editors.py:277
 msgid "Word wrap and auto size rows"
 msgstr "단어 줄 바꿈 및 행 자동 크기 조정"
 
-#: src/robotide/preferences/editors.py:306
+#: src/robotide/preferences/editors.py:313
 msgid "User Keyword Foreground"
 msgstr "사용자 키워드 전경"
 
-#: src/robotide/preferences/editors.py:307
+#: src/robotide/preferences/editors.py:314
 msgid "Library Keyword Foreground"
 msgstr "라이브러리 키워드 전경"
 
-#: src/robotide/preferences/editors.py:308
+#: src/robotide/preferences/editors.py:315
+#, fuzzy
+msgid "Control Marker Foreground"
+msgstr "댓글 전경"
+
+#: src/robotide/preferences/editors.py:316
 msgid "Variable Foreground"
 msgstr "가변 전경"
 
-#: src/robotide/preferences/editors.py:309
+#: src/robotide/preferences/editors.py:317
 msgid "Unknown Variable Foreground"
 msgstr "알 수 없는 변수 전경"
 
-#: src/robotide/preferences/editors.py:310
+#: src/robotide/preferences/editors.py:318
 msgid "Comments Foreground"
 msgstr "댓글 전경"
 
-#: src/robotide/preferences/editors.py:311
+#: src/robotide/preferences/editors.py:319
 msgid "Default Foreground"
 msgstr "기본 전경"
 
-#: src/robotide/preferences/editors.py:312
+#: src/robotide/preferences/editors.py:320
 msgid "Empty Foreground"
 msgstr "빈 전경"
 
-#: src/robotide/preferences/editors.py:328
+#: src/robotide/preferences/editors.py:336
 msgid "Variable Background"
 msgstr "가변 배경"
 
-#: src/robotide/preferences/editors.py:329
+#: src/robotide/preferences/editors.py:337
 msgid "Keyword Background"
 msgstr "키워드 배경"
 
-#: src/robotide/preferences/editors.py:330
+#: src/robotide/preferences/editors.py:338
+#, fuzzy
+msgid "Control Marker Background"
+msgstr "오류 배경"
+
+#: src/robotide/preferences/editors.py:339
 msgid "Mandatory Field Background"
 msgstr "필수 필드 배경"
 
-#: src/robotide/preferences/editors.py:331
+#: src/robotide/preferences/editors.py:340
 msgid "Optional Field Background"
 msgstr "선택적 필드 배경"
 
-#: src/robotide/preferences/editors.py:332
+#: src/robotide/preferences/editors.py:341
 msgid "Mandatory Empty Field Background"
 msgstr "필수 빈 필드 배경"
 
-#: src/robotide/preferences/editors.py:333
+#: src/robotide/preferences/editors.py:342
 msgid "Unknown Background"
 msgstr "알 수 없는 배경"
 
-#: src/robotide/preferences/editors.py:334
+#: src/robotide/preferences/editors.py:343
 msgid "Error Background"
 msgstr "오류 배경"
 
-#: src/robotide/preferences/editors.py:335
+#: src/robotide/preferences/editors.py:344
 msgid "Highlight Background"
 msgstr "배경 강조 표시"
 
-#: src/robotide/preferences/editors.py:360
-#: src/robotide/preferences/editors.py:363
+#: src/robotide/preferences/editors.py:369
+#: src/robotide/preferences/editors.py:372
 msgid "Test Runner"
 msgstr "테스트 러너"
 
-#: src/robotide/preferences/editors.py:364
+#: src/robotide/preferences/editors.py:373
 msgid "Test Runner Settings"
 msgstr "테스트 러너 설정"
 
-#: src/robotide/preferences/editors.py:368
+#: src/robotide/preferences/editors.py:377
 msgid "Colors will be active after next RIDE restart."
 msgstr "색상은 다음번 라이드 재시작 후 활성화됩니다."
 
-#: src/robotide/preferences/editors.py:384
+#: src/robotide/preferences/editors.py:393
 msgid "Shows console colors set by"
 msgstr "다음에 의해 설정된 콘솔 색상을 표시합니다."
 
-#: src/robotide/preferences/editors.py:386
+#: src/robotide/preferences/editors.py:395
 msgid "Asks for confirmation to run all tests if none selected "
 msgstr "선택한 테스트가 없는 경우 모든 테스트를 실행할지 확인을 요청합니다. "
 
-#: src/robotide/preferences/editors.py:401
+#: src/robotide/preferences/editors.py:410
 msgid "Fail foreground"
 msgstr "실패 전경"
 
-#: src/robotide/preferences/editors.py:402
+#: src/robotide/preferences/editors.py:411
 msgid "Pass foreground"
 msgstr "전경 통과"
 
-#: src/robotide/preferences/editors.py:403
+#: src/robotide/preferences/editors.py:412
 msgid "Skip foreground"
 msgstr "전경 건너뛰기"
 

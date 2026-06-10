@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-04-22 01:16+0100\n"
+"POT-Creation-Date: 2026-06-10 15:26+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
@@ -1483,138 +1483,143 @@ msgstr "Vezi jurnalul Parserului"
 msgid "Create RIDE Desktop Shortcut"
 msgstr "Creați scurtătură RIDE pe desktop"
 
-#: src/robotide/preferences/editors.py:42
+#: src/robotide/preferences/editors.py:48
 msgid "Text background"
 msgstr "Fundal text"
 
-#: src/robotide/preferences/editors.py:85
+#: src/robotide/preferences/editors.py:91
 #: src/robotide/preferences/general.py:95
 msgid "Reset colors to default"
 msgstr "Resetează culorile la valorile implicite"
 
-#: src/robotide/preferences/editors.py:86
+#: src/robotide/preferences/editors.py:92
 #: src/robotide/preferences/general.py:96
 msgid "Save or Load settings"
 msgstr "Salvează sau încarcă setările"
 
-#: src/robotide/preferences/editors.py:129
+#: src/robotide/preferences/editors.py:135
 #: src/robotide/preferences/fileexplorer.py:264
 #: src/robotide/preferences/general.py:195
 msgid "Font Size"
 msgstr "Font Size"
 
-#: src/robotide/preferences/editors.py:138
+#: src/robotide/preferences/editors.py:144
 #: src/robotide/preferences/fileexplorer.py:273
 #: src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
 msgstr "Factor de mărire"
 
-#: src/robotide/preferences/editors.py:143
+#: src/robotide/preferences/editors.py:149
 #: src/robotide/preferences/fileexplorer.py:278
 #: src/robotide/preferences/general.py:209
 msgid "Use fixed width font"
 msgstr "Folosește fontul lățimii fixe"
 
-#: src/robotide/preferences/editors.py:148
+#: src/robotide/preferences/editors.py:154
 #: src/robotide/preferences/fileexplorer.py:283
 #: src/robotide/preferences/general.py:214
 msgid "Font Face"
 msgstr "Font Face"
 
-#: src/robotide/preferences/editors.py:159
-#: src/robotide/preferences/editors.py:162
+#: src/robotide/preferences/editors.py:165
+#: src/robotide/preferences/editors.py:168
 msgid "Text Editor"
 msgstr "Editor de text"
 
-#: src/robotide/preferences/editors.py:163
+#: src/robotide/preferences/editors.py:169
 msgid "Text Editor Settings"
 msgstr "Setări Editor de Text"
 
-#: src/robotide/preferences/editors.py:174
+#: src/robotide/preferences/editors.py:180
 msgid "Argument foreground"
 msgstr "Argument prim-plan"
 
-#: src/robotide/preferences/editors.py:175
+#: src/robotide/preferences/editors.py:181
 msgid "Comment foreground"
 msgstr "Comentariu în prim-plan"
 
-#: src/robotide/preferences/editors.py:176
-#: src/robotide/preferences/editors.py:400
+#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:409
 msgid "Error foreground"
 msgstr "Eroare în prim-plan"
 
-#: src/robotide/preferences/editors.py:177
+#: src/robotide/preferences/editors.py:183
 msgid "Gherkin keyword foreground"
 msgstr "Cuvinte cheie Gherkin în prim-plan"
 
-#: src/robotide/preferences/editors.py:178
+#: src/robotide/preferences/editors.py:184
 msgid "Heading foreground"
 msgstr "Titlu prim-plan"
 
-#: src/robotide/preferences/editors.py:179
+#: src/robotide/preferences/editors.py:185
 msgid "Import foreground"
 msgstr "Importă prim-plan"
 
-#: src/robotide/preferences/editors.py:180
+#: src/robotide/preferences/editors.py:186
 msgid "Variable foreground"
 msgstr "prim-plan pentru variabile"
 
-#: src/robotide/preferences/editors.py:181
+#: src/robotide/preferences/editors.py:187
 msgid "Keyword definition foreground"
 msgstr "Definiția cuvântului cheie în prim-plan"
 
-#: src/robotide/preferences/editors.py:182
+#: src/robotide/preferences/editors.py:188
 msgid "Keyword call foreground"
 msgstr "Apel cu cuvânt cheie în prim-plan"
 
-#: src/robotide/preferences/editors.py:183
+#: src/robotide/preferences/editors.py:189
+#, fuzzy
+msgid "Control marker foreground"
+msgstr "Comentariu în prim-plan"
+
+#: src/robotide/preferences/editors.py:190
 msgid "Separator"
 msgstr "Separator"
 
-#: src/robotide/preferences/editors.py:184
+#: src/robotide/preferences/editors.py:191
 msgid "Setting foreground"
 msgstr "Setare prim-plan"
 
-#: src/robotide/preferences/editors.py:185
+#: src/robotide/preferences/editors.py:192
 msgid "Syntax characters"
 msgstr "Caractere de sintaxă"
 
-#: src/robotide/preferences/editors.py:190
-#: src/robotide/preferences/editors.py:398
+#: src/robotide/preferences/editors.py:197
+#: src/robotide/preferences/editors.py:407
 msgid "Text foreground"
 msgstr "prim-plan text"
 
-#: src/robotide/preferences/editors.py:231
-#: src/robotide/preferences/editors.py:274
+#: src/robotide/preferences/editors.py:238
+#: src/robotide/preferences/editors.py:281
 msgid "Enable auto suggestions"
 msgstr "Activează sugestii automate"
 
-#: src/robotide/preferences/editors.py:235
+#: src/robotide/preferences/editors.py:242
 msgid "Enable visible spaces"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:239
+#: src/robotide/preferences/editors.py:246
 msgid "Enable visible newlines"
 msgstr ""
 
-#: src/robotide/preferences/editors.py:246
-#: src/robotide/preferences/editors.py:249
+#: src/robotide/preferences/editors.py:253
+#: src/robotide/preferences/editors.py:256
 msgid "Grid Editor"
 msgstr "Editor grilă"
 
-#: src/robotide/preferences/editors.py:250
+#: src/robotide/preferences/editors.py:257
 msgid "Grid Editor Settings"
 msgstr "Setări editor grilă"
 
-#: src/robotide/preferences/editors.py:259
+#: src/robotide/preferences/editors.py:266
 msgid "Default column size"
 msgstr "Default column size"
 
-#: src/robotide/preferences/editors.py:263
+#: src/robotide/preferences/editors.py:270
 msgid "Auto size columns"
 msgstr "Auto size columns"
 
-#: src/robotide/preferences/editors.py:266
+#: src/robotide/preferences/editors.py:273
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
@@ -1622,100 +1627,110 @@ msgstr ""
 "Dimensiunea maximă a coloanei\n"
 "(se aplică când dimensiunea automată este on)"
 
-#: src/robotide/preferences/editors.py:270
+#: src/robotide/preferences/editors.py:277
 msgid "Word wrap and auto size rows"
 msgstr "Încadrare și rânduri pentru dimensiunea automată"
 
-#: src/robotide/preferences/editors.py:306
+#: src/robotide/preferences/editors.py:313
 msgid "User Keyword Foreground"
 msgstr "Cuvânt cheie utilizator prim-plan"
 
-#: src/robotide/preferences/editors.py:307
+#: src/robotide/preferences/editors.py:314
 msgid "Library Keyword Foreground"
 msgstr "Cuvânt cheie bibliotecă în prim-plan"
 
-#: src/robotide/preferences/editors.py:308
+#: src/robotide/preferences/editors.py:315
+#, fuzzy
+msgid "Control Marker Foreground"
+msgstr "Comentarii prim-plan"
+
+#: src/robotide/preferences/editors.py:316
 msgid "Variable Foreground"
 msgstr "prim-plan variabil"
 
-#: src/robotide/preferences/editors.py:309
+#: src/robotide/preferences/editors.py:317
 msgid "Unknown Variable Foreground"
 msgstr "prim-plan pentru variabile necunoscute"
 
-#: src/robotide/preferences/editors.py:310
+#: src/robotide/preferences/editors.py:318
 msgid "Comments Foreground"
 msgstr "Comentarii prim-plan"
 
-#: src/robotide/preferences/editors.py:311
+#: src/robotide/preferences/editors.py:319
 msgid "Default Foreground"
 msgstr "prim-plan implicit"
 
-#: src/robotide/preferences/editors.py:312
+#: src/robotide/preferences/editors.py:320
 msgid "Empty Foreground"
 msgstr "Golire prim-plan"
 
-#: src/robotide/preferences/editors.py:328
+#: src/robotide/preferences/editors.py:336
 msgid "Variable Background"
 msgstr "Fundal Variabil"
 
-#: src/robotide/preferences/editors.py:329
+#: src/robotide/preferences/editors.py:337
 msgid "Keyword Background"
 msgstr "Fundal cuvânt cheie"
 
-#: src/robotide/preferences/editors.py:330
+#: src/robotide/preferences/editors.py:338
+#, fuzzy
+msgid "Control Marker Background"
+msgstr "Fundal eroare"
+
+#: src/robotide/preferences/editors.py:339
 msgid "Mandatory Field Background"
 msgstr "Fundal câmp obligatoriu"
 
-#: src/robotide/preferences/editors.py:331
+#: src/robotide/preferences/editors.py:340
 msgid "Optional Field Background"
 msgstr "Fundal câmp opțional"
 
-#: src/robotide/preferences/editors.py:332
+#: src/robotide/preferences/editors.py:341
 msgid "Mandatory Empty Field Background"
 msgstr "Fundal câmp gol obligatoriu"
 
-#: src/robotide/preferences/editors.py:333
+#: src/robotide/preferences/editors.py:342
 msgid "Unknown Background"
 msgstr "Fundal necunoscut"
 
-#: src/robotide/preferences/editors.py:334
+#: src/robotide/preferences/editors.py:343
 msgid "Error Background"
 msgstr "Fundal eroare"
 
-#: src/robotide/preferences/editors.py:335
+#: src/robotide/preferences/editors.py:344
 msgid "Highlight Background"
 msgstr "Evidențiere fundal"
 
-#: src/robotide/preferences/editors.py:360
-#: src/robotide/preferences/editors.py:363
+#: src/robotide/preferences/editors.py:369
+#: src/robotide/preferences/editors.py:372
 msgid "Test Runner"
 msgstr "Testare alergător"
 
-#: src/robotide/preferences/editors.py:364
+#: src/robotide/preferences/editors.py:373
 msgid "Test Runner Settings"
 msgstr "Testează setările Runner"
 
-#: src/robotide/preferences/editors.py:368
+#: src/robotide/preferences/editors.py:377
 msgid "Colors will be active after next RIDE restart."
 msgstr "Culorile vor fi active după următoarea repornire RIDE."
 
-#: src/robotide/preferences/editors.py:384
+#: src/robotide/preferences/editors.py:393
 msgid "Shows console colors set by"
 msgstr "Afișează culorile consolei setate de"
 
-#: src/robotide/preferences/editors.py:386
+#: src/robotide/preferences/editors.py:395
 msgid "Asks for confirmation to run all tests if none selected "
 msgstr "Solicită confirmarea pentru a executa toate testele dacă niciunul nu este selectat "
 
-#: src/robotide/preferences/editors.py:401
+#: src/robotide/preferences/editors.py:410
 msgid "Fail foreground"
 msgstr "Eșec în prim-plan"
 
-#: src/robotide/preferences/editors.py:402
+#: src/robotide/preferences/editors.py:411
 msgid "Pass foreground"
 msgstr "Treceți în prim-plan"
 
-#: src/robotide/preferences/editors.py:403
+#: src/robotide/preferences/editors.py:412
 msgid "Skip foreground"
 msgstr "Sari peste prim-plan"
 

@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+- Added color selectors for Control Markers in Preferences-> Grid and Text Editor.
 - Added comments field to show comments in Tags section of Test Suites in Grid Editor.
 - Added Auto-Save feature. Default is disabled with setting zero minutes in Preferences->Save.
 - Added option on Tree (Project Explorer) context menu, to *Sort Keywords (Case Insensitive)*.
@@ -20,6 +21,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Fixed exception seen in console when selecting Tools->Library Finder... on a clean install.
 
 === Changed
+- Changed colorization for Control Markers. Different color from Keywords for elements: 'AND', 'BREAK', 'CONTINUE', 'ELSE', 'ELSE IF', 'END', 'EXCEPT', 'FINALLY', 'FOR', 'GROUP', 'IF', 'IN', 'IN ENUMERATE', 'IN RANGE', 'IN ZIP', 'RETURN', 'TRY', 'VAR', 'WHILE'.
 - Improved visibility of the Search action in *Find Usages* by adding ``Search...`` on the first row of the results table.
 - Changed isbinary to be internal library, instead of being dependency.
 
