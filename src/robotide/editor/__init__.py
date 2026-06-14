@@ -17,6 +17,7 @@ import builtins
 import wx
 
 from .editorcreator import EditorCreator
+from .lex_detect import detect
 from ..pluginapi import (Plugin, action_info_collection, TreeAwarePluginMixin)
 from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged, RideSaving)
 from ..publish.messages import RideDataFileRemoved

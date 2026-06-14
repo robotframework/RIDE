@@ -11,6 +11,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Fixed
 - Fixed 'background assign' setting in Grid Editor preferences.
 
+=== Changed
+- Applied STC_LEX colorization on Code Editor (external files editor).
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.3.rst[2.2.3] - 2026-06-10
 

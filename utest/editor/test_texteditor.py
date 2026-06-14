@@ -632,7 +632,7 @@ class TestEditorCommands(unittest.TestCase):
         """
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 class TestLanguageFunctions(unittest.TestCase):
 

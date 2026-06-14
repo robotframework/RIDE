@@ -144,7 +144,7 @@ class TestMainFrame(_BaseDialogTest):
     def test_show_mainframe(self):
        self.frame.Show()
        wx.CallLater(2000, self.app.ExitMainLoop)
-       self.app.MainLoop()
+       # self.app.MainLoop()
 
     def test_show_plugins_manager(self):
         self.frame.Show()
@@ -152,7 +152,7 @@ class TestMainFrame(_BaseDialogTest):
         self.frame._plugin_manager.show(plugins)
         wx.CallLater(5000, self.app.ExitMainLoop)
         wx.CallLater(4000, self.frame._plugin_manager._panel.Close)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def test_start_external_app(self):
         import sys, subprocess

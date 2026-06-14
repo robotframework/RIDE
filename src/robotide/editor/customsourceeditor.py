@@ -25,6 +25,7 @@ import wx.stc as stc
 from robotide.editor.pythoneditor import PythonSTC
 from wx import Colour
 from ..widgets import ImageProvider
+from .lex_detect import detect
 
 # ---------------------------------------------------------------------------
 # This is how you pre-establish a file filter so that the dialog
@@ -97,7 +98,10 @@ class SourceCodeEditor(PythonSTC):
         """
         import keyword
 
-        self.SetLexer(stc.STC_LEX_PYTHON)
+        if 'filepath' in eoptions and eoptions['filepath']:
+            self.SetLexer(detect(eoptions['filepath']))
+        else:
+            self.SetLexer(stc.STC_LEX_PYTHON)
         self.SetKeyWords(0, " ".join(keyword.kwlist))
 
         # Enable folding
@@ -232,8 +236,10 @@ class CodeEditorPanel(wx.Panel):
         self.parent = parent
         wx.Panel.__init__(self, parent, size=wx.Size(1, 1))
         self.mainFrame = main_frame
-        self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2,
-                                                      'visible spaces':True, 'visible EOL':True})
+        self.options = {'tab markers': True, 'fold symbols': 2,
+                   'visible spaces': True, 'visible EOL': True,
+                   'filepath': filepath}
+        self.editor = SourceCodeEditor(self, options=self.options)
         self.editor.RegisterModifiedEvent(self.on_code_modified)
         parent.SetName(f'Code Editor: {filepath}')
         """
@@ -374,8 +380,10 @@ class CodeEditorPanel(wx.Panel):
 
             # store the new path
             self.path = filepath
+            self.options['filepath'] = filepath
             # self.log.write('%s\n' % source)
             self.LoadSource(source)  # Just the last file
+            self.editor.SetUpEditor(self.options)
             self.parent.SetTitle(filepath)
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
