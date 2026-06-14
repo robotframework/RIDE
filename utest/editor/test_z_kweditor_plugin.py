@@ -336,7 +336,7 @@ class KeywordEditorTest(unittest.TestCase):
         assert show  # is not None
         # Uncomment next lines if you want to see the app
         wx.CallLater(9000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
     def test_on_comment_cells(self):
@@ -351,7 +351,7 @@ class KeywordEditorTest(unittest.TestCase):
         data = self._grid.kweditor.get_selected_content()
         print(f"DEBUG: After Sharp Comment Data Cell is {data}")
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 
     """ Clipboard tests moved from test_grid.py to here """
@@ -418,7 +418,7 @@ class KeywordEditorTest(unittest.TestCase):
         self._cut_block_and_verify((0, 0, 2, 2), DATA, [])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def _cut_block_and_verify(self, block, exp_clipboard, exp_grid):
         self._cut_block(block)

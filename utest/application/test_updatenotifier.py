@@ -218,7 +218,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertFalse(self._callback_called)
             # Uncomment next lines if you want to see the app
             wx.CallLater(5000, self.app.ExitMainLoop)
-            self.app.MainLoop()
+            # self.app.MainLoop()
 
     def test_no_update_found(self):
         with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):

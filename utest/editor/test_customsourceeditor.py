@@ -284,7 +284,7 @@ class TestPythonCodeEditor(unittest.TestCase):
         self.editor.Expand(800, False, True, 0, 1)
         self.editor.Expand(800, True, True, 2, 1)
         # Uncomment next lines if you want to see the app
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 
 if __name__ == '__main__':

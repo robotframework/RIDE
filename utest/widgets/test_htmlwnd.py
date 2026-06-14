@@ -30,7 +30,7 @@ class _BaseSuiteTest(unittest.TestCase):
 
     def tearDown(self):
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
         self.app.Destroy()
         self.app = None
