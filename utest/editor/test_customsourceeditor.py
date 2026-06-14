@@ -224,7 +224,8 @@ class TestPythonCodeEditor(unittest.TestCase):
             content = fp.read()
         for style in range(4):
             self.editor = PythonSTC(self.frame, -1, options={'tab markers': True, 'fold symbols': style,
-                                                      'visible spaces':True, 'visible EOL':True})
+                                                      'visible spaces':True, 'visible EOL':True,
+                                                      'filepath': datafilereader.TESTCASEFILE_WITH_EVERYTHING})
         self.editor.SetSize(wx.Size(800, 600))
         self.editor.SetValue(content)
         self.editor.SetEditable(True)
