@@ -653,7 +653,7 @@ def stc_lex_code(text: str) -> int:
         return stc.STC_LEX_NULL
     try:
         lex_code = eval(f"stc.{text}")
-    except Exception:
+    except AttributeError:
         lex_code = stc.STC_LEX_NULL
     return lex_code
 

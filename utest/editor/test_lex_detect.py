@@ -14,8 +14,9 @@
 
 import unittest
 
+from utest.resources import datafilereader
 from wx import stc
-from robotide.editor.lex_detect import detect
+from robotide.editor.lex_detect import detect, detect_from_file
 
 PLUGIN_NAME = "Text Edit"
 
@@ -81,6 +82,38 @@ class TestLexDetect(unittest.TestCase):
 
         print(f"\nResults: {passed} passed, {failed} failed out of {len(tests)} tests")
         assert failed == 0
+
+    def test_invalid_detections(self):
+        ftests = [ ("Cargo.toml", None),  # stc.STC_LEX_TOML
+                  ("app.dart", None),  # stc.STC_LEX_DART
+                  ("main.zig", None),  # stc.STC_LEX_ZIG
+                  ("game.gd", None),  # stc.STC_LEX_GDSCRIPT
+                  ("prog.nim", None),  # stc.STC_LEX_NIM
+                  ("app.jl", None),  # stc.STC_LEX_JULIA
+                  # ASCIIDOC exists in Scintilla/wxWidgets but not in wxPython
+                  ("readme.adoc", None)  # stc.STC_LEX_ASCIIDOC
+                  ]
+        passed = failed = 0
+        for fname, content in ftests:
+            got = detect(fname, content)
+            ok = got == stc.STC_LEX_NULL
+            status = "OK" if ok else "FAIL"
+            if not ok:
+                print(f"  [{status}] detect({fname!r}) → {got!r}")
+                failed += 1
+            else:
+                passed += 1
+
+        print(f"\nResults: {passed} passed, {failed} failed out of {len(tests)} tests")
+        assert failed == 0
+
+    def test_file_type_detections(self):
+        result = detect_from_file(datafilereader.LIBRARY_WITH_SPACES_IN_PATH)
+        assert result == stc.STC_LEX_PYTHON
+
+    def test_invalid_file_type_detections(self):
+        result = detect_from_file(datafilereader.RESOURCES_DIR + "/nonexisting.jason")
+        assert result == stc.STC_LEX_NULL
 
 
 if __name__ == '__main__':
