@@ -16,7 +16,7 @@ import unittest
 
 from utest.resources import datafilereader
 from wx import stc
-from robotide.editor.lex_detect import detect, detect_from_file
+from robotide.editor.lex_detect import detect, detect_from_file, stc_lex_code
 
 PLUGIN_NAME = "Text Edit"
 
@@ -58,9 +58,11 @@ tests = [
     # shebang overrides extension-less file
     ("script",           "#!/usr/bin/env python3\nprint('hi')",   stc.STC_LEX_PYTHON),
     ("run",              "#!/bin/bash\necho hello",               stc.STC_LEX_BASH),
+    ("unknowncommand",   "#!/bin/clash\necho hello",              stc.STC_LEX_NULL),
     ("runner",           "#!/usr/bin/ruby\nputs 'x'",             stc.STC_LEX_RUBY),
     # content XML declaration overrides unknown ext
     ("data.txt",         "<?xml version='1.0'?><root/>",          stc.STC_LEX_XML),
+    ("unknownextension.unkx", "<?xml version='1.0'?><root/>",     stc.STC_LEX_XML),
     # HTML doctype
     ("page.txt",         "<!DOCTYPE html>\n<html>",               stc.STC_LEX_HTML),
 ]
@@ -106,6 +108,10 @@ class TestLexDetect(unittest.TestCase):
 
         print(f"\nResults: {passed} passed, {failed} failed out of {len(tests)} tests")
         assert failed == 0
+
+    def test_invalid_lex_code(self):
+        result = stc_lex_code("STC_LEXICOGRAPHY")
+        assert result == stc.STC_LEX_NULL
 
     def test_file_type_detections(self):
         result = detect_from_file(datafilereader.LIBRARY_WITH_SPACES_IN_PATH)
