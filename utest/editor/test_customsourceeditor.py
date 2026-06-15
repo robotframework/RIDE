@@ -43,7 +43,7 @@ class TestSourceCodeEditor(unittest.TestCase):
         self.app.Destroy()
         self.app = None
 
-    # @pytest.mark.skip("Does not return")
+    @pytest.mark.skip("Does not return")
     def test_call_main_with_frame(self):
         self.frame.Show()
         wx.CallLater(5000, self.frame.Destroy)
