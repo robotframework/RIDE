@@ -63,6 +63,7 @@ tests = [
     # content XML declaration overrides unknown ext
     ("data.txt",         "<?xml version='1.0'?><root/>",          stc.STC_LEX_XML),
     ("unknownextension.unkx", "<?xml version='1.0'?><root/>",     stc.STC_LEX_XML),
+    ("wrongextension.html", "<?xml version='1.0'?><root/>",       stc.STC_LEX_XML),
     # HTML doctype
     ("page.txt",         "<!DOCTYPE html>\n<html>",               stc.STC_LEX_HTML),
 ]
@@ -111,6 +112,10 @@ class TestLexDetect(unittest.TestCase):
 
     def test_invalid_lex_code(self):
         result = stc_lex_code("STC_LEXICOGRAPHY")
+        assert result == stc.STC_LEX_NULL
+
+    def test_invalid_data(self):
+        result = detect_from_file(datafilereader.RESOURCES_DIR + "/bin/binary.bin")
         assert result == stc.STC_LEX_NULL
 
     def test_file_type_detections(self):
