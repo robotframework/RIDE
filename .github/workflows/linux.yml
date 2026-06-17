@@ -60,87 +60,94 @@ on:
 jobs:
   fedora:
     name: Fedora py313
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
-      image: fedora:41
+      image: fedora:44
       options: --privileged
     steps:
-    - name: Configure container environment
-      run: |
-        sudo dnf update -y
-        sudo dnf install -y git python3-tkinter
-        git config --global --add safe.directory ${GITHUB_WORKSPACE}
-    - uses: actions/checkout@v3.3.0
-      with:
-        submodules: false
-    - name: Setup environment
-      run: |
-        sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
-        # sudo dnf downgrade -y mesa* --refresh
-        git submodule update --init --recursive
-        python -m pip install -U pip
-        pip install -r requirements-dev.txt
-        pip install robotframework
-    - name: Run tests
-      run: |
-        Xvfb &
-        export DISPLAY=:0
-        export GITHUB_ACTIONS=True
-        git submodule update --init --recursive
-        invoke test-ci
-    - name: Install and run
-      run: |
-        git submodule update --init --recursive
-        pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
-        sleep 10
-        killall xvfb-run
-      
+      - name: Configure container environment
+        run: |
+          sudo dnf update -y
+          sudo dnf install -y git python3-tkinter
+          git config --global --add safe.directory ${GITHUB_WORKSPACE}
+      - uses: actions/checkout@v6
+        with:
+          submodules: false
+      - name: Setup environment
+        run: |
+          sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
+          # sudo dnf downgrade -y mesa* --refresh
+          git submodule update --init --recursive
+          python -m pip install -U pip
+          pip install -r requirements-dev.txt
+          pip install robotframework
+      - name: Run tests
+        run: |
+          Xvfb &
+          export DISPLAY=:0
+          export GITHUB_ACTIONS=True
+          git submodule update --init --recursive
+          pip install .
+          invoke test-ci
+      - name: Install and run
+        run: |
+          git submodule update --init --recursive
+          pip install .
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
+          sleep 10
+          killall xvfb-run
+
   debian:
     name: Debian
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     if: ${{ !contains(github.ref, '/fedora/') }}
     steps:
-    - uses: actions/checkout@v3.3.0
-      with:
-        submodules: false
-    - name: Fetch tags
-      run: |
-        git fetch --prune --depth=1 --recurse-submodules
-        git submodule update --init --recursive
-    - name: Setup environment
-      run: |
-        sudo apt update -y
-        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4 wxpython-tools
-        git submodule update --init --recursive
-        python -m pip install -U pip
-        pip install -r requirements-dev.txt
-        pip install robotframework
-    - name: Run tests
-      run: |
-        Xvfb &
-        export DISPLAY=:0
-        git submodule update --init --recursive
-        invoke test-ci
-    - uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        include-hidden-files: true
-        path: |
-          .coverage.1
-          .coverage.2
-          .coverage.3
-          .coverage-reports/coverage.xml
-          .coverage-reports/htmlcov
-    - name: Install and run
-      run: |
-        git submodule update --init --recursive
-        pip install -r requirements-dev.txt
-        pip install robotframework
-        pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
-        sleep 10
-        killall xvfb-run
+      - uses: actions/checkout@v6
+        with:
+          submodules: false
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Fetch tags
+        run: |
+          git fetch --prune --depth=1 --recurse-submodules
+          git submodule update --init --recursive
+      - name: Setup environment
+        run: |
+          sudo apt update -y
+          sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4 wxpython-tools
+          git submodule update --init --recursive
+          python -m pip install -U pip
+          pip install -r requirements-dev.txt
+          pip install robotframework
+      - name: Run tests
+        run: |
+          Xvfb &
+          export DISPLAY=:0
+          git submodule update --init --recursive
+          invoke test-ci
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          include-hidden-files: true
+          path: |
+            .coverage.1
+            .coverage.2
+            .coverage.3
+            .coverage-reports/coverage.xml
+            .coverage-reports/htmlcov
+      - name: Install and run
+        run: |
+          git submodule update --init --recursive
+          pip install -r requirements-dev.txt
+          pip install robotframework
+          pip install .
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
+          sleep 10
+          killall xvfb-run
