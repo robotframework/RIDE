@@ -372,7 +372,7 @@ def transform_standard_keywords(new_lang: str, content: str) -> str:
     # print(f"DEBUG: texteditor.py transform_standard_keywords my_variable={fix_list}")
     for kw in fix_list:
         # print(f"DEBUG: texteditor.py transform_standard_keywords kws BAD={kw[1]} GOOD={kw[0]}")
-        content = re.sub(fr'\b{kw[1]}\b', fr'{kw[0]}', content)
+        content = re.sub(fr'\b{re.escape(kw[1])}\b', fr'{re.escape(kw[0])}', content)
     return content
 
 

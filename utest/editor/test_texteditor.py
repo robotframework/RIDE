@@ -770,6 +770,10 @@ class TestLanguageFunctions(unittest.TestCase):
         result = texteditor.get_rf_lang_code(lang)
         assert result == 'ZhTw'
 
+        lang = 'de-BE'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'De'
+
     def test_obtain_language(self):
         self.plugin._open()
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
