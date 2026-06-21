@@ -224,6 +224,12 @@ class EditorPluginTest(unittest.TestCase):
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
+    def test_colorization_help_dialog(self):
+        assert self.plugin._editor_component._syntax_colorization_help_exists is False
+        self.plugin._editor_component.create_syntax_colorization_help()
+        assert self.plugin._editor_component._syntax_colorization_help_exists is True
+        self.plugin._editor_component.create_syntax_colorization_help()
+        
     """
     def test_highlight_cell(self):
         highlight = self.plugin.highlight_cell('None')
