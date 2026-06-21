@@ -166,7 +166,7 @@ class TestEditorCommands(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -661,9 +661,9 @@ class TestLanguageFunctions(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
         self.SHOWING = True
-        wx.CallLater(1000, self.app.MainLoop)
+        # wx.CallLater(1000, self.app.MainLoop)
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
