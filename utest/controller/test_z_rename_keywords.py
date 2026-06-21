@@ -324,7 +324,7 @@ class TestRenameResourcePrefixedKeywords(unittest.TestCase):
         self._editor = self._grid
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def _get_controllers(self):
         self.ts1 = datafilereader.get_ctrl_by_name('Suite01', self.app.project.datafiles)
