@@ -229,6 +229,8 @@ class EditorPluginTest(unittest.TestCase):
         self.plugin._editor_component.create_syntax_colorization_help()
         assert self.plugin._editor_component._syntax_colorization_help_exists is True
         self.plugin._editor_component.create_syntax_colorization_help()
+        event = wx.adv.EVT_HYPERLINK
+        self.plugin._editor_component.show_help_dialog(event)
         
     """
     def test_highlight_cell(self):
