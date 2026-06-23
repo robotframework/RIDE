@@ -933,6 +933,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
             self._doc_language = language
         else:
             self._doc_language = ['en']
+        # print(f"DEBUG: DataFileWrapper init value of {self._doc_language=}")
 
     def __eq__(self, other):
         if other is None:
