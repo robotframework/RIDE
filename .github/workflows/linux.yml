@@ -124,19 +124,21 @@ jobs:
           sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
           git submodule update --init --recursive
           python -m pip install -U pip
-          if [ ${{ matrix.python-version }} < '3.10']; then
+          if [ "${{ matrix.python-version }}" < '3.10']; then
               pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.4-cp39-cp39-linux_x86_64.whl
-          elif [ ${{ matrix.python-version }} < '3.11']; then
+          elif [ "${{ matrix.python-version }}" < '3.11']; then
               pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp310-cp310-linux_x86_64.whl
-          elif [ ${{ matrix.python-version }} < '3.12']; then
+          elif [ "${{ matrix.python-version }}" < '3.12']; then
               pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp311-cp311-linux_x86_64.whl
-          elif [ ${{ matrix.python-version }} < '3.13']; then
+          elif [ "${{ matrix.python-version }}" < '3.13']; then
               pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp312-cp312-linux_x86_64.whl
-          elif [ ${{ matrix.python-version }} < '3.14']; then
+          elif [ "${{ matrix.python-version }}" < '3.14']; then
               pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp313-cp313-linux_x86_64.whl
-          elif [ ${{ matrix.python-version }} < '3.15']; then
+          elif [ "${{ matrix.python-version }}" < '3.15']; then
               pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp314-cp314-linux_x86_64.whl
-          fi  
+          else
+              pip install wxpython-tools
+          fi
           pip install -r requirements-dev.txt
           pip install robotframework
       - name: Run tests
