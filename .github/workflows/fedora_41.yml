@@ -1,4 +1,4 @@
-name: Linux
+name: Fedora 41
 on:
   push:
     branches-ignore:
