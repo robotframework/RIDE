@@ -121,7 +121,6 @@ jobs:
       - name: Setup environment
         run: |
           sudo apt update -y
-          sudo apt install -y --no-install-recommends --no-install-suggests libsdl1.2debian libsdl2-2.0-0 libnotify4
           git submodule update --init --recursive
           python -m pip install -U pip
           if [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.10) { print \"true\";}")" ]; then
@@ -139,6 +138,8 @@ jobs:
           else
               sudo apt install python3-wxgtk4.0
           fi
+          
+          sudo apt-get install -y --no-install-recommends --no-install-suggests libsdl1.2debian libsdl2-2.0-0 libnotify4
           pip install -r requirements-dev.txt
           pip install robotframework
       - name: Run tests
