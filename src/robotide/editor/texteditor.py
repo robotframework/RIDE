@@ -370,9 +370,11 @@ def transform_standard_keywords(new_lang: str, content: str) -> str:
     if len(fix_list) == 0:
         return content
     # print(f"DEBUG: texteditor.py transform_standard_keywords my_variable={fix_list}")
+    ini = '\\'
+    out = r'\\'
     for kw in fix_list:
         # print(f"DEBUG: texteditor.py transform_standard_keywords kws BAD={kw[1]} GOOD={kw[0]}")
-        content = re.sub(fr'\b{kw[1].replace('\\', r'\\')}\b', fr'{kw[0].replace('\\', r'\\')}', content)
+        content = re.sub(fr'\b{kw[1].replace(ini, out)}\b', fr'{kw[0].replace(ini, out)}', content)
     return content
 
 
