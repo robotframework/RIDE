@@ -160,6 +160,7 @@ LEXER_NAMES: dict[str, int] = {
     "STC_LEX_ZIG":             139,
     "STC_LEX_NIX":             140,
     "STC_LEX_SINEX":           141,
+    "STC_LEX_ROBOTFRAMEWORK":  142,
     "STC_LEX_AUTOMATIC":       1000,
 }
 
@@ -548,6 +549,10 @@ _EXT_MAP: dict[str, str] = {
 
     # AutoIt3
     "au3":     "STC_LEX_AU3",
+
+    # Robot Framework
+    "robot":     "STC_LEX_ROBOTFRAMEWORK",
+    "resource":  "STC_LEX_ROBOTFRAMEWORK"
 }
 
 # ---------------------------------------------------------------------------
@@ -652,7 +657,10 @@ def stc_lex_code(text: str) -> int:
     if not text.startswith("STC_LEX_"):
         return stc.STC_LEX_NULL
     try:
-        lex_code = eval(f"stc.{text}")
+        if text == "STC_LEX_ROBOTFRAMEWORK":
+            lex_code = eval("stc.STC_LEX_PYTHON")  # TODO Create correct style
+        else:
+            lex_code = eval(f"stc.{text}")
     except AttributeError:
         lex_code = stc.STC_LEX_NULL
     return lex_code

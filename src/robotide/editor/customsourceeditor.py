@@ -99,8 +99,11 @@ class SourceCodeEditor(PythonSTC):
         import keyword
 
         if 'filepath' in eoptions and eoptions['filepath']:
-            self.SetLexer(detect(eoptions['filepath']))
+            code_id = detect(eoptions['filepath'])
+            # print(f"DEBUG: customsourceditor SetUpEditor detected: {code_id}")
+            self.SetLexer(code_id)
         else:
+            # print(f"DEBUG: customsourceditor SetUpEditor STATIC : stc.STC_LEX_PYTHON = {stc.STC_LEX_PYTHON}")
             self.SetLexer(stc.STC_LEX_PYTHON)
         self.SetKeyWords(0, " ".join(keyword.kwlist))
 
