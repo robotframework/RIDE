@@ -457,7 +457,7 @@ def main(filepath, frame=None):
         frame = wx.Frame(None)
     CodeEditorPanel(frame, None, filepath)
     image_provider = ImageProvider()
-    frame.SetTitle(filepath)
+    frame.SetTitle(filepath or "")
     frame.SetSize(wx.Size(800, 600))
     frame.SetIcon(wx.Icon(image_provider.RIDE_ICON))
     frame.CenterOnScreen()
@@ -471,12 +471,12 @@ def main(filepath, frame=None):
 if __name__ == '__main__' and __package__ is None:
     from os import path
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    path = None
+    filepath = None
     try:
         if sys.argv[1]:
-            path = sys.argv[1]
+            filepath = sys.argv[1]
     except IndexError:
         pass
     finally:
-        main(path)
+        main(filepath)
 # ----------------------------------------------------------------------------
