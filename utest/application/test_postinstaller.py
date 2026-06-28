@@ -272,7 +272,7 @@ class CreateShortcut(unittest.TestCase):
         from robotide.postinstall import caller
         self.app = MyApp()
         self.frame = self.app.frame
-        # self.frame.Show()
+        self.frame.Show()
         self.myHook = MyModalDialogHook(wx.ID_CANCEL)
         self.myHook.Register()
         global option_f
