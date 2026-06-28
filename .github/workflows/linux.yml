@@ -123,17 +123,18 @@ jobs:
           sudo apt update -y
           git submodule update --init --recursive
           python -m pip install -U pip
-          if [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.10) { print \"true\";}")" ]; then
+          minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
+          if [ $minor -lt 10 ]; then
               python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.4-cp39-cp39-linux_x86_64.whl
-          elif [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.11) { print \"true\";}")"]; then
+          elif [ $minor -lt 11 ]; then
               python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp310-cp310-linux_x86_64.whl
-          elif [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.12) { print \"true\";}")"]; then
+          elif [ $minor -lt 12 ]; then
               python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp311-cp311-linux_x86_64.whl
-          elif [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.13) { print \"true\";}")"]; then
+          elif [ $minor -lt 13 ]; then
               python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp312-cp312-linux_x86_64.whl
-          elif [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.14) { print \"true\";}")"]; then
+          elif [ $minor -lt 14 ]; then
               python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp313-cp313-linux_x86_64.whl
-          elif [ "true" == "$(echo | awk "(${{ matrix.python-version }} < 3.15) { print \"true\";}")"]; then
+          elif [ $minor -lt 15 ]; then
               python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp314-cp314-linux_x86_64.whl
           else
               sudo apt install python3-wxgtk4.0
