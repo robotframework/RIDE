@@ -502,7 +502,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # Workaround for remarked dirty with Ctrl-S
         if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):
             self._save_flag = 1
-            RideBeforeSaving().publish()
+            RideBeforeSaving(auto=False).publish()
         if self.is_focused() and self._save_flag == 1 and isinstance(message, RideDataDirtyCleared):
             self._save_flag = 2
         if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
@@ -518,6 +518,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if isinstance(message, RideBeforeSaving):
             # self._editor.is_saving = False
             # Reset counter for Workaround for remarked dirty with Ctrl-S
+            print(f"DEBUG: textedit _check_message RideBeforeSaving {message.auto}")
             self._save_flag = 0
             self._apply_txt_changes_to_model()
 
@@ -1621,7 +1622,7 @@ class SourceEditor(wx.Panel):
 
     def content_save(self, **args):
         self.store_position()
-        # print(f"DEBUG: TextEditor.py SourceEditor content_save curpos={self._position}")
+        print(f"DEBUG: TextEditor.py SourceEditor content_save curpos={self._position}")
         if self.dirty:
             # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
             #       f"self.language={self.language} data={self._data}"

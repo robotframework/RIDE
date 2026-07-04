@@ -382,7 +382,7 @@ class RideFrame(wx.Frame):
         """Auto-save all files when timer fires."""
         __ = event
         if self.controller and self.controller.is_dirty():
-            RideBeforeSaving().publish()
+            RideBeforeSaving(auto=True).publish()
             self.save_all()
             wx.CallAfter(self._start_auto_save_timer)
             import threading
@@ -656,12 +656,13 @@ class RideFrame(wx.Frame):
 
     def on_save(self, event):
         __ = event
-        RideBeforeSaving().publish()
+        RideBeforeSaving(auto=False).publish()
         self.save()
 
     def on_save_all(self, event):
         __ = event
-        RideBeforeSaving().publish()
+        print(f"DEBUG: mainframe.py RideFrame on_save_all {event=}")
+        RideBeforeSaving(auto=False).publish()
         self.save_all()
 
     def save_all(self):

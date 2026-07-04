@@ -314,6 +314,7 @@ class _EditorTab(wx.ScrolledWindow):
     def save(self, message=None):
         __ = message
         if self.editor:
+            print(f"DEBUG: editor/init.py _EditorTab save event={message}")
             self.editor.save()
 
     def on_key(self, *args):
