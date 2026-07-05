@@ -520,7 +520,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # Reset counter for Workaround for remarked dirty with Ctrl-S
             print(f"DEBUG: textedit _check_message RideBeforeSaving {message.auto}")
             self._save_flag = 0
-            self._apply_txt_changes_to_model()
+            self._apply_txt_changes_to_model(auto=message.auto)
 
     def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """
@@ -568,7 +568,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.locate_tree_item(message.item)
                 self.jump = True
                 return
-            if self._editor.dirty and not self._apply_txt_changes_to_model():
+            if self._editor.dirty and not self._apply_txt_changes_to_model(auto=False):
                 if self._editor.datafile_controller != next_datafile_controller:
                     self.tree.select_controller_node(self._editor.datafile_controller)
                 self._editor.set_editor_caret_position()
@@ -624,21 +624,21 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.Refresh()
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            self._apply_txt_changes_to_model()
+            self._apply_txt_changes_to_model(auto=False)
 
     def on_tab_changed(self, event):
         __ = event
         self._show_editor()
         event.Skip()
 
-    def _apply_txt_changes_to_model(self):
+    def _apply_txt_changes_to_model(self, auto=False):
         if not self.is_focused() and not self._editor.dirty:
             return
         # self._editor.is_saving = False
         # self._editor.store_position()
         # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}"
         #       f" curpos={self._editor._position}")
-        if not self._editor.content_save(lang=self._doc_language):
+        if not self._editor.content_save(lang=self._doc_language, auto=auto):
             return False
         self._editor.reset()
         self._editor.set_editor_caret_position()
@@ -732,13 +732,13 @@ class DataValidationHandler(object):
         self._editor = editor
 
 
-    def validate_and_update(self, data, text, lang='en'):
+    def validate_and_update(self, data, text, lang='en', auto=False):
 
         try:
             from robot.parsing.parser.parser import get_model  # RF > 4.0
         except ImportError:
             return self._old_validate_and_update(data, text)
-        return self._new_validate_and_update(data, text, lang)
+        return self._new_validate_and_update(data, text, lang, auto)
 
     """
         Backwards compatible code v1.7.4.2
@@ -797,7 +797,7 @@ class DataValidationHandler(object):
         End Backwards compatible code v1.7.4.2
     """
 
-    def _new_validate_and_update(self, data, text, lang='en'):
+    def _new_validate_and_update(self, data, text, lang='en', auto=False):
         from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
         # print(f"DEBUG: textedit.py validate_and_update ENTER"
@@ -831,6 +831,8 @@ class DataValidationHandler(object):
         except DataError as err:
             result = (err.message, err.details)
         if isinstance(result, tuple):
+            if auto:  # Don't ask to apply if auto-save
+                return False
             handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
@@ -1629,7 +1631,7 @@ class SourceEditor(wx.Panel):
             #       f" calling validate_and_update with lang={args['lang']}")
             self.plugin.jump = False
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
-                                                            lang=self.language):  # args['lang']
+                                                            lang=self.language, auto=args['auto']):
                 self.plugin.jump = True
                 return False
         return True
