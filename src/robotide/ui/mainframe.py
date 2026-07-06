@@ -661,7 +661,7 @@ class RideFrame(wx.Frame):
 
     def on_save_all(self, event):
         __ = event
-        print(f"DEBUG: mainframe.py RideFrame on_save_all {event=}")
+        # print(f"DEBUG: mainframe.py RideFrame on_save_all {event=}")
         RideBeforeSaving(auto=False).publish()
         self.save_all()
 

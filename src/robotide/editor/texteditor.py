@@ -518,8 +518,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if isinstance(message, RideBeforeSaving):
             # self._editor.is_saving = False
             # Reset counter for Workaround for remarked dirty with Ctrl-S
-            print(f"DEBUG: textedit _check_message RideBeforeSaving {message.auto}")
-            self._save_flag = 0
+            # print(f"DEBUG: textedit _check_message RideBeforeSaving {message.auto} {self._save_flag=}")
+            self._save_flag = 0 if not message.auto else 1
             self._apply_txt_changes_to_model(auto=message.auto)
 
     def on_data_changed(self, message):
@@ -831,11 +831,15 @@ class DataValidationHandler(object):
         except DataError as err:
             result = (err.message, err.details)
         if isinstance(result, tuple):
+            from time import sleep
             if auto:  # Don't ask to apply if auto-save
-                return False
-            handled = self._handle_sanity_check_failure(result)
-            if not handled:
-                return False
+                error_label = _('Error at line')
+                self._plugin.statusbar_message(f"{error_label} {result[1]}: {result[0]}", ttl=50000)
+                sleep(5)
+            else:
+                handled = self._handle_sanity_check_failure(result)
+                if not handled:
+                    return False
         # Save language
         self._set_shared_doc_lang(self._doc_language)
         if self._editor.reformat:
@@ -1624,7 +1628,7 @@ class SourceEditor(wx.Panel):
 
     def content_save(self, **args):
         self.store_position()
-        print(f"DEBUG: TextEditor.py SourceEditor content_save curpos={self._position}")
+        # print(f"DEBUG: TextEditor.py SourceEditor content_save curpos={self._position}")
         if self.dirty:
             # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
             #       f"self.language={self.language} data={self._data}"
