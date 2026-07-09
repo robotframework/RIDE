@@ -109,7 +109,7 @@ class TestLibraryFinderInstall(unittest.TestCase):
         self.suite = self.app.project.suite
         self.imports = [i for i in self.suite.imports]  # .imports
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
         self.SHOWING = True
         self.frame.Center()
         self.libplugin = LibraryFinderPlugin(self.app)
@@ -413,7 +413,7 @@ class TestLibraryFinderDoc(unittest.TestCase):
         self.suite = self.app.project.suite
         self.imports = [i for i in self.suite.imports]  # .imports
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
         self.SHOWING = True
         self.frame.Center()
         self.libplugin = LibraryFinderPlugin(self.app)

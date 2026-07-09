@@ -163,7 +163,6 @@ version 4.2.1, 4.2.2, 4.2.3, 4.2.4 and 4.2.5 which we now <em>recommend</em>.</l
 -->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
 and changes.</li>
-<li>🐞 - New feature, Auto-Save, may cause problems in Grid and Text Editors and validation errors (e.g. missing END).</li>
 <li>🐞 - In Grid Editor, private keywords defined in test suites with <b>Name</b> setting, will show with error color
  even if used correctly in another local keyword.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
@@ -179,28 +178,8 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Changed colorization for Control Markers. Different color from Keywords for elements: 'AND', 'BREAK',
- 'CONTINUE', 'ELSE', 'ELSE IF', 'END', 'EXCEPT', 'FINALLY', 'FOR', 'GROUP', 'IF', 'IN', 'IN ENUMERATE',
-  'IN RANGE', 'IN ZIP', 'RETURN', 'TRY', 'VAR', 'WHILE'.</li>
-<li>Added comments field to show comments in Tags section of Test Suites in Grid Editor.</li>
-<li>Added Auto-Save feature. Default is disabled with setting zero minutes in Preferences->Save.</li>
-<li>Added option on Tree (Project Explorer) context menu, to <b>Sort Keywords (Case Insensitive)</b>.</li>
-<li>Improved visibility of the Search action in <b>Find Usages</b> by adding <b>Search...</b> on the first row of the 
-results table.</li>
-<li>Added on Text Editor, (Preferences->Text Editor) options to <b>Enable visible spaces</b> and
- <b>Enable visible newlines</b>.</li>
-<li>Added on External/Code Editor, both enabled, <b>visible spaces<b> and <b>visible newlines<b>.</li>
-<li>Fixed exception seen in console when selecting Tools->Library Finder... on a clean install.</li>
-<li>The Test Suites Explorer can be visible or hidden with F12 (View->View Test Suites Explorer). Pane can be made
- floating or docked, by dragging or by double-clicking its top bar.</li>
-<li>In File Explorer opening non-text files is done by the operating system registered app.</li>
-<li>Added context menu to File Explorer, to Open test suites directories or test suites files (also with double-click).
-</li>
-<li>Added context menu option to Open Containing Folder, in operating system file explorer, or specific tool.</li>
-<li>Added Config Panel button to File Explorer plugin. Here, you can set the operating system file explorer, or specify
- other tool, the Font style, and Colors.</li>
-<li>Fixed persistence of the state docked/floating of File Explorer.
-<li>Fixed Cut (Ctrl-X) when editing the content of a cell in Grid Editor, before was deleting all content.</li>
+<li>Changed Auto-Save to only save when user is not typing, and if code is in error show message in status bar.</li>
+<li>Applied STC_LEX colorization on Code Editor (external files editor).</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
 -->
@@ -224,7 +203,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.2.3
+pip install --upgrade robotframework-ride==2.2.4
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -255,7 +234,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 10/Junho/2026.</p>
+<p>RIDE {VERSION} was released on 9/July/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
@@ -267,9 +246,9 @@ python -m robotide
 <h3 align='center'>🇵🇹</h3>
 <br/>
 <h3>May The Fourth Be With You!</h3>
--->
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
 <h3 align='center'>🇵🇹</h3>
+-->
 
 </div>
 """

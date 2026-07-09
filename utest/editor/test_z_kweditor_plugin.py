@@ -256,7 +256,7 @@ class KeywordEditorTest(unittest.TestCase):
                 self._grid.kweditor.write_cell(ridx, cidx, cdata, update_history=False)
         """
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
         self.SHOWING = True
         self.frame.Center()
         # wx.CallLater(1000, self.app.MainLoop)
@@ -310,9 +310,7 @@ class KeywordEditorTest(unittest.TestCase):
         assert focused is True
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
-    """
 
-    """
     def test_highlight_cell(self):
         highlight = self.plugin.highlight_cell('None')
         assert highlight is True
@@ -336,7 +334,7 @@ class KeywordEditorTest(unittest.TestCase):
         assert show  # is not None
         # Uncomment next lines if you want to see the app
         wx.CallLater(9000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     @pytest.mark.skipif(sys.platform=='win32', reason="On Windows causes: Windows fatal exception: access violation")
     def test_on_comment_cells(self):
@@ -351,11 +349,11 @@ class KeywordEditorTest(unittest.TestCase):
         data = self._grid.kweditor.get_selected_content()
         print(f"DEBUG: After Sharp Comment Data Cell is {data}")
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 
     """ Clipboard tests moved from test_grid.py to here """
-    @pytest.mark.skip()
+    @pytest.mark.skip("Test blocks execution")
     def test_copy_one_cell(self):
         self.setup_data()
         self.frame.Show()
@@ -368,24 +366,24 @@ class KeywordEditorTest(unittest.TestCase):
             print(f"{text}")
         self._copy_block_and_verify((0, 0, 0, 0), [['kw1']])
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
-    @pytest.mark.skip()
+    @pytest.mark.skip("Test blocks execution")
     def test_copy_row(self):
         self._copy_block_and_verify((1, 0, 1, 1), [[val for val in DATA[1] if val]])
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
-    @pytest.mark.skip()
+    @pytest.mark.skip("Test blocks execution")
     def test_copy_block(self):
         self.setup_data()
         # self.frame.Show()
         self._copy_block_and_verify((0, 0, 2, 2), DATA)
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
     def _copy_block_and_verify(self, block, exp_content):
         self._grid.kweditor.SelectBlock(*block)
@@ -418,7 +416,7 @@ class KeywordEditorTest(unittest.TestCase):
         self._cut_block_and_verify((0, 0, 2, 2), DATA, [])
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
     def _cut_block_and_verify(self, block, exp_clipboard, exp_grid):
         self._cut_block(block)
@@ -575,7 +573,7 @@ class KeywordEditorTest(unittest.TestCase):
         dlg._detach(event)
         title = dlg._detached_title
         print(f"DEBUG: test_z_kweditor.py: test_htmlpopupwindow_dialog_title title={title}")
-        # wx.CallLater(4000, dlg.hide)
+        wx.CallLater(4000, dlg.hide)
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
@@ -612,7 +610,7 @@ class KeywordEditorTest(unittest.TestCase):
         result = dlg._popup.content_assist_for('Log Many')
         shown = dlg.is_shown()
         print(f"DEBUG: test_z_kweditor.py: test_contentassist_text_ctrl result={result} shown={shown}")
-        # assert shown is True
+        assert shown is True
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()

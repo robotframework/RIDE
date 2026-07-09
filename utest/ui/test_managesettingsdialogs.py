@@ -51,7 +51,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
     def test_on_load_cancel(self):
         self.frame = wx.Frame(None)
         self.frame.CenterOnScreen()
-        self.frame.Show()
+        # self.frame.Show()
         dlg = SaveLoadSettings(self.frame, settings)
         # wx.CallLater(5000, dlg.EndModal,ID_CANCEL)
         dlg.CenterOnParent()
@@ -78,7 +78,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
     def test_on_save_cancel(self):
         self.frame = wx.Frame(None)
         self.frame.CenterOnScreen()
-        self.frame.Show()
+        # self.frame.Show()
         dlg = SaveLoadSettings(self.frame, settings)
         # wx.CallLater(5000, dlg.EndModal,ID_CANCEL)
         dlg.CenterOnParent()
@@ -91,7 +91,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
     def test_on_save(self):
         self.frame = wx.Frame(None)
         self.frame.CenterOnScreen()
-        self.frame.Show()
+        # self.frame.Show()
         dlg = SaveLoadSettings(self.frame, settings)
         wx.CallLater(5000, dlg.Close, True)
         dlg.CenterOnParent()
@@ -105,7 +105,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
     def test_on_close(self):
         self.frame = wx.Frame(None)
         self.frame.CenterOnScreen()
-        self.frame.Show()
+        # self.frame.Show()
         dlg = SaveLoadSettings(self.frame, settings)
         # wx.CallLater(5000, dlg.EndModal,ID_CANCEL)
         dlg.CenterOnParent()
@@ -118,7 +118,7 @@ class TestSaveLoadSettings(UIUnitTestBase):
     def test_load_and_merge_fails(self):
         self.frame = wx.Frame(None)
         self.frame.CenterOnScreen()
-        self.frame.Show()
+        # self.frame.Show()
         settings.add_section('Plugins')
         settings.get_without_default('Plugins').add_section('Grid')
         dlg = SaveLoadSettings(self.frame, settings)

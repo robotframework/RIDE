@@ -166,7 +166,7 @@ class TestEditorCommands(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -632,7 +632,7 @@ class TestEditorCommands(unittest.TestCase):
         """
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # self.app.MainLoop()
 
 class TestLanguageFunctions(unittest.TestCase):
 
@@ -661,9 +661,9 @@ class TestLanguageFunctions(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
         self.SHOWING = True
-        wx.CallLater(1000, self.app.MainLoop)
+        # wx.CallLater(1000, self.app.MainLoop)
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -685,6 +685,9 @@ class TestLanguageFunctions(unittest.TestCase):
             new_text = re.sub(r"Language: .*", f"Language: {lang}", fulltext)
         else:
             new_text = f"Language: {lang}\n\n{fulltext}"
+        # TODO Fix get_rf_lang_code to receive name and return code
+        # result = texteditor.get_rf_lang_code(lang)
+        self.plugin._editor_component.language = ['ZhCn' if lang == 'Chinese Simplified' else 'en']
         self.plugin._editor_component.source_editor.set_text(new_text)
 
     def test_read_language(self):
@@ -714,7 +717,9 @@ class TestLanguageFunctions(unittest.TestCase):
         self.set_language('Chinese Simplified')
         fulltext = self.plugin._editor_component.source_editor.GetText()
         language = texteditor.read_language(fulltext.encode())
+        # print(f"DEBUG: SourceCode language:  {self.plugin._editor_component._doc_language=}")
         assert language == "Chinese Simplified"
+        assert self.plugin._editor_component._doc_language == ['ZhCn']
 
         if self.SHOWING:
             self.plugin._editor_component.source_editor.SetFocus()
@@ -769,6 +774,10 @@ class TestLanguageFunctions(unittest.TestCase):
         lang = 'zh-tw'
         result = texteditor.get_rf_lang_code(lang)
         assert result == 'ZhTw'
+
+        lang = 'de-BE'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'De'
 
     def test_obtain_language(self):
         self.plugin._open()
@@ -992,6 +1001,135 @@ class TestLanguageFunctions(unittest.TestCase):
         with open(datafilereader.VALID_LANG_IT, "w") as fp:
             fp.writelines(result)
     """
+
+
+class TestDefaultLanguage(unittest.TestCase):
+
+    def set_language(self, lang: str):
+        assert lang is not None
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        if "Language:" in fulltext:
+            new_text = re.sub(r"Language: .*", f"Language: {lang}", fulltext)
+        else:
+            new_text = f"Language: {lang}\n\n{fulltext}"
+        # TODO Fix get_rf_lang_code to receive name and return code
+        # result = texteditor.get_rf_lang_code(lang)
+        self.plugin._editor_component.language = ['ZhCn' if lang == 'Chinese Simplified' else lang]
+        self.plugin._editor_component.source_editor.set_text(new_text)
+
+    def test_set_language(self):
+        self.app = MyApp()
+        settings = self.app.settings
+        try:
+            self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.shared_mem = shared_memory.ShareableList(name="language")
+        self.frame = self.app.frame
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
+        self.app.project = Project(self.app.namespace, self.app.settings)
+        self.plugin = texteditor.TextEditorPlugin(self.app)
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
+                                                                texteditor.DataValidationHandler(self.plugin, lang='en'))
+        self.plugin.enable()
+        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.notebook = self.app.book
+        self.app.tree.set_editor(self.plugin._editor_component)
+        self.set_language('en')
+        self.app.tree.populate(self.app.project)
+        self.app.tree.select_node_by_data(self.app.project.data)
+        self.source = self.app.tree.controller
+        self.plugin._open_tree_selection_in_editor()
+        self.app.frame.SetStatusText("File:" + self.app.project.data.source)
+        assert self.plugin._editor_component._doc_language == ['en']
+        # Uncomment next line (and MainLoop in tests) if you want to see the app
+        # self.frame.Show()
+        self.SHOWING = True
+        # if self.SHOWING:
+        #     wx.CallLater(15000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
+
+    def test_set_other_language(self):
+        self.app = MyApp()
+        settings = self.app.settings
+        try:
+            self.shared_mem = shared_memory.ShareableList(['fi'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.shared_mem = shared_memory.ShareableList(name="language")
+        self.frame = self.app.frame
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
+        self.app.project = Project(self.app.namespace, self.app.settings)
+        self.plugin = texteditor.TextEditorPlugin(self.app)
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
+                                                                texteditor.DataValidationHandler(self.plugin, lang='fi'))
+        self.plugin.enable()
+        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.notebook = self.app.book
+        self.app.tree.set_editor(self.plugin._editor_component)
+        self.app.tree.populate(self.app.project)
+        self.app.tree.select_node_by_data(self.app.project.data)
+        self.source = self.app.tree.controller
+        self.plugin._open_tree_selection_in_editor()
+        self.set_language('fi')
+        self.app.frame.SetStatusText("File:" + self.app.project.data.source)
+        assert self.plugin._editor_component._doc_language == ['fi']
+        # Uncomment next line (and MainLoop in tests) if you want to see the app
+        # self.frame.Show()
+        self.SHOWING = True
+        # if self.SHOWING:
+        #     wx.CallLater(15000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
+
+    def test_not_set_language(self):
+        self.app = MyApp()
+        settings = self.app.settings
+        try:
+            self.shared_mem = shared_memory.ShareableList(name="language")
+            self.shared_mem.shm.close()
+            self.shared_mem.shm.unlink()
+        except FileNotFoundError:
+            pass
+        self.frame = self.app.frame
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
+        self.app.project = Project(self.app.namespace, self.app.settings)
+        self.plugin = texteditor.TextEditorPlugin(self.app)
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
+                                                                texteditor.DataValidationHandler(self.plugin))
+        self.plugin.enable()
+        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.notebook = self.app.book
+        self.app.tree.set_editor(self.plugin._editor_component)
+        self.app.tree.populate(self.app.project)
+        self.app.tree.select_node_by_data(self.app.project.data)
+        self.source = self.app.tree.controller
+        self.plugin._open_tree_selection_in_editor()
+        self.app.frame.SetStatusText("File:" + self.app.project.data.source)
+        assert self.plugin._editor_component._doc_language == ['en']
+        # Uncomment next line (and MainLoop in tests) if you want to see the app
+        # self.frame.Show()
+        self.SHOWING = True
+        # wx.CallLater(1000, self.app.MainLoop)
+
+    def tearDown(self):
+        self.plugin.unsubscribe_all()
+        PUBLISHER.unsubscribe_all()
+        self.app.project.close()
+        # wx.CallAfter(self.app.ExitMainLoop)
+        # self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # wx.CallAfter(wx.Exit)
+        try:
+            self.shared_mem.shm.close()
+            self.shared_mem.shm.unlink()
+        except AttributeError:
+            pass
+        self.app.ExitMainLoop()
+        self.app.Destroy()
+        self.app = None
 
 if __name__ == '__main__':
     unittest.main()

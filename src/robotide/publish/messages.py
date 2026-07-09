@@ -257,7 +257,7 @@ class RideSaving(RideMessage):
 
 class RideBeforeSaving(RideMessage):
     """Sent before files are going to be saved."""
-    pass
+    data = ['auto']
 
 
 class RideSaved(RideMessage):

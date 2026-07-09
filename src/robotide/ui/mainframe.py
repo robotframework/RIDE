@@ -17,6 +17,7 @@ import builtins
 import os
 import subprocess
 import sys
+import time
 
 import wx
 import wx.lib.agw.aui as aui
@@ -170,6 +171,8 @@ class RideFrame(wx.Frame):
         self.ui_language = self.general_settings.get('ui language', 'English') if self.general_settings else 'English'
         self._auto_save_interval = application.settings.get('auto save interval', 0)
         self._auto_save_timer = None
+        self._idle_threshold_seconds = application.settings.get('auto save idle seconds', 10)
+        self._last_key_activity = time.time()
         self.main_menu = None
         self._init_ui()
         self.SetIcon(wx.Icon(self._image_provider.RIDE_ICON))
@@ -178,6 +181,7 @@ class RideFrame(wx.Frame):
         self._review_dialog = None
         self._view_all_tags_dialog = None
         self._current_external_dir = None
+        self.Bind(wx.EVT_CHAR_HOOK, self._on_user_key_activity)
         self.Bind(wx.EVT_CLOSE, self.on_close)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.Bind(wx.EVT_MOVE, self.on_move)
@@ -368,6 +372,17 @@ class RideFrame(wx.Frame):
     def get_selected_datafile_controller(self):
         return self.tree.get_selected_datafile_controller()
 
+    def _on_user_key_activity(self, event):
+        """Update timestamp on ANY keypress, anywhere in the app (via CHAR_HOOK).
+        This does not consume the event, just records activity."""
+        self._last_key_activity = time.time()
+        event.Skip()  # let the key event continue to its normal target
+
+    def is_user_idle(self):
+        """True if no keyboard key has been pressed for at least
+        self._idle_threshold_seconds."""
+        return (time.time() - self._last_key_activity) >= self._idle_threshold_seconds
+
     def _start_auto_save_timer(self):
         """Start the auto-save timer if interval is set."""
         if self._auto_save_timer:
@@ -379,10 +394,16 @@ class RideFrame(wx.Frame):
             self._auto_save_timer.Start(self._auto_save_interval * 60 * 1000)  # minutes to milliseconds
 
     def _on_auto_save(self, event):
-        """Auto-save all files when timer fires."""
+        """Auto-save all files when timer fires, but only if the user
+        has been idle (no keystrokes) for the configured threshold."""
         __ = event
+        if not self.is_user_idle():
+            # User is actively typing — skip this cycle silently.
+            # The recurring timer below will just try again next interval.
+            wx.CallAfter(self._start_auto_save_timer)
+            return
         if self.controller and self.controller.is_dirty():
-            RideBeforeSaving().publish()
+            RideBeforeSaving(auto=True).publish()
             self.save_all()
             wx.CallAfter(self._start_auto_save_timer)
             import threading
@@ -656,12 +677,13 @@ class RideFrame(wx.Frame):
 
     def on_save(self, event):
         __ = event
-        RideBeforeSaving().publish()
+        RideBeforeSaving(auto=False).publish()
         self.save()
 
     def on_save_all(self, event):
         __ = event
-        RideBeforeSaving().publish()
+        # print(f"DEBUG: mainframe.py RideFrame on_save_all {event=}")
+        RideBeforeSaving(auto=False).publish()
         self.save_all()
 
     def save_all(self):

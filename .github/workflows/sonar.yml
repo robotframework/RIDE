@@ -10,7 +10,7 @@ jobs:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Update ubuntu
@@ -45,6 +45,9 @@ jobs:
         run: |
           export DISPLAY=:1
           git submodule update --init --recursive
+          pip install -r requirements-dev.txt
+          pip install robotframework
+          pip install .
           invoke test-ci
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarqube-scan-action@master
