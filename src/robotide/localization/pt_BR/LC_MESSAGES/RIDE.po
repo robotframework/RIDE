@@ -317,9 +317,12 @@ msgstr "Executar Testes"
 #: src/robotide/parserlog/parserlog.py:85
 #: src/robotide/postinstall/desktopshortcut.py:53
 #: src/robotide/searchtests/searchtests.py:41
-#: src/robotide/spec/libraryfinder.py:43 src/robotide/spec/specimporter.py:37
-#: src/robotide/ui/actiontriggers.py:54 src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:927 src/robotide/ui/mainframe.py:939
+#: src/robotide/spec/libraryfinder.py:43
+#: src/robotide/spec/specimporter.py:37
+#: src/robotide/ui/actiontriggers.py:54
+#: src/robotide/ui/keywordsearch.py:53
+#: src/robotide/ui/mainframe.py:949
+#: src/robotide/ui/mainframe.py:961
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Ferramentas"
@@ -507,7 +510,8 @@ msgid "Automatically pause after failing keyword"
 msgstr "Pausar automaticamente após falha da palavra-chave"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
-#: src/robotide/editor/editors.py:227 src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/editors.py:227
+#: src/robotide/editor/texteditor.py:1110
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
@@ -563,7 +567,8 @@ msgstr ""
 #: src/robotide/editor/texteditor.py:660
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
-#: src/robotide/ui/fileexplorerplugin.py:274 src/robotide/ui/mainframe.py:717
+#: src/robotide/ui/fileexplorerplugin.py:274
+#: src/robotide/ui/mainframe.py:739
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferências"
 
@@ -684,7 +689,8 @@ msgstr "Mover Linhas Acima (Alt-Up ou Ctrl-Shift-Up) | Mover Linhas Acima\n"
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
 msgstr "Mover Linhas Abaixo (Alt-Down ou Ctrl-Shift-Down) | Mover Linhas Abaixo\n"
 
-#: src/robotide/editor/__init__.py:50 src/robotide/ui/mainframe.py:69
+#: src/robotide/editor/__init__.py:51
+#: src/robotide/ui/mainframe.py:70
 msgid "[Tools]\n"
 msgstr "[Ferramentas]\n"
 
@@ -1059,8 +1065,10 @@ msgstr "Copiar Palavra-Chave"
 msgid "New User Keyword"
 msgstr "Nova Palavra-Chave"
 
-#: src/robotide/editor/editors.py:163 src/robotide/editor/editors.py:400
-#: src/robotide/editor/macroeditors.py:135 src/robotide/ui/mainframe.py:218
+#: src/robotide/editor/editors.py:163
+#: src/robotide/editor/editors.py:400
+#: src/robotide/editor/macroeditors.py:135
+#: src/robotide/ui/mainframe.py:222
 msgid " (READ ONLY)"
 msgstr " (APENAS LEITURA)"
 
@@ -1187,8 +1195,10 @@ msgstr ""
 "            Especificações de biblioteca XML podem ser criadas usando ferramenta libdoc do Robot Framework.</li>\n"
 "        </ul>"
 
-#: src/robotide/editor/kweditor.py:1131 src/robotide/ui/mainframe.py:223
-#: src/robotide/ui/treenodehandlers.py:244 src/robotide/ui/treeplugin.py:1297
+#: src/robotide/editor/kweditor.py:1131
+#: src/robotide/ui/mainframe.py:227
+#: src/robotide/ui/treenodehandlers.py:244
+#: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
 msgstr "Erro de Validação"
 
@@ -1229,8 +1239,9 @@ msgstr "Conteúdo completo da célula"
 msgid "Variable "
 msgstr "Variável "
 
-#: src/robotide/editor/kweditor.py:1457 src/robotide/editor/texteditor.py:1119
-#: src/robotide/editor/texteditor.py:1121
+#: src/robotide/editor/kweditor.py:1457
+#: src/robotide/editor/texteditor.py:1129
+#: src/robotide/editor/texteditor.py:1131
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
@@ -1353,7 +1364,8 @@ msgstr "Adicionar Metadados"
 msgid "Text Edit"
 msgstr "Editor de Texto"
 
-#: src/robotide/editor/texteditor.py:467 src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:469
+#: src/robotide/editor/texteditor.py:1485
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Origem: "
@@ -2221,7 +2233,8 @@ msgstr "Abrir a Pasta Correspondente"
 
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
-#: src/robotide/ui/fileexplorerplugin.py:214 src/robotide/ui/mainframe.py:321
+#: src/robotide/ui/fileexplorerplugin.py:214
+#: src/robotide/ui/mainframe.py:325
 msgid "Files"
 msgstr "Arquivos"
 
@@ -2367,7 +2380,8 @@ msgstr "Modificação impedida"
 msgid "\"%s\" is read only"
 msgstr "\"%s\" é apenas de leitura"
 
-#: src/robotide/ui/mainframe.py:304 src/robotide/ui/treeplugin.py:107
+#: src/robotide/ui/mainframe.py:308
+#: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Suites de Teste"
 
@@ -2383,7 +2397,8 @@ msgstr ""
 "Existem modificações não salvadas.\n"
 "Você deseja salvar todas as alterações e executar os testes?"
 
-#: src/robotide/ui/mainframe.py:508 src/robotide/ui/mainframe.py:602
+#: src/robotide/ui/mainframe.py:529
+#: src/robotide/ui/mainframe.py:623
 msgid "Warning"
 msgstr "Aviso"
 
