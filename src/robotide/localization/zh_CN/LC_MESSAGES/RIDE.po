@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-06-10 15:26+0100\n"
+"POT-Creation-Date: 2026-07-08 23:45+0100\n"
 "PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -320,8 +320,8 @@ msgstr "运行测试(&U)"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:927
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:949
+#: src/robotide/ui/mainframe.py:961
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "工具(&T)"
@@ -510,7 +510,7 @@ msgstr "关键字失败后自动暂停"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
-#: src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/texteditor.py:1110
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
@@ -563,11 +563,11 @@ msgstr ""
 "请先运行测试，然后再试一次"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
-#: src/robotide/editor/texteditor.py:657
+#: src/robotide/editor/texteditor.py:660
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:717
+#: src/robotide/ui/mainframe.py:739
 msgid "RIDE - Preferences"
 msgstr "RIDE - 首选项"
 
@@ -616,88 +616,88 @@ msgstr "将标签添加到选中的测试"
 msgid "Enter Tag Name"
 msgstr "输入标签名称"
 
-#: src/robotide/editor/__init__.py:31
+#: src/robotide/editor/__init__.py:32
 msgid "[Edit]\n"
 msgstr "[Edit]\n"
 
-#: src/robotide/editor/__init__.py:32
+#: src/robotide/editor/__init__.py:33
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
 msgstr "撤消(&U) | 撤销上次修改 | Ctrlcmd-Z\n"
 
-#: src/robotide/editor/__init__.py:33
+#: src/robotide/editor/__init__.py:34
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
 msgstr "重做(&R) | 重做修改 | Ctrlcmd-Y\n"
 
-#: src/robotide/editor/__init__.py:35
+#: src/robotide/editor/__init__.py:36
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
 msgstr "剪切(&T) | 剪切 | Ctrlcmd-X\n"
 
-#: src/robotide/editor/__init__.py:36
+#: src/robotide/editor/__init__.py:37
 msgid "&Copy | Copy | Ctrlcmd-C\n"
 msgstr "复制(&C) | 复制 | Ctrlcmd-C\n"
 
-#: src/robotide/editor/__init__.py:37
+#: src/robotide/editor/__init__.py:38
 msgid "&Paste | Paste | Ctrlcmd-V\n"
 msgstr "粘贴(&P) | 粘贴 | Ctrlcmd-V\n"
 
-#: src/robotide/editor/__init__.py:38
+#: src/robotide/editor/__init__.py:39
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
 msgstr "插入(&I) | 插入 | Shift-Ctrl-V\n"
 
-#: src/robotide/editor/__init__.py:39
+#: src/robotide/editor/__init__.py:40
 msgid "&Delete | Delete  | Del\n"
 msgstr "删除(&D) | 删除 | Del\n"
 
-#: src/robotide/editor/__init__.py:40
+#: src/robotide/editor/__init__.py:41
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
 msgstr "注释行(&M) | 注释掉所选行 | Ctrlcmd-3\n"
 
-#: src/robotide/editor/__init__.py:41
+#: src/robotide/editor/__init__.py:42
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
 msgstr "注释单元格(&E) | 使用 # 注释单元格 | Ctrlcmd-Shift-3\n"
 
-#: src/robotide/editor/__init__.py:42
+#: src/robotide/editor/__init__.py:43
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
 msgstr "取消注释行(&N) | 取消注释所选行 | Ctrlcmd-4\n"
 
-#: src/robotide/editor/__init__.py:43
+#: src/robotide/editor/__init__.py:44
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
 msgstr "取消注释单元格(&L) | 取消用 # 注释单元格 | Ctrlcmd-Shift-4\n"
 
-#: src/robotide/editor/__init__.py:44
+#: src/robotide/editor/__init__.py:45
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
 msgstr "插入单元格(&S) | 插入单元格 | Ctrlcmd-Shift-I\n"
 
-#: src/robotide/editor/__init__.py:45
+#: src/robotide/editor/__init__.py:46
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
 msgstr "删除单元格(&) | 删除单元格 | Ctrlcmd-Shift-D\n"
 
-#: src/robotide/editor/__init__.py:46
+#: src/robotide/editor/__init__.py:47
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 msgstr "插入行(&W) | 插入行 | Ctrlcmd-I\n"
 
-#: src/robotide/editor/__init__.py:47
+#: src/robotide/editor/__init__.py:48
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
 msgstr "删除行(&) | 删除行 | Ctrlcmd-D\n"
 
-#: src/robotide/editor/__init__.py:48
+#: src/robotide/editor/__init__.py:49
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
 msgstr "上移行(&V) (Alt-Up 或 Ctrl-Shift-Up) | 向上移动所选行\n"
 
-#: src/robotide/editor/__init__.py:49
+#: src/robotide/editor/__init__.py:50
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
 msgstr "下移行(&) (Alt-Down 或 Ctrl-Shift-Down) | 向下移动所选行\n"
 
-#: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/editor/__init__.py:51
+#: src/robotide/ui/mainframe.py:70
 msgid "[Tools]\n"
 msgstr "[Tools]\n"
 
-#: src/robotide/editor/__init__.py:51
+#: src/robotide/editor/__init__.py:52
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 msgstr "内容辅助(&O) (Ctrl-Space 或 Ctrl-Alt-Space) | 显示可能的关键词和变量补全 | | | POSITION-70\n"
 
-#: src/robotide/editor/__init__.py:88
+#: src/robotide/editor/__init__.py:89
 msgid ""
 "The default editor plugin. Also known as Grid or Cell Editor.\n"
 "\n"
@@ -711,7 +711,7 @@ msgstr ""
 "    测试数据各种项目的编辑器。\n"
 "    "
 
-#: src/robotide/editor/__init__.py:95
+#: src/robotide/editor/__init__.py:96
 msgid "Editor"
 msgstr "编辑器"
 
@@ -1067,7 +1067,7 @@ msgstr "新用户关键字"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:218
+#: src/robotide/ui/mainframe.py:222
 msgid " (READ ONLY)"
 msgstr " (只读)"
 
@@ -1195,7 +1195,7 @@ msgstr ""
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:223
+#: src/robotide/ui/mainframe.py:227
 #: src/robotide/ui/treenodehandlers.py:244
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
@@ -1239,8 +1239,8 @@ msgid "Variable "
 msgstr "变量 "
 
 #: src/robotide/editor/kweditor.py:1457
-#: src/robotide/editor/texteditor.py:1119
-#: src/robotide/editor/texteditor.py:1121
+#: src/robotide/editor/texteditor.py:1129
+#: src/robotide/editor/texteditor.py:1131
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
@@ -1360,45 +1360,46 @@ msgstr "导入故障处理"
 msgid "Add Metadata"
 msgstr "添加元数据"
 
-#: src/robotide/editor/texteditor.py:383
+#: src/robotide/editor/texteditor.py:385
 msgid "Text Edit"
 msgstr "文本编辑"
 
-#: src/robotide/editor/texteditor.py:467
-#: src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:469
+#: src/robotide/editor/texteditor.py:1485
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "资料来源： "
 
-#: src/robotide/editor/texteditor.py:909
-msgid "Can not apply changes from Text Editor"
-msgstr "无法从文本编辑器应用更改"
-
-#: src/robotide/editor/texteditor.py:910
-msgid "ERROR: Data sanity check failed!"
-msgstr "错误：数据智能检查失败！"
-
-#: src/robotide/editor/texteditor.py:910
+#: src/robotide/editor/texteditor.py:836
+#: src/robotide/editor/texteditor.py:919
 msgid "Error at line"
 msgstr "行错误"
 
-#: src/robotide/editor/texteditor.py:911
+#: src/robotide/editor/texteditor.py:918
+msgid "Can not apply changes from Text Editor"
+msgstr "无法从文本编辑器应用更改"
+
+#: src/robotide/editor/texteditor.py:919
+msgid "ERROR: Data sanity check failed!"
+msgstr "错误：数据智能检查失败！"
+
+#: src/robotide/editor/texteditor.py:920
 msgid "Reset changes?"
 msgstr "重置更改？"
 
-#: src/robotide/editor/texteditor.py:1096
+#: src/robotide/editor/texteditor.py:1106
 msgid "Apply Changes"
 msgstr "应用更改"
 
-#: src/robotide/editor/texteditor.py:1131
+#: src/robotide/editor/texteditor.py:1141
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "由于缺少要求，语法颜色化已被禁用。"
 
-#: src/robotide/editor/texteditor.py:1132
+#: src/robotide/editor/texteditor.py:1142
 msgid "Get help"
 msgstr "获得帮助"
 
-#: src/robotide/editor/texteditor.py:1147
+#: src/robotide/editor/texteditor.py:1157
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1452,11 +1453,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: src/robotide/editor/texteditor.py:1172
+#: src/robotide/editor/texteditor.py:1182
 msgid "Getting syntax colorization"
 msgstr "正在获取语法颜色"
 
-#: src/robotide/editor/texteditor.py:1273
+#: src/robotide/editor/texteditor.py:1283
 msgid "No matches found."
 msgstr "未找到匹配项。"
 
@@ -2239,7 +2240,7 @@ msgstr "打开包含文件夹"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:321
+#: src/robotide/ui/mainframe.py:325
 msgid "Files"
 msgstr "文件资源"
 
@@ -2293,109 +2294,109 @@ msgstr "搜索文档"
 msgid "Description"
 msgstr "描述"
 
-#: src/robotide/ui/mainframe.py:60
+#: src/robotide/ui/mainframe.py:61
 msgid "[File]\n"
 msgstr "[File]\n"
 
-#: src/robotide/ui/mainframe.py:61
+#: src/robotide/ui/mainframe.py:62
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr "!新建项目(&N) | 创建一个新的顶层测试套件 | Ctrlcmd-N | ART_NEW\n"
 
-#: src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:64
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr "!打开测试套件(&O) | 打开包含测试的文件 | Ctrlcmd-O | ART_FILE_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:65
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 msgstr "!打开目录(&D) | 打开包含数据文件的目录 | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:66
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr "!打开文件(&P) | 在代码编辑器中打开文件 | | ART_NORMAL_FILE\n"
 
-#: src/robotide/ui/mainframe.py:66
+#: src/robotide/ui/mainframe.py:67
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr "!保存(&S) | 保存选中的数据文件 | Ctrlcmd-S | ART_FILE_SAVE\n"
 
-#: src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:68
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr "!保存全部(&A) | 保存所有更改 | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
-#: src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:69
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!退出(&X) | 退出 RIDE | Ctrlcmd-Q\n"
 
-#: src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:71
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!搜索未使用的关键字(&C) | | | | POSITION-54\n"
 
-#: src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:72
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!管理插件(&M) | | | | POSITION-81\n"
 
-#: src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:73
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!查看所有标签(&V) | | F7 | | POSITION-82\n"
 
-#: src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:74
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!首选项(&P) | | | | POSITION-99\n"
 
-#: src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:75
 msgid "[Help]\n"
 msgstr "[Help]\n"
 
-#: src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:76
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "!快捷键一览(&S) | 查看 RIDE 所有快捷键\n"
 
-#: src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:77
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "!RF 用户指南(&U) | Robot Framework 的用户指南\n"
 
-#: src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:78
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Github Wiki (&W) | RIDE 在Github上的维基百科\n"
 
-#: src/robotide/ui/mainframe.py:78
+#: src/robotide/ui/mainframe.py:79
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr "!报告问题(&R) | 在 Github Issues 上报告您发现的问题\n"
 
-#: src/robotide/ui/mainframe.py:79
+#: src/robotide/ui/mainframe.py:80
 msgid "!About | Information about RIDE\n"
 msgstr "!关于 RIDE (&A) | 关于 RIDE 的信息\n"
 
-#: src/robotide/ui/mainframe.py:80
+#: src/robotide/ui/mainframe.py:81
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "!检查更新(&C) | 在 PyPi 上查找新发布的版本\n"
 
-#: src/robotide/ui/mainframe.py:198
+#: src/robotide/ui/mainframe.py:202
 msgid "Saved %s"
 msgstr "保存 %s"
 
-#: src/robotide/ui/mainframe.py:199
+#: src/robotide/ui/mainframe.py:203
 msgid "Saved all files"
 msgstr "保存所有文件"
 
-#: src/robotide/ui/mainframe.py:228
+#: src/robotide/ui/mainframe.py:232
 msgid "Modification prevented"
 msgstr "无法修改"
 
-#: src/robotide/ui/mainframe.py:229
+#: src/robotide/ui/mainframe.py:233
 msgid "\"%s\" is read only"
 msgstr "\"%s\" 只读"
 
-#: src/robotide/ui/mainframe.py:304
+#: src/robotide/ui/mainframe.py:308
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "测试套件"
 
-#: src/robotide/ui/mainframe.py:389
+#: src/robotide/ui/mainframe.py:410
 #, fuzzy
 msgid "Auto-saved all files"
 msgstr "保存所有文件"
 
-#: src/robotide/ui/mainframe.py:508
+#: src/robotide/ui/mainframe.py:529
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2403,12 +2404,12 @@ msgstr ""
 "您有有未保存的修改！\n"
 "在退出之前，您想保存所有更改吗？"
 
-#: src/robotide/ui/mainframe.py:508
-#: src/robotide/ui/mainframe.py:602
+#: src/robotide/ui/mainframe.py:529
+#: src/robotide/ui/mainframe.py:623
 msgid "Warning"
 msgstr "警告"
 
-#: src/robotide/ui/mainframe.py:602
+#: src/robotide/ui/mainframe.py:623
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2416,63 +2417,63 @@ msgstr ""
 "您有有未保存的修改！\n"
 "确定要在不保存的情况下继续？"
 
-#: src/robotide/ui/mainframe.py:652
+#: src/robotide/ui/mainframe.py:673
 msgid "Choose a directory containing Robot files"
 msgstr "选择包含 robot 文件的目录"
 
-#: src/robotide/ui/mainframe.py:804
+#: src/robotide/ui/mainframe.py:826
 msgid "Workspace modifications detected on the file system."
 msgstr "在文件系统中检测到工作区修改。"
 
-#: src/robotide/ui/mainframe.py:805
+#: src/robotide/ui/mainframe.py:827
 msgid "Do you want to reload the workspace?"
 msgstr "你想要重新加载工作区吗？"
 
-#: src/robotide/ui/mainframe.py:807
+#: src/robotide/ui/mainframe.py:829
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "回答 <Yes> 将丢弃未保存的更改。"
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:830
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "回答 <No> 将忽略磁盘上的更改。"
 
-#: src/robotide/ui/mainframe.py:809
+#: src/robotide/ui/mainframe.py:831
 msgid "Files Changed On Disk"
 msgstr "磁盘上的文件已更改"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:874
 msgid "Customize..."
 msgstr "自定义..."
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:962
 msgid "search unused keywords"
 msgstr "搜索未使用的关键字"
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:962
 msgid "stop test run"
 msgstr "停止测试运行"
 
-#: src/robotide/ui/mainframe.py:941
+#: src/robotide/ui/mainframe.py:963
 msgid "preview"
 msgstr "预览"
 
-#: src/robotide/ui/mainframe.py:941
+#: src/robotide/ui/mainframe.py:963
 msgid "view ride log"
 msgstr "查看 RIDE 日志"
 
-#: src/robotide/ui/mainframe.py:983
+#: src/robotide/ui/mainframe.py:1005
 msgid "Shortcut keys for RIDE"
 msgstr "RIDE 快捷键一览"
 
-#: src/robotide/ui/mainframe.py:1021
+#: src/robotide/ui/mainframe.py:1043
 msgid "Show"
 msgstr "显示"
 
-#: src/robotide/ui/mainframe.py:1022
+#: src/robotide/ui/mainframe.py:1044
 msgid "Hide"
 msgstr "隐藏"
 
-#: src/robotide/ui/mainframe.py:1023
+#: src/robotide/ui/mainframe.py:1045
 msgid "Close"
 msgstr "关闭"
 

@@ -163,7 +163,6 @@ version 4.2.1, 4.2.2, 4.2.3, 4.2.4 and 4.2.5 which we now <em>recommend</em>.</l
 -->
 <li>🐞 - Rename Keywords, Find Usages/Find where used are not finding all occurrences. Please, double-check findings 
 and changes.</li>
-<li>🐞 - New feature, Auto-Save, may cause problems in Grid and Text Editors and validation errors (e.g. missing END).</li>
 <li>🐞 - In Grid Editor, private keywords defined in test suites with <b>Name</b> setting, will show with error color
  even if used correctly in another local keyword.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
@@ -179,6 +178,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Changed Auto-Save to only save when user is not typing, and if code is in error show message in status bar.</li>
 <li>Applied STC_LEX colorization on Code Editor (external files editor).</li>
 </ul>
 <!-- <p>We hope to implement or complete features and make fixes on next major version 2.1 (in mid Autumm of 2024).</p>
@@ -203,7 +203,7 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install the latest release with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==2.2.3
+pip install --upgrade robotframework-ride==2.2.4
 </pre>
 <p>to install exactly the specified release, which is the same as using</p>
 <pre class="literal-block">
@@ -234,7 +234,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 14/June/2026.</p>
+<p>RIDE {VERSION} was released on 9/July/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
@@ -246,9 +246,9 @@ python -m robotide
 <h3 align='center'>🇵🇹</h3>
 <br/>
 <h3>May The Fourth Be With You!</h3>
--->
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
 <h3 align='center'>🇵🇹</h3>
+-->
 
 </div>
 """

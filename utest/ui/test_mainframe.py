@@ -147,7 +147,7 @@ class TestMainFrame(_BaseDialogTest):
        # self.app.MainLoop()
 
     def test_show_plugins_manager(self):
-        self.frame.Show()
+        # self.frame.Show()
         plugins = self.loader.plugins
         self.frame._plugin_manager.show(plugins)
         wx.CallLater(5000, self.app.ExitMainLoop)

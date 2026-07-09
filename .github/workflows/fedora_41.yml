@@ -1,4 +1,4 @@
-name: Linux
+name: Fedora 41
 on:
   push:
     branches-ignore:
@@ -71,7 +71,7 @@ jobs:
         sudo dnf update -y
         sudo dnf install -y git python3-tkinter
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v6
       with:
         submodules: false
     - name: Setup environment
@@ -90,6 +90,9 @@ jobs:
         export GITHUB_ACTIONS=True
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
+        pip install -r requirements-dev.txt
+        pip install robotframework
+        pip install .
         invoke test-ci
     - uses: actions/upload-artifact@v4
       with:

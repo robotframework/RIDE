@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-06-10 15:26+0100\n"
+"POT-Creation-Date: 2026-07-08 23:45+0100\n"
 "PO-Revision-Date: 2026-01-11 23:52\n"
 "Last-Translator: \n"
 "Language-Team: Vietnamese\n"
@@ -320,8 +320,8 @@ msgstr "Chạy các bài kiểm tra"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:927
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:949
+#: src/robotide/ui/mainframe.py:961
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Công cụ"
@@ -510,7 +510,7 @@ msgstr "Tự động tạm dừng sau khi không tìm thấy từ khóa."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
-#: src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/texteditor.py:1110
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
@@ -563,11 +563,11 @@ msgstr ""
 "Vui lòng chạy các bài kiểm tra và thử lại."
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
-#: src/robotide/editor/texteditor.py:657
+#: src/robotide/editor/texteditor.py:660
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:717
+#: src/robotide/ui/mainframe.py:739
 msgid "RIDE - Preferences"
 msgstr "RIDE - Tùy chọn"
 
@@ -616,88 +616,88 @@ msgstr "Thêm thẻ vào các mục đã chọn"
 msgid "Enter Tag Name"
 msgstr "Nhập tên thẻ"
 
-#: src/robotide/editor/__init__.py:31
+#: src/robotide/editor/__init__.py:32
 msgid "[Edit]\n"
 msgstr "[Chỉnh sửa]\n"
 
-#: src/robotide/editor/__init__.py:32
+#: src/robotide/editor/__init__.py:33
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
 msgstr "&Undo | Hủy bỏ thay đổi cuối cùng | Ctrl+Z\n"
 
-#: src/robotide/editor/__init__.py:33
+#: src/robotide/editor/__init__.py:34
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
 msgstr "&Redo | Làm lại thay đổi | Ctrl+Y\n"
 
-#: src/robotide/editor/__init__.py:35
+#: src/robotide/editor/__init__.py:36
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
 msgstr "Cu&t | Cắt | Ctrl+Cmd+X\n"
 
-#: src/robotide/editor/__init__.py:36
+#: src/robotide/editor/__init__.py:37
 msgid "&Copy | Copy | Ctrlcmd-C\n"
 msgstr "&Copy | Copy | Ctrl+C\n"
 
-#: src/robotide/editor/__init__.py:37
+#: src/robotide/editor/__init__.py:38
 msgid "&Paste | Paste | Ctrlcmd-V\n"
 msgstr "&Dán | Dán | Ctrl+Cmd+V\n"
 
-#: src/robotide/editor/__init__.py:38
+#: src/robotide/editor/__init__.py:39
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
 msgstr "&Chèn | Chèn | Shift-Ctrl-V\n"
 
-#: src/robotide/editor/__init__.py:39
+#: src/robotide/editor/__init__.py:40
 msgid "&Delete | Delete  | Del\n"
 msgstr "&Xóa | Xóa | Del\n"
 
-#: src/robotide/editor/__init__.py:40
+#: src/robotide/editor/__init__.py:41
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
 msgstr "Dòng bình luận | Chọn các dòng bình luận | Ctrlcmd-3\n"
 
-#: src/robotide/editor/__init__.py:41
+#: src/robotide/editor/__init__.py:42
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
 msgstr "Tế bào bình luận | Tế bào bình luận có # | Ctrlcmd-Shift-3\n"
 
-#: src/robotide/editor/__init__.py:42
+#: src/robotide/editor/__init__.py:43
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
 msgstr "Bỏ bình luận các hàng | Bỏ bình luận các hàng đã chọn | Ctrlcmd-4\n"
 
-#: src/robotide/editor/__init__.py:43
+#: src/robotide/editor/__init__.py:44
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
 msgstr "Bỏ chú thích ô | Bỏ chú thích ô có dấu # | Ctrl+Shift+4\n"
 
-#: src/robotide/editor/__init__.py:44
+#: src/robotide/editor/__init__.py:45
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
 msgstr "Chèn ô | Chèn ô | Ctrl+Shift+I\n"
 
-#: src/robotide/editor/__init__.py:45
+#: src/robotide/editor/__init__.py:46
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
 msgstr "Xóa ô | Xóa ô | Ctrl+Shift+D\n"
 
-#: src/robotide/editor/__init__.py:46
+#: src/robotide/editor/__init__.py:47
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 msgstr "Chèn hàng | Chèn hàng | Ctrlcmd-I\n"
 
-#: src/robotide/editor/__init__.py:47
+#: src/robotide/editor/__init__.py:48
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
 msgstr "Xóa hàng | Xóa hàng | Ctrlcmd-D\n"
 
-#: src/robotide/editor/__init__.py:48
+#: src/robotide/editor/__init__.py:49
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
 msgstr "Di chuyển hàng lên (Alt-Up hoặc Ctrl-Shift-Up) | Di chuyển hàng lên\n"
 
-#: src/robotide/editor/__init__.py:49
+#: src/robotide/editor/__init__.py:50
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
 msgstr "Di chuyển các hàng xuống (Alt-Down hoặc Ctrl-Shift-Down) | Di chuyển các hàng xuống\n"
 
-#: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/editor/__init__.py:51
+#: src/robotide/ui/mainframe.py:70
 msgid "[Tools]\n"
 msgstr "[Công cụ]\n"
 
-#: src/robotide/editor/__init__.py:51
+#: src/robotide/editor/__init__.py:52
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 msgstr "Hỗ trợ nội dung (Ctrl-Space hoặc Ctrl-Alt-Space) | Hiển thị các đề xuất từ khóa và biến có thể hoàn thành | | | POSITION-70\n"
 
-#: src/robotide/editor/__init__.py:88
+#: src/robotide/editor/__init__.py:89
 msgid ""
 "The default editor plugin. Also known as Grid or Cell Editor.\n"
 "\n"
@@ -711,7 +711,7 @@ msgstr ""
 "    dữ liệu thử nghiệm.\n"
 "    "
 
-#: src/robotide/editor/__init__.py:95
+#: src/robotide/editor/__init__.py:96
 msgid "Editor"
 msgstr "Biên tập viên"
 
@@ -1067,7 +1067,7 @@ msgstr "Từ khóa cho người dùng mới"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:218
+#: src/robotide/ui/mainframe.py:222
 msgid " (READ ONLY)"
 msgstr " (Chỉ đọc)"
 
@@ -1195,7 +1195,7 @@ msgstr ""
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:223
+#: src/robotide/ui/mainframe.py:227
 #: src/robotide/ui/treenodehandlers.py:244
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
@@ -1239,8 +1239,8 @@ msgid "Variable "
 msgstr "Biến "
 
 #: src/robotide/editor/kweditor.py:1457
-#: src/robotide/editor/texteditor.py:1119
-#: src/robotide/editor/texteditor.py:1121
+#: src/robotide/editor/texteditor.py:1129
+#: src/robotide/editor/texteditor.py:1131
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
@@ -1361,45 +1361,46 @@ msgstr "Xử lý lỗi nhập dữ liệu"
 msgid "Add Metadata"
 msgstr "Thêm metadata"
 
-#: src/robotide/editor/texteditor.py:383
+#: src/robotide/editor/texteditor.py:385
 msgid "Text Edit"
 msgstr "Chỉnh sửa văn bản"
 
-#: src/robotide/editor/texteditor.py:467
-#: src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:469
+#: src/robotide/editor/texteditor.py:1485
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Nguồn: "
 
-#: src/robotide/editor/texteditor.py:909
-msgid "Can not apply changes from Text Editor"
-msgstr "Không thể áp dụng các thay đổi từ Trình soạn thảo văn bản."
-
-#: src/robotide/editor/texteditor.py:910
-msgid "ERROR: Data sanity check failed!"
-msgstr "LỖI: Kiểm tra tính hợp lệ của dữ liệu đã thất bại!"
-
-#: src/robotide/editor/texteditor.py:910
+#: src/robotide/editor/texteditor.py:836
+#: src/robotide/editor/texteditor.py:919
 msgid "Error at line"
 msgstr "Lỗi tại dòng"
 
-#: src/robotide/editor/texteditor.py:911
+#: src/robotide/editor/texteditor.py:918
+msgid "Can not apply changes from Text Editor"
+msgstr "Không thể áp dụng các thay đổi từ Trình soạn thảo văn bản."
+
+#: src/robotide/editor/texteditor.py:919
+msgid "ERROR: Data sanity check failed!"
+msgstr "LỖI: Kiểm tra tính hợp lệ của dữ liệu đã thất bại!"
+
+#: src/robotide/editor/texteditor.py:920
 msgid "Reset changes?"
 msgstr "Đặt lại các thay đổi?"
 
-#: src/robotide/editor/texteditor.py:1096
+#: src/robotide/editor/texteditor.py:1106
 msgid "Apply Changes"
 msgstr "Áp dụng các thay đổi"
 
-#: src/robotide/editor/texteditor.py:1131
+#: src/robotide/editor/texteditor.py:1141
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Tính năng tô màu cú pháp đã bị vô hiệu hóa do thiếu các yêu cầu cần thiết."
 
-#: src/robotide/editor/texteditor.py:1132
+#: src/robotide/editor/texteditor.py:1142
 msgid "Get help"
 msgstr "Nhận trợ giúp"
 
-#: src/robotide/editor/texteditor.py:1147
+#: src/robotide/editor/texteditor.py:1157
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1453,11 +1454,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: src/robotide/editor/texteditor.py:1172
+#: src/robotide/editor/texteditor.py:1182
 msgid "Getting syntax colorization"
 msgstr "Bật tính năng tô màu cú pháp"
 
-#: src/robotide/editor/texteditor.py:1273
+#: src/robotide/editor/texteditor.py:1283
 msgid "No matches found."
 msgstr "Không tìm thấy kết quả nào."
 
@@ -2240,7 +2241,7 @@ msgstr "Mở thư mục chứa"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:321
+#: src/robotide/ui/mainframe.py:325
 msgid "Files"
 msgstr "Tệp tin"
 
@@ -2294,109 +2295,109 @@ msgstr "Tìm kiếm tài liệu"
 msgid "Description"
 msgstr "Mô tả"
 
-#: src/robotide/ui/mainframe.py:60
+#: src/robotide/ui/mainframe.py:61
 msgid "[File]\n"
 msgstr "[Tệp]\n"
 
-#: src/robotide/ui/mainframe.py:61
+#: src/robotide/ui/mainframe.py:62
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr "!&Dự án mới | Tạo bộ sưu tập cấp cao mới | Ctrlcmd-N | ART_NEW\n"
 
-#: src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:64
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr "!&Mở Bộ công cụ kiểm thử | Mở tệp chứa các bài kiểm thử | Ctrlcmd-O | ART_FILE_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:65
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 msgstr "!Mở &Thư mục | Mở thư mục chứa các tệp dữ liệu | Shift-Ctrl-Cmd-O | ART_FOLDER_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:66
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr "Mở tệp bên ngoài | Mở tệp trong Trình soạn thảo mã | | ART_NORMAL_FILE\n"
 
-#: src/robotide/ui/mainframe.py:66
+#: src/robotide/ui/mainframe.py:67
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr "!&Lưu | Lưu tệp dữ liệu đã chọn | Ctrlcmd-S | ART_FILE_SAVE\n"
 
-#: src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:68
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr "!Lưu & Tất cả | Lưu tất cả thay đổi | Ctrl+Shift+S | ART_FILE_SAVE_AS\n"
 
-#: src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:69
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!E&xit | Thoát RIDE | Ctrl+Cmd+Q\n"
 
-#: src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:71
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "Tìm kiếm từ khóa chưa sử dụng | | | | POSITION-54\n"
 
-#: src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:72
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "Quản lý Plugin | | | | POSITION-81\n"
 
-#: src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:73
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "Xem tất cả thẻ | | F7 | | POSITION-82\n"
 
-#: src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:74
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!Tùy chọn | | | | POSITION-99\n"
 
-#: src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:75
 msgid "[Help]\n"
 msgstr "[Trợ giúp]\n"
 
-#: src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:76
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "Phím tắt | Phím tắt RIDE\n"
 
-#: src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:77
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "Hướng dẫn sử dụng | Hướng dẫn sử dụng Robot Framework\n"
 
-#: src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:78
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Wiki | Hướng dẫn sử dụng RIDE (Wiki)\n"
 
-#: src/robotide/ui/mainframe.py:78
+#: src/robotide/ui/mainframe.py:79
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr "!Báo cáo sự cố | Mở trình duyệt để tìm kiếm trên hệ thống theo dõi sự cố RIDE tại\n"
 
-#: src/robotide/ui/mainframe.py:79
+#: src/robotide/ui/mainframe.py:80
 msgid "!About | Information about RIDE\n"
 msgstr "!Giới thiệu | Thông tin về RIDE\n"
 
-#: src/robotide/ui/mainframe.py:80
+#: src/robotide/ui/mainframe.py:81
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "Kiểm tra bản cập nhật | Kiểm tra trên PyPi để tìm phiên bản mới được phát hành\n"
 
-#: src/robotide/ui/mainframe.py:198
+#: src/robotide/ui/mainframe.py:202
 msgid "Saved %s"
 msgstr "Đã lưu %s"
 
-#: src/robotide/ui/mainframe.py:199
+#: src/robotide/ui/mainframe.py:203
 msgid "Saved all files"
 msgstr "Đã lưu tất cả các tệp"
 
-#: src/robotide/ui/mainframe.py:228
+#: src/robotide/ui/mainframe.py:232
 msgid "Modification prevented"
 msgstr "Việc sửa đổi đã bị ngăn chặn."
 
-#: src/robotide/ui/mainframe.py:229
+#: src/robotide/ui/mainframe.py:233
 msgid "\"%s\" is read only"
 msgstr "\"%s\" là chỉ đọc."
 
-#: src/robotide/ui/mainframe.py:304
+#: src/robotide/ui/mainframe.py:308
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Bộ thử nghiệm"
 
-#: src/robotide/ui/mainframe.py:389
+#: src/robotide/ui/mainframe.py:410
 #, fuzzy
 msgid "Auto-saved all files"
 msgstr "Đã lưu tất cả các tệp"
 
-#: src/robotide/ui/mainframe.py:508
+#: src/robotide/ui/mainframe.py:529
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -2404,12 +2405,12 @@ msgstr ""
 "Có các thay đổi chưa được lưu.\n"
 "Bạn có muốn lưu các thay đổi của mình trước khi thoát không?"
 
-#: src/robotide/ui/mainframe.py:508
-#: src/robotide/ui/mainframe.py:602
+#: src/robotide/ui/mainframe.py:529
+#: src/robotide/ui/mainframe.py:623
 msgid "Warning"
 msgstr "Cảnh báo"
 
-#: src/robotide/ui/mainframe.py:602
+#: src/robotide/ui/mainframe.py:623
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -2417,63 +2418,63 @@ msgstr ""
 "Có những thay đổi chưa được lưu.\n"
 "Bạn có muốn tiếp tục mà không lưu không?"
 
-#: src/robotide/ui/mainframe.py:652
+#: src/robotide/ui/mainframe.py:673
 msgid "Choose a directory containing Robot files"
 msgstr "Chọn một thư mục chứa các tệp Robot."
 
-#: src/robotide/ui/mainframe.py:804
+#: src/robotide/ui/mainframe.py:826
 msgid "Workspace modifications detected on the file system."
 msgstr "Đã phát hiện các thay đổi trong không gian làm việc trên hệ thống tệp."
 
-#: src/robotide/ui/mainframe.py:805
+#: src/robotide/ui/mainframe.py:827
 msgid "Do you want to reload the workspace?"
 msgstr "Bạn có muốn tải lại không gian làm việc không?"
 
-#: src/robotide/ui/mainframe.py:807
+#: src/robotide/ui/mainframe.py:829
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Trả lời lệnh ` <Yes> ` sẽ xóa các thay đổi chưa được lưu."
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:830
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Khi trả lời lệnh ` <No> `, các thay đổi trên đĩa sẽ bị bỏ qua."
 
-#: src/robotide/ui/mainframe.py:809
+#: src/robotide/ui/mainframe.py:831
 msgid "Files Changed On Disk"
 msgstr "Các tệp đã thay đổi trên đĩa"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:874
 msgid "Customize..."
 msgstr "Tùy chỉnh..."
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:962
 msgid "search unused keywords"
 msgstr "Tìm kiếm các từ khóa chưa được sử dụng"
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:962
 msgid "stop test run"
 msgstr "Dừng chạy thử nghiệm"
 
-#: src/robotide/ui/mainframe.py:941
+#: src/robotide/ui/mainframe.py:963
 msgid "preview"
 msgstr "Xem trước"
 
-#: src/robotide/ui/mainframe.py:941
+#: src/robotide/ui/mainframe.py:963
 msgid "view ride log"
 msgstr "Xem nhật ký chuyến đi"
 
-#: src/robotide/ui/mainframe.py:983
+#: src/robotide/ui/mainframe.py:1005
 msgid "Shortcut keys for RIDE"
 msgstr "Phím tắt cho RIDE"
 
-#: src/robotide/ui/mainframe.py:1021
+#: src/robotide/ui/mainframe.py:1043
 msgid "Show"
 msgstr "Hiển thị"
 
-#: src/robotide/ui/mainframe.py:1022
+#: src/robotide/ui/mainframe.py:1044
 msgid "Hide"
 msgstr "Ẩn"
 
-#: src/robotide/ui/mainframe.py:1023
+#: src/robotide/ui/mainframe.py:1045
 msgid "Close"
 msgstr "Đóng"
 

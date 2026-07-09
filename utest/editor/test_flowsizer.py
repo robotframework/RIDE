@@ -28,7 +28,7 @@ class _BaseSuiteTest(unittest.TestCase):
         settings = FakeSettings()
         self.app = wx.App()
         self.frame = wx.Frame(None)
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         wx.CallLater(5000, self.app.ExitMainLoop)
