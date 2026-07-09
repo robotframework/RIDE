@@ -199,7 +199,7 @@ class EditorPluginTest(unittest.TestCase):
         self.app.tree.populate(self.app.project)
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -224,6 +224,14 @@ class EditorPluginTest(unittest.TestCase):
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
+    def test_colorization_help_dialog(self):
+        assert self.plugin._editor_component._syntax_colorization_help_exists is False
+        self.plugin._editor_component.create_syntax_colorization_help()
+        assert self.plugin._editor_component._syntax_colorization_help_exists is True
+        self.plugin._editor_component.create_syntax_colorization_help()
+        event = wx.adv.EVT_HYPERLINK
+        self.plugin._editor_component.show_help_dialog(event)
+        
     """
     def test_highlight_cell(self):
         highlight = self.plugin.highlight_cell('None')

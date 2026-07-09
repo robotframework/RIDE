@@ -125,7 +125,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.source = self.app.tree.controller
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        self.frame.Show()
+        # self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -218,7 +218,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
             self.assertFalse(self._callback_called)
             # Uncomment next lines if you want to see the app
             wx.CallLater(5000, self.app.ExitMainLoop)
-            self.app.MainLoop()
+            # self.app.MainLoop()
 
     def test_no_update_found(self):
         with mock.patch.dict(os.environ, {'RIDESETTINGS': self.app.settings.fake_cfg}):

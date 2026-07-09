@@ -250,7 +250,7 @@ class SettingsMigrator(object):
             'text commented' : 'firebrick',
             'text string' : 'black',
             'text empty' : 'black',
-            'background assign ' : '#CADEF7',
+            'background assign' : '#CADEF7',
             'background keyword' : '#CADEF7',
             'background control marker' : '#CADEF7',
             'background mandatory' : '#D3D3D3',

@@ -1,10 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2026-06-10 15:26+0100\n"
-"PO-Revision-Date: 2026-06-10 17:19\n"
+"POT-Creation-Date: 2026-07-08 23:45+0100\n"
+"PO-Revision-Date: 2026-01-11 19:04\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +16,6 @@ msgstr ""
 "X-Crowdin-Language: hu\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"Language: hu_HU\n"
 
 #: src/robotide/application/application.py:215
 msgid "Global Settings"
@@ -177,9 +177,11 @@ msgid "See the latest development "
 msgstr "Lásd a legújabb fejleményeket "
 
 #: src/robotide/application/updatenotifier.py:247
-msgid "I'm using another method for RIDE updates\n"
+msgid ""
+"I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
-msgstr "Más módszert használok a RIDE frissítésekhez\n"
+msgstr ""
+"Más módszert használok a RIDE frissítésekhez\n"
 " és nincs szükségem automatikus frissítési ellenőrzésekre."
 
 #: src/robotide/application/updatenotifier.py:252
@@ -318,8 +320,8 @@ msgstr "Tesztek futtatása"
 #: src/robotide/spec/specimporter.py:37
 #: src/robotide/ui/actiontriggers.py:54
 #: src/robotide/ui/keywordsearch.py:53
-#: src/robotide/ui/mainframe.py:927
-#: src/robotide/ui/mainframe.py:939
+#: src/robotide/ui/mainframe.py:949
+#: src/robotide/ui/mainframe.py:961
 #: src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Eszközök"
@@ -374,9 +376,11 @@ msgid "Unsaved Modifications"
 msgstr "Nem mentett módosítások"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:469
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
-msgstr "Vannak meg nem mentett módosítások.\n"
+msgstr ""
+"Vannak meg nem mentett módosítások.\n"
 "        Szeretné elmenteni az összes módosítást és futtatni a teszteket?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
@@ -384,15 +388,19 @@ msgid "No tests selected"
 msgstr "Nincs kiválasztott teszt"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:479
-msgid "No tests selected. \n"
+msgid ""
+"No tests selected. \n"
 "Continue anyway?"
-msgstr "Nincs kiválasztott teszt. \n"
+msgstr ""
+"Nincs kiválasztott teszt. \n"
 "Folytassa mégis?"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:562
-msgid "\n"
+msgid ""
+"\n"
 "Test finished {}"
-msgstr "\n"
+msgstr ""
+"\n"
 "A teszt befejeződött {}"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:596
@@ -502,7 +510,7 @@ msgstr "Automatikus szünet a kulcsszó sikertelensége után"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:859
 #: src/robotide/editor/editors.py:227
-#: src/robotide/editor/texteditor.py:1100
+#: src/robotide/editor/texteditor.py:1110
 #: src/robotide/preferences/editor.py:211
 #: src/robotide/ui/fileexplorerplugin.py:476
 #: src/robotide/ui/pluginmanager.py:152
@@ -547,17 +555,19 @@ msgid "No logs directory"
 msgstr "Nincs naplókönyvtár"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1195
-msgid "There isn't logs directory. \n"
+msgid ""
+"There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr "Nincs naplókönyvtár. \n"
+msgstr ""
+"Nincs naplókönyvtár. \n"
 "Kérjük, futtassa a teszteket és próbálja újra"
 
 #: src/robotide/contrib/testrunner/testrunnerplugin.py:1207
-#: src/robotide/editor/texteditor.py:657
+#: src/robotide/editor/texteditor.py:660
 #: src/robotide/preferences/general.py:143
 #: src/robotide/preferences/general.py:276
 #: src/robotide/ui/fileexplorerplugin.py:274
-#: src/robotide/ui/mainframe.py:717
+#: src/robotide/ui/mainframe.py:739
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferenciák"
 
@@ -570,11 +580,13 @@ msgid "  current keyword: "
 msgstr "  jelenlegi kulcsszó: "
 
 #: src/robotide/controller/ui/treecontroller.py:42
-msgid "[Navigate]\n"
+msgid ""
+"[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
-msgstr "[Navigáció]\n"
+msgstr ""
+"[Navigáció]\n"
 "        !Go &Back | Vissza az előző helyre a fában | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Előre a következő helyre a fában | Alt-%s | ART_GO_FORWARD\n"
 "        "
@@ -604,98 +616,102 @@ msgstr "Címke hozzáadása a kiválasztotthoz"
 msgid "Enter Tag Name"
 msgstr "Adja meg a címke nevét"
 
-#: src/robotide/editor/__init__.py:31
+#: src/robotide/editor/__init__.py:32
 msgid "[Edit]\n"
 msgstr "[Edit]\n"
 
-#: src/robotide/editor/__init__.py:32
+#: src/robotide/editor/__init__.py:33
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
 msgstr "&Undo | Utolsó módosítás visszavonása | Ctrlcmd-Z\n"
 
-#: src/robotide/editor/__init__.py:33
+#: src/robotide/editor/__init__.py:34
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
 msgstr "&Redo | Módosítás újrakezdése | Ctrlcmd-Y\n"
 
-#: src/robotide/editor/__init__.py:35
+#: src/robotide/editor/__init__.py:36
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
 msgstr "Cu&t | Cut | Ctrlcmd-X\n"
 
-#: src/robotide/editor/__init__.py:36
+#: src/robotide/editor/__init__.py:37
 msgid "&Copy | Copy | Ctrlcmd-C\n"
 msgstr "&Copy | Copy | Ctrlcmd-C\n"
 
-#: src/robotide/editor/__init__.py:37
+#: src/robotide/editor/__init__.py:38
 msgid "&Paste | Paste | Ctrlcmd-V\n"
 msgstr "&Paste | Beillesztés | Ctrlcmd-V\n"
 
-#: src/robotide/editor/__init__.py:38
+#: src/robotide/editor/__init__.py:39
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
 msgstr "&Insert | Insert | Shift-Ctrl-V\n"
 
-#: src/robotide/editor/__init__.py:39
+#: src/robotide/editor/__init__.py:40
 msgid "&Delete | Delete  | Del\n"
 msgstr "&Delete | Delete | Delete | Del\n"
 
-#: src/robotide/editor/__init__.py:40
+#: src/robotide/editor/__init__.py:41
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
 msgstr "Sorok kommentálása | Kijelölt sorok kommentálása | Ctrlcmd-3\n"
 
-#: src/robotide/editor/__init__.py:41
+#: src/robotide/editor/__init__.py:42
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
 msgstr "Megjegyzés cellák | Megjegyzés cellák #-vel | Ctrlcmd-Shift-3\n"
 
-#: src/robotide/editor/__init__.py:42
+#: src/robotide/editor/__init__.py:43
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
 msgstr "Sorok megjegyzésének feloldása | Kijelölt sorok megjegyzésének feloldása | Ctrlcmd-4\n"
 
-#: src/robotide/editor/__init__.py:43
+#: src/robotide/editor/__init__.py:44
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
 msgstr "Cellák megjegyzésének feloldása | Cellák megjegyzésének feloldása #-vel | Ctrlcmd-Shift-4\n"
 
-#: src/robotide/editor/__init__.py:44
+#: src/robotide/editor/__init__.py:45
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
 msgstr "Cellák beszúrása | Cellák beszúrása | Ctrlcmd-Shift-I\n"
 
-#: src/robotide/editor/__init__.py:45
+#: src/robotide/editor/__init__.py:46
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
 msgstr "Cella törlése | Cella törlése | Ctrlcmd-Shift-D\n"
 
-#: src/robotide/editor/__init__.py:46
+#: src/robotide/editor/__init__.py:47
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 msgstr "Sorok beszúrása | Sorok beszúrása | Ctrlcmd-I\n"
 
-#: src/robotide/editor/__init__.py:47
+#: src/robotide/editor/__init__.py:48
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
 msgstr "Sorok törlése | Sorok törlése | Ctrlcmd-D\n"
 
-#: src/robotide/editor/__init__.py:48
+#: src/robotide/editor/__init__.py:49
 msgid "Move Rows Up (Alt-Up or Ctrl-Shift-Up) | Move Rows Up\n"
 msgstr "Sorok felfelé mozgatása (Alt-Up vagy Ctrl-Shift-Up) | Sorok felfelé mozgatása\n"
 
-#: src/robotide/editor/__init__.py:49
+#: src/robotide/editor/__init__.py:50
 msgid "Move Rows Down (Alt-Down or Ctrl-Shift-Down) | Move Rows Down\n"
 msgstr "Sorok lefelé mozgatása (Alt-lefelé vagy Ctrl-Shift-lefelé) | Sorok lefelé mozgatása\n"
 
-#: src/robotide/editor/__init__.py:50
-#: src/robotide/ui/mainframe.py:69
+#: src/robotide/editor/__init__.py:51
+#: src/robotide/ui/mainframe.py:70
 msgid "[Tools]\n"
 msgstr "[Eszközök]\n"
 
-#: src/robotide/editor/__init__.py:51
+#: src/robotide/editor/__init__.py:52
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 msgstr "Tartalomsegítés (Ctrl-Space vagy Ctrl-Alt-Space) | Lehetséges kulcsszó- és változó-kiegészítések megjelenítése | | | | | POSITION-70\n"
 
-#: src/robotide/editor/__init__.py:88
-msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
+#: src/robotide/editor/__init__.py:89
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr "Az alapértelmezett szerkesztő plugin. Más néven Grid vagy Cell Editor.\n\n"
+msgstr ""
+"Az alapértelmezett szerkesztő plugin. Más néven Grid vagy Cell Editor.\n"
+"\n"
 "    Ez a bővítmény a Robot Framework\n"
 "    tesztadatok különböző elemeinek szerkesztőit valósítja meg.\n"
 "    "
 
-#: src/robotide/editor/__init__.py:95
+#: src/robotide/editor/__init__.py:96
 msgid "Editor"
 msgstr "Szerkesztő"
 
@@ -712,25 +728,31 @@ msgid "Separate possible arguments with a pipe character like 'My Keyword | arg 
 msgstr "Válassza szét a lehetséges argumentumokat egy pipakarakterrel, például 'My Keyword | arg 1 | arg 2'."
 
 #: src/robotide/editor/dialoghelps.py:34
-msgid "Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+msgid ""
+"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
 "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-msgstr "Használjon idő szintaxist, például '1min 10s' vagy '2 óra', vagy adja meg az értéket másodpercben.\n"
+msgstr ""
+"Használjon idő szintaxist, például '1min 10s' vagy '2 óra', vagy adja meg az értéket másodpercben.\n"
 "A Robot v3.0.1 előtt egy opcionális üzenetet is meg lehetett adni, például '3 perc | Az üzenetem itt'."
 
 #: src/robotide/editor/dialoghelps.py:37
-msgid "Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+msgid ""
+"Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
 "Default values are given using equal sign and the last argument can be a list variable.\n"
 "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
 "Note. You can use variable shortcuts in this field."
-msgstr "Adja meg az argumentumokat pipe karakterrel elválasztva, például '${arg1} | ${arg2}'.\n"
+msgstr ""
+"Adja meg az argumentumokat pipe karakterrel elválasztva, például '${arg1} | ${arg2}'.\n"
 "Az alapértelmezett értékeket az egyenlőségjel használatával adjuk meg, az utolsó argumentum pedig egy listaváltozó lehet.\n"
 "Példa: '${arg1} | ${arg2}=alapértelmezett érték | @{rest}'.\n"
 "Megjegyzés. Ebben a mezőben használhatja a változó rövidítéseit."
 
 #: src/robotide/editor/dialoghelps.py:41
-msgid "Alias can be used to import same library multiple times with different names.\n"
+msgid ""
+"Alias can be used to import same library multiple times with different names.\n"
 "Alias is prepended with: "
-msgstr "Az alias segítségével ugyanazt a könyvtárat többször is importálhatja különböző nevekkel.\n"
+msgstr ""
+"Az alias segítségével ugyanazt a könyvtárat többször is importálhatja különböző nevekkel.\n"
 "Az alias előtagja: "
 
 #: src/robotide/editor/dialoghelps.py:43
@@ -1045,7 +1067,7 @@ msgstr "Új felhasználó kulcsszó"
 #: src/robotide/editor/editors.py:163
 #: src/robotide/editor/editors.py:400
 #: src/robotide/editor/macroeditors.py:135
-#: src/robotide/ui/mainframe.py:218
+#: src/robotide/ui/mainframe.py:222
 msgid " (READ ONLY)"
 msgstr " (CSAK OLVASSA EL)"
 
@@ -1149,7 +1171,8 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Dict-változó létrehozása Ctrl-5"
 
 #: src/robotide/editor/kweditor.py:975
-msgid "<b>Keyword was not detected by RIDE</b>\n"
+msgid ""
+"<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1159,7 +1182,8 @@ msgid "<b>Keyword was not detected by RIDE</b>\n"
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr "<b>A kulcsszót nem észlelte a RIDE</b>\n"
+msgstr ""
+"<b>A kulcsszót nem észlelte a RIDE</b>\n"
 "        <br>Lehetséges javítások:<br>\n"
 "        <ul>\n"
 "            <li>A kulcsszót tartalmazó könyvtár vagy erőforrásfájl importálása.</li>\n"
@@ -1171,7 +1195,7 @@ msgstr "<b>A kulcsszót nem észlelte a RIDE</b>\n"
 "        </ul>"
 
 #: src/robotide/editor/kweditor.py:1131
-#: src/robotide/ui/mainframe.py:223
+#: src/robotide/ui/mainframe.py:227
 #: src/robotide/ui/treenodehandlers.py:244
 #: src/robotide/ui/treeplugin.py:1297
 msgid "Validation Error"
@@ -1215,8 +1239,8 @@ msgid "Variable "
 msgstr "Változó "
 
 #: src/robotide/editor/kweditor.py:1457
-#: src/robotide/editor/texteditor.py:1119
-#: src/robotide/editor/texteditor.py:1121
+#: src/robotide/editor/texteditor.py:1129
+#: src/robotide/editor/texteditor.py:1131
 #: src/robotide/searchtests/dialogsearchtests.py:49
 #: src/robotide/searchtests/dialogsearchtests.py:127
 #: src/robotide/searchtests/dialogsearchtests.py:184
@@ -1298,7 +1322,8 @@ msgid "Import Library Spec XML"
 msgstr "Könyvtár specifikáció XML importálása"
 
 #: src/robotide/editor/settingeditors.py:752
-msgid "<br>Possible corrections and notes:<br>\n"
+msgid ""
+"<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1312,7 +1337,8 @@ msgid "<br>Possible corrections and notes:<br>\n"
 "            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
-msgstr "<br>Lehetséges javítások és megjegyzések:<br>\n"
+msgstr ""
+"<br>Lehetséges javítások és megjegyzések:<br>\n"
 "        <ul>\n"
 "            <li>A hibás importálás piros színnel jelenik meg.</li>\n"
 "            <li>A hibával kapcsolatos részletes információkért lásd: Eszközök / RIDE napló megtekintése.</li>\n"
@@ -1335,46 +1361,48 @@ msgstr "Import hiba kezelése"
 msgid "Add Metadata"
 msgstr "Metaadatok hozzáadása"
 
-#: src/robotide/editor/texteditor.py:383
+#: src/robotide/editor/texteditor.py:385
 msgid "Text Edit"
 msgstr "Szöveg szerkesztése"
 
-#: src/robotide/editor/texteditor.py:467
-#: src/robotide/editor/texteditor.py:1475
+#: src/robotide/editor/texteditor.py:469
+#: src/robotide/editor/texteditor.py:1485
 #: src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
 msgstr "Forrás: "
 
-#: src/robotide/editor/texteditor.py:909
-msgid "Can not apply changes from Text Editor"
-msgstr "Nem tudja alkalmazni a módosításokat a szövegszerkesztőből"
-
-#: src/robotide/editor/texteditor.py:910
-msgid "ERROR: Data sanity check failed!"
-msgstr "HIBA: Az adatok szanitásának ellenőrzése sikertelen!"
-
-#: src/robotide/editor/texteditor.py:910
+#: src/robotide/editor/texteditor.py:836
+#: src/robotide/editor/texteditor.py:919
 msgid "Error at line"
 msgstr "Hiba a sorban"
 
-#: src/robotide/editor/texteditor.py:911
+#: src/robotide/editor/texteditor.py:918
+msgid "Can not apply changes from Text Editor"
+msgstr "Nem tudja alkalmazni a módosításokat a szövegszerkesztőből"
+
+#: src/robotide/editor/texteditor.py:919
+msgid "ERROR: Data sanity check failed!"
+msgstr "HIBA: Az adatok szanitásának ellenőrzése sikertelen!"
+
+#: src/robotide/editor/texteditor.py:920
 msgid "Reset changes?"
 msgstr "Visszaállítás változik?"
 
-#: src/robotide/editor/texteditor.py:1096
+#: src/robotide/editor/texteditor.py:1106
 msgid "Apply Changes"
 msgstr "Változások alkalmazása"
 
-#: src/robotide/editor/texteditor.py:1131
+#: src/robotide/editor/texteditor.py:1141
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "A szintaxis színezése hiányzó követelmények miatt letiltva."
 
-#: src/robotide/editor/texteditor.py:1132
+#: src/robotide/editor/texteditor.py:1142
 msgid "Get help"
 msgstr "Segítséget kérni"
 
-#: src/robotide/editor/texteditor.py:1147
-msgid "<h1>Syntax colorization</h1>\n"
+#: src/robotide/editor/texteditor.py:1157
+msgid ""
+"<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1399,7 +1427,8 @@ msgid "<h1>Syntax colorization</h1>\n"
 "        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
-msgstr "<h1>Szintaxis színezés</h1>\n"
+msgstr ""
+"<h1>Szintaxis színezés</h1>\n"
 "        <p>\n"
 "        A szövegszerkesztés szintaxis színezése a <a href='https://pygments.org/'>Pygments</a> szintaxis kiemelőt használja.\n"
 "        </p>\n"
@@ -1425,11 +1454,11 @@ msgstr "<h1>Szintaxis színezés</h1>\n"
 "        </p>\n"
 "        "
 
-#: src/robotide/editor/texteditor.py:1172
+#: src/robotide/editor/texteditor.py:1182
 msgid "Getting syntax colorization"
 msgstr "A szintaxis színezése"
 
-#: src/robotide/editor/texteditor.py:1273
+#: src/robotide/editor/texteditor.py:1283
 msgid "No matches found."
 msgstr "Nincs találat."
 
@@ -1538,8 +1567,9 @@ msgid "Keyword call foreground"
 msgstr "Kulcsszó call foreground"
 
 #: src/robotide/preferences/editors.py:189
+#, fuzzy
 msgid "Control marker foreground"
-msgstr ""
+msgstr "Hozzászólás új információk és jogok"
 
 #: src/robotide/preferences/editors.py:190
 msgid "Separator"
@@ -1589,9 +1619,11 @@ msgid "Auto size columns"
 msgstr "Automatikus méret oszlopok"
 
 #: src/robotide/preferences/editors.py:273
-msgid "Max column size\n"
+msgid ""
+"Max column size\n"
 "(applies when auto size is on)"
-msgstr "Maximális oszlopméret\n"
+msgstr ""
+"Maximális oszlopméret\n"
 "(akkor érvényes, ha az automatikus méret van bekapcsolva)"
 
 #: src/robotide/preferences/editors.py:277
@@ -1607,8 +1639,9 @@ msgid "Library Keyword Foreground"
 msgstr "Könyvtár kulcsszó Foreground"
 
 #: src/robotide/preferences/editors.py:315
+#, fuzzy
 msgid "Control Marker Foreground"
-msgstr ""
+msgstr "Megjegyzések Foreground"
 
 #: src/robotide/preferences/editors.py:316
 msgid "Variable Foreground"
@@ -1639,8 +1672,9 @@ msgid "Keyword Background"
 msgstr "Kulcsszó Háttér"
 
 #: src/robotide/preferences/editors.py:338
+#, fuzzy
 msgid "Control Marker Background"
-msgstr ""
+msgstr "Hiba Háttér"
 
 #: src/robotide/preferences/editors.py:339
 msgid "Mandatory Field Background"
@@ -1905,25 +1939,31 @@ msgid "Open %s"
 msgstr "Nyissa meg a %scímet."
 
 #: src/robotide/run/configmanagerui.py:27
-msgid "The specified command string will be split from whitespaces into a command\n"
+msgid ""
+"The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n\n"
+"internal spaces, they must be written as '<SPACE>'.\n"
+"\n"
 "The command will be executed in the system directly without opening a shell.\n"
 "This means that shell commands and extensions are not available. For example,\n"
 "in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n\n"
+"command does not work.\n"
+"\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
-msgstr "A megadott parancssorozatot a program a szóközök nélkül felbontja a\n"
+msgstr ""
+"A megadott parancssorozatot a program a szóközök nélkül felbontja a\n"
 "parancsra és annak argumentumaira. Ha a parancs vagy bármelyik argumentum belső szóközöket igényel\n"
-", akkor azokat '<SPACE>' formában kell írni.\n\n"
+", akkor azokat '<SPACE>' formában kell írni.\n"
+"\n"
 "A parancs közvetlenül a rendszerben fog végrehajtódni, shell megnyitása nélkül.\n"
 "Ez azt jelenti, hogy a shell parancsok és bővítmények nem állnak rendelkezésre. Például a\n"
 "Windowsban a végrehajtandó kötegelt fájloknak tartalmazniuk kell a '.bat' kiterjesztést, és a 'dir'\n"
-"parancs nem működik.\n\n"
+"parancs nem működik.\n"
+"\n"
 "Példák:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -1944,11 +1984,15 @@ msgid "Remove"
 msgstr "Távolítsa el a"
 
 #: src/robotide/run/runanything.py:30
-msgid "A plugin for executing commands on the system.\n\n"
+msgid ""
+"A plugin for executing commands on the system.\n"
+"\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr "A rendszerben végrehajtott parancsok végrehajtásához szükséges bővítmény.\n\n"
+msgstr ""
+"A rendszerben végrehajtott parancsok végrehajtásához szükséges bővítmény.\n"
+"\n"
 "    Ez a bővítmény lehetővé teszi a tartós futtatási konfigurációk létrehozását és a\n"
 "    azok végrehajtását. A végrehajtott parancsok kimenete a\n"
 "    külön lapon jelenik meg."
@@ -2035,13 +2079,17 @@ msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr "Egy plugin a tesztek keresésére név, címkék és dokumentáció alapján"
 
 #: src/robotide/spec/libraryfinder.py:31
-msgid "Install missing libraries and open documentation.\n\n"
+msgid ""
+"Install missing libraries and open documentation.\n"
+"\n"
 "    You can edit settings.cfg to add URL for documentation and command to install.\n"
 "    You can right-click on a Library name, and Open Documentation or Install Library.\n"
 "    From Tools->Library Finder... or Help->Open Library Documentation... you will have\n"
 "    a dialog to fill the command to install or the URL for the documentation.\n"
 "    "
-msgstr "Telepítse a hiányzó könyvtárakat és nyissa meg a dokumentációt.\n\n"
+msgstr ""
+"Telepítse a hiányzó könyvtárakat és nyissa meg a dokumentációt.\n"
+"\n"
 "    A settings.cfg fájlt szerkesztheti, hogy hozzáadja a dokumentáció URL-címét és a telepítéshez szükséges parancsot.\n"
 "    Kattintson a jobb gombbal a könyvtár nevére, és válassza a Dokumentáció megnyitása vagy a Könyvtár telepítése parancsot.\n"
 "    A Tools->Library Finder... vagy a Help->Open Library Documentation... menüpontban a\n"
@@ -2077,10 +2125,12 @@ msgid "Info"
 msgstr "Info"
 
 #: src/robotide/spec/specimporter.py:79
-msgid "Library \"%s\" imported\n"
+msgid ""
+"Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
-msgstr "Könyvtár \"%s\" importált\n"
+msgstr ""
+"Könyvtár \"%s\" importált\n"
 "a \"%s\"\n"
 "Ez a RIDE újraindítását igényelheti."
 
@@ -2145,9 +2195,11 @@ msgid "Change recursively"
 msgstr "Változás rekurzívan"
 
 #: src/robotide/ui/filedialogs.py:396
-msgid "Provide format for initialization file in directory\n"
+msgid ""
+"Provide format for initialization file in directory\n"
 "\"%s\"."
-msgstr "Adja meg a\n"
+msgstr ""
+"Adja meg a\n"
 "\"%s\" könyvtárban található inicializálási fájl formátumát."
 
 #: src/robotide/ui/filedialogs.py:410
@@ -2189,7 +2241,7 @@ msgstr "Tartalmazó mappa megnyitása"
 #: src/robotide/ui/fileexplorerplugin.py:104
 #: src/robotide/ui/fileexplorerplugin.py:211
 #: src/robotide/ui/fileexplorerplugin.py:214
-#: src/robotide/ui/mainframe.py:321
+#: src/robotide/ui/mainframe.py:325
 msgid "Files"
 msgstr "Fájlok"
 
@@ -2243,181 +2295,186 @@ msgstr "Dokumentáció keresése"
 msgid "Description"
 msgstr "Leírás"
 
-#: src/robotide/ui/mainframe.py:60
+#: src/robotide/ui/mainframe.py:61
 msgid "[File]\n"
 msgstr "[Fájl]\n"
 
-#: src/robotide/ui/mainframe.py:61
+#: src/robotide/ui/mainframe.py:62
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr "!&New Project | Új legfelső szintű csomag létrehozása | Ctrlcmd-N | ART_NEW\n"
 
-#: src/robotide/ui/mainframe.py:63
+#: src/robotide/ui/mainframe.py:64
 msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr "!&Open Test Suite | Teszteket tartalmazó fájl megnyitása | Ctrlcmd-O | ART_FILE_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:64
+#: src/robotide/ui/mainframe.py:65
 msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 msgstr "!Open &Directory | Adatfájlokat tartalmazó könyvtár megnyitása | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
-#: src/robotide/ui/mainframe.py:65
+#: src/robotide/ui/mainframe.py:66
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr "!Külső fájl megnyitása | Fájl megnyitása kódszerkesztőben | | | ART_NORMAL_FILE\n"
 
-#: src/robotide/ui/mainframe.py:66
+#: src/robotide/ui/mainframe.py:67
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr "!&Save | Kiválasztott adatállomány mentése | Ctrlcmd-S | ART_FILE_SAVE\n"
 
-#: src/robotide/ui/mainframe.py:67
+#: src/robotide/ui/mainframe.py:68
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr "!Save &All | Minden változtatás mentése | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
-#: src/robotide/ui/mainframe.py:68
+#: src/robotide/ui/mainframe.py:69
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 
-#: src/robotide/ui/mainframe.py:70
+#: src/robotide/ui/mainframe.py:71
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!Search Unused Keywords | | | | | | POSITION-54\n"
 
-#: src/robotide/ui/mainframe.py:71
+#: src/robotide/ui/mainframe.py:72
 msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!Pluginok kezelése | | | | | | POSITION-81\n"
 
-#: src/robotide/ui/mainframe.py:72
+#: src/robotide/ui/mainframe.py:73
 msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!View All Tags | | | F7 | | | POSITION-82\n"
 
-#: src/robotide/ui/mainframe.py:73
+#: src/robotide/ui/mainframe.py:74
 msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!Preferenciák | | | | | POSITION-99\n"
 
-#: src/robotide/ui/mainframe.py:74
+#: src/robotide/ui/mainframe.py:75
 msgid "[Help]\n"
 msgstr "[Súgó]\n"
 
-#: src/robotide/ui/mainframe.py:75
+#: src/robotide/ui/mainframe.py:76
 msgid "!Shortcut keys | RIDE shortcut keys\n"
 msgstr "!Shortcut keys | RIDE gyorsbillentyűk\n"
 
-#: src/robotide/ui/mainframe.py:76
+#: src/robotide/ui/mainframe.py:77
 msgid "!User Guide | Robot Framework User Guide\n"
 msgstr "!Felhasználói útmutató | Robot Framework felhasználói útmutató\n"
 
-#: src/robotide/ui/mainframe.py:77
+#: src/robotide/ui/mainframe.py:78
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
 msgstr "!Wiki | RIDE felhasználói kézikönyv (Wiki)\n"
 
-#: src/robotide/ui/mainframe.py:78
+#: src/robotide/ui/mainframe.py:79
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr "!Report a Problem | Nyissa meg a böngészőt a RIDE problémakövetőjének kereséséhez\n"
 
-#: src/robotide/ui/mainframe.py:79
+#: src/robotide/ui/mainframe.py:80
 msgid "!About | Information about RIDE\n"
 msgstr "!Rólunk | Információk a RIDE-ról\n"
 
-#: src/robotide/ui/mainframe.py:80
+#: src/robotide/ui/mainframe.py:81
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr "!Check for Upgrade | A PyPi új verzióját keresi\n"
 
-#: src/robotide/ui/mainframe.py:198
+#: src/robotide/ui/mainframe.py:202
 msgid "Saved %s"
 msgstr "Megmentett %s"
 
-#: src/robotide/ui/mainframe.py:199
+#: src/robotide/ui/mainframe.py:203
 msgid "Saved all files"
 msgstr "Minden fájl mentése"
 
-#: src/robotide/ui/mainframe.py:228
+#: src/robotide/ui/mainframe.py:232
 msgid "Modification prevented"
 msgstr "A módosítás megakadályozta"
 
-#: src/robotide/ui/mainframe.py:229
+#: src/robotide/ui/mainframe.py:233
 msgid "\"%s\" is read only"
 msgstr "\"%s\" csak olvasható"
 
-#: src/robotide/ui/mainframe.py:304
+#: src/robotide/ui/mainframe.py:308
 #: src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
 msgstr "Tesztkészletek"
 
-#: src/robotide/ui/mainframe.py:389
+#: src/robotide/ui/mainframe.py:410
+#, fuzzy
 msgid "Auto-saved all files"
-msgstr ""
+msgstr "Minden fájl mentése"
 
-#: src/robotide/ui/mainframe.py:508
-msgid "There are unsaved modifications.\n"
+#: src/robotide/ui/mainframe.py:529
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
-msgstr "Vannak meg nem mentett módosítások.\n"
+msgstr ""
+"Vannak meg nem mentett módosítások.\n"
 "Szeretné elmenteni a módosításokat, mielőtt kilép?"
 
-#: src/robotide/ui/mainframe.py:508
-#: src/robotide/ui/mainframe.py:602
+#: src/robotide/ui/mainframe.py:529
+#: src/robotide/ui/mainframe.py:623
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
-#: src/robotide/ui/mainframe.py:602
-msgid "There are unsaved modifications.\n"
+#: src/robotide/ui/mainframe.py:623
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
-msgstr "Vannak meg nem mentett módosítások.\n"
+msgstr ""
+"Vannak meg nem mentett módosítások.\n"
 "Mentés nélkül szeretne folytatni?"
 
-#: src/robotide/ui/mainframe.py:652
+#: src/robotide/ui/mainframe.py:673
 msgid "Choose a directory containing Robot files"
 msgstr "Válasszon egy Robot fájlokat tartalmazó könyvtárat"
 
-#: src/robotide/ui/mainframe.py:804
+#: src/robotide/ui/mainframe.py:826
 msgid "Workspace modifications detected on the file system."
 msgstr "A fájlrendszerben észlelt munkaterület-módosítások."
 
-#: src/robotide/ui/mainframe.py:805
+#: src/robotide/ui/mainframe.py:827
 msgid "Do you want to reload the workspace?"
 msgstr "Újra szeretné tölteni a munkaterületet?"
 
-#: src/robotide/ui/mainframe.py:807
+#: src/robotide/ui/mainframe.py:829
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "A <Yes> címre adott válasz elveti a nem mentett módosításokat."
 
-#: src/robotide/ui/mainframe.py:808
+#: src/robotide/ui/mainframe.py:830
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "A <No> címre adott válasz figyelmen kívül hagyja a lemezen lévő változásokat."
 
-#: src/robotide/ui/mainframe.py:809
+#: src/robotide/ui/mainframe.py:831
 msgid "Files Changed On Disk"
 msgstr "Megváltozott fájlok a lemezen"
 
-#: src/robotide/ui/mainframe.py:852
+#: src/robotide/ui/mainframe.py:874
 msgid "Customize..."
 msgstr "Testreszabás..."
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:962
 msgid "search unused keywords"
 msgstr "keresés nem használt kulcsszavakkal"
 
-#: src/robotide/ui/mainframe.py:940
+#: src/robotide/ui/mainframe.py:962
 msgid "stop test run"
 msgstr "tesztfutás leállítása"
 
-#: src/robotide/ui/mainframe.py:941
+#: src/robotide/ui/mainframe.py:963
 msgid "preview"
 msgstr "előnézet"
 
-#: src/robotide/ui/mainframe.py:941
+#: src/robotide/ui/mainframe.py:963
 msgid "view ride log"
 msgstr "napló megtekintése"
 
-#: src/robotide/ui/mainframe.py:983
+#: src/robotide/ui/mainframe.py:1005
 msgid "Shortcut keys for RIDE"
 msgstr "RIDE gyorsbillentyűk"
 
-#: src/robotide/ui/mainframe.py:1021
+#: src/robotide/ui/mainframe.py:1043
 msgid "Show"
 msgstr "Mutasd meg a"
 
-#: src/robotide/ui/mainframe.py:1022
+#: src/robotide/ui/mainframe.py:1044
 msgid "Hide"
 msgstr "Rejtsd el"
 
-#: src/robotide/ui/mainframe.py:1023
+#: src/robotide/ui/mainframe.py:1045
 msgid "Close"
 msgstr "Zárja be a"
 
@@ -2471,9 +2528,11 @@ msgid "Search unused keywords"
 msgstr "Keresés nem használt kulcsszavakkal"
 
 #: src/robotide/ui/review.py:66
-msgid "This dialog helps you finding unused keywords within your opened project.\n"
+msgid ""
+"This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr "Ez a párbeszédpanel segít megtalálni a megnyitott projektben a nem használt kulcsszavakat.\n"
+msgstr ""
+"Ez a párbeszédpanel segít megtalálni a megnyitott projektben a nem használt kulcsszavakat.\n"
 "Ha szeretné, a szűrővel a keresést egy fájlkészletre korlátozhatja."
 
 #: src/robotide/ui/review.py:70
@@ -2494,10 +2553,12 @@ msgid "Use RegEx"
 msgstr "RegEx használata"
 
 #: src/robotide/ui/review.py:93
-msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid ""
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr "Itt egy vagy több, vesszővel elválasztott karakterláncot adhat meg (pl. common,abc,123).\n"
+msgstr ""
+"Itt egy vagy több, vesszővel elválasztott karakterláncot adhat meg (pl. common,abc,123).\n"
 "A szűrő akkor talál, ha legalább egy karakterlánc része a fájlnévnek.\n"
 "Ha nem ad meg egyetlen karakterláncot sem, akkor az összes megnyitott fájl szerepel a szűrőben."
 
@@ -2556,8 +2617,12 @@ msgid "(None)"
 msgstr "(Nincs)"
 
 #: src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n\n"
-msgstr "A keresés a következő fájlok kulcsszavait tartalmazza:\n\n"
+msgid ""
+"Keywords of the following files will be included in the search:\n"
+"\n"
+msgstr ""
+"A keresés a következő fájlok kulcsszavait tartalmazza:\n"
+"\n"
 
 #: src/robotide/ui/review.py:283
 msgid "Included files"
@@ -2612,9 +2677,11 @@ msgid "Excluded Tag Search"
 msgstr "Kizárt címkék keresése"
 
 #: src/robotide/ui/tagdialogs.py:153
-msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid ""
+"Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
-msgstr "Összes teszt %d, Tesztek címkékkel %d, Egyedi címkék %d\n"
+msgstr ""
+"Összes teszt %d, Tesztek címkékkel %d, Egyedi címkék %d\n"
 "Jelenleg kiválasztott tesztek %d"
 
 #: src/robotide/ui/tagdialogs.py:239
@@ -2719,9 +2786,11 @@ msgid "Expand all"
 msgstr "Minden bővítése"
 
 #: src/robotide/ui/treenodehandlers.py:450
-msgid "Directory contains unsaved data!\n"
+msgid ""
+"Directory contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "A könyvtár nem mentett adatokat tartalmaz!\n"
+msgstr ""
+"A könyvtár nem mentett adatokat tartalmaz!\n"
 "A kizárás előtt el kell mentenie az adatokat."
 
 #: src/robotide/ui/treenodehandlers.py:496
@@ -2759,9 +2828,11 @@ msgstr "Csak olvasható eltávolítása"
 
 #: src/robotide/ui/treenodehandlers.py:539
 #: src/robotide/ui/treenodehandlers.py:642
-msgid "File contains unsaved data!\n"
+msgid ""
+"File contains unsaved data!\n"
 "You must save data before excluding."
-msgstr "A fájl nem mentett adatokat tartalmaz!\n"
+msgstr ""
+"A fájl nem mentett adatokat tartalmaz!\n"
 "A kizárás előtt el kell mentenie az adatokat."
 
 #: src/robotide/ui/treenodehandlers.py:580
@@ -2831,8 +2902,9 @@ msgstr "Használat"
 #: src/robotide/usages/usagesdialog.py:172
 #: src/robotide/usages/usagesdialog.py:190
 #: src/robotide/usages/usagesdialog.py:217
+#, fuzzy
 msgid "Searching..."
-msgstr ""
+msgstr "Keresés.%s \t- %s"
 
 #: src/robotide/usages/usagesdialog.py:212
 msgid "Imported Location"
@@ -2865,4 +2937,3 @@ msgstr "OK"
 #: src/robotide/widgets/dialog.py:133
 msgid "Yes"
 msgstr "Igen"
-

@@ -1,4 +1,4 @@
-name: Linux
+name: Package
 on:
   push:
     branches-ignore:
@@ -70,7 +70,7 @@ jobs:
         sudo dnf update -y
         sudo dnf install -y git
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v6
       with:
         submodules: false
     - name: Setup environment
@@ -95,6 +95,7 @@ jobs:
         path: |
           .coverage.1
           .coverage.2
+          .coverage.3
           .coverage-reports/coverage.xml
           .coverage-reports/htmlcov
     - name: Create Package

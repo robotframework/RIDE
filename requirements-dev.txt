@@ -4,7 +4,8 @@ mockito
 invoke
 urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
-requests>=2.33.0
+requests==2.32.5; python_version < '3.10'
+requests>=2.33.0; python_version >= '3.10'
 github3.py
 memory-profiler
 pylint

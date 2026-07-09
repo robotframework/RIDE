@@ -58,7 +58,7 @@ class TestPreferenceEditor(UIUnitTestBase):
     def test_preferences_dialog(self):
         self.frame = wx.Frame(None)
         self.frame.CenterOnScreen()
-        self.frame.Show()
+        # self.frame.Show()
         settings.set('font size',11)
         generalpanel = MyGeneralPreferences(settings, self.frame)
         preferences = Preferences(settings)
