@@ -81,8 +81,7 @@ def restart_ride(args:list):
     except Exception as e:
         pass
     """
-    str_args = " ".join(arguments)
-    subprocess.Popen(str_args, shell=True)
+    subprocess.Popen(arguments)
 
 
 class UnthemableWidgetError(Exception):
