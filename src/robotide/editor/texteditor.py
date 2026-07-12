@@ -779,11 +779,16 @@ class DataValidationHandler(object):
             self._editor._mark_file_dirty()
             return False
         # TODO: use widgets.Dialog
-        id = wx.MessageDialog(self._editor,
-                              'ERROR: Data sanity check failed!\n'
-                              'Reset changes?',
-                              'Can not apply changes from Txt Editor',
-                              style=wx.YES | wx.NO).ShowModal()
+        msg = _('ERROR: Data sanity check failed!') + '\n\n' + \
+              _('The text content could not be parsed correctly.') + '\n' + \
+              _('This may be caused by:') + '\n' + \
+              _('  - Invalid Robot Framework syntax') + '\n' + \
+              _('  - Malformed table or section headers') + '\n' + \
+              _('  - Incorrect indentation or spacing') + '\n\n' + \
+              _('Reset changes?')
+        id = wx.MessageDialog(self._editor, msg,
+                              _('Can not apply changes from Text Editor'),
+                              style=wx.YES | wx.NO | wx.ICON_ERROR).ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_YES:
@@ -916,8 +921,12 @@ class DataValidationHandler(object):
             # self.source_editor._mark_file_dirty(True)
             return False
         dlg = RIDEDialog(title=_("Can not apply changes from Text Editor"),
-                         message=f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
-                                 f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
+                         message=f"{_('ERROR: Data sanity check failed!')}\n\n"
+                                 f"{_('Error at line')} {message[1]}:\n"
+                                 f"  {message[0]}\n\n"
+                                 f"{_('This may be caused by invalid syntax or formatting.')}\n"
+                                 f"{_('Check the line and fix the error, or reset changes.')}\n\n"
+                                 f"{_('Reset changes?')}",
                          style=wx.ICON_ERROR | wx.YES_NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
