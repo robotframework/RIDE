@@ -1598,7 +1598,6 @@ class SourceEditor(wx.Panel):
                 self.source_editor.DeleteRange(pos, self.tab_size)
 
     def indent_block(self):
-        print(f"DEBUG: TextEditor SourceEdior ident_block focus={self.is_focused()}")
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1619,7 +1618,6 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetAnchor(tnew_start)
 
     def write_ident(self):
-        print(f"DEBUG: TextEditor SourceEdior write_ident {self.tab_size=}")
         spaces = ' ' * self.tab_size
         self.source_editor.WriteText(spaces)
 
@@ -1804,7 +1802,6 @@ class SourceEditor(wx.Panel):
         # self.source_editor.set_text(self._data.content)
 
     def on_editor_key(self, event):
-        print(f"DEBUG: TextEditor on_editor_key event={event} focus={self.is_focused()}")
         if not self.is_focused():
             event.Skip()
             return
