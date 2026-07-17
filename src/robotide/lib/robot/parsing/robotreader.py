@@ -170,23 +170,11 @@ class RobotReader(object):
                 return
             if not self._cell_section:
                 return
-            spc = idx = nospc = 0
-            for idx in range(0, len(line)):
-                if line[idx] != ' ':
-                    nospc += 1
-                    # if spc <= 2:
-                    #     spc = -1
-                    #
-                    if spc >= 2:
-                        break
-                    spc = 0
-                elif line[idx] == ' ':  # and nospc > 0:
-                    spc += 1
-            if nospc > 0 and spc < 2:  # We need a step, not test case or kw name (nospc == 0 and spc <= 2 or )
+            content = line.lstrip(' \t\xa0')
+            separator = re.search(r"[ \xa0]{2,}|\t+", content)
+            if not separator:
                 return
-            spc = max(2, spc)
-            if 2 <= spc <= 10:  # This max limit is reasonable
-                self._spaces = spc
-                self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
-                self._separator_check = True
-                # print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
+            self._spaces = max(2, len(separator.group()))
+            self._space_splitter = re.compile(r"[ \xa0]{2,}|\t+")
+            self._separator_check = True
+            # print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
