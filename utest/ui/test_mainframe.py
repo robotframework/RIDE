@@ -182,7 +182,7 @@ class TestMainFrame(_BaseDialogTest):
         class FakeBeforeSaving:
             def __init__(self, auto=True):
                 self.auto = auto
-                
+
             def publish(self):
                 calls.append("publish")
 
