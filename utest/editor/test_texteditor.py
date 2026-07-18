@@ -36,7 +36,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
 from utest.resources import FakeSettings, FakeEditor
-from robotide.publish import PUBLISHER, RideSuiteAdded, RideNotebookTabChanging
+from robotide.publish import PUBLISHER, RideSuiteAdded, RideNotebookTabChanging, RideSettingsChanged
 from robotide.ui.treeplugin import Tree
 from robotide.ui.notebook import NoteBook
 from robotide.editor import texteditor
@@ -180,6 +180,16 @@ class TestEditorCommands(unittest.TestCase):
         self.app.ExitMainLoop()
         self.app.Destroy()
         self.app = None
+
+    def _open_wrapped(self):
+        """Reopen the editor with a real DataFileWrapper, as it happens in production.
+        The default setUp leaves the raw controller in place, so file-dirty tracking
+        (mark_data_dirty/pristine) is not wired without this."""
+        editor = self.plugin._editor_component
+        controller = self.app.project.data
+        wrapper = texteditor.DataFileWrapper(controller, self.app.settings, ['en'])
+        editor.open(wrapper)
+        return editor
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_insert_row_single(self):
@@ -599,6 +609,275 @@ class TestEditorCommands(unittest.TestCase):
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_indent_block(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        content = 'line1\nline2\nline3'
+        editor.source_editor.set_text(content)
+        editor.source_editor.SetSelection(0, len(content))
+        editor.indent_block()
+        result = editor.source_editor.GetText()
+        assert result == spaces + 'line1\n' + spaces + 'line2\n' + spaces + 'line3'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_deindent_block(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        content = spaces + 'line1\n' + spaces + 'line2\n' + spaces + 'line3'
+        editor.source_editor.set_text(content)
+        editor.source_editor.SetSelection(0, len(content))
+        editor.deindent_block()
+        result = editor.source_editor.GetText()
+        assert result == 'line1\nline2\nline3'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_deindent_block_inconsistent_is_reverted(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        # Second line is not indented, so the whole de-indent must be undone
+        content = spaces + 'line1\n' + 'line2\n' + spaces + 'line3'
+        editor.source_editor.set_text(content)
+        editor.source_editor.SetSelection(0, len(content))
+        editor.deindent_block()
+        result = editor.source_editor.GetText()
+        assert result == content
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_indent_and_deindent_line(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        editor.source_editor.set_text('line0\nline1')
+        editor.indent_line(1)
+        assert editor.source_editor.GetText() == 'line0\n' + spaces + 'line1'
+        editor.deindent_line(1)
+        assert editor.source_editor.GetText() == 'line0\nline1'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_auto_indent_after_section_header(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        editor.source_editor.set_text('*** Test Cases ***\nMy Test')
+        pos = editor.source_editor.GetLineEndPosition(1)
+        editor.source_editor.SetCurrentPos(pos)
+        editor.source_editor.SetSelection(pos, pos)
+        editor.auto_indent()
+        assert editor.source_editor.GetText() == '*** Test Cases ***\nMy Test\n' + spaces
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_auto_indent_empty_line(self):
+        editor = self.plugin._editor_component
+        editor.source_editor.set_text('')
+        editor.source_editor.SetCurrentPos(0)
+        editor.source_editor.SetSelection(0, 0)
+        editor.auto_indent()
+        assert editor.source_editor.GetText() == '\n'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_calc_indent_size(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        assert editor._calc_indent_size('*** Test Cases ***') == 1
+        assert editor._calc_indent_size('*** Settings ***') == 0
+        assert editor._calc_indent_size(spaces + 'FOR    ${i}    IN    a    b') == 2
+        assert editor._calc_indent_size('No Operation') == 0
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_execute_variable_creator_no_selection(self):
+        editor = self.plugin._editor_component
+        editor.source_editor.set_text('')
+        editor.source_editor.SetSelection(0, 0)
+        editor.execute_variable_creator()
+        assert editor.source_editor.GetText() == '${}'
+        editor.source_editor.set_text('')
+        editor.source_editor.SetSelection(0, 0)
+        editor.execute_variable_creator(list_variable=True)
+        assert editor.source_editor.GetText() == '@{}'
+        editor.source_editor.set_text('')
+        editor.source_editor.SetSelection(0, 0)
+        editor.execute_variable_creator(dict_variable=True)
+        assert editor.source_editor.GetText() == '&{}'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_execute_variable_creator_with_selection(self):
+        editor = self.plugin._editor_component
+        editor.source_editor.set_text('foo')
+        editor.source_editor.SetSelection(0, 3)
+        editor.execute_variable_creator()
+        assert editor.source_editor.GetText() == '${foo}'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_execute_enclose_text_no_selection(self):
+        editor = self.plugin._editor_component
+        for open_symbol, expected in [('(', '()'), ('[', '[]'), ('{', '{}'), ('"', '""')]:
+            editor.source_editor.set_text('')
+            editor.source_editor.SetSelection(0, 0)
+            editor.execute_enclose_text(open_symbol)
+            assert editor.source_editor.GetText() == expected
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_execute_enclose_text_with_selection(self):
+        editor = self.plugin._editor_component
+        editor.source_editor.set_text('foo')
+        editor.source_editor.SetSelection(0, 3)
+        editor.execute_enclose_text('[')
+        assert editor.source_editor.GetText() == '[foo]'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_cut_and_undo_redo(self):
+        editor = self._open_wrapped()
+        editor.source_editor.set_text('Hello World')
+        editor.select_all()
+        editor.cut()
+        assert editor.source_editor.GetText() == ''
+        editor.undo()
+        assert editor.source_editor.GetText() == 'Hello World'
+        editor.redo()
+        assert editor.source_editor.GetText() == ''
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_copy_paste_callbacks(self):
+        editor = self._open_wrapped()
+        editor.source_editor.set_text('Some content')
+        editor.select_all()
+        # Exercise the plain callback wrappers, they must not raise
+        editor.on_copy(None)
+        editor.on_cut(None)
+        editor.on_paste(None)
+        editor.on_undo(None)
+        editor.on_redo(None)
+        editor.on_insert(None)
+        editor.on_delete(None)
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_row_callbacks_delegate(self):
+        editor = self.plugin._editor_component
+        content = ['1 - Line one\n', '2 - Line two\n', '3 - Line three\n']
+        editor.source_editor.set_text(''.join(content))
+        pos = len(content[0])
+        editor.source_editor.SetSelection(pos + 1, pos + 4)
+        editor.on_move_rows_up(None)
+        assert editor.source_editor.GetText() == content[1] + content[0] + content[2]
+        editor.on_move_rows_down(None)
+        assert editor.source_editor.GetText() == content[0] + content[1] + content[2]
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_comment_row_callbacks(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        content = ['1 - Line one\n', '2 - Line two\n']
+        editor.source_editor.set_text(''.join(content))
+        editor.source_editor.SetSelection(0, 3)
+        editor.on_comment_rows(None)
+        assert editor.source_editor.GetText() == 'Comment' + spaces + content[0] + content[1]
+        editor.source_editor.SetSelection(0, 3)
+        editor.on_uncomment_rows(None)
+        assert editor.source_editor.GetText() == content[0] + content[1]
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_sharp_comment_row_callbacks(self):
+        editor = self.plugin._editor_component
+        spaces = ' ' * editor.tab_size
+        content = spaces + 'Log' + spaces + 'hello\n'
+        editor.source_editor.set_text(content)
+        pos = len(spaces + 'Log')
+        editor.source_editor.SetSelection(pos, pos)
+        editor.on_sharp_comment_rows(None)
+        assert editor.source_editor.GetText() == spaces + '# ' + 'Log' + spaces + 'hello\n'
+        editor.source_editor.SetSelection(pos, pos)
+        editor.on_sharp_uncomment_rows(None)
+        assert editor.source_editor.GetText() == content
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_on_find_and_backwards(self):
+        editor = self.plugin._editor_component
+        editor.source_editor.set_text('Hello\nWorld\nHello again')
+        editor.source_editor.SetSelection(0, 5)  # 'Hello'
+        editor.on_find(wx.CommandEvent(wx.wxEVT_TEXT))
+        assert editor.search_field.GetValue() == 'Hello'
+        editor.on_find_backwards(wx.CommandEvent(wx.wxEVT_TEXT_ENTER))
+        # Now search something that does not exist
+        editor.search_field.SetValue('this_is_not_present')
+        editor._find(True)
+        assert editor._search_field_notification.GetLabel() == 'No matches found.'
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_words_cache_and_collect_words(self):
+        editor = self.plugin._editor_component
+        assert editor.collect_words('') == ['']
+        words = editor.collect_words('Log    ${var}    Message\nRun Keyword')
+        assert 'Log' in words
+        assert 'Message' in words
+        assert '${var}' not in words  # stripped variable is not alpha-leading in cache
+        assert texteditor.SourceEditor.var_strip('${var}') == 'var'
+        editor.source_editor.set_text('Some Keyword    argument')
+        cached = editor.words_cache(editor.source_editor.GetLineCount())
+        assert 'Some' in cached
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_content_save_not_dirty(self):
+        editor = self.plugin._editor_component
+        editor.mark_file_dirty(False)
+        assert editor.content_save(auto=False) is True
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_revert_and_reset(self):
+        editor = self.plugin._editor_component
+        original = editor.source_editor.GetText()
+        editor.source_editor.set_text(original + '\nExtra line')
+        editor.revert()
+        # revert calls Undo, restoring the previous content
+        assert editor.source_editor.GetText() == original
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_mark_file_dirty_toggles_data(self):
+        editor = self.plugin._editor_component
+        editor.mark_file_dirty(True)
+        assert editor.dirty is True
+        editor.mark_file_dirty(False)
+        assert editor.dirty is False
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_datafilewrapper_content_and_dirty(self):
+        editor = self.plugin._editor_component
+        wrapper = editor._data
+        assert isinstance(wrapper, texteditor.DataFileWrapper)
+        content = wrapper.content
+        assert 'Settings' in content
+        # format_text should round-trip a valid snippet
+        formatted = wrapper.format_text(content)
+        assert 'Settings' in formatted
+        wrapper.mark_data_dirty()
+        assert wrapper.wrapper_data.is_dirty is True
+        wrapper.mark_data_pristine()
+        assert wrapper.wrapper_data.is_dirty is False
+        assert wrapper.__eq__(None) is False
+        assert (wrapper == wrapper) is True
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_on_settings_changed_tab_size(self):
+        editor = self.plugin._editor_component
+        self.app.settings[texteditor.TXT_NUM_SPACES] = 8
+        editor.on_settings_changed(RideSettingsChanged(keys=('Text Edit', texteditor.TXT_NUM_SPACES),
+                                                       old=4, new=8))
+        assert editor.tab_size == 8
+        # General section is ignored early
+        editor.on_settings_changed(RideSettingsChanged(keys=('General', 'font size'), old=10, new=12))
+        self.app.settings['reformat'] = True
+        editor.on_settings_changed(RideSettingsChanged(keys=('Text Edit', 'reformat'), old=False, new=True))
+        assert editor.reformat is True
+
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
+    def test_store_and_restore_caret_position(self):
+        editor = self.plugin._editor_component
+        editor.source_editor.set_text('line0\nline1\nline2')
+        editor.source_editor.SetCurrentPos(8)
+        editor.source_editor.SetSelection(8, 8)
+        editor.store_position(force=True)
+        assert editor._position == 8
+        editor.set_editor_caret_position()
+        assert editor.source_editor.GetCurrentPos() == 8
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_miscellanous(self):
