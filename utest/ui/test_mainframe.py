@@ -180,6 +180,9 @@ class TestMainFrame(_BaseDialogTest):
                 return True
 
         class FakeBeforeSaving:
+            def __init__(self, auto=True):
+                self.auto = auto
+                
             def publish(self):
                 calls.append("publish")
 
@@ -196,6 +199,7 @@ class TestMainFrame(_BaseDialogTest):
             m.setattr(self.frame, 'save_all', lambda: calls.append("save_all"))
             m.setattr(self.frame, 'SetStatusText', lambda text: calls.append(("status", text)))
             m.setattr(self.frame, '_start_auto_save_timer', restart_timer)
+            m.setattr(self.frame, 'is_user_idle', lambda: True)
 
             self.frame._on_auto_save(object())
 
