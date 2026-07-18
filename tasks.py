@@ -188,6 +188,7 @@ def test(ctx, test_filter=''):
         "--strict-config",
         "--cov-report=term-missing",
         "--ignore=utest/isbinary/fixtures",
+        "--ignore=src/robotide/preferences/configobj",
         "--strict-markers"
         ]
     if test_filter:
@@ -425,6 +426,7 @@ def test_ci(ctx, test_filter=''):
             "--strict-config",
             "--cov-report=term-missing",
             "--ignore=utest/isbinary/fixtures",
+            "--ignore=src/robotide/preferences/configobj",
             "--strict-markers"
             ]
 
