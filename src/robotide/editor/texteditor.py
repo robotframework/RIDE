@@ -1799,7 +1799,7 @@ class SourceEditor(wx.Panel):
     def revert(self):
         self.reset()
         self.source_editor.Undo()
-        # self.source_editor.set_text(self._data.content)
+        self.source_editor.set_text(self._data.content)
 
     def on_editor_key(self, event):
         if not self.is_focused():
@@ -1834,7 +1834,7 @@ class SourceEditor(wx.Panel):
         :param event:
         :return:
         """
-        print(f"DEBUG: TextEditor on_key_down event={event} focus={self.is_focused()}")
+        # print(f"DEBUG: TextEditor on_key_down event={event} focus={self.is_focused()}")
         if not self.is_focused():
             event.Skip()
             return
