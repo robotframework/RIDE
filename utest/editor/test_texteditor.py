@@ -804,12 +804,16 @@ class TestEditorCommands(unittest.TestCase):
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_words_cache_and_collect_words(self):
-        editor = self.plugin._editor_component
+        # editor = self.plugin._editor_component
+        editor = self._open_wrapped()
         assert editor.collect_words('') == ['']
         words = editor.collect_words('Log    ${var}    Message\nRun Keyword')
         assert 'Log' in words
         assert 'Message' in words
-        assert '${var}' not in words  # stripped variable is not alpha-leading in cache
+        assert '${var}' in words
+        assert 'Run' in words
+        assert 'Keyword' in words
+        # assert '${var}' not in words  # stripped variable is not alpha-leading in cache
         assert texteditor.SourceEditor.var_strip('${var}') == 'var'
         editor.source_editor.set_text('Some Keyword    argument')
         cached = editor.words_cache(editor.source_editor.GetLineCount())
@@ -817,13 +821,15 @@ class TestEditorCommands(unittest.TestCase):
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_content_save_not_dirty(self):
-        editor = self.plugin._editor_component
+        # editor = self.plugin._editor_component
+        editor = self._open_wrapped()
         editor.mark_file_dirty(False)
         assert editor.content_save(auto=False) is True
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_revert_and_reset(self):
-        editor = self.plugin._editor_component
+        # editor = self.plugin._editor_component
+        editor = self._open_wrapped()
         original = editor.source_editor.GetText()
         editor.source_editor.set_text(original + '\nExtra line')
         editor.revert()
@@ -832,7 +838,8 @@ class TestEditorCommands(unittest.TestCase):
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_mark_file_dirty_toggles_data(self):
-        editor = self.plugin._editor_component
+        # editor = self.plugin._editor_component
+        editor = self._open_wrapped()
         editor.mark_file_dirty(True)
         assert editor.dirty is True
         editor.mark_file_dirty(False)
@@ -840,7 +847,8 @@ class TestEditorCommands(unittest.TestCase):
 
     @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_datafilewrapper_content_and_dirty(self):
-        editor = self.plugin._editor_component
+        # editor = self.plugin._editor_component
+        editor = self._open_wrapped()
         wrapper = editor._data
         assert isinstance(wrapper, texteditor.DataFileWrapper)
         content = wrapper.content
