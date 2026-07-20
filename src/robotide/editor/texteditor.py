@@ -557,15 +557,16 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def on_tree_selection(self, message):
         if not self.is_focused():
             return
-        # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER {message=} type={type(message.item)}")
+        print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER {message=} type={type(message.item)}")
         self._editor.store_position()
         # self.jump = True
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.datafile_controller == message.item.datafile_controller == next_datafile_controller:
-                # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}\n"
-                #      f"value of {self._save_flag=}")
+                print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}\n"
+                      f"value of {self._save_flag=}")
                 self._editor.locate_tree_item(message.item)
+                self._editor.store_position()
                 self.jump = True
                 return
             if self._editor.dirty and not self._apply_txt_changes_to_model(auto=False):
@@ -576,13 +577,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if next_datafile_controller:
                 self.jump = True
                 self._open_data_for_controller(next_datafile_controller)
-                # print(f"DEBUG: OnTreeSelection OTHER FILE item type={type(message.item)}\n"
-                #       f"value of {self._save_flag=}")
+                print(f"DEBUG: OnTreeSelection OTHER FILE item type={type(message.item)}\n"
+                       f"value of {self._save_flag=}")
                 wx.CallAfter(self._editor.locate_tree_item, message.item)
             self._set_read_only(message)
             self._editor.set_editor_caret_position()
-        else:
-            self._editor.GetFocus(None)
+        # else:
+        #    self._editor.GetFocus(None)
 
     def _set_read_only(self, message):
         if not isinstance(message, bool):
@@ -1197,7 +1198,7 @@ class SourceEditor(wx.Panel):
             return
         position = self._position
         self.source_editor.SetFocus()
-        # print(f"DEBUG: texteditor.py SourceEditor set_editor_caret_position position={position}")
+        print(f"DEBUG: texteditor.py SourceEditor set_editor_caret_position position={position}")
         if position:
             self.source_editor.SetCurrentPos(position)
             self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
@@ -2923,7 +2924,8 @@ class RobotDataEditor(PythonSTC):
             self.BraceBadLight(brace_at_caret)
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
-        self.stylizer.stylize()
+        if self.GetLength() > 1:   # Was calling stylize before loading document
+            self.stylizer.stylize()
 
     def _show_keyword_details(self, value, coords=None):
         """
