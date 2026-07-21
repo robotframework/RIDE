@@ -435,7 +435,7 @@ def test_ci(ctx, test_filter=''):
         elif OSTYPE == 'darwin':
             cov_prefix = '2'
         else:
-            cov_prefix = '3'  # unkown
+            cov_prefix = '3'  # unknown
         # a = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.1", "-m", "pytest", "--cov-config=.coveragerc", "--cov=src", "--cov-report=xml:.coverage-reports/coverage_1.xml", "--cov-report=html:.coverage-reports/htmlcov", "--cov-branch", "--cov-context=test", "-k test_", "-v", "utest/application/test_app_main.py"])
         a = subprocess.Popen(["coverage", "run", "-a", f"--data-file=.coverage.{cov_prefix}1", "-m", "pytest", *pytest_args, f"--html=.coverage-reports/pytest_report{cov_prefix}1.html", "--self-contained-html", "-k test_", "-v", "utest/application/test_app_main.py"])
         a.communicate(b'')
