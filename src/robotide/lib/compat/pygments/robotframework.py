@@ -315,9 +315,10 @@ class Setting(Tokenizer):
                     pass
             else:
                 self.new_lang = new_lang
-        if self.new_lang is None:
+        if self.new_lang is None or isinstance(self.new_lang, list) :
             self.new_lang = Language.from_name('En')
-        # print(f"DEBUG: robotframework.py Setting self.new_lang={self.new_lang}\n")
+        # print(f"DEBUG: robotframework.py Setting self.new_lang={self.new_lang}\n"
+        #       f"type of self.new_lang={type(self.new_lang)} ")
         self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings,'suitesetup'),
                                   get_key_by_value(self.normalized_settings, 'suiteprecondition'),
