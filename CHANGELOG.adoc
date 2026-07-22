@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Fixed
+- Fix selection of items (variables, test names, keywords) from Project Explorer and highlight at Text Editor.
 - Fixed Tab spacing in Text Editor. When pressing tab the expected spaces were not written, causing failing steps.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.2.4.rst[2.2.4] - 2026-07-09
