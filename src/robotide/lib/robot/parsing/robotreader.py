@@ -170,11 +170,11 @@ class RobotReader(object):
                 return
             if not self._cell_section:
                 return
-            content = line.lstrip(' \t\xa0')
+            content = line.rstrip(' \t\xa0')
             separator = re.search(r"[ \xa0]{2,}|\t+", content)
             if not separator:
                 return
             self._spaces = max(2, len(separator.group()))
-            self._space_splitter = re.compile(r"[ \xa0]{2,}|\t+")
+            self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
             self._separator_check = True
             # print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
