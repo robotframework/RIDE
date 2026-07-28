@@ -5,7 +5,7 @@ def test_reads_two_space_separators_when_four_spaces_are_configured():
     reader = RobotReader(spaces=4, lang=["en"])
     reader.check_separator("*** Test Cases ***")
     reader.check_separator("First test case")
-    row = "    Keyword with two arguments  arg1  arg2"
+    row = "  Keyword with two arguments  arg1  arg2"
 
     reader.check_separator(row)
 
