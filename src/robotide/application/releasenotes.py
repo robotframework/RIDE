@@ -167,7 +167,7 @@ and changes.</li>
  even if used correctly in another local keyword.</li>
 <li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors. The option to not reformat the file is not working.</li>
- <li>🐞 - The feature Auto-Save may cause a crash of RIDE in certain systems. This was experienced in AlmaLinux 9.6 with Gnome Unity, Python 3.13 and wxPython 4.2.3. The files are correctly saved, but RIDE closes. It is recommended to set the Auto-Save time as zero if this happens.</li>
+<li>🐞 - The feature Auto-Save may cause a crash of RIDE in certain systems. This was experienced in AlmaLinux 9.6 with Gnome Unity, Python 3.13 and wxPython 4.2.3. The files are correctly saved, but RIDE closes. It is recommended to set the Auto-Save time as zero if this happens.</li>
 <li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
  to Text Editor and back to Grid Editor, to restore normal behavior.</li>
 <li>🐞 - In Files Explorer, when in floating window, the files tree is not always using all available space.
@@ -179,6 +179,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Improved spaces detection in test suites reader.</li>
 <li>Fix selection of items (variables, test names, keywords) from Project Explorer and highlight at Text Editor.</li>
 <li>Fixed Tab spacing in Text Editor. When pressing tab the expected spaces were not written, causing failing steps.</li>
 <li>Changed Auto-Save to only save when user is not typing, and if code is in error show message in status bar.</li>
@@ -237,7 +238,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 22/July/2026.</p>
+<p>RIDE {VERSION} was released on 30/July/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
