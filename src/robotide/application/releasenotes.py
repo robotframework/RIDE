@@ -170,13 +170,12 @@ and changes.</li>
 <li>🐞 - The feature Auto-Save may cause a crash of RIDE in certain systems. This was experienced in AlmaLinux 9.6 with Gnome Unity, Python 3.13 and wxPython 4.2.3. The files are correctly saved, but RIDE closes. It is recommended to set the Auto-Save time as zero if this happens.</li>
 <li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
  to Text Editor and back to Grid Editor, to restore normal behavior.</li>
-<li>🐞 - The Test Suites Explorer, may be visible or hidden with F12, or toggled floating/docked, but content may
- disappear. You should try to make it reappear by toggling Files Explorer, F11, or by editing <b>settings.cfg</b>.</li>
 </ul>
 </li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed blank Project Explorer panel when docking. Long time existing issue.</li>
 <li>Fixed bad resizing of File Explorer content when opening Test Suites.</li>
 <li>Improved spaces detection in test suites reader.</li>
 <li>Fix selection of items (variables, test names, keywords) from Project Explorer and highlight at Text Editor.</li>

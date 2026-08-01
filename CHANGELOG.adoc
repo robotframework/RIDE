@@ -9,6 +9,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Fixed
+- Fixed blank Project Explorer panel when docking. Long time existing issue.
 - Fixed bad resizing of File Explorer content when opening Test Suites.
 - Fix selection of items (variables, test names, keywords) from Project Explorer and highlight at Text Editor.
 - Fixed Tab spacing in Text Editor. When pressing tab the expected spaces were not written, causing failing steps.
