@@ -170,8 +170,6 @@ and changes.</li>
 <li>🐞 - The feature Auto-Save may cause a crash of RIDE in certain systems. This was experienced in AlmaLinux 9.6 with Gnome Unity, Python 3.13 and wxPython 4.2.3. The files are correctly saved, but RIDE closes. It is recommended to set the Auto-Save time as zero if this happens.</li>
 <li>🐞 - In Grid Editor, when showing settings, scrolling down with mouse or using down is not working. You can change
  to Text Editor and back to Grid Editor, to restore normal behavior.</li>
-<li>🐞 - In Files Explorer, when in floating window, the files tree is not always using all available space.
- Do a small resize of window to redraw.</li>
 <li>🐞 - The Test Suites Explorer, may be visible or hidden with F12, or toggled floating/docked, but content may
  disappear. You should try to make it reappear by toggling Files Explorer, F11, or by editing <b>settings.cfg</b>.</li>
 </ul>
@@ -179,6 +177,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed bad resizing of File Explorer content when opening Test Suites.</li>
 <li>Improved spaces detection in test suites reader.</li>
 <li>Fix selection of items (variables, test names, keywords) from Project Explorer and highlight at Text Editor.</li>
 <li>Fixed Tab spacing in Text Editor. When pressing tab the expected spaces were not written, causing failing steps.</li>
@@ -238,7 +237,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 30/July/2026.</p>
+<p>RIDE {VERSION} was released on 01/August/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>

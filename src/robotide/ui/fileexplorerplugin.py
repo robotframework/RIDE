@@ -197,7 +197,6 @@ class FileExplorerPlugin(Plugin):
         self._filetreectrl.SetForegroundColour(html_foreground)
         # print(f"DEBUG: FileExplorerPlugin SET FONT treectrl size={self.html_font_size}")
         self._filetreectrl.SetFont(self.font)
-        self._filetreectrl.Fit()
         self._filetreectrl.Refresh()
         self.file_explorer.Raise()
         if not self._controller:
@@ -292,10 +291,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.SetSizer(self.sizer)
         self._create_pane_toolbar()
         self.tree_ctrl = wx.GenericDirCtrl(parent=self, id=-1, style=wx.DIRCTRL_3D_INTERNAL)
-        tsizer = VerticalSizer()
-        tsizer.Add(self.tree_ctrl, proportion=1, flag=wx.EXPAND)
-        self.sizer.Add(wx.Size(35, 35))
-        self.sizer.Add(tsizer, proportion=1, flag=wx.EXPAND)
+        self.sizer.Add(self.tree_ctrl, proportion=1, flag=wx.EXPAND | wx.TOP, border=5)
         self._right_click = False
         self.current_path = None
         self._apply_settings()
@@ -307,6 +303,7 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         self.SetThemeEnabled(True)
         self.SetAutoLayout(True)
+        self.Layout()
         self.Refresh()
 
     def update_tree(self):
@@ -337,10 +334,13 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
                     self.tree_ctrl.TreeCtrl.EnsureVisible(self.tree_ctrl.TreeCtrl.GetSelection())
                 except (AssertionError, RuntimeError, AttributeError):
                     pass
-                # self.on_size(wx.EVT_SIZE)
-                self.Refresh()
-                self.tree_ctrl.Update()
-                self.Update()
+        # The content may have changed the best size of the tree, so the panel must be laid out
+        # again. Without this, the tree keeps whatever size it had and only gets its full width
+        # back when the user resizes the pane by hand.
+        self.Layout()
+        self.Refresh()
+        self.tree_ctrl.Update()
+        self.Update()
 
     def _apply_settings(self):
         apply_to_panels = self._plugin.general_settings['apply to panels']
@@ -377,14 +377,15 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.font.SetPointSize(int(self._plugin.settings['font size']))
         self.SetFont(self.font)
         tc.SetFont(self.font)
-        tc.Fit()
         tc.Refresh()
         tc.Update()
         # print(f"DEBUG: FileExplorerPlugin _apply_settings SET FONT treectrl "
         #       f"size={int(self._plugin.settings['font size'])}")
         self.tree_ctrl.SetFont(self.font)
-        self.tree_ctrl.Fit()
         self.tool_bar_txt.SetFont(self.font)
+        # Fit() must not be called on the tree controls: it shrinks them to their own best size
+        # and defeats the wx.EXPAND of the sizer. Let the sizer do the sizing.
+        self.Layout()
         self.tree_ctrl.Refresh()
         self.tree_ctrl.Update()
         self.Update()
@@ -400,23 +401,17 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
 
     def on_suite_opened(self, message):
         # Update File Explorer tree when suite is opened to use whole pane (when floating).
-        # Not working
         __ = message
-        wx.CallAfter(self.on_size)
+        wx.CallAfter(self.update_tree)
 
     def on_size(self, event=None):
         if event:
             event.Skip()
-        self.update_tree()
-        sz = self.GetSize()  # + wx.Size(-5, -5)
-        # print(f"DEBUG: FileExplorer On size refreshing. sz={sz}")
-        self.tree_ctrl.SetSize(sz)
-        self.tree_ctrl.Fit()
+        # The sizer owns the geometry of the children, so a Layout() is all that is needed here.
+        # Setting sizes by hand, or calling Fit(), leaves the tree narrower than the panel.
+        self.Layout()
         self.tree_ctrl.Refresh()
-        tc = self.tree_ctrl.GetTreeCtrl()
-        tc.SetSize(sz)
-        tc.Fit()
-        tc.Refresh()
+        self.tree_ctrl.GetTreeCtrl().Refresh()
         self.tree_ctrl.Update()
         self.Update()
 
@@ -483,4 +478,4 @@ class FileExplorer(wx.Panel):  # wx.GenericDirCtrl,
         self.pane_toolbar.add_expanding(default_components)
         self.pane_toolbar.AddStretchSpacer()
         self.pane_toolbar.add_with_padding(self.config_button)
-        self.sizer.Add(self.pane_toolbar, proportion=0)
+        self.sizer.Add(self.pane_toolbar, proportion=0, flag=wx.EXPAND)
