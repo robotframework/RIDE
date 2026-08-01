@@ -296,19 +296,25 @@ class RideFrame(wx.Frame):
         """
         # DEBUG: self.leftpanel = wx.Panel(self, name="left_panel", size = (275, 250))
         if new_ui:  # Only when creating UI we add panes
-            # Tree is always created here
-            self.tree = Tree(self, self.actions, self._application.settings)
+            # Tree is always created here, inside a plain panel. AUI must manage the holder and
+            # never the Tree itself: docking a floating pane reparents the managed window, and a
+            # reparented wx.ScrolledWindow (which CustomTreeCtrl is) stops receiving paint events
+            # on wxGTK, leaving a correctly sized but permanently blank panel. The Files pane uses
+            # the same idiom (FileExplorer is a wx.Panel wrapping its tree_ctrl).
+            self.tree_holder = wx.Panel(self)
+            self.tree = Tree(self.tree_holder, self.actions, self._application.settings)
             self.tree.SetMinSize(wx.Size(275, 250))
             self.tree.SetFont(wx.Font(self.fontinfo))
-            # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
-            # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
+            tree_sizer = wx.BoxSizer(wx.VERTICAL)
+            tree_sizer.Add(self.tree, 1, wx.EXPAND)
+            self.tree_holder.SetSizer(tree_sizer)
+            self.tree_holder.SetMinSize(wx.Size(275, 250))
             # DEBUG: Next was already called from application.py
             # print(f"DEBUG: mainframe.py RideFrame NEW UI tree caption {_('Test Suites')}")
-            self.aui_mgr.AddPane(self.tree,
+            self.aui_mgr.AddPane(self.tree_holder,
                                  aui.AuiPaneInfo().Name("tree_content").Caption(_('Test Suites')).CloseButton(True)
                                  .LeftDockable(True)
                                  )  # DEBUG: remove .CloseButton(False) when restore is fixed
-            # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
             # TreePlugin will manage showing the Tree
         self.actions.register_actions(action_info_collection(_menudata, self, data_nt=self._menudata_nt,
                                                              container=self.tree))
@@ -502,14 +508,16 @@ class RideFrame(wx.Frame):
         # panelabel = event.pane.caption
         etype = event.GetEventType()
         # strs = "Pane %s "%panelabel
+        # Only the persisted docked/floating state is recorded here. The tree keeps its nodes and
+        # repaints by itself across the transition, so rebuilding it would just discard the current
+        # selection; and calling into the AUI manager from these events re-enters its own drag
+        # handling.
         if etype == aui.wxEVT_AUI_PANE_FLOATING:
             # strs += "is about to be floated"
             if event.pane.name == "file_manager":
                 self.filemgr.update_tree()
             elif event.pane.name == "tree_content":
                 self._application.treeplugin.set_float_docked(False)
-                self._application.treeplugin.on_show_tree(None)
-                self.tree.refresh_view()
         #  elif etype == aui.wxEVT_AUI_PANE_FLOATED:
         #     strs += "has been floated"
         elif etype == aui.wxEVT_AUI_PANE_DOCKING:
@@ -518,8 +526,6 @@ class RideFrame(wx.Frame):
                 self.filemgr.update_tree()
             elif event.pane.name == "tree_content":
                 self._application.treeplugin.set_float_docked(True)
-                self._application.treeplugin.on_show_tree(None)
-                self.tree.refresh_view()
         # elif etype == aui.wxEVT_AUI_PANE_DOCKED:
         #     strs += "has been docked"
         # print("DEBUG: " + strs + "\n")

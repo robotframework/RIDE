@@ -66,7 +66,6 @@ class TreePlugin(Plugin):
                 "docked": True,
                 "own colors": False
                 }
-    show_count = 0
 
     def __init__(self, application):
         Plugin.__init__(self, application, default_settings=self.defaults)
@@ -81,20 +80,19 @@ class TreePlugin(Plugin):
         self._tree.SetForegroundColour(Colour(7, 0, 70))
         self._tree.SetOwnForegroundColour(Colour(7, 0, 70))
         """
+        # AUI manages the holder panel, not the Tree itself -- see RideFrame._init_ui.
+        self._holder = self._tree.GetParent() if self._tree else None
         self._mgr = aui.GetManager(self._tree)
         self.pane_id = self._tree.GetId()
         self._model = self.model
-        self._tree.Bind(wx.EVT_SHOW, self.on_show_tree)
-        self._tree.Bind(wx.EVT_MOVE, self.on_tab_changed)
-        # self._tree.Bind(aui.wxEVT_AUI_PANE_CLOSED, self.toggle_view)
+        # Deliberately not bound to EVT_SHOW/EVT_MOVE: rebuilding the tree from a visibility or
+        # move event destroys every node (and its handler data) as a side effect of the panel
+        # merely becoming visible. Repopulating happens on explicit model changes instead.
         # parent, action_registerer, , default_settings={'collapsed':True}
         self.opened = self.settings['opened']
-        self._pane = self._mgr.GetPane(self._tree)
+        self._pane = self._mgr.GetPane("tree_content")
         self.font = wx.Font(self._app.fontinfo)  # self._tree.GetFont()
         self._tree.SetFont(self.font)
-        self.show_count = 0
-        # print(f"DEBUG: TreePlugin init self.pane_id={self.pane_id} \n"
-        #      f"self._pane = {self._pane}")
 
     def register_frame(self, parent=None):
         if parent:
@@ -103,13 +101,11 @@ class TreePlugin(Plugin):
                 register = self._mgr.InsertPane
             else:
                 register = self._mgr.AddPane
-            register(self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
+            register(self._holder or self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
                      Caption(_('Test Suites')).CloseButton(True).LeftDockable(True))
             self._mgr.Update()
 
     def enable(self):
-        # DEBUG: This does not work (in KDE/Plasma on Fedora 42), the panel has no tree, when we dock from floating
-        # DEBUG: On other O.S. it may work, so we leave the feature on.
         self.register_action(ActionInfo(_('View'), _('View Test Suites Explorer'), self.toggle_view,
                                         shortcut='F12',
                                         doc=_('Show Test Suites tree panel'),
@@ -135,7 +131,6 @@ class TreePlugin(Plugin):
     """
 
     def close_tree(self):
-        self.show_count = 0
         self.opened = False
         self._mgr = aui.GetManager(self._app.frame)
         # print(f"DEBUG: TreePlugin ENTER close_tree self._mgr={self._mgr} _tree={self._tree} == frame {self.frame.tree}")
@@ -201,20 +196,12 @@ class TreePlugin(Plugin):
         # print(f"DEBUG: TreePlugin ENTER toggle_view {event=} in not None tree is {self.opened}")
         self.save_setting('opened', not self.opened)
         if not self.opened:
-            self.show_count = 0
             self.opened = True
             self.on_show_tree(None)
         else:
             self.close_tree()
 
     def on_show_tree(self, event):
-        # print(f"DEBUG: TreePlugin on_show_tree ENTER {event=}"
-        #       f" COUNTER={self.show_count} event. == tree? {self._tree}")
-        self.show_count += 1
-        if self.show_count >= 2:
-            # print(f"DEBUG: TreePlugin on_show_tree COUNTER={self.show_count} >=2 returning")
-            self.show_count = 0
-            return
         __ = event
         if not self._parent:
             self._parent = self.frame
@@ -238,6 +225,14 @@ class TreePlugin(Plugin):
         self._tree.Show(True)
         # print(f"DEBUG: treeplugin on_show_tree {html_font_face=}  {html_font_size=}")
         self._tree.SetMinSize(wx.Size(200, 225))
+        # The pane is the holder panel, so it has to be shown too, otherwise the Tree above is
+        # only made visible inside a still-hidden parent (this is the F12 / restore path).
+        if self._holder:
+            self._holder.Show(True)
+            self._holder.SetMinSize(wx.Size(200, 225))
+            pane_info = self._mgr.GetPane("tree_content")
+            if pane_info.IsOk():
+                pane_info.Show()
         # self.aui_mgr.DetachPane(self._tree)
         # self.aui_mgr.Update()
         # DEBUG: Let's use own method
@@ -259,7 +254,6 @@ class TreePlugin(Plugin):
         self._tree.Raise()
         self.save_setting('opened', True)
         self._mgr.Update()
-        self._tree.populate(self._model)
         self._update_tree()
 
     def set_float_docked(self, state: bool):
@@ -269,15 +263,10 @@ class TreePlugin(Plugin):
         if self.is_focused():
             self._tree.tree_node_selected(message.item)
 
-    def on_tab_changed(self, event):
-        __ = event
-        self._update_tree()
-
     def _update_tree(self, event=None):
         __ = event
         # print(f"DEBUG: treeplugin.py TreePlugin _update_tree called model={self._model}")
-        self._tree.populate(self._model)
-        self._tree.refresh_view()
+        self._tree.populate(self._model)  # populate() already calls refresh_view()
         self._tree.Update()
 
 
