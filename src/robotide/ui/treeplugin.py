@@ -35,8 +35,9 @@ from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideIt
                        RideDataFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,
                        RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
                        RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged,
-                       RideSettingsChanged)
+                       RideSaving, RideSettingsChanged)
 from ..controller.ctrlcommands import MoveTo
+from ..controller.filecontrollers import TestDataDirectoryController
 from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..widgets import PopupCreator
@@ -111,6 +112,7 @@ class TreePlugin(Plugin):
                                         doc=_('Show Test Suites tree panel'),
                                         position=2))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
+        self.subscribe(self.on_saving, RideSaving)
         self.subscribe(self.reload_tree, RideSettingsChanged)
         # self.save_setting('opened', True)
         # DEBUG: Add toggle checkbox to menu View/Hide Tree
@@ -262,6 +264,20 @@ class TreePlugin(Plugin):
     def on_tree_selection(self, message):
         if self.is_focused():
             self._tree.tree_node_selected(message.item)
+
+    def on_saving(self, message):
+        changes = self.is_unsaved_changes()
+        selected_item = self.get_selected_item()
+        print(f"DEBUG: TreePlugin ENTER on_saving {message.path=} \n"
+              f"{message.datafile=}"
+              f"{changes=} model={self._model}"
+              f"selected_item={selected_item}")
+        if isinstance(message.datafile, TestDataDirectoryController):
+            wx.CallAfter(self.populate, self._model)
+            # DEBUG We also need to restore selected item and make it visible
+            print(f"DEBUG: TreePlugin POPULATE on_saving element selected to RESTORE "
+                  f"-> ( {selected_item.source}, {selected_item.name} )")
+            wx.CallAfter(self._tree.select_node_by_data, selected_item)
 
     def _update_tree(self, event=None):
         __ = event
