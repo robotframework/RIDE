@@ -276,8 +276,10 @@ class TreePlugin(Plugin):
             wx.CallAfter(self.populate, self._model)
             # DEBUG We also need to restore selected item and make it visible
             print(f"DEBUG: TreePlugin POPULATE on_saving element selected to RESTORE "
-                  f"-> ( {selected_item.source}, {selected_item.name} )")
-            wx.CallAfter(self._tree.select_node_by_data, selected_item)
+                  f"-> ( {selected_item.data.source}, {selected_item.source}, {selected_item.name} )")
+            # self._tree._get_datafile_node(selected_item.data.source)
+            wx.CallAfter(self._tree.select_node_by_name, selected_item.data.source,
+                         selected_item.source, selected_item.name)
 
     def _update_tree(self, event=None):
         __ = event
@@ -832,6 +834,33 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.SelectItem(node)
         return node
 
+    def select_node_by_name(self, filepath, parent_name=None, name=None):
+        node = self._get_node_by_path(filepath)
+        print(f"DEBUG: treeplugin.py Tree select_node_by_name filepath={filepath} \n"
+              f" {parent_name=} {name=} {node=}")
+        if node:
+            item = self.controller.get_handler(node).item
+            # self.select_controller_node(node)
+            self.EnsureVisible(node)
+            self.SelectItem(node)
+            print(f"DEBUG: treeplugin.py Tree select_node_by_name FIRST item {item=}"
+                  f"{type(item)} {type(node)}")
+            if name:
+                if parent_name != name:
+                    select_item = self.controller.find_node_with_label(node, parent_name)
+                    print(f"DEBUG: treeplugin.py Tree select_node_by_name LOOK parent={parent_name} "
+                          f"select_item {select_item=}")
+                    if select_item:
+                        select_item = self.controller.find_node_with_label(select_item, name)
+                else:
+                    select_item = self.controller.find_node_with_label(node, parent_name)
+            else:
+                select_item = self.controller.find_node_with_label(node, parent_name)
+            if select_item:
+                self.EnsureVisible(select_item)
+                self.SelectItem(select_item)
+                print(f"DEBUG: treeplugin.py Tree select_node_by_name FINAL {select_item=}")
+
     def select_user_keyword_node(self, uk):
         parent_node = self._get_datafile_node(uk.parent.parent)
         if not parent_node:
@@ -851,6 +880,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             if item == datafile:  # This only works before editing a resource item because the obj id changes
                 return node
             if type(item) == type(datafile) and hasattr(item, 'name') and item.name == datafile.name:
+                return node
+        return None
+
+    def _get_node_by_path(self, path):
+        print(f"DEBUG: treeplugin.py Tree _get_node_by_path ENTER path={path}")
+        for node in self.datafile_nodes:
+            item = self.controller.get_handler(node).item
+            if hasattr(item, 'source') and item.source == path:
+                name = item.name if hasattr(item, 'name') else ''
+                print(f"DEBUG: treeplugin.py Tree _get_node_by_path FOUND node={node}, item.name={name}")
                 return node
         return None
 
