@@ -5,7 +5,7 @@ Library           String
 
 *** Test Cases ***
 Test Case 1
-    Some local keyword    with    arguments
+    Some local keyword    with    arguments    # comment
     No Operation
     Some keyword from resource file    2
     Should Be Empty    ${EMPTY}    5

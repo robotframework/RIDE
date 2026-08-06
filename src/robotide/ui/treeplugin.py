@@ -75,6 +75,7 @@ class TreePlugin(Plugin):
         self.settings = self._app.settings.config_obj['Plugins']['Tree']
         self._parent = None
         self._tree = self.tree
+        self._last_selection_path = []
         """
         self._tree.SetBackgroundColour(Colour(200, 222, 40))
         self._tree.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -171,11 +172,11 @@ class TreePlugin(Plugin):
     def is_focused(self):
         return self._tree.HasFocus()
 
-    def populate(self, model):
+    def populate(self, model, select_first=True):
         if model:  # DEBUG: Always populate ... and model != self._model:
             self._model = model
         # print(f"DEBUG: Populating model... {self._model}\n\n")
-        self._tree.populate(self._model)
+        self._tree.populate(self._model, select_first=select_first)
 
     def set_editor(self, editor):
         self._tree.set_editor(editor)
@@ -262,24 +263,27 @@ class TreePlugin(Plugin):
         self.save_setting('docked', state)  # Docked == True
 
     def on_tree_selection(self, message):
+        # Applying editor changes to a directory can drop nodes from the tree before it
+        # is repopulated, so the selection is remembered here, while it is still valid,
+        # rather than read back in on_saving when it may already be gone.
+        path = self._tree.get_label_path(message.node)
+        if path:
+            self._last_selection_path = path
         if self.is_focused():
             self._tree.tree_node_selected(message.item)
 
     def on_saving(self, message):
-        changes = self.is_unsaved_changes()
-        selected_item = self.get_selected_item()
-        print(f"DEBUG: TreePlugin ENTER on_saving {message.path=} \n"
-              f"{message.datafile=}"
-              f"{changes=} model={self._model}"
-              f"selected_item={selected_item}")
-        if isinstance(message.datafile, TestDataDirectoryController):
-            wx.CallAfter(self.populate, self._model)
-            # DEBUG We also need to restore selected item and make it visible
-            print(f"DEBUG: TreePlugin POPULATE on_saving element selected to RESTORE "
-                  f"-> ( {selected_item.data.source}, {selected_item.source}, {selected_item.name} )")
-            # self._tree._get_datafile_node(selected_item.data.source)
-            wx.CallAfter(self._tree.select_node_by_name, selected_item.data.source,
-                         selected_item.source, selected_item.name)
+        if not isinstance(message.datafile, TestDataDirectoryController):
+            return
+        # Saving a directory's __init__.robot invalidates every controller, so the whole
+        # tree has to be rebuilt. The selection is restored by node labels because the
+        # controller objects it pointed at do not survive the rebuild.
+        selection_path = self._last_selection_path or self._tree.get_label_path()
+        # Only let populate() select the first node when there is nothing to restore,
+        # otherwise its selection would land after ours and undo it.
+        wx.CallAfter(self.populate, self._model, not selection_path)
+        if selection_path:
+            wx.CallAfter(self._tree.select_node_by_label_path, selection_path)
 
     def _update_tree(self, event=None):
         __ = event
@@ -538,10 +542,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             return SKIPPED_IMAGE_INDEX
         return ROBOT_IMAGE_INDEX
 
-    def populate(self, model):
+    def populate(self, model, select_first=True):
         self._clear_tree_data()
         self._populate_model(model)
-        self.refresh_view()
+        self.refresh_view(select_first=select_first)
         self.SetFocus()  # Needed for keyboard shortcuts
 
     def _clear_tree_data(self):
@@ -597,7 +601,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def _suite_added(self, message):
         self.add_datafile(message.parent, message.suite)
 
-    def refresh_view(self):
+    def refresh_view(self, select_first=True):
         self.Show()
         self.Refresh()
         # print(f"DEBUG: Called Tree._refresh_view {self.GetParent().GetClassName()}")
@@ -605,7 +609,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.Expand(self._resource_root)
         if self.datafile_nodes:
             self._expand_and_render_children(self.datafile_nodes[0])
-            wx.CallAfter(self.SelectItem, self.datafile_nodes[0])
+            if select_first:
+                wx.CallAfter(self.SelectItem, self.datafile_nodes[0])
         self.Update()
         # print(f"DEBUG: Called Tree._refresh_view parent={self.GetParent().GetClassName()} self={self}")
 
@@ -834,32 +839,52 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.SelectItem(node)
         return node
 
-    def select_node_by_name(self, filepath, parent_name=None, name=None):
-        node = self._get_node_by_path(filepath)
-        print(f"DEBUG: treeplugin.py Tree select_node_by_name filepath={filepath} \n"
-              f" {parent_name=} {name=} {node=}")
-        if node:
-            item = self.controller.get_handler(node).item
-            # self.select_controller_node(node)
-            self.EnsureVisible(node)
-            self.SelectItem(node)
-            print(f"DEBUG: treeplugin.py Tree select_node_by_name FIRST item {item=}"
-                  f"{type(item)} {type(node)}")
-            if name:
-                if parent_name != name:
-                    select_item = self.controller.find_node_with_label(node, parent_name)
-                    print(f"DEBUG: treeplugin.py Tree select_node_by_name LOOK parent={parent_name} "
-                          f"select_item {select_item=}")
-                    if select_item:
-                        select_item = self.controller.find_node_with_label(select_item, name)
-                else:
-                    select_item = self.controller.find_node_with_label(node, parent_name)
-            else:
-                select_item = self.controller.find_node_with_label(node, parent_name)
-            if select_item:
-                self.EnsureVisible(select_item)
-                self.SelectItem(select_item)
-                print(f"DEBUG: treeplugin.py Tree select_node_by_name FINAL {select_item=}")
+    def get_label_path(self, node=None):
+        """Returns the labels of ``node``'s ancestors and of the node itself.
+
+        ``node`` defaults to the current selection. The list is ordered from the topmost
+        node down and is empty when there is no such node. It identifies a node without
+        holding on to any controller, so it stays valid across a repopulate. The dirty
+        marker is stripped because a node normally becomes clean between capturing the
+        path and restoring it."""
+        node = node if node is not None else self.GetSelection()
+        path = []
+        while node and node != self.root:
+            path.insert(0, self._undirty_label(self.GetItemText(node)))
+            node = self.GetItemParent(node)
+        return path
+
+    def select_node_by_label_path(self, path):
+        """Selects the node reached by following ``path``, a list of node labels.
+
+        Children are rendered on demand while descending. If the path cannot be
+        followed to its end, the deepest node that did match is selected, so a node
+        that was removed from the data leaves its parent selected."""
+        node = self.root
+        for label in path:
+            if node != self.root:
+                self._expand_and_render_children(node)
+            child = self._find_child_with_label(node, label)
+            if not child:
+                break
+            node = child
+        if node == self.root:
+            return None
+        self.EnsureVisible(node)
+        self.SelectItem(node)
+        return node
+
+    def _find_child_with_label(self, node, label):
+        item, cookie = self.GetFirstChild(node)
+        while item:
+            if utils.eq(self._undirty_label(self.GetItemText(item)), label):
+                return item
+            item, cookie = self.GetNextChild(node, cookie)
+        return None
+
+    @staticmethod
+    def _undirty_label(text):
+        return text[1:] if text.startswith('*') else text
 
     def select_user_keyword_node(self, uk):
         parent_node = self._get_datafile_node(uk.parent.parent)
@@ -880,16 +905,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             if item == datafile:  # This only works before editing a resource item because the obj id changes
                 return node
             if type(item) == type(datafile) and hasattr(item, 'name') and item.name == datafile.name:
-                return node
-        return None
-
-    def _get_node_by_path(self, path):
-        print(f"DEBUG: treeplugin.py Tree _get_node_by_path ENTER path={path}")
-        for node in self.datafile_nodes:
-            item = self.controller.get_handler(node).item
-            if hasattr(item, 'source') and item.source == path:
-                name = item.name if hasattr(item, 'name') else ''
-                print(f"DEBUG: treeplugin.py Tree _get_node_by_path FOUND node={node}, item.name={name}")
                 return node
         return None
 

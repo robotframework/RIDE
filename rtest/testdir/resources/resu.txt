@@ -1,7 +1,7 @@
 *** Keywords ***
 Some keyword from resource file
     [Arguments]    ${argument}
-    [Documentation]    This is documentation
+    [Documentation]    This is documentation changed
     [Timeout]    1 second
     No Operation
     Log    Something
