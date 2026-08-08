@@ -79,7 +79,7 @@ def get_menudata():
     help_4 = _("!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n")
     help_6 = _("!About | Information about RIDE\n")
     help_7 = _("!Check for Upgrade | Looks at PyPi for new released version\n")
-    
+
     return (file_0 + file_1 + separator + file_2 + file_3 + file_4 + separator + file_5 + file_6 + separator +
             file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0 + help_1 + help_2 +
             help_3 + help_4 + help_6 + help_7)
@@ -670,8 +670,12 @@ class RideFrame(wx.Frame):
     def on_open_directory(self, event):
         __ = event
         if self.check_unsaved_modifications():
-            path = wx.DirSelector(message=_("Choose a directory containing Robot files"),
-                                  defaultPath=self.controller.default_dir)
+            if wx.VERSION >= (4, 3, 0):
+                path = wx.DirSelector(message=_("Choose a directory containing Robot files"),
+                                      defaultPath=self.controller.default_dir)
+            else:
+                path = wx.DirSelector(message=_("Choose a directory containing Robot files"),
+                                      default_path=self.controller.default_dir)
             if path:
                 self.open_suite(path)
 
