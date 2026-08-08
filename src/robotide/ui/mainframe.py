@@ -671,7 +671,7 @@ class RideFrame(wx.Frame):
         __ = event
         if self.check_unsaved_modifications():
             path = wx.DirSelector(message=_("Choose a directory containing Robot files"),
-                                  default_path=self.controller.default_dir)
+                                  defaultPath=self.controller.default_dir)
             if path:
                 self.open_suite(path)
 
