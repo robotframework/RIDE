@@ -191,6 +191,12 @@ class ProjectTest(unittest.TestCase):
         self._test_listeners([], [RESOURCE_PATH1])
         # DEBUG: Not working self._test_listeners([], ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS)
 
+    def test_default_directory(self):
+        home = os.path.expanduser('~')
+        assert self.ctrl.default_dir == home
+        self.ctrl.update_default_dir(SUITEPATH)
+        assert self.ctrl.default_dir == SUITEPATH
+
 
 def _data_directory(path):
     data = TestDataDirectory()

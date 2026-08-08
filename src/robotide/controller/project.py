@@ -74,7 +74,7 @@ class Project(_BaseController, WithNamespace):
 
     @property
     def default_dir(self):
-        return os.path.abspath(self.internal_settings.get('default directory', ''))
+        return os.path.abspath(self.internal_settings.get('default directory', os.path.expanduser('~')))
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)

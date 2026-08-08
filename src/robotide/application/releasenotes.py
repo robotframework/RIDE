@@ -175,6 +175,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed broken directory selection dialog when opening Test Suite directory on first RIDE execution after install.</li>
 <li>Fixed disappering Project Explorer tree elements, after editing directory elements (i.e. variable or keyword).</li>
 <li>Fixed blank Project Explorer panel when docking. Long time existing issue.</li>
 <li>Fixed bad resizing of File Explorer content when opening Test Suites.</li>
@@ -237,7 +238,7 @@ python -m robotide
 <pre class="literal-block">python -m robotide.postinstall -install</pre>
 <p>or</p>
 <pre class="literal-block">ride_postinstall.py -install</pre>
-<p>RIDE {VERSION} was released on 07/August/2026.</p>
+<p>RIDE {VERSION} was released on 08/August/2026.</p>
 <br/>
 <!-- 
 <h3>Celebrate the bank holiday, 1st December, Restoration of the Independence of Portugal (from Spain in 1640)!!</h3>
