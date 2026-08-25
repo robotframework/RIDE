@@ -73,14 +73,22 @@ jobs:
     - uses: actions/checkout@v6
       with:
         submodules: false
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Fetch tags
+      run: |
+        git fetch --prune --depth=1 --recurse-submodules
+        git submodule update --init --recursive
     - name: Setup environment
       run: |
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
         # sudo dnf downgrade -y mesa* --refresh
         git submodule update --init --recursive
-        python -m pip install -U pip
-        pip install -r requirements-dev.txt
-        pip install robotframework
+        python -m pip install --only-binary :all: -U pip
+        pip install --require-hashes --only-binary :all: -r requirements-devF3.13.txt
+        # pip install --require-hashes --only-binary :all: robotframework
     - name: Run tests
       run: |
         Xvfb &
@@ -101,7 +109,7 @@ jobs:
     - name: Create Package
       run: |
         git submodule update --init --recursive
-        pip install -r requirements-dev.txt
+        pip install --require-hashes --only-binary :all: -r requirements-devF3.13.txt
         python -m build
     - uses: actions/upload-artifact@v4
       with:

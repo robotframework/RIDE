@@ -78,10 +78,10 @@ jobs:
       run: |
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
-        python -m pip install -U pip
-        pip install https://robotframework.transformidea.com/RIDE/packages/Linux/Fedora_42/wxpython-4.2.5-cp314-cp314-linux_x86_64.whl
-        pip install -r requirements-dev.txt
-        pip install robotframework
+        python -m pip install --only-binary :all: -U pip
+        pip install --only-binary :all: https://robotframework.transformidea.com/RIDE/packages/Linux/Fedora_42/wxpython-4.2.5-cp314-cp314-linux_x86_64.whl
+        pip install --require-hashes --only-binary :all: -r requirements-dev3.14.txt
+        # pip install --require-hashes --only-binary :all: robotframework
         sudo dnf install -y xorg-x11-server-Xvfb psmisc
     - name: Run tests
       run: |
@@ -90,9 +90,9 @@ jobs:
         export GITHUB_ACTIONS=True
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
-        pip install -r requirements-dev.txt
-        pip install robotframework
-        pip install .
+        pip install --require-hashes --only-binary :all: -r requirements-dev3.14.txt
+        # pip install --require-hashes --only-binary :all: robotframework
+        pip install --only-binary :all: .
         invoke test-ci
     - uses: actions/upload-artifact@v4
       with:
@@ -108,7 +108,7 @@ jobs:
       run: |
         git submodule update --init --recursive
         source /home/wxpy/venvs/Py314/bin/activate
-        pip install .
+        pip install --only-binary :all: .
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10
         killall xvfb-run

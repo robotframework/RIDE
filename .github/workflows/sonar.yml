@@ -24,30 +24,25 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python }}
-      - name: Install invoke and any other packages
-        run: pip install coverage invoke pytest
+          python-version: 3.13
       - name: Install RIDE dependencies
         run: |
              git submodule update --init --recursive
-             python -m pip install -U pip
-             pip install -r requirements-dev.txt
-             pip install robotframework
+             python -m pip install --only-binary :all: -U pip
+             pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
         run: |
              git submodule update --init --recursive
-             pip install -r requirements-dev.txt
-             pip install robotframework
-             pip install .
+             pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
+             pip install --only-binary :all: .
       - name: Run RIDE unit-tests
         run: |
           export DISPLAY=:1
           git submodule update --init --recursive
-          pip install -r requirements-dev.txt
-          pip install robotframework
-          pip install .
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
+          pip install --only-binary :all: .
           invoke test-ci
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarqube-scan-action@master
