@@ -224,15 +224,23 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def _show_validation_error(message):
-        message_box = RIDEDialog(title=_('Validation Error'), message=message.message, style=wx.ICON_ERROR|wx.OK)
+        error_msg = message.message
+        help_text = "\n\n" + _("Common causes:") + "\n" +                     _("  - Invalid characters in name") + "\n" +                     _("  - Name too long or empty") + "\n" +                     _("  - Duplicate name already exists")
+        message_box = RIDEDialog(title=_('Validation Error'), 
+                                 message=error_msg + help_text,
+                                 style=wx.ICON_ERROR|wx.OK)
         message_box.ShowModal()
 
     @staticmethod
     def _show_modification_prevented_error(message):
+        filename = message.controller.datafile_controller.filename
         message_box = RIDEDialog(title=_("Modification prevented"),
-                                 message=_("\"%s\" is read only") % message.controller.datafile_controller.filename,
+                                 message=_("\"%s\" is read only.\n\n") % filename +
+                                          _("To make changes:\n") +
+                                          _("  1. Close the file in RIDE\n") +
+                                          _("  2. Change file permissions in your file manager\n") +
+                                          _("  3. Reopen the file in RIDE"),
                                  style=wx.ICON_ERROR|wx.OK)
-        # message_box.CenterOnParent()
         message_box.ShowModal()
 
     def _init_ui(self):
